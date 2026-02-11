@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itoc 维护页面</title>
+    <style>
+        /* 全局重置 - 极简基础 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Consolas", "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px 30px; /* 非居中：靠左上角排版 */
+        }
+        /* 标题样式 - 无圆角、硬朗风格 */
+        h1 {
+            font-size: 28px;
+            color: #222;
+            border-bottom: 2px solid #444; /* 直线分割，无圆角 */
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            width: 400px; /* 非全屏宽度，强化非居中 */
+        }
+        /* 内容区域 - 极简排版 */
+        .main-info {
+            width: 600px;
+            background: #fff;
+            border: 1px solid #999; /* 直角边框 */
+            padding: 20px;
+            margin-top: 10px;
+        }
+        .main-info p {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        /* 列表样式 - 无装饰，极简 */
+        ul {
+            list-style: square;
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        ul li {
+            margin-bottom: 8px;
+        }
+        /* 版本信息 - 区分样式 */
+        .version {
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #ddd; /* 直角分割线 */
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        /* 跳转链接样式 - 极简直角、无圆角 */
+        .nav-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 6px 12px;
+            background: #fff;
+            border: 1px solid #666;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .nav-link:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <!-- 非居中构图：整体靠左，无居中样式 -->
+    <h1>Itoc 编辑器 - 维护公告</h1>
+    
+    <div class="main-info">
+        <p>Itoc（CZE MIDI编辑器）当前处于维护更新阶段，以下是最新信息：</p>
+        
+        <ul>
+            <li>维护内容：修复类名重复警告逻辑、优化窗口链接稳定性</li>
+            <li>预计恢复时间：2026-02-15</li>
+            <li>临时反馈渠道：xxdz_7785@163.com</li>
+            <li>已修复问题：MIDI轨道音符块位置偏移、音频音量调节失效</li>
+        </ul>
+        
+        <p>感谢你的使用与支持，更新完成后将第一时间同步！</p>
+        
+        <div class="version">
+            当前维护版本：Itoc v1.2.0<br>
+            最后更新时间：2026-02-11
+        </div>
+        
+        <!-- 新增：跳转到插件市场的链接 -->
+        <a href="插件市场.html" class="nav-link">前往 Itoc 插件市场</a>
+    </div>
+</body>
+</html>

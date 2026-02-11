@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itoc - 插件市场</title>
+    <style>
+        /* 全局重置 - 与维护页保持风格统一 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Consolas", "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px 30px; /* 非居中：靠左排版 */
+        }
+        /* 标题样式 - 无圆角、硬朗风格 */
+        h1 {
+            font-size: 28px;
+            color: #222;
+            border-bottom: 2px solid #444;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            width: 300px; /* 非全屏宽度 */
+        }
+        h2 {
+            font-size: 20px;
+            margin: 25px 0 10px 0;
+            color: #222;
+        }
+        /* 插件列表容器 - 极简直角 */
+        .plugin-list {
+            width: 700px;
+            background: #fff;
+            border: 1px solid #999;
+            padding: 20px;
+            margin-top: 10px;
+        }
+        /* 插件项 - 分隔线+无圆角 */
+        .plugin-item {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+        .plugin-item:last-child {
+            border-bottom: none;
+        }
+        .plugin-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #111;
+        }
+        .plugin-desc {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0 8px 0;
+            margin-left: 10px;
+        }
+        .plugin-meta {
+            font-size: 12px;
+            color: #888;
+            margin-left: 10px;
+        }
+        /* 按钮样式 - 直角、无装饰 */
+        .btn {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #fff;
+            border: 1px solid #666;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .btn:hover {
+            background: #f5f5f5;
+        }
+        /* 说明文本 */
+        .tips {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            width: 700px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Itoc 插件市场</h1>
+    
+    <div class="plugin-list">
+        <h2>官方插件</h2>
+        <!-- 插件项1 -->
+        <div class="plugin-item">
+            <div class="plugin-name">窗口动画扩展插件</div>
+            <div class="plugin-desc">新增20+窗口动画效果（旋转、缩放、淡入淡出），支持自定义缓动曲线</div>
+            <div class="plugin-meta">版本：v1.0 | 大小：21KB | 兼容：Itoc v1.2+</div>
+            <a href="#" class="btn">下载</a>
+        </div>
+        <!-- 插件项2 -->
+        <div class="plugin-item">
+            <div class="plugin-name">音频可视化插件</div>
+            <div class="plugin-desc">将音频频谱转化为弹窗视觉效果，实现音乐节奏与画面同步</div>
+            <div class="plugin-meta">版本：v0.9 | 大小：35KB | 兼容：Itoc v1.2+</div>
+            <a href="#" class="btn">下载</a>
+        </div>
+        <!-- 插件项3 -->
+        <div class="plugin-item">
+            <div class="plugin-name">Python脚本扩展插件</div>
+            <div class="plugin-desc">支持在全局指令中调用自定义Python脚本，扩展Itoc功能边界</div>
+            <div class="plugin-meta">版本：v1.1 | 大小：18KB | 兼容：Itoc v1.2+</div>
+            <a href="#" class="btn">下载</a>
+        </div>
+
+        <h2>社区插件</h2>
+        <!-- 插件项4 -->
+        <div class="plugin-item">
+            <div class="plugin-name">多语言弹窗插件</div>
+            <div class="plugin-desc">支持一键切换弹窗文本语言（中文/英文/日文），适配多场景使用</div>
+            <div class="plugin-meta">版本：v0.8 | 作者：社区用户 | 兼容：Itoc v1.1+</div>
+            <a href="#" class="btn">下载</a>
+        </div>
+    </div>
+
+    <div class="tips">
+         插件安装说明：下载插件文件后，放入Itoc安装目录下的plugins文件夹，重启软件即可生效<br>
+         插件提交：如需提交自制插件，请发送至 itoc_plugin@example.com
+    </div>
+</body>
+</html>

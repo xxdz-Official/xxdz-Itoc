@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itoc v1.0 下载</title>
+    <!-- 使用相同的 web.css 保持直角/主题色风格 -->
+    <link rel="stylesheet" href="xxdz-Itoc/web.css">
+    <style>
+        /* 追加样式 - 仅用于本页布局，保持直角/主题色 AB92F5 */
+        * {
+            box-sizing: border-box;
+            font-family: "Consolas", "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: #f0f0f0;
+            color: #333;
+            line-height: 1.4;
+            padding: 15px 25px;
+        }
+        /* 顶部导航 */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #444;
+            padding-bottom: 8px;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border: 1px solid #888;
+        }
+        .logo-area h1 {
+            font-size: 24px;
+            color: #222;
+            border-bottom: none;
+            margin: 0;
+        }
+        .back-link {
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 4px 12px;
+            border: 1px solid #888;
+            background: #fff;
+            transition: all 0.2s;
+        }
+        .back-link:hover {
+            background: #AB92F5;
+            border-color: #AB92F5;
+            color: #fff;
+        }
+
+        /* 主卡片 - 软件信息 */
+        .download-card {
+            width: 100%;
+            background: #fff;
+            border: 1px solid #aaa;
+            padding: 20px 25px;
+            margin: 10px 0 20px 0;
+        }
+
+        /* 软件标题行 */
+        .software-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
+        }
+        .software-icon {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border: 1px solid #888;
+        }
+        .software-title h2 {
+            font-size: 28px;
+            color: #222;
+            margin: 0 0 5px 0;
+        }
+        .software-title .version-tag {
+            font-size: 16px;
+            color: #AB92F5;
+            border: 1px solid #AB92F5;
+            padding: 3px 10px;
+            display: inline-block;
+        }
+
+        /* 双列布局：左侧截图 + 右侧信息 */
+        .info-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .screenshot-area {
+            flex: 1;
+        }
+        .screenshot-img {
+            width: 100%;
+            max-width: 695px;
+            border: 1px solid #aaa;
+            object-fit: cover;
+        }
+        .details-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .version-desc {
+            border: 1px solid #ddd;
+            padding: 15px;
+            background: #fafafa;
+        }
+        .version-desc h3 {
+            font-size: 20px;
+            margin: 0 0 10px 0;
+            border-left: 4px solid #AB92F5;
+            padding-left: 12px;
+        }
+        .version-desc p {
+            font-size: 14px;
+            color: #444;
+            line-height: 1.5;
+            white-space: pre-line;
+            margin: 0;
+        }
+        .platform-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            background: #fafafa;
+        }
+        .platform-info h3 {
+            font-size: 20px;
+            margin: 0 0 10px 0;
+            border-left: 4px solid #AB92F5;
+            padding-left: 12px;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        .info-label {
+            font-weight: 600;
+            min-width: 60px;
+            color: #222;
+        }
+        .info-value {
+            color: #666;
+        }
+
+        /* 示例工程模块 - 紧凑风格 */
+        .example-project {
+            margin-top: 8px;
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .example-project-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .example-project-left span {
+            font-size: 14px;
+            color: #222;
+        }
+        .example-project-left .project-icon {
+            font-size: 16px;
+        }
+        .example-download-btn {
+            background: #fff;
+            border: 1px solid #888;
+            padding: 4px 14px;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .example-download-btn:hover {
+            background: #AB92F5;
+            border-color: #AB92F5;
+            color: #fff;
+        }
+
+        /* 下载线路区域 */
+        .download-links {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        .download-links h3 {
+            font-size: 20px;
+            margin: 0 0 15px 0;
+            border-left: 4px solid #AB92F5;
+            padding-left: 12px;
+        }
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+        }
+        .download-link-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border: 1px solid #888;
+            padding: 8px 15px;
+            color: #333;
+            text-decoration: none;
+            font-size: 15px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .download-link-btn:hover {
+            background: #AB92F5;
+            border-color: #AB92F5;
+            color: #fff;
+        }
+        .btn-small {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+        /* 夸克推荐标签 */
+        .recommend-tag {
+            background: #AB92F5;
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            margin-left: 6px;
+            border: none;
+            vertical-align: middle;
+        }
+        /* 夸克按钮下方的小字 - 无样式，纯文本 */
+        .quark-small-note {
+            grid-column: 1 / -1;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        /* 页脚 */
+        .footer {
+            margin-top: 25px;
+            border-top: 1px solid #aaa;
+            padding: 12px 0;
+            color: #555;
+            font-size: 12px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部导航：返回主页 (直接返回owo.html) -->
+    <div class="top-nav">
+        <div class="logo-area">
+            <img src="icon.png" alt="Itoc logo" class="logo-img">
+            <h1>Itoc v1.0 下载</h1>
+        </div>
+        <a href="owo.html" class="back-link">← 返回主页</a>
+    </div>
+
+    <!-- 主卡片 -->
+    <div class="download-card">
+        <!-- 软件标题和图标 -->
+        <div class="software-header">
+            <img src="icon.png" alt="Itoc icon" class="software-icon">
+            <div class="software-title">
+                <h2>Itoc 编辑器</h2>
+                <span class="version-tag">版本 v1.0 稳定版</span>
+            </div>
+        </div>
+
+        <!-- 双列布局：截图 + 详细信息 -->
+        <div class="info-row">
+            <!-- 左侧截图区域 -->
+            <div class="screenshot-area">
+                <img src="https://file.uhsea.com/2603/16694d39d3eb865b001f1f97649fe82fVQ.png" alt="Itoc v1.0 软件截图" class="screenshot-img">
+            </div>
+
+            <!-- 右侧详细信息 -->
+            <div class="details-area">
+                <!-- 版本简介 -->
+                <div class="version-desc">
+                    <h3>版本简介</h3>
+                    <p>
+                        Itoc v1.0 是首个正式稳定版本，包含以下核心功能：<br>
+			第一个版本，为啥更新日志，无需多言
+                    </p>
+                </div>
+
+                <!-- 平台信息 -->
+                <div class="platform-info">
+                    <h3>系统要求</h3>
+                    <div class="info-item">
+                        <span class="info-label">处理器</span>
+                        <span class="info-value">64位 (x64) 处理器</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">平台</span>
+                        <span class="info-value">Windows 8 / 10 / 11 (64位)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">存储</span>
+                        <span class="info-value">至少700MB 可用空间</span>
+                    </div>
+                </div>
+
+                <!-- 示例工程模块 -->
+                <div class="example-project">
+                    <div class="example-project-left">
+                        <span class="project-icon">📁</span>
+                        <span>示例工程下载</span>
+                    </div>
+                    <a href="https://pan.huang1111.cn/s/oX9qjS8" class="example-download-btn" target="_blank">下载</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 下载线路区域 -->
+        <div class="download-links">
+            <h3>下载线路</h3>
+            <div class="link-grid">
+                <!-- 夸克网盘 - 已添加链接 -->
+                <a href="https://pan.quark.cn/s/0c11a138b3b6" class="download-link-btn" target="_blank">
+                    夸克网盘
+                    <span class="recommend-tag">推荐</span>
+                </a>
+                <!-- 123云盘 - 已添加链接 -->
+                <a href="https://www.123865.com/s/a5YSVv-JUqHd" class="download-link-btn" target="_blank">
+                    123云盘
+                    <span class="btn-small">备用线路</span>
+                </a>
+                <!-- 111云盘 - 已添加链接 -->
+                <a href="https://pan.huang1111.cn/s/DVRv9c4" class="download-link-btn" target="_blank">
+                    111云盘
+                    <span class="btn-small">备用线路</span>
+                </a>
+                <!-- 夸克按钮下方的小字 -->
+                <div class="quark-small-note">
+                    我坦白，夸克已与我进行小合作，您使用夸克下载(或转存)Itoc会对我产生微薄的收益，助力本未成年开发者的创作！
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer">
+        © 2026 小小电子xxdz · Itoc
+    </div>
+</body>
+</html>

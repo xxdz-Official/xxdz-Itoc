@@ -1,8 +1,6 @@
-/* web.css - Itoc 维护页面样式 */
+/* web.css*/
 /* 主题色: AB92F5 - 用于高亮和交互元素 */
-/* 直角风格 - 无任何圆角 */
-
-/* 全局重置 - 极简基础 */
+/* 直角风格 - 无任何圆角!!! */
 * {
     margin: 0;
     padding: 0;
@@ -81,14 +79,3 @@ ul li {
     color: #fff;               /* 白色文字保证可读性 */
 }
 
-/* 可选的额外高亮元素 - 如果需要可以取消注释 */
-/*
-h1 {
-    border-bottom-color: #AB92F5;
-}
-
-.nav-link:focus {
-    outline: 2px solid #AB92F5;
-    outline-offset: 2px;
-}
-*/

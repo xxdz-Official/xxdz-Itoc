@@ -1,0 +1,16 @@
+{
+  "last_dir": "D:/[\u5c0f\u7eda\u5b66\u4e60]/\u957f\u65f6\u5b58\u653e/\u7535\u8111\u6280\u672f\u5927\u8d5b/\u5c0f\u5c0f\u7535\u5b50\u5e94\u7528\u7a0b\u5e8f/\u5c0f\u5c0f\u7535\u5b50exe\u5e94\u7528\u7a0b\u5e8f\u7cfb\u5217/\u5f00\u53d1/MidiToCZE/runCZE",
+  "output_dir": "C:/Users/Administrator/Desktop/exe/\u65b0\u5efa\u6587\u4ef6\u5939 (2)",
+  "window_mode": "--console",
+  "clean_build": true,
+  "upx_compress": false,
+  "auto_detect_files": true,
+  "create_img_folder": true,
+  "auto_pack_ico": true,
+  "run_as_admin": false,
+  "file_description": "itoc\u5f39\u7a97\u7c7b\u7a0b\u5e8f",
+  "file_version": "6.0.0.0",
+  "product_name": "xxdz",
+  "product_version": "7.0.0.0",
+  "copyright": "\u7248\u6743\u6240\u6709 \u00a9 \u5c0f\u5c0f\u7535\u5b50xxdz9"
+}

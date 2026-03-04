@@ -141,6 +141,289 @@
             border-color: #AB92F5;
         }
 
+        /* 施舍按钮样式 - 宽度更小，与下载按钮风格一致 */
+        .donate-button {
+            display: inline-block;
+            background: #fff;
+            border: 2px solid #AB92F5;
+            padding: 10px 18px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #2b2b2b;
+            text-decoration: none;
+            transition: 0.15s;
+            line-height: 1.2;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .donate-button:hover {
+            background: #AB92F5;
+            color: #fff;
+            border-color: #AB92F5;
+        }
+
+        /* 悬浮窗样式 - 默认隐藏，带动画 - 三维旋转效果 */
+        .donation-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateX(-90deg) scale(0.8);
+            width: 820px;
+            background: #fff;
+            border: 2px solid #AB92F5;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease-out;
+            transform-origin: center center;
+            perspective: 1000px;
+        }
+        .donation-popup.show {
+            display: block;
+            transform: translate(-50%, -50%) rotateX(0) scale(1);
+            opacity: 1;
+        }
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid #ddd;
+            background: #f8f8f8;
+        }
+        .popup-header h3 {
+            font-size: 20px;
+            color: #222;
+            margin: 0;
+        }
+        .close-popup {
+            background: #fff;
+            border: 1px solid #888;
+            padding: 4px 12px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        .close-popup:hover {
+            background: #AB92F5;
+            border-color: #AB92F5;
+            color: #fff;
+        }
+        .popup-content {
+            padding: 20px;
+            min-height: 480px;
+        }
+        /* 遮罩层 - 带动画 */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0);
+            z-index: 999;
+            transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .popup-overlay.show {
+            display: block;
+            background: rgba(0,0,0,0.5);
+        }
+
+        /* 赞赏窗口样式 - 简化版，只保留二维码 */
+        .donation-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            gap: 20px;
+        }
+        .left-panel {
+            width: 320px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .qr-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #07C160;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .qr-image {
+            width: 280px;
+            height: 380px;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .qr-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .right-panel {
+            flex: 1;
+            padding: 10px 0;
+        }
+        .right-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d32f2f;
+            margin-bottom: 15px;
+        }
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .form-label {
+            width: 80px;
+            font-size: 14px;
+        }
+        .form-input {
+            flex: 1;
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            font-family: "Consolas", "Microsoft YaHei", sans-serif;
+            font-size: 14px;
+        }
+        .form-textarea {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            font-family: "Consolas", "Microsoft YaHei", sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 60px;
+        }
+        .tip-small {
+            font-size: 12px;
+            color: #666;
+            margin-left: 80px;
+            margin-bottom: 10px;
+        }
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .friend-btn {
+            background: #fff;
+            border: 1px solid #888;
+            padding: 4px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+            color: #333;
+        }
+        .friend-btn:hover {
+            background: #AB92F5;
+            border-color: #AB92F5;
+            color: #fff;
+        }
+        .id-box {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .id-text {
+            font-size: 14px;
+            font-weight: bold;
+            color: #0078d4;
+        }
+        .donation-tip-box {
+            background: #fff8e1;
+            border: 1px solid #ffd54f;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .donation-tip-text {
+            color: #b85c00;
+            font-size: 14px;
+        }
+        .submit-btn {
+            width: 100%;
+            background: #fff;
+            border: 2px solid #AB92F5;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #2b2b2b;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .submit-btn:hover {
+            background: #AB92F5;
+            color: #fff;
+        }
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .footer-text {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .footer-link {
+            color: #66ccff;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 5px;
+        }
+        /* 调试控制台样式 */
+        .debug-console {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 400px;
+            max-height: 300px;
+            background: rgba(0,0,0,0.8);
+            color: #0f0;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 10px;
+            overflow-y: auto;
+            z-index: 2000;
+            border: 1px solid #AB92F5;
+            display: none;
+        }
+        .debug-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #333;
+        }
+        .debug-clear {
+            color: #fff;
+            cursor: pointer;
+            background: #AB92F5;
+            border: none;
+            padding: 2px 8px;
+        }
+        .debug-content {
+            line-height: 1.4;
+        }
+
         .banner-credit {
             position: absolute;
             bottom: 8px;
@@ -252,7 +535,7 @@
             51%, 100% { opacity: 0; }
         }
         .developer-module {
-            flex: 1; /* 占比1/3 */
+            flex: 1;
             border: 1px solid #aaa;
             background: #fff;
             display: flex;
@@ -367,6 +650,15 @@
     </style>
 </head>
 <body>
+    <!-- 调试控制台 (默认隐藏) -->
+    <div class="debug-console" id="debugConsole">
+        <div class="debug-header">
+            <span>🐛 调试控制台</span>
+            <button class="debug-clear" onclick="clearDebug()">清除</button>
+            <button class="debug-clear" onclick="toggleDebug()">隐藏</button>
+        </div>
+        <div class="debug-content" id="debugContent"></div>
+    </div>
 
     <!-- 头部: logo + 右上角按钮组 -->
     <div class="header-row">
@@ -379,8 +671,8 @@
             <a href="https://miku66ccff.freeflarum.com/t/itoc" target="_blank">Itoc交流论坛</a>
             <a href="https://github.com/xxdz-Official/xxdz-Itoc" target="_blank">GitHub主页</a>
             <a href="Mode.html">前往 Itoc 插件市场</a>
-            <!-- 新增友情链接按钮 -->
             <a href="FriendURL.html">友情链接</a>
+            <a href="#" onclick="toggleDebug(); return false;" style="background:#AB92F5; color:#fff;">🐛调试</a>
         </div>
     </div>
 
@@ -394,15 +686,74 @@
             <div class="version-row">
                 <span class="version-tag">Itoc v1</span>
                 <a href="v1.html" class="download-button">前往下载 &gt;</a>
+                <span class="donate-button" onclick="openDonationPopup()">施舍~</span>
             </div>
         </div>
-        <!-- 横幅右下角小字 -->
         <h5 class="banner-credit">*本程序依靠deepseek辅助完成</h5>
+    </div>
+
+    <!-- 悬浮窗遮罩层 -->
+    <div class="popup-overlay" id="popupOverlay" onclick="closeDonationPopup()"></div>
+    
+    <!-- 悬浮窗内容 - 简化版赞赏窗口 -->
+    <div class="donation-popup" id="donationPopup">
+        <div class="popup-header">
+            <h3>打赏支持开发者 小小电子xxdz 的创作</h3>
+            <span class="close-popup" onclick="closeDonationPopup()">×</span>
+        </div>
+        <div class="popup-content">
+            <div class="donation-container">
+                <!-- 左侧：付款码区域 - 只保留二维码图片 -->
+                <div class="left-panel">
+                    <div class="qr-title">微信收款码</div>
+                    <div class="qr-image">
+                        <img src="https://message.biliimg.com/bfs/im_new/e0fcfb32aff6bd4abee0d791dd2aeaee3461569935575626.png" alt="微信收款码">
+                    </div>
+                </div>
+                
+                <!-- 右侧：表单区域 -->
+                <div class="right-panel">
+                    <div class="right-title">【非必填】感谢您滴支持 ♪(^∇^*)</div>
+                    
+                    <div class="form-row">
+                        <span class="form-label">尊姓大名:</span>
+                        <input type="text" class="form-input" id="donorName" placeholder="">
+                    </div>
+                    <div class="tip-small">*如果想加入友情链接请填微信昵称方便核对，勿填写隐私，无需填微信号</div>
+                    
+                    <div style="margin: 10px 0;">
+                        <span class="form-label" style="display: block; margin-bottom: 5px;">请写备注:</span>
+                        <textarea class="form-textarea" id="donorRemark" placeholder=""></textarea>
+                    </div>
+                    
+                    <div class="checkbox-row">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="friendCheck" checked> 您是否想出现在Itoc官网友情链接里？
+                        </label>
+                        <button class="friend-btn" onclick="window.open('FriendURL.html')">查看友情链接网页</button>
+                    </div>
+                    
+                    <!-- 随机生成ID -->
+                    <div class="id-box">
+                        <span class="id-text" id="randomId"></span>
+                    </div>
+                    
+                    <div class="donation-tip-box">
+                        <div class="donation-tip-text">为了避免歧义，请保留好您的施舍证据（支付记录）!!</div>
+                        <div class="donation-tip-text" style="margin-top: 5px;">您真是大善人q(≧▽≦q)！！感谢为小小电子xxdz的创作充电！</div>
+                    </div>
+                    
+                    <button class="submit-btn" id="submitBtn" onclick="submitDonation()">确认已施舍并提交信息</button>
+                    
+                    <div class="footer-text">您的支持是我们前进的动力！</div>
+                    <div class="footer-link">如有疑问请联系B站_小小电子xxdz(UID:3461569935575626)</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- 双列布局：每日小技巧 + 开发者模块 -->
     <div class="content-row">
-        <!-- 每日小技巧模块 (左侧，宽度缩小但高度不变) -->
         <div class="daily-trick" id="dailyTrick">
             <div class="trick-header">
                 <h3>每天一个小寄巧</h3>
@@ -414,7 +765,6 @@
             </div>
         </div>
 
-        <!-- 开发者模块 (右侧) -->
         <div class="developer-module">
             <div class="dev-header">
                 <h3>关于作者</h3>
@@ -444,36 +794,54 @@
     </div>
 
     <script>
-        // 全局变量
+        // ==================== 调试控制台 ====================
+        let debugVisible = false;
+        
+        function log(message, data = null) {
+            const debugContent = document.getElementById('debugContent');
+            const timestamp = new Date().toLocaleTimeString();
+            let logEntry = `[${timestamp}] ${message}`;
+            if (data) {
+                logEntry += `\n数据: ${JSON.stringify(data, null, 2)}`;
+            }
+            debugContent.innerHTML += `<div style="border-bottom:1px solid #333; padding:2px;">${logEntry}</div>`;
+            debugContent.scrollTop = debugContent.scrollHeight;
+            console.log(message, data);
+        }
+
+        function clearDebug() {
+            document.getElementById('debugContent').innerHTML = '';
+        }
+
+        function toggleDebug() {
+            const debugConsole = document.getElementById('debugConsole');
+            debugVisible = !debugVisible;
+            debugConsole.style.display = debugVisible ? 'block' : 'none';
+        }
+
+        // ==================== 全局变量 ====================
         let tips = [];
         let currentTipIndex = -1;
         let typingTimer = null;
 
-        // 显示加载状态
+        // ==================== 每日小技巧 ====================
         function showLoadingState() {
             document.getElementById('tipTitle').textContent = '加载中';
             const contentElement = document.getElementById('tipContent');
             contentElement.innerHTML = '<span class="loading-tip">正在加载捏</span>';
         }
 
-        // 从远程加载JSON数据
         async function loadTips() {
-            // 先显示加载状态
             showLoadingState();
-            
+            log('开始加载每日小技巧...');
             try {
                 const response = await fetch('https://xxdz-official.github.io/xxdz-Itoc/Every_day_trick.json');
-                if (!response.ok) {
-                    throw new Error('加载失败');
-                }
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 tips = await response.json();
-                // 加载成功后显示第一条
-                if (tips.length > 0) {
-                    showRandomTip();
-                }
+                log('每日小技巧加载成功', { count: tips.length });
+                if (tips.length > 0) showRandomTip();
             } catch (error) {
-                console.error('加载每日小技巧失败:', error);
-                // 加载失败时显示默认提示
+                log('每日小技巧加载失败', { error: error.message });
                 tips = [{
                     "title": "提示加载失败",
                     "content": "无法连接到每日小技巧服务器，请稍后重试。"
@@ -484,8 +852,6 @@
 
         function showRandomTip() {
             if (tips.length === 0) return;
-            
-            // 随机选择一条不重复的技巧（尽量不重复）
             let newIndex;
             if (tips.length > 1) {
                 do {
@@ -499,27 +865,21 @@
             const tip = tips[currentTipIndex];
             document.getElementById('tipTitle').textContent = tip.title || '每日小技巧';
             
-            // 打字机效果
             const contentElement = document.getElementById('tipContent');
             const text = tip.content || 'a????暂无内容';
             
-            // 清除之前的定时器
-            if (typingTimer) {
-                clearInterval(typingTimer);
-            }
+            if (typingTimer) clearInterval(typingTimer);
             
-            // 清空内容，添加光标
             contentElement.innerHTML = '';
             const cursorSpan = document.createElement('span');
             cursorSpan.className = 'typing-cursor';
             contentElement.appendChild(cursorSpan);
             
             let i = 0;
-            const speed = 30; // 打字速度（毫秒/字符）
+            const speed = 30;
             
             typingTimer = setInterval(() => {
                 if (i < text.length) {
-                    // 在光标前插入字符
                     const char = text.charAt(i);
                     const textNode = document.createTextNode(char);
                     contentElement.insertBefore(textNode, cursorSpan);
@@ -531,16 +891,151 @@
             }, speed);
         }
 
-        // 页面加载时加载远程数据
+        // ==================== 悬浮窗控制 (三维旋转动画) ====================
+        function openDonationPopup() {
+            const popup = document.getElementById('donationPopup');
+            const overlay = document.getElementById('popupOverlay');
+            
+            // 先显示元素
+            popup.style.display = 'block';
+            overlay.style.display = 'block';
+            
+            // 强制重绘以触发动画
+            popup.offsetHeight;
+            
+            // 添加show类启动动画
+            popup.classList.add('show');
+            overlay.classList.add('show');
+            
+            const id = generateRandomId();
+            log('打开赞赏窗口', { randomId: id });
+        }
+
+        function closeDonationPopup() {
+            const popup = document.getElementById('donationPopup');
+            const overlay = document.getElementById('popupOverlay');
+            
+            // 移除show类，触发反向动画
+            popup.classList.remove('show');
+            overlay.classList.remove('show');
+            
+            // 等待动画完成后隐藏元素
+            setTimeout(() => {
+                popup.style.display = 'none';
+                overlay.style.display = 'none';
+            }, 400); // 与CSS过渡时间一致
+            
+            log('关闭赞赏窗口');
+        }
+
+        // 生成随机10位ID
+        function generateRandomId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < 10; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('randomId').textContent = `您的唯一ID: ${result}`;
+            return result;
+        }
+
+        // ==================== 提交赞赏信息 ====================
+        async function submitDonation() {
+            const name = document.getElementById('donorName').value.trim() || '匿名';
+            const remark = document.getElementById('donorRemark').value.trim() || '无备注';
+            const friend = document.getElementById('friendCheck').checked ? '1' : '0';
+            const idElement = document.getElementById('randomId');
+            const id = idElement.textContent.replace('您的唯一ID: ', '');
+            
+            const donationData = {
+                username: name,
+                id: id,
+                data: remark,
+                Friend: friend
+            };
+            
+            log('准备提交赞赏数据', donationData);
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '提交中...';
+            
+            try {
+                // JSONBin.io 配置
+                const BIN_ID = '698f1502d0ea881f40b76c11';
+                const MASTER_KEY = '$2a$10$usS36BdO17gWRxIMd56gjOwrDWBlfrGdsPW1AFFhcp1TBUrbqFg4G';
+                const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+                
+                log('正在获取现有数据...');
+                
+                // 1. 先获取现有数据
+                const getResponse = await fetch(API_URL, {
+                    headers: {
+                        'X-Master-Key': MASTER_KEY
+                    }
+                });
+                
+                if (!getResponse.ok) {
+                    throw new Error(`获取数据失败: HTTP ${getResponse.status}`);
+                }
+                
+                const responseData = await getResponse.json();
+                log('获取现有数据成功', responseData);
+                
+                // 解析数据 - JSONBin.io v3 返回格式
+                let existingData = [];
+                if (responseData.record) {
+                    existingData = responseData.record;
+                } else if (Array.isArray(responseData)) {
+                    existingData = responseData;
+                }
+                
+                // 确保是数组
+                if (!Array.isArray(existingData)) {
+                    existingData = [];
+                }
+                
+                // 2. 添加新数据
+                existingData.push(donationData);
+                log('准备更新数据', { newLength: existingData.length });
+                
+                // 3. 更新数据
+                const putResponse = await fetch(API_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': MASTER_KEY
+                    },
+                    body: JSON.stringify(existingData)
+                });
+                
+                if (!putResponse.ok) {
+                    throw new Error(`更新数据失败: HTTP ${putResponse.status}`);
+                }
+                
+                const putResult = await putResponse.json();
+                log('数据更新成功', putResult);
+                
+                // 成功提示
+                alert('感谢您的施舍！\n\n数据已成功提交服务器！');
+                
+            } catch (error) {
+                log('提交失败', { error: error.message });
+                alert(`提交失败: ${error.message}\n\n请稍后重试或联系管理员！`);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '确认已施舍并提交信息';
+                closeDonationPopup();
+            }
+        }
+
+        // ==================== 初始化 ====================
         window.onload = function() {
             loadTips();
+            generateRandomId();
+            log('页面初始化完成');
         };
     </script>
 
 </body>
 </html>
-
-
-
-
-

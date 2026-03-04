@@ -550,7 +550,12 @@
             color: #666;
             line-height: 1.5;
         }
-        .dev-link {
+        .button-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .dev-link, .video-link {
             display: inline-block;
             background: #fff;
             border: 1px solid #888;
@@ -561,10 +566,13 @@
             transition: all 0.2s;
             width: fit-content;
         }
-        .dev-link:hover {
+        .dev-link:hover, .video-link:hover {
             background: #AB92F5;
             border-color: #AB92F5;
             color: #fff;
+        }
+        .video-link {
+            background: #f0f0f0;
         }
 
         /* 版本列表区域 */
@@ -730,7 +738,10 @@
                 <div class="dev-info">
                     <div class="dev-name">小小电子xxdz</div>
                     <div class="dev-bio">我叫電籽,一只爱好电脑 术曲滴小狼‖XXDZ工作室创始人</div>
-                    <a href="https://space.bilibili.com/3461569935575626" target="_blank" class="dev-link">访问主页 →</a>
+                    <div class="button-group">
+                        <a href="https://space.bilibili.com/3461569935575626" target="_blank" class="dev-link">访问主页 →</a>
+                        <a href="https://www.bilibili.com/video/BV1VsPKzNEPG" target="_blank" class="video-link">观看发布视频</a>
+                    </div>
                 </div>
             </div>
         </div>

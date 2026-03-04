@@ -3,34 +3,402 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Itoc 维护页面（相对）</title>
-    <!-- 使用根目录下的 web.css，不写完整URL -->
+    <title>Itoc 维护页面</title>
+    <!-- 使用 xxdz-Itoc 文件夹下的 web.css -->
     <link rel="stylesheet" href="xxdz-Itoc/web.css">
+    <style>
+        /* 追加样式 - 直角/主题色 AB92F5 */
+        * {
+            box-sizing: border-box;
+            font-family: "Consolas", "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px 30px;
+        }
+        /* 顶部导航整体布局 */
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            border: 1px solid #888;
+        }
+        .logo-area h1 {
+            font-size: 28px;
+            color: #222;
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        /* 右上角按钮组 - 所有按钮样式完全统一 */
+        .top-bar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .top-bar a {
+            color: #333;
+            text-decoration: none;
+            font-size: 15px;
+            padding: 5px 12px;
+            border: 1px solid #888;
+            background: #fff;
+            transition: background 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+        .top-bar a:hover {
+            background: #AB92F5;
+            border-color: #AB92F5;
+            color: #fff;
+        }
+        /* 分割线 */
+        .divider {
+            border-bottom: 2px solid #444;
+            margin-bottom: 30px;
+        }
+        
+        /* 下载横幅 - 无外边框，明显的渐变背景+左侧启动图，悬浮角度变化 */
+        .download-banner {
+            width: 100%;
+            padding: 30px 35px;
+            margin: 20px 0 30px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: none;
+            background: linear-gradient(145deg, #f0e0ff, #d9b5ff, #c6a0ff);
+            background-size: 300% 300%;
+            background-position: 0% 50%;
+            transition: background-position 0.8s ease;
+            background-image: url('xxdz-Itoc/itoc启动图.png'), linear-gradient(145deg, #f0e0ff, #d9b5ff, #c6a0ff);
+            background-repeat: no-repeat, repeat;
+            background-position: left center, 0% 50%;
+            background-size: 20% auto, 300% 300%;
+            min-height: 200px;
+            position: relative;
+        }
+        .download-banner:hover {
+            background-position: left center, 100% 50%;
+        }
+        .banner-left-spacer {
+            width: 320px;
+            flex-shrink: 0;
+        }
+        .banner-text {
+            width: fit-content;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 15px 25px;
+            border: none;
+            margin-right: 300px;
+        }
+        .banner-text h2 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        .version-row {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        .version-tag {
+            font-size: 26px;
+            font-weight: 500;
+            color: #1e1e1e;
+        }
+        .download-button {
+            display: inline-block;
+            background: #fff;
+            border: 2px solid #AB92F5;
+            padding: 10px 32px;
+            font-size: 22px;
+            font-weight: 600;
+            color: #2b2b2b;
+            text-decoration: none;
+            transition: 0.15s;
+            line-height: 1.2;
+        }
+        .download-button:hover {
+            background: #AB92F5;
+            color: #fff;
+            border-color: #AB92F5;
+        }
+
+        /* 每日小技巧模块 */
+        .daily-trick {
+            width: 100%;
+            margin: 20px 0 30px 0;
+            border: 1px solid #aaa;
+            background: #fff;
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+        .trick-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid #ddd;
+            background: #f8f8f8;
+        }
+        .trick-header h3 {
+            font-size: 22px;
+            color: #222;
+            margin: 0;
+        }
+        .trick-header h3 span {
+            color: #AB92F5;
+            margin-left: 8px;
+            font-size: 16px;
+        }
+        .next-trick-btn {
+            background: #fff;
+            border: 1px solid #888;
+            padding: 6px 18px;
+            font-size: 15px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .next-trick-btn:hover {
+            background: #AB92F5;
+            border-color: #AB92F5;
+            color: #fff;
+        }
+        .trick-content {
+            padding: 25px 20px;
+            background-image: url('xxdz-Itoc/每日小技巧.png');
+            background-repeat: no-repeat;
+            background-position: right bottom;
+            background-size: 180px auto; /* 618*630 缩放到合适大小 */
+            min-height: 180px;
+        }
+        .trick-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 15px;
+            border-left: 4px solid #AB92F5;
+            padding-left: 15px;
+        }
+        .trick-text {
+            font-size: 16px;
+            color: #444;
+            line-height: 1.8;
+            white-space: pre-line; /* 保留换行 */
+            max-width: 70%;
+        }
+        /* 打字机光标效果 */
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 20px;
+            background-color: #AB92F5;
+            margin-left: 2px;
+            vertical-align: middle;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* 版本列表区域 */
+        .version-list {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #aaa;
+            padding: 20px 25px;
+            margin-top: 25px;
+        }
+        .version-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed #bbb;
+        }
+        .version-item:last-child {
+            border-bottom: none;
+        }
+        .version-name {
+            font-size: 22px;
+            font-weight: 500;
+            color: #222;
+        }
+        .version-download {
+            background: #fff;
+            border: 1px solid #666;
+            padding: 6px 22px;
+            color: #333;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .version-download:hover {
+            background: #AB92F5;
+            border-color: #AB92F5;
+            color: #fff;
+        }
+
+        /* 页脚 */
+        .footer {
+            margin-top: 35px;
+            border-top: 1px solid #aaa;
+            padding: 18px 0;
+            color: #555;
+            font-size: 14px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
-    <!-- 非居中构图：整体靠左，无居中样式 -->
-    <h1>Itoc 编辑器 - 维护公告</h1>
-    
-    <div class="main-info">
-        <p>Itoc（CZE MIDI编辑器）当前处于维护更新阶段，以下是最新信息：</p>
-        
-        <ul>
-            <li>维护内容：修复类名重复警告逻辑、优化窗口链接稳定性</li>
-            <li>预计恢复时间：2026-02-15</li>
-            <li>临时反馈渠道：xxdz_7785@163.com</li>
-            <li>已修复问题：MIDI轨道音符块位置偏移、音频音量调节失效</li>
-        </ul>
-        
-        <p>感谢你的使用与支持，更新完成后将第一时间同步！</p>
-        
-        <div class="version">
-            当前维护版本：Itoc v1.2.0<br>
-            最后更新时间：2026-02-11
+
+    <!-- 头部: logo + 右上角按钮组 (包含插件市场) -->
+    <div class="header-row">
+        <div class="logo-area">
+            <img src="xxdz-Itoc/icon.png" alt="Itoc logo" class="logo-img">
+            <h1>Itoc 编辑器 - 维护页面</h1>
         </div>
-        
-        <!-- 新增：跳转到插件市场的链接 -->
-        <a href="Mode.html" class="nav-link">前往 Itoc 插件市场</a>
+        <div class="top-bar">
+            <a href="https://space.bilibili.com/3461569935575626" target="_blank">联系作者：小小电子xxdz</a>
+            <a href="https://miku66ccff.freeflarum.com/t/itoc" target="_blank">Itoc交流论坛</a>
+            <a href="https://github.com/xxdz-Official/xxdz-Itoc" target="_blank">GitHub主页</a>
+            <a href="Mode.html">前往 Itoc 插件市场</a>
+        </div>
     </div>
+
+    <div class="divider"></div>
+
+    <!-- 下载大横幅 -->
+    <div class="download-banner">
+        <div class="banner-left-spacer"></div>
+        <div class="banner-text">
+            <h2>下载 Itoc 的最新版本</h2>
+            <div class="version-row">
+                <span class="version-tag">Itoc v1</span>
+                <a href="xxdz-Itoc/v1.html" class="download-button">前往下载 &gt;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 每日小技巧模块 -->
+    <div class="daily-trick" id="dailyTrick">
+        <div class="trick-header">
+            <h3>每天一个小寄巧</h3>
+            <button class="next-trick-btn" onclick="showRandomTip()">下一条 ↺</button>
+        </div>
+        <div class="trick-content">
+            <div class="trick-title" id="tipTitle"></div>
+            <div class="trick-text" id="tipContent"></div>
+        </div>
+    </div>
+
+    <!-- 所有版本的列表 -->
+    <div class="version-list">
+        <h3 style="margin-bottom: 20px; font-size: 24px; border-left: 6px solid #AB92F5; padding-left: 15px;">版本历史 / 下载</h3>
+        <div class="version-item">
+            <span class="version-name">Itoc v1 (稳定版)</span>
+            <a href="xxdz-Itoc/v1.html" class="version-download">前往下载 &gt;</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2026 xxdz-Itoc · 基于 AB92F5 主题色 · 所有设计均为直角风格
+    </div>
+
+    <script>
+        // 从外部 JSON 文件加载每日小技巧数据
+        let tips = [];
+        let currentTipIndex = -1;
+        let typingTimer = null;
+
+        // 加载 JSON 数据
+        function loadTips() {
+            fetch('xxdz-Itoc/Every_day_trick.json')
+                .then(response => response.json())
+                .then(data => {
+                    tips = data;
+                    showRandomTip(); // 加载完成后显示第一条
+                })
+                .catch(error => {
+                    console.error('加载每日小技巧失败:', error);
+                    // 如果加载失败，显示错误提示
+                    document.getElementById('tipTitle').textContent = '加载失败';
+                    document.getElementById('tipContent').innerHTML = '无法加载每日小技巧，请稍后重试';
+                });
+        }
+
+        function showRandomTip() {
+            if (tips.length === 0) return;
+            
+            // 随机选择一条不重复的技巧（如果总数大于1，尽量不重复）
+            let newIndex;
+            if (tips.length > 1) {
+                do {
+                    newIndex = Math.floor(Math.random() * tips.length);
+                } while (newIndex === currentTipIndex);
+            } else {
+                newIndex = 0;
+            }
+            currentTipIndex = newIndex;
+            
+            const tip = tips[currentTipIndex];
+            document.getElementById('tipTitle').textContent = tip.title;
+            
+            // 打字机效果
+            const contentElement = document.getElementById('tipContent');
+            const text = tip.content;
+            
+            // 清除之前的定时器
+            if (typingTimer) {
+                clearInterval(typingTimer);
+            }
+            
+            // 清空内容，添加光标
+            contentElement.innerHTML = '';
+            const cursorSpan = document.createElement('span');
+            cursorSpan.className = 'typing-cursor';
+            contentElement.appendChild(cursorSpan);
+            
+            let i = 0;
+            const speed = 30; // 打字速度（毫秒/字符）
+            
+            typingTimer = setInterval(() => {
+                if (i < text.length) {
+                    // 在光标前插入字符
+                    const char = text.charAt(i);
+                    const textNode = document.createTextNode(char);
+                    contentElement.insertBefore(textNode, cursorSpan);
+                    i++;
+                } else {
+                    clearInterval(typingTimer);
+                    typingTimer = null;
+                }
+            }, speed);
+        }
+
+        // 页面加载时加载JSON数据
+        window.onload = function() {
+            loadTips();
+        };
+    </script>
+
 </body>
 </html>
-

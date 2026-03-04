@@ -1,1 +1,94 @@
-1
+/* web.css - Itoc 维护页面样式 */
+/* 主题色: AB92F5 - 用于高亮和交互元素 */
+/* 直角风格 - 无任何圆角 */
+
+/* 全局重置 - 极简基础 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Consolas", "Microsoft YaHei", sans-serif;
+}
+
+body {
+    background: #f0f0f0;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px 30px; /* 非居中：靠左上角排版 */
+}
+
+/* 标题样式 - 无圆角、硬朗风格 */
+h1 {
+    font-size: 28px;
+    color: #222;
+    border-bottom: 2px solid #444; /* 直线分割，无圆角 */
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    width: 400px; /* 非全屏宽度，强化非居中 */
+}
+
+/* 内容区域 - 极简排版 */
+.main-info {
+    width: 600px;
+    background: #fff;
+    border: 1px solid #999; /* 直角边框 */
+    padding: 20px;
+    margin-top: 10px;
+}
+
+.main-info p {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+/* 列表样式 - 无装饰，极简 */
+ul {
+    list-style: square;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+ul li {
+    margin-bottom: 8px;
+}
+
+/* 版本信息 - 区分样式 */
+.version {
+    color: #666;
+    font-size: 14px;
+    border-top: 1px solid #ddd; /* 直角分割线 */
+    padding-top: 15px;
+    margin-top: 15px;
+}
+
+/* 跳转链接样式 - 极简直角、无圆角，主题色应用 */
+.nav-link {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 6px 12px;
+    background: #fff;
+    border: 1px solid #666;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s ease; /* 轻微过渡，保持硬朗感但提升交互 */
+}
+
+/* 高亮颜色 #AB92F5 应用于悬停状态 */
+.nav-link:hover {
+    background: #AB92F5;      /* 主题色背景 */
+    border-color: #AB92F5;     /* 主题色边框 */
+    color: #fff;               /* 白色文字保证可读性 */
+}
+
+/* 可选的额外高亮元素 - 如果需要可以取消注释 */
+/*
+h1 {
+    border-bottom-color: #AB92F5;
+}
+
+.nav-link:focus {
+    outline: 2px solid #AB92F5;
+    outline-offset: 2px;
+}
+*/

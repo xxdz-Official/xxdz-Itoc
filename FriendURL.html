@@ -3,131 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Itoc - 友情链接</title>
+    <title>Itoc 友情链接</title>
+    <!-- 添加网页图标 -->
+    <link rel="icon" href="icon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="icon.ico" type="image/x-icon">
+    <!-- 使用相同的 web.css 保持直角/主题色风格 -->
+    <link rel="stylesheet" href="xxdz-Itoc/web.css">
     <style>
-        /* 全局重置 - 与维护页保持风格统一 */
+        /* 追加样式 - 仅用于本页布局，保持直角/主题色 AB92F5 */
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
             font-family: "Consolas", "Microsoft YaHei", sans-serif;
         }
         body {
             background: #f0f0f0;
             color: #333;
-            line-height: 1.6;
-            padding: 20px 30px; /* 非居中：靠左排版 */
+            line-height: 1.4;
+            padding: 15px 25px;
         }
-        /* 标题样式 - 无圆角、硬朗风格 */
-        h1 {
-            font-size: 28px;
-            color: #222;
+        /* 顶部导航 */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
             border-bottom: 2px solid #444;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            width: 300px; /* 非全屏宽度 */
+            padding-bottom: 8px;
         }
-        h2 {
-            font-size: 20px;
-            margin: 25px 0 10px 0;
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border: 1px solid #888;
+        }
+        .logo-area h1 {
+            font-size: 24px;
             color: #222;
-        }
-        /* 插件列表容器 - 极简直角 */
-        .plugin-list {
-            width: 700px;
-            background: #fff;
-            border: 1px solid #999;
-            padding: 20px;
-            margin-top: 10px;
-        }
-        /* 插件项 - 分隔线+无圆角 */
-        .plugin-item {
-            border-bottom: 1px solid #ddd;
-            padding: 15px 0;
-        }
-        .plugin-item:last-child {
             border-bottom: none;
+            margin: 0;
         }
-        .plugin-name {
-            font-size: 18px;
-            font-weight: bold;
-            color: #111;
-        }
-        .plugin-desc {
-            font-size: 14px;
-            color: #666;
-            margin: 5px 0 8px 0;
-            margin-left: 10px;
-        }
-        .plugin-meta {
-            font-size: 12px;
-            color: #888;
-            margin-left: 10px;
-        }
-        /* 按钮样式 - 直角、无装饰 */
-        .btn {
-            display: inline-block;
-            padding: 5px 15px;
-            background: #fff;
-            border: 1px solid #666;
+        .back-link {
             color: #333;
             text-decoration: none;
             font-size: 14px;
-            margin-top: 5px;
+            padding: 4px 12px;
+            border: 1px solid #888;
+            background: #fff;
+            transition: all 0.2s;
         }
-        .btn:hover {
-            background: #f5f5f5;
+        .back-link:hover {
+            background: #AB92F5;
+            border-color: #AB92F5;
+            color: #fff;
         }
-        /* 说明文本 */
-        .tips {
-            margin-top: 20px;
-            font-size: 14px;
+
+        /* 主卡片 - 友情链接 */
+        .friend-card {
+            width: 100%;
+            background: #fff;
+            border: 1px solid #aaa;
+            padding: 20px 25px;
+            margin: 10px 0 20px 0;
+        }
+
+        /* 标题行 */
+        .friend-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
+        }
+        .friend-icon {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border: 1px solid #888;
+        }
+        .friend-header h2 {
+            font-size: 28px;
+            color: #222;
+            margin: 0;
+        }
+
+        /* 分格布局 - 类似B站主页 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .friend-grid-item {
+            border: 1px solid #ddd;
+            background: #fafafa;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .friend-grid-item:hover {
+            border-color: #AB92F5;
+            box-shadow: 0 2px 8px rgba(171, 146, 245, 0.1);
+        }
+
+        .friend-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border: 1px solid #888;
+            margin-bottom: 12px;
+        }
+
+        .friend-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 6px;
+        }
+
+        .friend-url {
+            font-size: 12px;
             color: #666;
-            width: 700px;
+            margin-bottom: 12px;
+            word-break: break-all;
+        }
+
+        .friend-link {
+            display: inline-block;
+            background: #fff;
+            border: 1px solid #888;
+            padding: 4px 12px;
+            color: #333;
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .friend-link:hover {
+            background: #AB92F5;
+            border-color: #AB92F5;
+            color: #fff;
+        }
+
+        /* 空方格占位样式 */
+        .grid-placeholder {
+            border: 1px dashed #ccc;
+            background: #f5f5f5;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px;
+            color: #999;
+            font-size: 14px;
+        }
+        .placeholder-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
+
+        /* 页脚 */
+        .footer {
+            margin-top: 25px;
+            border-top: 1px solid #aaa;
+            padding: 12px 0;
+            color: #555;
+            font-size: 12px;
+            text-align: left;
         }
     </style>
 </head>
 <body>
-    <h1>Itoc 友情链接</h1>
-    
-    <div class="plugin-list">
-        <h2>官方友情链接</h2>
-        <!-- 插件项1 -->
-        <div class="plugin-item">
-            <div class="plugin-name">窗口动画扩展插件</div>
-            <div class="plugin-desc">新增20+窗口动画效果（旋转、缩放、淡入淡出），支持自定义缓动曲线</div>
-            <div class="plugin-meta">版本：v1.0 | 大小：21KB | 兼容：Itoc v1.2+</div>
-            <a href="#" class="btn">下载</a>
+
+    <!-- 顶部导航：返回主页 -->
+    <div class="top-nav">
+        <div class="logo-area">
+            <img src="icon.png" alt="Itoc logo" class="logo-img">
+            <h1>Itoc 友情链接</h1>
         </div>
-        <!-- 插件项2 -->
-        <div class="plugin-item">
-            <div class="plugin-name">音频可视化插件</div>
-            <div class="plugin-desc">将音频频谱转化为弹窗视觉效果，实现音乐节奏与画面同步</div>
-            <div class="plugin-meta">版本：v0.9 | 大小：35KB | 兼容：Itoc v1.2+</div>
-            <a href="#" class="btn">下载</a>
-        </div>
-        <!-- 插件项3 -->
-        <div class="plugin-item">
-            <div class="plugin-name">Python脚本扩展插件</div>
-            <div class="plugin-desc">支持在全局指令中调用自定义Python脚本，扩展Itoc功能边界</div>
-            <div class="plugin-meta">版本：v1.1 | 大小：18KB | 兼容：Itoc v1.2+</div>
-            <a href="#" class="btn">下载</a>
+        <a href="OwO.html" class="back-link">← 返回主页</a>
+    </div>
+
+    <!-- 主卡片 -->
+    <div class="friend-card">
+        <!-- 标题和图标 -->
+        <div class="friend-header">
+            <img src="icon.png" alt="Itoc icon" class="friend-icon">
+            <h2>友情链接</h2>
         </div>
 
-        <h2>社区插件</h2>
-        <!-- 插件项4 -->
-        <div class="plugin-item">
-            <div class="plugin-name">多语言弹窗插件</div>
-            <div class="plugin-desc">支持一键切换弹窗文本语言（中文/英文/日文），适配多场景使用</div>
-            <div class="plugin-meta">版本：v0.8 | 作者：社区用户 | 兼容：Itoc v1.1+</div>
-            <a href="#" class="btn">下载</a>
+        <!-- 分格布局 -->
+        <div class="grid-container">
+            <!-- 第一个格 - 硅量实验室 -->
+            <div class="friend-grid-item">
+                <img src="https://file.uhsea.com/2603/a0cd8058162b0a4ec9ae697a7445fe9b6G.png" alt="硅量实验室" class="friend-logo">
+                <div class="friend-name">硅量实验室 官网</div>
+                <div class="friend-url">glsite.com</div>
+                <a href="https://glsite.com" class="friend-link" target="_blank">访问网站 →</a>
+            </div>
+
+            <!-- 空方格占位 (后续可添加) -->
+            <div class="grid-placeholder">
+                <div class="placeholder-icon">🔗</div>
+                <div>虚位以待</div>
+            </div>
+            <div class="grid-placeholder">
+                <div class="placeholder-icon">🔗</div>
+                <div>虚位以待</div>
+            </div>
+            <div class="grid-placeholder">
+                <div class="placeholder-icon">🔗</div>
+                <div>虚位以待</div>
+            </div>
+            <div class="grid-placeholder">
+                <div class="placeholder-icon">🔗</div>
+                <div>虚位以待</div>
+            </div>
+            <div class="grid-placeholder">
+                <div class="placeholder-icon">🔗</div>
+                <div>虚位以待</div>
+            </div>
         </div>
     </div>
 
-    <div class="tips">
-         插件安装说明：下载插件文件后，放入Itoc安装目录下的plugins文件夹，重启软件即可生效<br>
-         插件提交：如需提交自制插件，请发送至 itoc_plugin@example.com
+    <!-- 页脚 -->
+    <div class="footer">
+        © 2026 小小电子xxdz · Itoc · 欢迎交换友链
     </div>
 </body>
-
 </html>

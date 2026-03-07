@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 runCZE.py - 运行CzeData文件的弹窗播放器
-功能：支持窗口位移动画
 """
 
 import json
@@ -3570,3 +3569,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

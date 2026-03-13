@@ -1,1 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音可的图片墙</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Consolas", "Microsoft YaHei", sans-serif;
+        }
 
+        body {
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+            padding: 30px 40px;
+            min-height: 100vh;
+        }
+
+        .bg-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0;
+            transition: opacity 1.2s ease-out;
+        }
+        .bg-wrapper.show {
+            opacity: 1;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            font-size: 20px;
+            color: #AB92F5;
+            opacity: 1;
+            transition: opacity 0.8s ease;
+        }
+        .loading-overlay.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            border-bottom: 3px solid #AB92F5;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.6s ease;
+        }
+        .page-header.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #222;
+            letter-spacing: 1px;
+        }
+
+        .page-header .sub {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .back-link {
+            display: inline-block;
+            background: #fff;
+            border: 2px solid #AB92F5;
+            padding: 8px 24px;
+            color: #333;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            background: #AB92F5;
+            color: #fff;
+            border-color: #AB92F5;
+        }
+
+        .tile-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            row-gap: 12px;
+            margin-top: 20px;
+            grid-auto-rows: minmax(80px, auto);
+        }
+
+        .tile-grid > :nth-child(1),
+        .tile-grid > :nth-child(2),
+        .tile-grid > :nth-child(3),
+        .tile-grid > :nth-child(4) {
+            margin-bottom: 10px;
+        }
+
+        .tile {
+            background: rgba(171, 146, 245, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(171, 146, 245, 0.4);
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            border-radius: 0 !important;
+        }
+
+        .tile.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .tile:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 16px rgba(171, 146, 245, 0.25);
+            border-color: rgba(171, 146, 245, 0.8);
+            z-index: 5;
+        }
+
+        .tile img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .tile.small {
+            grid-column: span 1;
+            grid-row: span 1;
+            aspect-ratio: 1 / 1;
+        }
+
+        .tile.medium {
+            grid-column: span 2;
+            grid-row: span 1;
+            aspect-ratio: 2 / 1;
+        }
+
+        .tile.large {
+            grid-column: span 2;
+            grid-row: span 2;
+            aspect-ratio: 1 / 1;
+        }
+
+        .tile.wide {
+            grid-column: span 3;
+            grid-row: span 1;
+            aspect-ratio: 3 / 1;
+        }
+
+        .tile.tall {
+            grid-column: span 1;
+            grid-row: span 2;
+            aspect-ratio: 1 / 2;
+        }
+
+        .tile.small-large {
+            grid-column: span 1;
+            grid-row: span 2;
+            aspect-ratio: 1 / 2;
+        }
+
+        .tile.fur-wall {
+            grid-column: span 1.5 !important;
+            grid-row: span 1;
+            aspect-ratio: 1.5 / 1;
+            justify-self: start;
+        }
+
+        .preview-modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        .preview-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: rgba(171, 146, 245, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 3px solid rgba(171, 146, 245, 0.5);
+            max-width: 90vw;
+            max-height: 90vh;
+            padding: 25px;
+            position: relative;
+            border-radius: 0 !important;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+        }
+        .preview-modal.show .modal-content {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .modal-image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            flex: 1;
+        }
+
+        .modal-image-container img {
+            display: block;
+            max-width: 100%;
+            max-height: 70vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid #AB92F5;
+            color: #333;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 0 !important;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #AB92F5;
+            color: #fff;
+        }
+
+        .modal-footer {
+            margin-top: 20px;
+            text-align: right;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            padding-top: 15px;
+            font-size: 14px;
+            color: white;
+            line-height: 1.6;
+        }
+        .modal-footer a {
+            color: white;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-left: 5px;
+        }
+        .modal-footer strong {
+            font-weight: bold;
+            color: white;
+        }
+
+        .footer {
+            margin-top: 50px;
+            border-top: 1px solid #aaa;
+            padding: 20px 0;
+            color: #555;
+            font-size: 14px;
+            text-align: left;
+            opacity: 0;
+            transition: opacity 0.8s ease 0.8s;
+        }
+        .footer.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-wrapper" id="bgWrapper"></div>
+    <div class="loading-overlay" id="loading">正在开机....</div>
+
+    <div class="page-header" id="header">
+        <div>
+            <h1>音可·图墙</h1>
+            <div class="sub">xxdz Itoc 软件化身兽设</div>
+        </div>
+        <a href="javascript:history.back()" class="back-link">← 返回</a>
+    </div>
+
+    <div class="tile-grid" id="tileGrid"></div>
+
+    <div class="preview-modal" id="previewModal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="closeModal()">×</span>
+            <div class="modal-image-container">
+                <img id="modalImage" src="" alt="预览图">
+            </div>
+            <div class="modal-footer" id="modalFooter"></div>
+        </div>
+    </div>
+
+    <div class="footer" id="footer">
+        站点 © 小小电子xxdz · Itoc
+    </div>
+
+    <script>
+        const bgImages = [
+            "https://xxdz-official.github.io/xxdz-Itoc/img/Windows7壁纸无logo.png",
+            "https://xxdz-official.github.io/xxdz-Itoc/img/Windows10壁纸.jpg",
+            "https://xxdz-official.github.io/xxdz-Itoc/img/WindowsXP壁纸.jpg",
+            "https://xxdz-official.github.io/xxdz-Itoc/img/8.1jpg.jpg",
+            "https://xxdz-official.github.io/xxdz-Itoc/img/11壁纸.jpg",
+            "https://xxdz-official.github.io/xxdz-Itoc/img/windows Vista 壁纸.png"
+        ];
+
+        const imageList = [
+            {
+                src: "https://xxdz-official.github.io/xxdz-Itoc/img/MTC拟兽-设定.png",
+                alt: "MTC拟兽-设定",
+                name: `MTC拟兽·设定图<br/>&nbsp;&nbsp;作者：<strong>小小电子xxdz</strong> <a href="https://space.bilibili.com/3461569935575626" target="_blank">点击跳转</a>`,
+                size: "small-large",
+                position: { gridRow: "1 / span 2", gridColumn: "1" }
+            },
+            {
+                src: "https://xxdz-official.github.io/xxdz-Itoc/img/Warning.png",
+                alt: "Warning",
+                name: `警告标识<br/>&nbsp;&nbsp;作者：<strong>小小电子xxdz</strong> <a href="https://space.bilibili.com/3461569935575626" target="_blank">点击跳转</a>`,
+                size: "small",
+                position: { gridRow: "1", gridColumn: "2" }
+            },
+            {
+                src: "https://xxdz-official.github.io/xxdz-Itoc/img/咨询开发者.png",
+                alt: "咨询开发者",
+                name: `咨询开发者<br/>&nbsp;&nbsp;作者：<strong>小小电子xxdz</strong> <a href="https://space.bilibili.com/3461569935575626" target="_blank">点击跳转</a>`,
+                size: "medium",
+                position: { gridRow: "1", gridColumn: "3 / span 2" }
+            },
+            {
+                src: "https://xxdz-official.github.io/xxdz-Itoc/img/屎山代码.png",
+                alt: "屎山代码",
+                name: `屎山代码<br/>&nbsp;&nbsp;作者：<strong>小小电子xxdz</strong> <a href="https://space.bilibili.com/3461569935575626" target="_blank">点击跳转</a>`,
+                size: "medium",
+                position: { gridRow: "1", gridColumn: "5 / span 2" }
+            },
+            {
+                src: "https://xxdz-official.github.io/xxdz-Itoc/img/Error.png",
+                alt: "Error",
+                name: `Error<br/>&nbsp;&nbsp;作者：<strong>小小电子xxdz</strong> <a href="https://space.bilibili.com/3461569935575626" target="_blank">点击跳转</a>`,
+                size: "small",
+                position: { gridRow: "2", gridColumn: "2" }
+            },
+            {
+                src: "https://xxdz-official.github.io/xxdz-Itoc/img/施舍.png",
+                alt: "施舍",
+                name: `施舍<br/>&nbsp;&nbsp;作者：<strong>小小电子xxdz</strong> <a href="https://space.bilibili.com/3461569935575626" target="_blank">点击跳转</a>`,
+                size: "medium",
+                position: { gridRow: "2", gridColumn: "3 / span 2" }
+            },
+            {
+                src: "https://xxdz-official.github.io/xxdz-Itoc/img/更新提醒.png",
+                alt: "更新提醒",
+                name: `更新提醒<br/>&nbsp;&nbsp;作者：<strong>小小电子xxdz</strong> <a href="https://space.bilibili.com/3461569935575626" target="_blank">点击跳转</a>`,
+                size: "wide",
+                position: { gridRow: "3", gridColumn: "1 / span 3" }
+            },
+            {
+                src: "https://xxdz-official.github.io/xxdz-Itoc/img/每日小技巧.png",
+                alt: "每日小技巧",
+                name: `每日小技巧<br/>&nbsp;&nbsp;作者：<strong>小小电子xxdz</strong> <a href="https://space.bilibili.com/3461569935575626" target="_blank">点击跳转</a>`,
+                size: "small",
+                position: { gridRow: "3", gridColumn: "4" }
+            },
+            {
+                src: "https://xxdz-official.github.io/xxdz-Itoc/img/绒毛墙_豆芽猫 赠的.png",
+                alt: "绒毛墙",
+                name: `来自绒毛墙劳斯的赠图，此劳斯也是“音可”名字的作者<br/>&nbsp;&nbsp;赠图作者：<strong>紫妈就是个亻</strong> <a href="https://space.bilibili.com/439220189" target="_blank">点击跳转</a>`,
+                size: "fur-wall",
+                position: { gridRow: "2", gridColumn: "5" }
+            }
+        ];
+
+        const bgWrapper = document.getElementById('bgWrapper');
+        const grid = document.getElementById('tileGrid');
+        const loading = document.getElementById('loading');
+        const header = document.getElementById('header');
+        const footer = document.getElementById('footer');
+        const modal = document.getElementById('previewModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalFooter = document.getElementById('modalFooter');
+
+        function preloadRandomBackground() {
+            const randomBg = bgImages[Math.floor(Math.random() * bgImages.length)];
+            const img = new Image();
+            img.src = randomBg;
+            img.onload = function () {
+                bgWrapper.style.backgroundImage = `linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url('${randomBg}')`;
+                setTimeout(() => bgWrapper.classList.add('show'), 100);
+            };
+        }
+
+        function renderTiles() {
+            let html = '';
+            imageList.forEach((img) => {
+                const sizeClass = img.size;
+                let styleAttr = '';
+                if (img.position) {
+                    const styles = [];
+                    if (img.position.gridRow) styles.push(`grid-row: ${img.position.gridRow}`);
+                    if (img.position.gridColumn) styles.push(`grid-column: ${img.position.gridColumn}`);
+                    styleAttr = `style="${styles.join('; ')};"`;
+                }
+                html += `<div class="tile ${sizeClass}" onclick="openModal(${imageList.indexOf(img)})" ${styleAttr}><img src="${img.src}" alt="${img.alt}"></div>`;
+            });
+            grid.innerHTML = html;
+            waitAllImagesLoad();
+        }
+
+        function waitAllImagesLoad() {
+            const imgs = document.querySelectorAll('.tile img');
+            let count = 0;
+            const total = imgs.length;
+            imgs.forEach(img => {
+                if (img.complete) { count++; checkDone(); }
+                else img.onload = () => { count++; checkDone(); };
+            });
+            function checkDone() {
+                if (count === total) setTimeout(startAnimation, 200);
+            }
+        }
+
+        function startAnimation() {
+            loading.classList.add('hide');
+            header.classList.add('show');
+            footer.classList.add('show');
+            const tiles = document.querySelectorAll('.tile');
+            tiles.forEach((tile, i) => {
+                setTimeout(() => tile.classList.add('show'), i * 100);
+            });
+        }
+
+        function openModal(index) {
+            const img = imageList[index];
+            modalImg.src = img.src;
+            modalImg.alt = img.alt;
+            modalFooter.innerHTML = img.name;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && modal.classList.contains('show')) closeModal();
+        });
+
+        window.onload = () => {
+            preloadRandomBackground();
+            renderTiles();
+        };
+    </script>
+</body>
+</html>

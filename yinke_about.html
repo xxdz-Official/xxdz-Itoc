@@ -439,7 +439,7 @@
             const img = new Image();
             img.src = randomBg;
             img.onload = function () {
-                bgWrapper.style.backgroundImage = `linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url('${randomBg}')`;
+                bgWrapper.style.backgroundImage = `linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.6)), url('${randomBg}')`;
                 setTimeout(() => bgWrapper.classList.add('show'), 100);
             };
         }

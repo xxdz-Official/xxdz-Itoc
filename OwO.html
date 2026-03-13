@@ -448,13 +448,42 @@
         }
         .trick-content {
             padding: 25px 20px;
-            background-image: url('每日小技巧.png');
-            background-repeat: no-repeat;
-            background-position: right bottom;
-            background-size: 150px auto;
             min-height: 200px;
             flex: 1;
+            position: relative;
+            background-image: none !important;
         }
+        
+        /* 使用伪元素来承载背景图片，避免重影 */
+        .trick-content::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 150px;
+            height: 150px;
+            background-image: url('https://xxdz-official.github.io/xxdz-Itoc/%E6%AF%8F%E6%97%A5%E5%B0%8F%E6%8A%80%E5%B7%A7.png');
+            background-repeat: no-repeat;
+            background-position: right bottom;
+            background-size: contain;
+            pointer-events: none;
+            z-index: 1;
+            transform-origin: bottom;
+        }
+        
+        /* 图片弹动动画 */
+        @keyframes gentleBounceY {
+            0% { transform: scaleY(1); }
+            30% { transform: scaleY(1.15); }
+            60% { transform: scaleY(0.95); }
+            80% { transform: scaleY(1.05); }
+            100% { transform: scaleY(1); }
+        }
+        
+        .trick-content.bg-bounce::before {
+            animation: gentleBounceY 0.4s ease-in-out forwards;
+        }
+
         .trick-title {
             font-size: 20px;
             font-weight: 600;
@@ -462,6 +491,8 @@
             margin-bottom: 15px;
             border-left: 4px solid #AB92F5;
             padding-left: 15px;
+            position: relative;
+            z-index: 2;
         }
         .trick-text {
             font-size: 16px;
@@ -469,6 +500,8 @@
             line-height: 1.8;
             white-space: pre-line;
             max-width: 70%;
+            position: relative;
+            z-index: 2;
         }
         /* 加载提示样式 */
         .loading-tip {
@@ -622,6 +655,78 @@
             font-size: 14px;
             text-align: left;
         }
+
+        /* ===== 气泡效果 ===== */
+        .image-bubble {
+            position: absolute;
+            bottom: calc(100% - 60px); 
+            background: #ffffff;
+            border: 2px solid #AB92F5;
+            padding: 8px 14px;
+            font-size: 15px;
+            color: #222;
+            white-space: nowrap;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+            z-index: 20;
+            display: none;
+            pointer-events: auto;
+            border-radius: 0;
+            font-family: "Consolas", "Microsoft YaHei", sans-serif;
+            line-height: 1.4;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            right: auto;
+            left: auto;
+            /* 添加一个小的触发区域，防止鼠标移动时频繁触发隐藏 */
+            padding-bottom: 20px;
+            background-clip: padding-box;
+        }
+
+        /* 气泡内容容器，用于布局 - 减少整体内边距 */
+        .bubble-content {
+            display: flex;
+            flex-direction: column;
+            margin: -4px 0;  /* 减少竖向内边距 */
+        }
+        
+        /* 主文本样式 */
+        .bubble-main-text {
+            margin-bottom: 0;
+            line-height: 1.2;  /* 减小行高 */
+        }
+        
+        /* 右下角紫色小字 - 紧贴右下角 */
+        .bubble-link {
+            align-self: flex-end;
+            color: #AB92F5;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 3px;  /* 向上靠近主文本 */
+            margin-bottom: -8px; /* 抵消气泡底部内边距 */
+            margin-right: -2px;  /* 向右微调 */
+            line-height: 1;
+        }
+        
+        .bubble-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 气泡显示状态 - 带弹性弹出动画，位置固定不偏移 */
+        .image-bubble.show-bubble {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* 气泡隐藏状态 - 带弹性消失动画 */
+        .image-bubble.hide-bubble {
+            display: block;
+            opacity: 0;
+            transform: scale(0.6);
+            transition: opacity 0.15s ease, transform 0.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
     </style>
 </head>
 <body>
@@ -724,9 +829,19 @@
                 <h3>每天一个小寄巧</h3>
                 <button class="next-trick-btn" onclick="showRandomTip()">下一条 ↺</button>
             </div>
-            <div class="trick-content">
+            <div class="trick-content" id="trickContent">
                 <div class="trick-title" id="tipTitle"></div>
                 <div class="trick-text" id="tipContent"></div>
+                <!-- 悬浮气泡元素（方形）- 添加链接 -->
+                <div class="image-bubble" id="imageBubble">
+                    <div class="bubble-content">
+                        <span class="bubble-main-text">hi，我是<strong>音可</strong>! Itoc软件化身的兽设(⁎˃ᆺ˂)</span>
+                        <a href="https://xxdz-official.github.io/xxdz-Itoc/yinke_about.html" 
+                           class="bubble-link" 
+                           target="_blank" 
+                           rel="noopener noreferrer">让我康康</a>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -766,6 +881,12 @@
         let tips = [];
         let currentTipIndex = -1;
         let typingTimer = null;
+        let animationTimer = null;
+        let hideTimer = null;
+        let leaveTimer = null;
+        let isHoveringBubble = false;
+        let isInImageArea = false;
+        let bubbleLeft = 0; // 记录气泡的left值，避免闪烁
 
         // ==================== 每日小技巧 ====================
         function showLoadingState() {
@@ -834,19 +955,16 @@
             }, speed);
         }
 
-        // ==================== 悬浮窗控制 (三维旋转动画) ====================
+        // ==================== 悬浮窗控制 ====================
         function openDonationPopup() {
             const popup = document.getElementById('donationPopup');
             const overlay = document.getElementById('popupOverlay');
             
-            // 先显示元素
             popup.style.display = 'block';
             overlay.style.display = 'block';
             
-            // 强制重绘以触发动画
             popup.offsetHeight;
             
-            // 添加show类启动动画
             popup.classList.add('show');
             overlay.classList.add('show');
             
@@ -858,20 +976,17 @@
             const popup = document.getElementById('donationPopup');
             const overlay = document.getElementById('popupOverlay');
             
-            // 移除show类，触发反向动画
             popup.classList.remove('show');
             overlay.classList.remove('show');
             
-            // 等待动画完成后隐藏元素
             setTimeout(() => {
                 popup.style.display = 'none';
                 overlay.style.display = 'none';
-            }, 400); // 与CSS过渡时间一致
+            }, 400);
             
             console.log('关闭赞赏窗口');
         }
 
-        // 生成随机10位ID
         function generateRandomId() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let result = '';
@@ -904,14 +1019,12 @@
             submitBtn.textContent = '提交中...';
             
             try {
-                // JSONBin.io 配置
                 const BIN_ID = '698f1502d0ea881f40b76c11';
                 const MASTER_KEY = '$2a$10$usS36BdO17gWRxIMd56gjOwrDWBlfrGdsPW1AFFhcp1TBUrbqFg4G';
                 const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
                 
                 console.log('正在获取现有数据...');
                 
-                // 1. 先获取现有数据
                 const getResponse = await fetch(API_URL, {
                     headers: {
                         'X-Master-Key': MASTER_KEY
@@ -925,7 +1038,6 @@
                 const responseData = await getResponse.json();
                 console.log('获取现有数据成功', responseData);
                 
-                // 解析数据 - JSONBin.io v3 返回格式
                 let existingData = [];
                 if (responseData.record) {
                     existingData = responseData.record;
@@ -933,16 +1045,13 @@
                     existingData = responseData;
                 }
                 
-                // 确保是数组
                 if (!Array.isArray(existingData)) {
                     existingData = [];
                 }
                 
-                // 2. 添加新数据
                 existingData.push(donationData);
                 console.log('准备更新数据', { newLength: existingData.length });
                 
-                // 3. 更新数据
                 const putResponse = await fetch(API_URL, {
                     method: 'PUT',
                     headers: {
@@ -959,7 +1068,6 @@
                 const putResult = await putResponse.json();
                 console.log('数据更新成功', putResult);
                 
-                // 成功提示
                 alert('感谢您的施舍！\n\n数据已成功提交服务器！');
                 
             } catch (error) {
@@ -972,14 +1080,208 @@
             }
         }
 
+        // ==================== 悬浮功能：优化版本 ====================
+        function initImageHoverEffect() {
+            const trickContent = document.getElementById('trickContent');
+            const bubble = document.getElementById('imageBubble');
+            
+            if (!trickContent || !bubble) return;
+            
+            const areaWidth = 150;
+            const areaHeight = 150;
+            
+            // 预计算气泡宽度
+            let bubbleWidth = 0;
+            
+            // 清除所有定时器
+            function clearAllTimers() {
+                if (animationTimer) {
+                    clearTimeout(animationTimer);
+                    animationTimer = null;
+                }
+                if (hideTimer) {
+                    clearTimeout(hideTimer);
+                    hideTimer = null;
+                }
+                if (leaveTimer) {
+                    clearTimeout(leaveTimer);
+                    leaveTimer = null;
+                }
+            }
+            
+            // 隐藏气泡（带消失动画）
+            function hideBubbleWithAnimation() {
+                if (bubble.classList.contains('show-bubble')) {
+                    bubble.classList.remove('show-bubble');
+                    bubble.classList.add('hide-bubble');
+                    
+                    hideTimer = setTimeout(() => {
+                        bubble.classList.remove('hide-bubble');
+                        bubble.style.display = 'none';
+                        hideTimer = null;
+                    }, 200);
+                } else {
+                    bubble.classList.remove('show-bubble', 'hide-bubble');
+                    bubble.style.display = 'none';
+                }
+            }
+            
+            // 完全隐藏所有效果
+            function hideAllEffects() {
+                trickContent.classList.remove('bg-bounce');
+                hideBubbleWithAnimation();
+                clearAllTimers();
+            }
+            
+            // 计算并设置气泡位置（一次到位，无偏移）
+            function setBubblePosition(mouseX) {
+                const rect = trickContent.getBoundingClientRect();
+                
+                // 如果还没有获取到宽度，先显示一下获取宽度再隐藏
+                if (bubbleWidth === 0) {
+                    bubble.style.display = 'block';
+                    bubble.style.opacity = '0';
+                    bubbleWidth = bubble.offsetWidth || 200;
+                    bubble.style.display = 'none';
+                    bubble.style.opacity = '';
+                }
+                
+                const relativeX = mouseX - rect.left;
+                let left = relativeX - bubbleWidth / 2;
+                
+                // 边界限制
+                if (left < 0) left = 0;
+                if (left + bubbleWidth > rect.width) left = rect.width - bubbleWidth;
+                
+                bubbleLeft = left;
+                bubble.style.left = left + 'px';
+            }
+            
+            // 显示气泡（带出现动画）- 直接使用已计算好的位置
+            function showBubbleWithAnimation() {
+                bubble.style.display = 'block';
+                bubble.classList.remove('hide-bubble');
+                // 强制重绘
+                void bubble.offsetWidth;
+                bubble.classList.add('show-bubble');
+            }
+            
+            // 检查是否应该保持激活状态
+            function shouldRemainActive() {
+                return isInImageArea || isHoveringBubble;
+            }
+            
+            // 开始延迟消失计时器
+            function startLeaveTimer() {
+                if (leaveTimer) clearTimeout(leaveTimer);
+                
+                leaveTimer = setTimeout(() => {
+                    if (!shouldRemainActive()) {
+                        hideAllEffects();
+                    }
+                    leaveTimer = null;
+                }, 2000);
+            }
+            
+            // 鼠标移动处理
+            function onMouseMove(e) {
+                const rect = trickContent.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                const inArea = (mouseX >= rect.width - areaWidth && mouseY >= rect.height - areaHeight);
+                
+                if (inArea && !isInImageArea) {
+                    // 首次进入图片区域
+                    isInImageArea = true;
+                    
+                    if (leaveTimer) {
+                        clearTimeout(leaveTimer);
+                        leaveTimer = null;
+                    }
+                    
+                    // 立即计算并设置气泡位置（不显示，只计算）
+                    setBubblePosition(e.clientX);
+                    
+                    hideBubbleWithAnimation();
+                    clearAllTimers();
+                    
+                    trickContent.classList.add('bg-bounce');
+                    
+                    animationTimer = setTimeout(() => {
+                        if (shouldRemainActive()) {
+                            showBubbleWithAnimation();
+                        }
+                        animationTimer = null;
+                    }, 400);
+                    
+                } else if (inArea && isInImageArea) {
+                    // 已经在图片区域内，更新气泡位置（如果已显示）
+                    if (bubble.classList.contains('show-bubble')) {
+                        setBubblePosition(e.clientX);
+                    } else {
+                        // 如果还没显示，只计算位置不显示
+                        setBubblePosition(e.clientX);
+                    }
+                    
+                } else if (!inArea && isInImageArea && !isHoveringBubble) {
+                    // 离开图片区域且不在气泡上
+                    isInImageArea = false;
+                    startLeaveTimer();
+                }
+            }
+            
+            // 气泡鼠标进入
+            bubble.addEventListener('mouseenter', function() {
+                isHoveringBubble = true;
+                if (leaveTimer) {
+                    clearTimeout(leaveTimer);
+                    leaveTimer = null;
+                }
+            });
+            
+            // 气泡鼠标离开
+            bubble.addEventListener('mouseleave', function(e) {
+                isHoveringBubble = false;
+                
+                // 检查鼠标是否进入了图片区域
+                const rect = trickContent.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                const inArea = (mouseX >= rect.width - areaWidth && mouseY >= rect.height - areaHeight);
+                
+                if (!inArea && !isInImageArea) {
+                    startLeaveTimer();
+                }
+            });
+            
+            // 监听鼠标移动
+            trickContent.addEventListener('mousemove', onMouseMove);
+            
+            // 鼠标离开整个容器时
+            trickContent.addEventListener('mouseleave', function(e) {
+                const relatedTarget = e.relatedTarget;
+                if (relatedTarget === bubble || (bubble && relatedTarget && bubble.contains(relatedTarget))) {
+                    return;
+                }
+                
+                if (isInImageArea && !isHoveringBubble) {
+                    isInImageArea = false;
+                    startLeaveTimer();
+                }
+            });
+            
+            console.log('图片悬浮效果已加载：气泡位置一次到位，无偏移，向下30px，鼠标移出检测优化');
+        }
+
         // ==================== 初始化 ====================
         window.onload = function() {
             loadTips();
             generateRandomId();
+            initImageHoverEffect();
             console.log('页面初始化完成');
         };
     </script>
 
 </body>
 </html>
-

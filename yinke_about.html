@@ -46,6 +46,7 @@
             height: 100%;
             background: #f0f0f0;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
@@ -53,6 +54,11 @@
             color: #AB92F5;
             opacity: 1;
             transition: opacity 0.8s ease;
+            gap:6px;
+        }
+        .loading-overlay .tip {
+            font-size: 12px;
+            color: #888;
         }
         .loading-overlay.hide {
             opacity: 0;
@@ -85,6 +91,22 @@
         .page-header .sub {
             color: #666;
             font-size: 16px;
+        }
+        .page-header .info {
+            margin-top: 10px;
+            padding: 12px 15px;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.8;
+            background: rgba(171, 146, 245, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(171, 146, 245, 0.3);
+            border-radius: 0;
+        }
+        .page-header .info .mini {
+            font-size: 11px;
+            opacity: 0.8;
         }
 
         .back-link {
@@ -323,12 +345,24 @@
 
 <body>
     <div class="bg-wrapper" id="bgWrapper"></div>
-    <div class="loading-overlay" id="loading">正在开机....</div>
+    <div class="loading-overlay" id="loading">
+        <div>正在开机....</div>
+        <div class="tip">首次开机需要一段时间ing...</div>
+    </div>
 
     <div class="page-header" id="header">
         <div>
             <h1>音可·图墙</h1>
             <div class="sub">xxdz Itoc 软件化身兽设</div>
+            <div class="info">
+                <strong>名字：</strong>音可<br>
+                <strong>名字解析：</strong>“Itoc”的自然拼读法音译（I同In，c同ca）<br>
+                <strong>破壳日：</strong>2026年1月9日<br>
+                <strong>性别：</strong>♀<br>
+                <strong>性格：</strong>比较淘气，嗯,就是挺皮的，活泼可爱<br>
+                <strong>特点：</strong>由显示器构成的护目镜，默认左眼屏为win10蓝屏界面，右眼屏为“禁用”图标，并且屏幕显示内容可以随心情变化，头戴“警告⚠”发饰，长发内有“双马尾”，实则是数据线，数据线顶端为USB接口<span class="mini">（她可以输入输出奇奇怪怪的东西?! ∑( 口 || ）</span><br>
+                <strong>喜欢吃的食物：</strong>线程炸酱面
+            </div>
         </div>
         <a href="javascript:history.back()" class="back-link">← 返回</a>
     </div>
@@ -352,8 +386,8 @@
     <script>
         const bgImages = [
             "https://xxdz-official.github.io/xxdz-Itoc/img/Windows7壁纸无logo.png",
-            "https://xxdz-official.github.io/xxdz-Itoc/img/Windows10壁纸.jpg",
-            "https://xxdz-official.github.io/xxdz-Itoc/img/WindowsXP壁纸.jpg",
+            "https://xxdz-official.github.io/xxdz-Itoc/img/Windows10.jpg",
+            "https://xxdz-official.github.io/xxdz-Itoc/img/WindowsXP.jpg",
             "https://xxdz-official.github.io/xxdz-Itoc/img/8.1jpg.jpg",
             "https://xxdz-official.github.io/xxdz-Itoc/img/11壁纸.jpg",
             "https://xxdz-official.github.io/xxdz-Itoc/img/windows Vista 壁纸.png"

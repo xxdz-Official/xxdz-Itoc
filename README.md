@@ -3,7 +3,7 @@
 
 ## 关于 Itoc 编辑器 <span style="color:#AB92F5">OwO</span>
 
-**Itoc编辑器**是XXDZ工作室开发的一个Windows crazy error程序开发工具，可以方便、无门槛的开发各种音乐的crazy error程序，释放您的创造力！
+**Itoc编辑器**是XXDZ工作室开发的一个、也是世界首个 Windows crazy error程序开发工具，可以方便、无门槛的开发各种音乐的crazy error程序，释放您的创造力！
 
 无论您是刚接触编程的新手，还是想要快速制作有趣程序的老手，Itoc编辑器都能为您提供简单而强大的工具集，让您专注于创意本身。
 

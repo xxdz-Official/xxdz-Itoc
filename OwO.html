@@ -4,10 +4,15 @@
     <meta name="msvalidate.01" content="4BAEA6DA804D3EAD53ED426D2BFA8C0B" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xxdz_Itoc 项目主页</title>
+    <!-- SEO 优化标题：必应更容易搜索到 -->
+    <title>Itoc - 世界上首个用音乐去"编程"的可视化开发工具 | xxdz_Itoc</title>
+    <!-- SEO 描述：这就是必应显示的概要文本 -->
+    <meta name="description" content="世界上首个用音乐去'编程'的可视化开发工具！">
+    <!-- SEO 关键词：让必应收录更多关键词 -->
+    <meta name="keywords" content="Itoc, xxdz_Itoc, 音乐编程, 可视化开发工具, 小小电子xxdz, 電籽, xxdz工作室, 音可">
     <!-- 添加网页图标 -->
     <link rel="icon" href="icon.ico" type="image/x-icon">
-    <!-- 备用格式确保兼容性 -->
+    <!-- 备用下 -->
     <link rel="shortcut icon" href="icon.ico" type="image/x-icon">
     <!-- 使用 xxdz-Itoc 文件夹下的 web.css -->
     <link rel="stylesheet" href="xxdz-Itoc/web.css">
@@ -1068,11 +1073,11 @@
                 const putResult = await putResponse.json();
                 console.log('数据更新成功', putResult);
                 
-                alert('感谢您的施舍！\n\n数据已成功提交服务器！');
+                alert('感谢您的施舍！\\n\\n数据已成功提交服务器！');
                 
             } catch (error) {
                 console.error('提交失败', error);
-                alert(`提交失败: ${error.message}\n\n请稍后重试或联系管理员小小电子xxdz！`);
+                alert(`提交失败: ${error.message}\\n\\n请稍后重试或联系管理员小小电子xxdz！`);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = '确认已施舍并提交信息';

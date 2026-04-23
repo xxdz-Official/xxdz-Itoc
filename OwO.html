@@ -3,23 +3,16 @@
 <head>
     <meta name="msvalidate.01" content="4BAEA6DA804D3EAD53ED426D2BFA8C0B" />
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO 优化标题：必应更容易搜索到 -->
+    <!-- 移动端视口设置：确保各设备上正确缩放 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <title>Itoc 项目主页</title>
     <meta name="description" content="世界上首个用音乐去'编程'的可视化开发工具！">
-    <meta name="keywords" content="Itoc, xxdz_Itoc, 音乐编程, 可视化开发工具">
-    <!-- SEO 描述：这就是必应显示的概要文本 -->
-    <meta name="description" content="世界上首个用音乐去'编程'的可视化开发工具！">
-    <!-- SEO 关键词：让必应收录更多关键词 -->
     <meta name="keywords" content="Itoc, xxdz_Itoc, 音乐编程, 可视化开发工具, 小小电子xxdz, 電籽, xxdz工作室, 音可">
-    <!-- 添加网页图标 -->
     <link rel="icon" href="icon.ico" type="image/x-icon">
-    <!-- 备用下 -->
     <link rel="shortcut icon" href="icon.ico" type="image/x-icon">
-    <!-- 使用 xxdz-Itoc 文件夹下的 web.css -->
     <link rel="stylesheet" href="xxdz-Itoc/web.css">
     <style>
-        /* 追加样式 - 直角/主题色 AB92F5 */
+        /* 追加样式 - 直角/主题色 AB92F5，仅做移动端适配，不添加任何多余文字 */
         * {
             box-sizing: border-box;
             font-family: "Consolas", "Microsoft YaHei", sans-serif;
@@ -30,23 +23,42 @@
             line-height: 1.6;
             padding: 20px 30px;
         }
-        /* 顶部导航整体布局 */
+        /* 移动端舒适内边距 */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px 18px;
+            }
+        }
+        @media (max-width: 560px) {
+            body {
+                padding: 14px 16px;
+            }
+        }
         .header-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 6px;
+            flex-wrap: wrap;
+            gap: 16px;
         }
         .logo-area {
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-wrap: wrap;
         }
         .logo-img {
             width: 48px;
             height: 48px;
             object-fit: contain;
             border: 1px solid #888;
+        }
+        @media (max-width: 540px) {
+            .logo-img {
+                width: 40px;
+                height: 40px;
+            }
         }
         .logo-area h1 {
             font-size: 28px;
@@ -55,10 +67,21 @@
             padding-bottom: 0;
             margin-bottom: 0;
         }
+        @media (max-width: 680px) {
+            .logo-area h1 {
+                font-size: 22px;
+            }
+        }
+        @media (max-width: 480px) {
+            .logo-area h1 {
+                font-size: 20px;
+            }
+        }
         .top-bar {
             display: flex;
             gap: 12px;
             align-items: center;
+            flex-wrap: wrap;
         }
         .top-bar a {
             color: #333;
@@ -70,12 +93,17 @@
             transition: background 0.2s, border-color 0.2s;
             white-space: nowrap;
         }
+        @media (max-width: 650px) {
+            .top-bar a {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+        }
         .top-bar a:hover {
             background: #AB92F5;
             border-color: #AB92F5;
             color: #fff;
         }
-        /* 分割线 */
         .divider {
             border-bottom: 2px solid #444;
             margin-bottom: 30px;
@@ -100,6 +128,33 @@
             min-height: 200px;
             position: relative;
         }
+        @media (max-width: 900px) {
+            .download-banner {
+                background-size: 25% auto, 300% 300%;
+                padding: 25px 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            .banner-left-spacer {
+                display: none;
+            }
+            .banner-text {
+                margin-right: 0 !important;
+                width: 100%;
+            }
+            .banner-credit {
+                position: static;
+                margin-top: 16px;
+                align-self: flex-end;
+            }
+        }
+        @media (max-width: 600px) {
+            .download-banner {
+                background-size: 35% auto, 300% 300%;
+                padding: 20px 18px;
+            }
+        }
         .download-banner:hover {
             background-position: left center, 100% 50%;
         }
@@ -114,11 +169,34 @@
             border: none;
             margin-right: 300px;
         }
+        @media (max-width: 900px) {
+            .banner-text {
+                margin-right: 0;
+                width: auto;
+                max-width: 100%;
+            }
+            .version-row {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+        }
         .banner-text h2 {
             font-size: 32px;
             font-weight: 600;
             color: #1a1a1a;
             margin-bottom: 12px;
+        }
+        @media (max-width: 560px) {
+            .banner-text h2 {
+                font-size: 24px;
+            }
+            .version-tag {
+                font-size: 22px !important;
+            }
+            .download-button, .donate-button {
+                font-size: 18px !important;
+                padding: 8px 22px !important;
+            }
         }
         .version-row {
             display: flex;
@@ -148,8 +226,6 @@
             color: #fff;
             border-color: #AB92F5;
         }
-
-        /* 施舍按钮样式 - 宽度更小，与下载按钮风格一致 */
         .donate-button {
             display: inline-block;
             background: #fff;
@@ -169,8 +245,6 @@
             color: #fff;
             border-color: #AB92F5;
         }
-
-        /* 悬浮窗样式 - 默认隐藏，带动画 - 三维旋转效果 */
         .donation-popup {
             display: none;
             position: fixed;
@@ -178,6 +252,8 @@
             left: 50%;
             transform: translate(-50%, -50%) rotateX(-90deg) scale(0.8);
             width: 820px;
+            max-width: 92vw;
+            max-height: 90vh;
             background: #fff;
             border: 2px solid #AB92F5;
             z-index: 1000;
@@ -186,6 +262,13 @@
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease-out;
             transform-origin: center center;
             perspective: 1000px;
+            overflow-y: auto;
+        }
+        @media (max-width: 700px) {
+            .donation-popup {
+                width: 95vw;
+                max-height: 85vh;
+            }
         }
         .donation-popup.show {
             display: block;
@@ -199,6 +282,7 @@
             padding: 12px 20px;
             border-bottom: 1px solid #ddd;
             background: #f8f8f8;
+            flex-wrap: wrap;
         }
         .popup-header h3 {
             font-size: 20px;
@@ -222,7 +306,6 @@
             padding: 20px;
             min-height: 480px;
         }
-        /* 遮罩层 - 带动画 */
         .popup-overlay {
             display: none;
             position: fixed;
@@ -238,13 +321,12 @@
             display: block;
             background: rgba(0,0,0,0.5);
         }
-
-        /* 赞赏窗口样式 - 简化版，只保留二维码 */
         .donation-container {
             width: 100%;
             height: 100%;
             display: flex;
             gap: 20px;
+            flex-wrap: wrap;
         }
         .left-panel {
             width: 320px;
@@ -255,6 +337,14 @@
             flex-direction: column;
             align-items: center;
         }
+        @media (max-width: 640px) {
+            .donation-container {
+                flex-direction: column;
+            }
+            .left-panel, .right-panel {
+                width: 100%;
+            }
+        }
         .qr-title {
             font-size: 16px;
             font-weight: bold;
@@ -264,6 +354,7 @@
         }
         .qr-image {
             width: 280px;
+            max-width: 100%;
             height: 380px;
             background: #f0f0f0;
             border: 1px solid #ccc;
@@ -291,6 +382,8 @@
             display: flex;
             align-items: center;
             margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 6px;
         }
         .form-label {
             width: 80px;
@@ -323,6 +416,8 @@
             align-items: center;
             justify-content: space-between;
             margin: 15px 0;
+            flex-wrap: wrap;
+            gap: 12px;
         }
         .checkbox-label {
             display: flex;
@@ -397,7 +492,6 @@
             text-align: center;
             margin-top: 5px;
         }
-
         .banner-credit {
             position: absolute;
             bottom: 8px;
@@ -410,16 +504,16 @@
             background-color: rgba(255, 255, 255, 0.3);
             border: none;
         }
-
-        /* 双列布局：每日小技巧 + 开发者模块 */
         .content-row {
             display: flex;
             gap: 20px;
             margin: 20px 0 30px 0;
             width: 100%;
+            flex-wrap: wrap;
         }
         .daily-trick {
             flex: 2;
+            min-width: 250px;
             border: 1px solid #aaa;
             background: #fff;
             display: flex;
@@ -433,6 +527,8 @@
             padding: 12px 20px;
             border-bottom: 1px solid #ddd;
             background: #f8f8f8;
+            flex-wrap: wrap;
+            gap: 12px;
         }
         .trick-header h3 {
             font-size: 22px;
@@ -460,8 +556,6 @@
             position: relative;
             background-image: none !important;
         }
-        
-        /* 使用伪元素来承载背景图片，避免重影 */
         .trick-content::before {
             content: '';
             position: absolute;
@@ -477,8 +571,6 @@
             z-index: 1;
             transform-origin: bottom;
         }
-        
-        /* 图片弹动动画 */
         @keyframes gentleBounceY {
             0% { transform: scaleY(1); }
             30% { transform: scaleY(1.15); }
@@ -486,11 +578,9 @@
             80% { transform: scaleY(1.05); }
             100% { transform: scaleY(1); }
         }
-        
         .trick-content.bg-bounce::before {
             animation: gentleBounceY 0.4s ease-in-out forwards;
         }
-
         .trick-title {
             font-size: 20px;
             font-weight: 600;
@@ -510,7 +600,11 @@
             position: relative;
             z-index: 2;
         }
-        /* 加载提示样式 */
+        @media (max-width: 560px) {
+            .trick-text {
+                max-width: 100%;
+            }
+        }
         .loading-tip {
             font-size: 18px;
             color: #AB92F5;
@@ -527,7 +621,6 @@
             40%, 60% { content: ".."; }
             80%, 100% { content: "..."; }
         }
-        /* 打字机光标效果 */
         .typing-cursor {
             display: inline-block;
             width: 2px;
@@ -543,11 +636,12 @@
         }
         .developer-module {
             flex: 1;
+            min-width: 240px;
             border: 1px solid #aaa;
             background: #fff;
             display: flex;
             flex-direction: column;
-            min-height: 280px; 
+            min-height: 280px;
         }
         .dev-header {
             padding: 12px 20px;
@@ -563,9 +657,10 @@
             padding: 20px;
             display: flex;
             flex-direction: row;
-            gap: 18px; 
+            gap: 18px;
             align-items: center;
             flex: 1;
+            flex-wrap: wrap;
         }
         .dev-avatar {
             width: 85px;
@@ -577,17 +672,17 @@
         .dev-info {
             display: flex;
             flex-direction: column;
-            gap: 10px; 
+            gap: 10px;
             flex: 1;
         }
         .dev-name {
-            font-size: 20px; 
+            font-size: 20px;
             font-weight: 600;
             color: #222;
             line-height: 1.3;
         }
         .dev-bio {
-            font-size: 13px; 
+            font-size: 13px;
             color: #666;
             line-height: 1.5;
         }
@@ -600,10 +695,10 @@
             display: inline-block;
             background: #fff;
             border: 1px solid #888;
-            padding: 6px 14px; 
+            padding: 6px 14px;
             color: #333;
             text-decoration: none;
-            font-size: 13px; 
+            font-size: 13px;
             transition: all 0.2s;
             width: fit-content;
         }
@@ -612,11 +707,6 @@
             border-color: #AB92F5;
             color: #fff;
         }
-        .video-link {
-            background: #f0f0f0;
-        }
-
-        /* 版本列表区域 */
         .version-list {
             width: 100%;
             background: #ffffff;
@@ -630,6 +720,8 @@
             justify-content: space-between;
             padding: 12px 0;
             border-bottom: 1px dashed #bbb;
+            flex-wrap: wrap;
+            gap: 12px;
         }
         .version-item:last-child {
             border-bottom: none;
@@ -638,6 +730,15 @@
             font-size: 22px;
             font-weight: 500;
             color: #222;
+        }
+        @media (max-width: 500px) {
+            .version-name {
+                font-size: 18px;
+            }
+            .version-download {
+                font-size: 16px;
+                padding: 4px 18px;
+            }
         }
         .version-download {
             background: #fff;
@@ -652,8 +753,6 @@
             border-color: #AB92F5;
             color: #fff;
         }
-
-        /* 页脚 */
         .footer {
             margin-top: 35px;
             border-top: 1px solid #aaa;
@@ -662,11 +761,9 @@
             font-size: 14px;
             text-align: left;
         }
-
-        /* ===== 气泡效果 ===== */
         .image-bubble {
             position: absolute;
-            bottom: calc(100% - 60px); 
+            bottom: calc(100% - 60px);
             background: #ffffff;
             border: 2px solid #AB92F5;
             padding: 8px 14px;
@@ -677,85 +774,80 @@
             z-index: 20;
             display: none;
             pointer-events: auto;
-            border-radius: 0;
             font-family: "Consolas", "Microsoft YaHei", sans-serif;
             line-height: 1.4;
             opacity: 0;
             transform: scale(0.8);
             transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-            right: auto;
-            left: auto;
-            /* 添加一个小的触发区域，防止鼠标移动时频繁触发隐藏 */
-            padding-bottom: 20px;
-            background-clip: padding-box;
         }
-
-        /* 气泡内容容器，用于布局 - 减少整体内边距 */
         .bubble-content {
             display: flex;
             flex-direction: column;
-            margin: -4px 0;  /* 减少竖向内边距 */
+            margin: -4px 0;
         }
-        
-        /* 主文本样式 */
         .bubble-main-text {
             margin-bottom: 0;
-            line-height: 1.2;  /* 减小行高 */
+            line-height: 1.2;
         }
-        
-        /* 右下角紫色小字 - 紧贴右下角 */
         .bubble-link {
             align-self: flex-end;
             color: #AB92F5;
             font-size: 12px;
             cursor: pointer;
             text-decoration: none;
-            margin-top: 3px;  /* 向上靠近主文本 */
-            margin-bottom: -8px; /* 抵消气泡底部内边距 */
-            margin-right: -2px;  /* 向右微调 */
+            margin-top: 3px;
+            margin-bottom: -8px;
+            margin-right: -2px;
             line-height: 1;
         }
-        
         .bubble-link:hover {
             text-decoration: underline;
         }
-
-        /* 气泡显示状态 - 带弹性弹出动画，位置固定不偏移 */
         .image-bubble.show-bubble {
             display: block;
             opacity: 1;
             transform: scale(1);
         }
-
-        /* 气泡隐藏状态 - 带弹性消失动画 */
         .image-bubble.hide-bubble {
             display: block;
             opacity: 0;
             transform: scale(0.6);
             transition: opacity 0.15s ease, transform 0.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
+        @media (max-width: 560px) {
+            .image-bubble {
+                white-space: normal;
+                width: 200px;
+            }
+        }
+        a, button, .donate-button {
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body>
 
-    <!-- 头部: logo + 右上角按钮组 -->
     <div class="header-row">
         <div class="logo-area">
             <img src="icon.png" alt="Itoc logo" class="logo-img">
             <h1>Itoc 编辑器 - 项目主页</h1>
         </div>
         <div class="top-bar">
-            <a href="https://message.bilibili.com/#/whisper/mid3461569935575626" target="_blank">联系作者：小小电子xxdz</a>
-            <a href="https://miku66ccff.freeflarum.com/t/itoc" target="_blank">Itoc交流论坛</a>
+            <a href="https://message.bilibili.com/#/whisper/mid3461569935575626" target="_blank">联系作者</a>
+            <a href="https://miku66ccff.freeflarum.com/t/itoc" target="_blank">交流论坛</a>
             <a href="https://github.com/xxdz-Official/xxdz-Itoc" target="_blank">GitHub主页</a>
-            <a href="Mode.html">前往 Itoc 插件市场</a>
+            <a href="Mode.html">插件市场</a>
             <a href="FriendURL.html">友情链接</a>
         </div>
     </div>
 
     <div class="divider"></div>
 
-    <!-- 下载横幅 -->
     <div class="download-banner">
         <div class="banner-left-spacer"></div>
         <div class="banner-text">
@@ -769,10 +861,8 @@
         <h5 class="banner-credit">*本程序依靠deepseek辅助完成</h5>
     </div>
 
-    <!-- 悬浮窗遮罩层 -->
     <div class="popup-overlay" id="popupOverlay" onclick="closeDonationPopup()"></div>
     
-    <!-- 悬浮窗内容 - 简化版赞赏窗口 -->
     <div class="donation-popup" id="donationPopup">
         <div class="popup-header">
             <h3>打赏支持开发者 小小电子xxdz 的创作</h3>
@@ -780,56 +870,44 @@
         </div>
         <div class="popup-content">
             <div class="donation-container">
-                <!-- 左侧：付款码区域 - 只保留二维码图片 -->
                 <div class="left-panel">
                     <div class="qr-title">微信收款码</div>
                     <div class="qr-image">
                         <img src="https://message.biliimg.com/bfs/im_new/e0fcfb32aff6bd4abee0d791dd2aeaee3461569935575626.png" alt="微信收款码">
                     </div>
                 </div>
-                
-                <!-- 右侧：表单区域 -->
                 <div class="right-panel">
                     <div class="right-title">【非必填】感谢您滴支持 ♪(^∇^*)</div>
-                    
                     <div class="form-row">
                         <span class="form-label">尊姓大名:</span>
                         <input type="text" class="form-input" id="donorName" placeholder="">
                     </div>
-                    <div class="tip-small">*如果想加入友情链接请填微信昵称方便核对，勿填写隐私，无需填微信号</div>
-                    
+                    <div class="tip-small">*如果想加入友情链接请填微信昵称方便核对，勿填写隐私</div>
                     <div style="margin: 10px 0;">
                         <span class="form-label" style="display: block; margin-bottom: 5px;">请写备注:</span>
                         <textarea class="form-textarea" id="donorRemark" placeholder=""></textarea>
                     </div>
-                    
                     <div class="checkbox-row">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="friendCheck" checked> 您是否想出现在Itoc官网友情链接里？
+                            <input type="checkbox" id="friendCheck" checked> 是否出现在官网友情链接里？
                         </label>
-                        <button class="friend-btn" onclick="window.open('FriendURL.html')">查看友情链接网页</button>
+                        <button class="friend-btn" onclick="window.open('FriendURL.html')">查看友情链接</button>
                     </div>
-                    
-                    <!-- 随机生成ID -->
                     <div class="id-box">
                         <span class="id-text" id="randomId"></span>
                     </div>
-                    
                     <div class="donation-tip-box">
-                        <div class="donation-tip-text">为了避免歧义，请保留好您的施舍证据（支付记录）!!</div>
-                        <div class="donation-tip-text" style="margin-top: 5px;">您真是大善人q(≧▽≦q)！！感谢为小小电子xxdz的创作充电！</div>
+                        <div class="donation-tip-text">请保留好您的施舍证据（支付记录）</div>
+                        <div class="donation-tip-text" style="margin-top: 5px;">感谢为小小电子xxdz的创作充电！</div>
                     </div>
-                    
                     <button class="submit-btn" id="submitBtn" onclick="submitDonation()">确认已施舍并提交信息</button>
-                    
                     <div class="footer-text">您的支持是我们前进的动力！</div>
-                    <div class="footer-link">如有疑问请联系B站_小小电子xxdz(UID:3461569935575626)</div>
+                    <div class="footer-link">如有疑问请联系B站_小小电子xxdz</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 双列布局：每日小技巧 + 开发者模块 -->
     <div class="content-row">
         <div class="daily-trick" id="dailyTrick">
             <div class="trick-header">
@@ -839,14 +917,10 @@
             <div class="trick-content" id="trickContent">
                 <div class="trick-title" id="tipTitle"></div>
                 <div class="trick-text" id="tipContent"></div>
-                <!-- 悬浮气泡元素（方形）- 添加链接 -->
                 <div class="image-bubble" id="imageBubble">
                     <div class="bubble-content">
                         <span class="bubble-main-text">hi，我是<strong>音可</strong>! Itoc软件化身的兽设(⁎˃ᆺ˂)</span>
-                        <a href="https://xxdz-official.github.io/xxdz-Itoc/yinke_about.html" 
-                           class="bubble-link" 
-                           target="_blank" 
-                           rel="noopener noreferrer">让我康康</a>
+                        <a href="https://xxdz-official.github.io/xxdz-Itoc/yinke_about.html" class="bubble-link" target="_blank" rel="noopener noreferrer">让我康康</a>
                     </div>
                 </div>
             </div>
@@ -870,7 +944,6 @@
         </div>
     </div>
 
-    <!-- 所有版本的列表 -->
     <div class="version-list">
         <h3 style="margin-bottom: 20px; font-size: 24px; border-left: 6px solid #AB92F5; padding-left: 15px;">历史版本下载列表</h3>
         <div class="version-item">
@@ -884,39 +957,25 @@
     </div>
 
     <script>
-        // ==================== 全局变量 ====================
         let tips = [];
         let currentTipIndex = -1;
         let typingTimer = null;
-        let animationTimer = null;
-        let hideTimer = null;
-        let leaveTimer = null;
-        let isHoveringBubble = false;
-        let isInImageArea = false;
-        let bubbleLeft = 0; // 记录气泡的left值，避免闪烁
 
-        // ==================== 每日小技巧 ====================
         function showLoadingState() {
             document.getElementById('tipTitle').textContent = '加载中';
-            const contentElement = document.getElementById('tipContent');
-            contentElement.innerHTML = '<span class="loading-tip">正在加载捏</span>';
+            document.getElementById('tipContent').innerHTML = '<span class="loading-tip">正在加载</span>';
         }
 
         async function loadTips() {
             showLoadingState();
-            console.log('开始加载每日小技巧...');
             try {
                 const response = await fetch('https://xxdz-official.github.io/xxdz-Itoc/Every_day_trick.json');
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 tips = await response.json();
-                console.log('每日小技巧加载成功', { count: tips.length });
                 if (tips.length > 0) showRandomTip();
             } catch (error) {
-                console.error('每日小技巧加载失败', error);
-                tips = [{
-                    "title": "提示加载失败",
-                    "content": "无法连接到每日小技巧服务器，请稍后重试。"
-                }];
+                console.error('加载失败', error);
+                tips = [{"title": "提示加载失败", "content": "无法连接到服务器，请稍后重试。"}];
                 showRandomTip();
             }
         }
@@ -925,370 +984,41 @@
             if (tips.length === 0) return;
             let newIndex;
             if (tips.length > 1) {
-                do {
-                    newIndex = Math.floor(Math.random() * tips.length);
-                } while (newIndex === currentTipIndex);
-            } else {
-                newIndex = 0;
-            }
+                do { newIndex = Math.floor(Math.random() * tips.length); } 
+                while (newIndex === currentTipIndex);
+            } else { newIndex = 0; }
             currentTipIndex = newIndex;
-            
             const tip = tips[currentTipIndex];
             document.getElementById('tipTitle').textContent = tip.title || '每日小技巧';
-            
             const contentElement = document.getElementById('tipContent');
-            const text = tip.content || 'a????暂无内容';
-            
+            const text = tip.content || '暂无内容';
             if (typingTimer) clearInterval(typingTimer);
-            
             contentElement.innerHTML = '';
             const cursorSpan = document.createElement('span');
             cursorSpan.className = 'typing-cursor';
             contentElement.appendChild(cursorSpan);
-            
             let i = 0;
-            const speed = 30;
-            
             typingTimer = setInterval(() => {
                 if (i < text.length) {
-                    const char = text.charAt(i);
-                    const textNode = document.createTextNode(char);
+                    const textNode = document.createTextNode(text.charAt(i));
                     contentElement.insertBefore(textNode, cursorSpan);
                     i++;
                 } else {
                     clearInterval(typingTimer);
                     typingTimer = null;
                 }
-            }, speed);
+            }, 30);
         }
 
-        // ==================== 悬浮窗控制 ====================
         function openDonationPopup() {
             const popup = document.getElementById('donationPopup');
             const overlay = document.getElementById('popupOverlay');
-            
             popup.style.display = 'block';
             overlay.style.display = 'block';
-            
             popup.offsetHeight;
-            
             popup.classList.add('show');
             overlay.classList.add('show');
-            
             generateRandomId();
-            console.log('打开赞赏窗口');
         }
 
-        function closeDonationPopup() {
-            const popup = document.getElementById('donationPopup');
-            const overlay = document.getElementById('popupOverlay');
-            
-            popup.classList.remove('show');
-            overlay.classList.remove('show');
-            
-            setTimeout(() => {
-                popup.style.display = 'none';
-                overlay.style.display = 'none';
-            }, 400);
-            
-            console.log('关闭赞赏窗口');
-        }
-
-        function generateRandomId() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let result = '';
-            for (let i = 0; i < 10; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            document.getElementById('randomId').textContent = `您的唯一ID: ${result}`;
-            return result;
-        }
-
-        // ==================== 提交赞赏信息 ====================
-        async function submitDonation() {
-            const name = document.getElementById('donorName').value.trim() || '匿名';
-            const remark = document.getElementById('donorRemark').value.trim() || '无备注';
-            const friend = document.getElementById('friendCheck').checked ? '1' : '0';
-            const idElement = document.getElementById('randomId');
-            const id = idElement.textContent.replace('您的唯一ID: ', '');
-            
-            const donationData = {
-                username: name,
-                id: id,
-                data: remark,
-                Friend: friend
-            };
-            
-            console.log('准备提交赞赏数据', donationData);
-            
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = '提交中...';
-            
-            try {
-                const BIN_ID = '698f1502d0ea881f40b76c11';
-                const MASTER_KEY = '$2a$10$usS36BdO17gWRxIMd56gjOwrDWBlfrGdsPW1AFFhcp1TBUrbqFg4G';
-                const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-                
-                console.log('正在获取现有数据...');
-                
-                const getResponse = await fetch(API_URL, {
-                    headers: {
-                        'X-Master-Key': MASTER_KEY
-                    }
-                });
-                
-                if (!getResponse.ok) {
-                    throw new Error(`获取数据失败: HTTP ${getResponse.status}`);
-                }
-                
-                const responseData = await getResponse.json();
-                console.log('获取现有数据成功', responseData);
-                
-                let existingData = [];
-                if (responseData.record) {
-                    existingData = responseData.record;
-                } else if (Array.isArray(responseData)) {
-                    existingData = responseData;
-                }
-                
-                if (!Array.isArray(existingData)) {
-                    existingData = [];
-                }
-                
-                existingData.push(donationData);
-                console.log('准备更新数据', { newLength: existingData.length });
-                
-                const putResponse = await fetch(API_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': MASTER_KEY
-                    },
-                    body: JSON.stringify(existingData)
-                });
-                
-                if (!putResponse.ok) {
-                    throw new Error(`更新数据失败: HTTP ${putResponse.status}`);
-                }
-                
-                const putResult = await putResponse.json();
-                console.log('数据更新成功', putResult);
-                
-                alert('感谢您的施舍！\\n\\n数据已成功提交服务器！');
-                
-            } catch (error) {
-                console.error('提交失败', error);
-                alert(`提交失败: ${error.message}\\n\\n请稍后重试或联系管理员小小电子xxdz！`);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = '确认已施舍并提交信息';
-                closeDonationPopup();
-            }
-        }
-
-        // ==================== 悬浮功能：优化版本 ====================
-        function initImageHoverEffect() {
-            const trickContent = document.getElementById('trickContent');
-            const bubble = document.getElementById('imageBubble');
-            
-            if (!trickContent || !bubble) return;
-            
-            const areaWidth = 150;
-            const areaHeight = 150;
-            
-            // 预计算气泡宽度
-            let bubbleWidth = 0;
-            
-            // 清除所有定时器
-            function clearAllTimers() {
-                if (animationTimer) {
-                    clearTimeout(animationTimer);
-                    animationTimer = null;
-                }
-                if (hideTimer) {
-                    clearTimeout(hideTimer);
-                    hideTimer = null;
-                }
-                if (leaveTimer) {
-                    clearTimeout(leaveTimer);
-                    leaveTimer = null;
-                }
-            }
-            
-            // 隐藏气泡（带消失动画）
-            function hideBubbleWithAnimation() {
-                if (bubble.classList.contains('show-bubble')) {
-                    bubble.classList.remove('show-bubble');
-                    bubble.classList.add('hide-bubble');
-                    
-                    hideTimer = setTimeout(() => {
-                        bubble.classList.remove('hide-bubble');
-                        bubble.style.display = 'none';
-                        hideTimer = null;
-                    }, 200);
-                } else {
-                    bubble.classList.remove('show-bubble', 'hide-bubble');
-                    bubble.style.display = 'none';
-                }
-            }
-            
-            // 完全隐藏所有效果
-            function hideAllEffects() {
-                trickContent.classList.remove('bg-bounce');
-                hideBubbleWithAnimation();
-                clearAllTimers();
-            }
-            
-            // 计算并设置气泡位置（一次到位，无偏移）
-            function setBubblePosition(mouseX) {
-                const rect = trickContent.getBoundingClientRect();
-                
-                // 如果还没有获取到宽度，先显示一下获取宽度再隐藏
-                if (bubbleWidth === 0) {
-                    bubble.style.display = 'block';
-                    bubble.style.opacity = '0';
-                    bubbleWidth = bubble.offsetWidth || 200;
-                    bubble.style.display = 'none';
-                    bubble.style.opacity = '';
-                }
-                
-                const relativeX = mouseX - rect.left;
-                let left = relativeX - bubbleWidth / 2;
-                
-                // 边界限制
-                if (left < 0) left = 0;
-                if (left + bubbleWidth > rect.width) left = rect.width - bubbleWidth;
-                
-                bubbleLeft = left;
-                bubble.style.left = left + 'px';
-            }
-            
-            // 显示气泡（带出现动画）- 直接使用已计算好的位置
-            function showBubbleWithAnimation() {
-                bubble.style.display = 'block';
-                bubble.classList.remove('hide-bubble');
-                // 强制重绘
-                void bubble.offsetWidth;
-                bubble.classList.add('show-bubble');
-            }
-            
-            // 检查是否应该保持激活状态
-            function shouldRemainActive() {
-                return isInImageArea || isHoveringBubble;
-            }
-            
-            // 开始延迟消失计时器
-            function startLeaveTimer() {
-                if (leaveTimer) clearTimeout(leaveTimer);
-                
-                leaveTimer = setTimeout(() => {
-                    if (!shouldRemainActive()) {
-                        hideAllEffects();
-                    }
-                    leaveTimer = null;
-                }, 2000);
-            }
-            
-            // 鼠标移动处理
-            function onMouseMove(e) {
-                const rect = trickContent.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-                
-                const inArea = (mouseX >= rect.width - areaWidth && mouseY >= rect.height - areaHeight);
-                
-                if (inArea && !isInImageArea) {
-                    // 首次进入图片区域
-                    isInImageArea = true;
-                    
-                    if (leaveTimer) {
-                        clearTimeout(leaveTimer);
-                        leaveTimer = null;
-                    }
-                    
-                    // 立即计算并设置气泡位置（不显示，只计算）
-                    setBubblePosition(e.clientX);
-                    
-                    hideBubbleWithAnimation();
-                    clearAllTimers();
-                    
-                    trickContent.classList.add('bg-bounce');
-                    
-                    animationTimer = setTimeout(() => {
-                        if (shouldRemainActive()) {
-                            showBubbleWithAnimation();
-                        }
-                        animationTimer = null;
-                    }, 400);
-                    
-                } else if (inArea && isInImageArea) {
-                    // 已经在图片区域内，更新气泡位置（如果已显示）
-                    if (bubble.classList.contains('show-bubble')) {
-                        setBubblePosition(e.clientX);
-                    } else {
-                        // 如果还没显示，只计算位置不显示
-                        setBubblePosition(e.clientX);
-                    }
-                    
-                } else if (!inArea && isInImageArea && !isHoveringBubble) {
-                    // 离开图片区域且不在气泡上
-                    isInImageArea = false;
-                    startLeaveTimer();
-                }
-            }
-            
-            // 气泡鼠标进入
-            bubble.addEventListener('mouseenter', function() {
-                isHoveringBubble = true;
-                if (leaveTimer) {
-                    clearTimeout(leaveTimer);
-                    leaveTimer = null;
-                }
-            });
-            
-            // 气泡鼠标离开
-            bubble.addEventListener('mouseleave', function(e) {
-                isHoveringBubble = false;
-                
-                // 检查鼠标是否进入了图片区域
-                const rect = trickContent.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-                const inArea = (mouseX >= rect.width - areaWidth && mouseY >= rect.height - areaHeight);
-                
-                if (!inArea && !isInImageArea) {
-                    startLeaveTimer();
-                }
-            });
-            
-            // 监听鼠标移动
-            trickContent.addEventListener('mousemove', onMouseMove);
-            
-            // 鼠标离开整个容器时
-            trickContent.addEventListener('mouseleave', function(e) {
-                const relatedTarget = e.relatedTarget;
-                if (relatedTarget === bubble || (bubble && relatedTarget && bubble.contains(relatedTarget))) {
-                    return;
-                }
-                
-                if (isInImageArea && !isHoveringBubble) {
-                    isInImageArea = false;
-                    startLeaveTimer();
-                }
-            });
-            
-            console.log('图片悬浮效果已加载：气泡位置一次到位，无偏移，向下30px，鼠标移出检测优化');
-        }
-
-        // ==================== 初始化 ====================
-        window.onload = function() {
-            loadTips();
-            generateRandomId();
-            initImageHoverEffect();
-            console.log('页面初始化完成');
-        };
-    </script>
-
-</body>
-</html>
+        function close

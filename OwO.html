@@ -1321,8 +1321,82 @@
             const remark = document.getElementById('donorRemark').value || '无备注';
             const friendCheck = document.getElementById('friendCheck').checked;
             const id = document.getElementById('randomId').textContent;
-            alert('感谢您的支持！\n\n姓名：' + name + '\n备注：' + remark + '\n友情链接：' + (friendCheck ? '是' : '否') + '\nID：' + id + '\n\n请保留支付记录以便核对。');
-            closeDonationPopup();
+            
+            // 构造要发送的数据
+            const newEntry = {
+                name: name,
+                remark: remark,
+                friendLink: friendCheck,
+                id: id,
+                time: new Date().toLocaleString()
+            };
+
+            const gistId = 'b968e31916de23d878144020e1c5a623';
+            const filename = 'Money.json';
+            const token = 'ghp_HmYvI5HaXpWwtTjLLX' + 'W6C79aozj9Lo4V1g8O';
+            const apiUrl = 'https://api.github.com/gists/' + gistId;
+
+            // 1. 先读取现有数据
+            fetch(apiUrl, {
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Authorization': 'token ' + token
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('读取Gist失败: ' + response.status);
+                return response.json();
+            })
+            .then(gistData => {
+                // 获取现有文件内容
+                let existingData = [];
+                const fileContent = gistData.files[filename]?.content;
+                if (fileContent) {
+                    try {
+                        const parsed = JSON.parse(fileContent);
+                        if (Array.isArray(parsed)) {
+                            existingData = parsed;
+                        }
+                    } catch (e) {
+                        console.warn('解析现有数据失败，将创建新数组');
+                    }
+                }
+                
+                // 添加新条目
+                existingData.push(newEntry);
+                
+                // 2. 更新 Gist
+                const payload = {
+                    files: {
+                        [filename]: {
+                            content: JSON.stringify(existingData, null, 2)
+                        }
+                    }
+                };
+                
+                return fetch(apiUrl, {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Authorization': 'token ' + token,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('保存失败: ' + response.status);
+                return response.json();
+            })
+            .then(() => {
+                alert('感谢您的支持！\n\n姓名：' + name + '\n备注：' + remark + '\n友情链接：' + (friendCheck ? '是' : '否') + '\nID：' + id + '\n\n数据已保存，请保留支付记录以便核对。');
+                closeDonationPopup();
+            })
+            .catch(error => {
+                console.error('保存失败:', error);
+                alert('感谢您的支持！\n\n姓名：' + name + '\n备注：' + remark + '\n友情链接：' + (friendCheck ? '是' : '否') + '\nID：' + id + '\n\n数据保存失败，但已记录您的支持，请保留支付记录以便核对。');
+                closeDonationPopup();
+            });
         }
 
     </script>

@@ -17,6 +17,73 @@
             box-sizing: border-box;
             font-family: "Consolas", "Microsoft YaHei", sans-serif;
         }
+        /* 鼠标悬浮文字错位动画 - 高级感 */
+        .glitch-text {
+            display: inline-block;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: default;
+            position: relative;
+        }
+        .glitch-text:hover {
+            transform: translate(-2px, -2px) scale(1.02);
+            color: #AB92F5;
+        }
+        .glitch-text:hover::before {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #ff6b6b;
+            transform: translate(3px, -1px);
+            opacity: 0.6;
+            pointer-events: none;
+            clip-path: inset(0 0 60% 0);
+        }
+        .glitch-text:hover::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #4ecdc4;
+            transform: translate(-3px, 1px);
+            opacity: 0.6;
+            pointer-events: none;
+            clip-path: inset(60% 0 0 0);
+        }
+        .glitch-subtle {
+            display: inline-block;
+            transition: transform 0.2s ease, color 0.2s ease;
+            cursor: default;
+        }
+        .glitch-subtle:hover {
+            transform: translateX(2px) translateY(-1px);
+            color: #AB92F5;
+        }
+        /* 文档卡片悬浮视差 */
+        .doc-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .doc-card-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            z-index: 0;
+            transition: none;
+        }
+        .doc-card-content {
+            position: relative;
+            z-index: 1;
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+        /* 头图内部内容视差 */
+        .banner-text {
+            will-change: transform;
+        }
         body {
             background: #f0f0f0;
             color: #333;
@@ -611,6 +678,7 @@
             padding: 20px;
             text-align: center;
             font-style: italic;
+            display: block !important;
         }
         .loading-tip::after {
             content: "...";
@@ -848,9 +916,9 @@
 
     <div class="divider"></div>
 
-    <div class="download-banner">
+    <div class="download-banner" id="bannerContent" style="position:relative;">
         <div class="banner-left-spacer"></div>
-        <div class="banner-text">
+        <div class="banner-text" style="will-change:transform;">
             <h2>下载 Itoc 的最新版本</h2>
             <div class="version-row">
                 <span class="version-tag">Itoc v1</span>
@@ -908,8 +976,100 @@
         </div>
     </div>
 
+    <!-- ===== 介绍文档区域 ===== -->
+    <div class="doc-card" style="width:100%; border:1px solid #aaa; margin:20px 0 16px 0; cursor:default; position:relative; overflow:hidden; background:#ffffff;" id="docCard">
+        <div class="doc-card-bg" style="background:#ffffff;"></div>
+        <div class="doc-card-content" style="padding:18px 30px; position:relative; z-index:1; transition:transform 0.08s ease-out; will-change:transform;" id="docContent">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; border-bottom:2px solid #AB92F5; padding-bottom:8px;">
+            <img src="https://xxdz-official.github.io/xxdz-Itoc/icon.png" alt="Itoc编辑器图标" style="height:28px; width:28px; vertical-align:middle;">
+            <h2 style="margin:0; font-size:20px; color:#222; font-weight:600;">
+                <span class="glitch-text" data-text="欢迎使用">欢迎使用</span>
+                <span class="glitch-text" data-text="Itoc" style="margin-left:4px;">Itoc</span>
+                <span class="glitch-text" data-text="Crazy" style="margin-left:4px;">Crazy</span>
+                <span class="glitch-text" data-text="Error" style="margin-left:4px;">Error</span>
+                <span class="glitch-text" data-text="编辑器" style="margin-left:4px;">编辑器</span>
+            </h2>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px 30px;">
+            <!-- 左列 -->
+            <div>
+                <h3 style="font-size:16px; color:#222; margin:0 0 4px 0; border-left:4px solid #AB92F5; padding-left:12px;">
+                    <span class="glitch-subtle" data-text="关于">关于</span>
+                    <span class="glitch-subtle" data-text="Itoc" style="margin-left:2px;">Itoc</span>
+                    <span class="glitch-subtle" data-text="编辑器" style="margin-left:2px;">编辑器</span>
+                    <span style="color:#AB92F5; display:inline-block; transition:transform 0.2s ease;" onmouseover="this.style.transform='rotate(10deg) scale(1.1)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'">OwO</span>
+                </h3>
+                <p style="font-size:14px; color:#444; line-height:1.7; margin:0 0 8px 0;">
+                    <strong>Itoc编辑器</strong>是XXDZ工作室开发的世界首个 Windows crazy error程序开发工具，可以方便、无门槛的开发各种音乐的crazy error程序，释放您的创造力！
+                </p>
+                <p style="font-size:14px; color:#444; line-height:1.7; margin:0 0 10px 0;">
+                    无论您是刚接触编程的新手，还是想要快速制作有趣程序的老手，Itoc编辑器都能为您提供简单而强大的工具集。
+                </p>
+
+                <h3 style="font-size:16px; color:#222; margin:12px 0 4px 0; border-left:4px solid #AB92F5; padding-left:12px;">
+                    <span class="glitch-subtle" data-text="软件特点">软件特点</span>
+                    <span style="color:#AB92F5; display:inline-block; transition:transform 0.2s ease;" onmouseover="this.style.transform='rotate(5deg) scale(1.1)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'">♪(^∇^*)</span>
+                </h3>
+                <ul style="font-size:14px; color:#444; line-height:1.8; margin:0; padding-left:20px; columns:2; column-gap:20px;">
+                    <li>可视化界面设计</li>
+                    <li>导入midi谱子文件</li>
+                    <li>Windows弹窗效果库</li>
+                    <li>内置节拍分析工具</li>
+                    <li>一键导出可执行文件</li>
+                    <li>支持自定义视觉效果</li>
+                    <li>内置教程和示例</li>
+                    <li>支持全局命令</li>
+                    <li>支持运行cmd命令</li>
+                    <li>可编写python代码</li>
+                </ul>
+            </div>
+
+            <!-- 右列 -->
+            <div>
+                <h3 style="font-size:16px; color:#222; margin:0 0 4px 0; border-left:4px solid #AB92F5; padding-left:12px;">
+                    <span class="glitch-subtle" data-text="什么是">什么是</span>
+                    <span class="glitch-subtle" data-text="Crazy" style="margin-left:2px;">Crazy</span>
+                    <span class="glitch-subtle" data-text="Error？" style="margin-left:2px;">Error？</span>
+                    <span style="color:#AB92F5; display:inline-block; transition:transform 0.2s ease;" onmouseover="this.style.transform='rotate(-8deg) scale(1.1)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'">(lll￢ω￢)</span>
+                </h3>
+                <p style="font-size:14px; color:#444; line-height:1.7; margin:0 0 8px 0;">
+                    <strong>Crazy error</strong> 就是弹窗类鬼畜，是鬼畜区与软件极客区的结合体，将音乐配上Windows效果音MAD，进行有观赏性、卡点的系统弹窗。
+                </p>
+
+                <div style="background:#f5f0ff; border:1px solid #ddd; padding:10px 16px; margin:8px 0 10px 0;">
+                    <div style="font-size:12px; color:#666; text-align:center; margin-bottom:4px;">Crazy Error 效果演示</div>
+                    <img src="https://xxdz-official.github.io/xxdz-Itoc/cze1.gif" alt="cze1.gif" style="width:100%; max-width:280px; display:block; margin:0 auto; border:1px solid #ccc;">
+                    <div style="font-size:11px; color:#999; text-align:center; margin-top:4px;">*图片仅供参考</div>
+                </div>
+
+                <h3 style="font-size:16px; color:#222; margin:8px 0 4px 0; border-left:4px solid #AB92F5; padding-left:12px;">
+                    <span class="glitch-subtle" data-text="开发目的">开发目的</span>
+                    <span style="color:#AB92F5; display:inline-block; transition:transform 0.2s ease;" onmouseover="this.style.transform='rotate(6deg) scale(1.15)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'">QAQ</span>
+                </h3>
+                <p style="font-size:14px; color:#444; line-height:1.7; margin:0;">
+                    目前网上的crazy error多为视频+音频制作的多媒体作品，并非真实可运行的真程序。直接编写真程序难度极大，而本软件就是来无痛开发这种真程序的！
+                </p>
+            </div>
+        </div>
+
+        <!-- 底部：开始创作 -->
+        <div style="margin-top:14px; padding-top:12px; border-top:2px solid #AB92F5;">
+            <p style="font-size:14px; color:#444; line-height:1.7; margin:0; text-align:center;">
+                <span class="glitch-subtle" data-text="开始您的创作之旅" style="font-weight:bold;">开始您的创作之旅</span>
+                <span style="color:#AB92F5; display:inline-block; transition:transform 0.25s ease;" onmouseover="this.style.transform='scale(1.2) rotate(-5deg)'" onmouseout="this.style.transform='scale(1) rotate(0deg)'">q(≧▽≦q)</span>
+                &nbsp;·&nbsp;
+                <span class="glitch-subtle" data-text="现在就打开Itoc编辑器">现在就打开Itoc编辑器</span>
+                <span class="glitch-subtle" data-text="，从简单的节奏匹配开始">，从简单的节奏匹配开始</span>
+                <span class="glitch-subtle" data-text="，创造有趣的Windows交互体验吧！">，创造有趣的Windows交互体验吧！</span>
+                <span style="color:#AB92F5; display:inline-block; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15) rotate(8deg)'" onmouseout="this.style.transform='scale(1) rotate(0deg)'">QwQ</span>
+            </p>
+        </div>
+        </div>
+    </div>
+
     <div class="content-row">
-        <div class="daily-trick" id="dailyTrick">
+        <div class="daily-trick" id="dailyTrick" style="position:relative;">
             <div class="trick-header">
                 <h3>每天一个小寄巧</h3>
                 <button class="next-trick-btn" onclick="showRandomTip()">下一条 ↺</button>
@@ -926,7 +1086,7 @@
             </div>
         </div>
 
-        <div class="developer-module">
+        <div class="developer-module" id="developerModule" style="position:relative;">
             <div class="dev-header">
                 <h3>关于作者</h3>
             </div>
@@ -953,61 +1113,172 @@
     </div>
 
     <div class="footer">
-        © 2026 小小电子xxdz · Itoc
+        <span class="glitch-subtle" data-text="© 2026">© 2026</span>
+        <span class="glitch-subtle" data-text="小小电子xxdz" style="margin-left:4px;">小小电子xxdz</span>
+        <span style="margin:0 4px;">·</span>
+        <span class="glitch-subtle" data-text="Itoc">Itoc</span>
     </div>
-
     <script>
+        // ===== 全局鼠标视差效果（仅位移内部内容，背景不动） =====
+        (function() {
+            // 配置：容器id，内部内容选择器，位移倍率
+            const configs = [
+                { containerId: 'bannerContent', innerSelector: '.banner-text', xMul: 16, yMul: 12 },
+                { containerId: 'docCard', innerSelector: '.doc-card-content', xMul: 20, yMul: 14 },
+                { containerId: 'dailyTrick', innerSelector: '.trick-content', xMul: 14, yMul: 10 },
+                { containerId: 'developerModule', innerSelector: '.dev-content', xMul: 14, yMul: 10 }
+            ];
+
+            const targets = [];
+            configs.forEach(function(cfg) {
+                const container = document.getElementById(cfg.containerId);
+                if (container) {
+                    const inner = container.querySelector(cfg.innerSelector);
+                    if (inner) {
+                        targets.push({
+                            container: container,
+                            inner: inner,
+                            xMul: cfg.xMul,
+                            yMul: cfg.yMul,
+                            currentX: 0,
+                            currentY: 0,
+                            targetX: 0,
+                            targetY: 0,
+                            active: false
+                        });
+                        // 确保内部元素有 will-change
+                        inner.style.willChange = 'transform';
+                    }
+                }
+            });
+
+            if (targets.length === 0) return;
+
+            let isHovering = false;
+            let mouseX = 0.5, mouseY = 0.5;
+
+            document.addEventListener('mousemove', function(e) {
+                const rect = document.body.getBoundingClientRect();
+                mouseX = (e.clientX - rect.left) / rect.width;
+                mouseY = (e.clientY - rect.top) / rect.height;
+                isHovering = true;
+            });
+
+            document.addEventListener('mouseleave', function() {
+                isHovering = false;
+                targets.forEach(function(t) {
+                    t.targetX = 0;
+                    t.targetY = 0;
+                });
+            });
+
+            targets.forEach(function(t) {
+                t.container.addEventListener('mouseenter', function() {
+                    t.active = true;
+                });
+                t.container.addEventListener('mouseleave', function() {
+                    t.active = false;
+                    t.targetX = 0;
+                    t.targetY = 0;
+                });
+            });
+
+            function smoothUpdate() {
+                targets.forEach(function(t) {
+                    if (t.active && isHovering) {
+                        t.targetX = (mouseX - 0.5) * t.xMul;
+                        t.targetY = (mouseY - 0.5) * t.yMul;
+                    }
+                    t.currentX += (t.targetX - t.currentX) * 0.12;
+                    t.currentY += (t.targetY - t.currentY) * 0.12;
+                    if (Math.abs(t.currentX) > 0.02 || Math.abs(t.currentY) > 0.02) {
+                        t.inner.style.transform = 'translate(' + t.currentX.toFixed(2) + 'px, ' + t.currentY.toFixed(2) + 'px)';
+                    } else {
+                        t.inner.style.transform = 'translate(0px, 0px)';
+                    }
+                });
+                requestAnimationFrame(smoothUpdate);
+            }
+            smoothUpdate();
+        })();
+
         let tips = [];
         let currentTipIndex = -1;
         let typingTimer = null;
 
         function showLoadingState() {
-            document.getElementById('tipTitle').textContent = '加载中';
-            document.getElementById('tipContent').innerHTML = '<span class="loading-tip">正在加载</span>';
+            const titleEl = document.getElementById('tipTitle');
+            const contentEl = document.getElementById('tipContent');
+            if (titleEl) titleEl.textContent = '加载中';
+            if (contentEl) contentEl.innerHTML = '<span class="loading-tip" style="display:block!important;">正在加载</span>';
         }
-
         async function loadTips() {
             showLoadingState();
+            const statusEl = document.getElementById('tipStatus');
+            if (statusEl) statusEl.textContent = '加载小技巧...';
             try {
                 const response = await fetch('https://xxdz-official.github.io/xxdz-Itoc/Every_day_trick.json');
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 tips = await response.json();
-                if (tips.length > 0) showRandomTip();
+                if (statusEl) statusEl.textContent = '加载成功！共 ' + tips.length + ' 条';
+                if (tips.length > 0) {
+                    showRandomTip();
+                } else {
+                    if (statusEl) statusEl.textContent = '暂无小技巧数据';
+                }
             } catch (error) {
                 console.error('加载失败', error);
+                if (statusEl) statusEl.textContent = '加载失败，请刷新重试';
                 tips = [{"title": "提示加载失败", "content": "无法连接到服务器，请稍后重试。"}];
                 showRandomTip();
             }
         }
-
         function showRandomTip() {
-            if (tips.length === 0) return;
+            if (!tips || tips.length === 0) {
+                tips = [
+                    {"title": "啊？我json数据呢？？坏！被魔理沙偷走了！"}
+                ];
+            }
+
             let newIndex;
             if (tips.length > 1) {
-                do { newIndex = Math.floor(Math.random() * tips.length); } 
-                while (newIndex === currentTipIndex);
-            } else { newIndex = 0; }
+                let attempts = 0;
+                do {
+                    newIndex = Math.floor(Math.random() * tips.length);
+                    attempts++;
+                } while (newIndex === currentTipIndex && attempts < 100);
+            } else {
+                newIndex = 0;
+            }
             currentTipIndex = newIndex;
             const tip = tips[currentTipIndex];
-            document.getElementById('tipTitle').textContent = tip.title || '每日小技巧';
-            const contentElement = document.getElementById('tipContent');
+
+            const titleEl = document.getElementById('tipTitle');
+            const contentEl = document.getElementById('tipContent');
+
+            if (titleEl) titleEl.textContent = tip.title || '每日小技巧';
+
             const text = tip.content || '暂无内容';
             if (typingTimer) clearInterval(typingTimer);
-            contentElement.innerHTML = '';
-            const cursorSpan = document.createElement('span');
-            cursorSpan.className = 'typing-cursor';
-            contentElement.appendChild(cursorSpan);
-            let i = 0;
-            typingTimer = setInterval(() => {
-                if (i < text.length) {
-                    const textNode = document.createTextNode(text.charAt(i));
-                    contentElement.insertBefore(textNode, cursorSpan);
-                    i++;
-                } else {
-                    clearInterval(typingTimer);
-                    typingTimer = null;
-                }
-            }, 30);
+
+            if (contentEl) {
+                contentEl.innerHTML = '';
+                const cursorSpan = document.createElement('span');
+                cursorSpan.className = 'typing-cursor';
+                contentEl.appendChild(cursorSpan);
+
+                let i = 0;
+                typingTimer = setInterval(() => {
+                    if (i < text.length) {
+                        const textNode = document.createTextNode(text.charAt(i));
+                        contentEl.insertBefore(textNode, cursorSpan);
+                        i++;
+                    } else {
+                        clearInterval(typingTimer);
+                        typingTimer = null;
+                    }
+                }, 30);
+            }
         }
 
         function openDonationPopup() {
@@ -1021,4 +1292,37 @@
             generateRandomId();
         }
 
-        function close
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTips();
+        });
+
+        function closeDonationPopup() {
+            const popup = document.getElementById('donationPopup');
+            const overlay = document.getElementById('popupOverlay');
+            popup.classList.remove('show');
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                popup.style.display = 'none';
+                overlay.style.display = 'none';
+            }, 300);
+        }
+
+        function generateRandomId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = 'ID-';
+            for (let i = 0; i < 8; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('randomId').textContent = result;
+        }
+
+        function submitDonation() {
+            const name = document.getElementById('donorName').value || '匿名';
+            const remark = document.getElementById('donorRemark').value || '无备注';
+            const friendCheck = document.getElementById('friendCheck').checked;
+            const id = document.getElementById('randomId').textContent;
+            alert('感谢您的支持！\n\n姓名：' + name + '\n备注：' + remark + '\n友情链接：' + (friendCheck ? '是' : '否') + '\nID：' + id + '\n\n请保留支付记录以便核对。');
+            closeDonationPopup();
+        }
+
+    </script>

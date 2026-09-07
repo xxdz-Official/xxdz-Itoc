@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-    <title>Itoc 帮助文档</title>
+    <!-- ========== SEO 优化 ========== -->
+    <meta name="description" content="Itoc 帮助文档 - 一款创新的 Windows Crazy Error 开发工具，支持 MIDI 音乐编排弹窗效果，提供完整的弹窗编排、模类设计、插件系统等功能。">
+    <meta name="keywords" content="Itoc, Windows Crazy Error, MIDI编排, 弹窗效果, CZEmaker, 模类设计, 音乐可视化, 弹窗开发, 帮助文档">
+    <meta property="og:title" content="Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 帮助文档 - 一款创新的 Windows Crazy Error 开发工具，支持 MIDI 音乐编排弹窗效果。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="">
+    <title id="docTitle">Itoc 帮助文档</title>
     <link rel="icon" href="../icon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="../icon.ico" type="image/x-icon">
     <style>
@@ -136,6 +145,21 @@
         <nav class="sidebar" id="sidebar">
             <h3>📖 目录</h3>
             <ul id="tocList"></ul>
+            <!-- ===== SEO 链接池：所有独立页面入口（小按钮，供爬虫发现） ===== -->
+            <div style="margin-top: 16px; padding: 10px 16px; border-top: 1px solid #e0d8f0;">
+                <div style="font-size: 11px; color: #999; margin-bottom: 6px; letter-spacing: 1px;">📄 所有页面</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                    <a href="../OwO.html" style="font-size: 11px; color: #888; text-decoration: none; padding: 2px 8px; background: #f5f0ff; border-radius: 3px; border: 1px solid #e8dfff;">主页</a>
+                    <a href="help.html" style="font-size: 11px; color: #888; text-decoration: none; padding: 2px 8px; background: #f5f0ff; border-radius: 3px; border: 1px solid #e8dfff;">帮助</a>
+                    <a href="start.html" style="font-size: 11px; color: #888; text-decoration: none; padding: 2px 8px; background: #f5f0ff; border-radius: 3px; border: 1px solid #e8dfff;">初识</a>
+                    <a href="install.html" style="font-size: 11px; color: #888; text-decoration: none; padding: 2px 8px; background: #f5f0ff; border-radius: 3px; border: 1px solid #e8dfff;">安装</a>
+                    <a href="interface.html" style="font-size: 11px; color: #888; text-decoration: none; padding: 2px 8px; background: #f5f0ff; border-radius: 3px; border: 1px solid #e8dfff;">界面</a>
+                    <a href="quickstart.html" style="font-size: 11px; color: #888; text-decoration: none; padding: 2px 8px; background: #f5f0ff; border-radius: 3px; border: 1px solid #e8dfff;">上手</a>
+                    <a href="timeline.html" style="font-size: 11px; color: #888; text-decoration: none; padding: 2px 8px; background: #f5f0ff; border-radius: 3px; border: 1px solid #e8dfff;">时间轴</a>
+                    <a href="czemaker.html" style="font-size: 11px; color: #888; text-decoration: none; padding: 2px 8px; background: #f5f0ff; border-radius: 3px; border: 1px solid #e8dfff;">弹窗基础</a>
+                    <a href="czemaker_advanced.html" style="font-size: 11px; color: #888; text-decoration: none; padding: 2px 8px; background: #f5f0ff; border-radius: 3px; border: 1px solid #e8dfff;">弹窗进阶</a>
+                </div>
+            </div>
         </nav>
         <main class="content-area" id="contentArea">
             <iframe id="contentFrame" src=""></iframe>
@@ -181,8 +205,42 @@
                 document.querySelectorAll('#tocList li').forEach(li => {
                     if (li.dataset.file === file) li.classList.add('active');
                 });
+                // 加载完成后更新页面标题
+                updatePageTitle();
             }
 
+            /**
+             * 更新页面标题（浏览器标签 + 页面 H1）
+             * 从 iframe 内容中提取 h1 标题，拼接成 "Itoc 帮助文档 - 章节名"
+             */
+            function updatePageTitle() {
+                try {
+                    const iframe = document.getElementById('contentFrame');
+                    if (iframe && iframe.contentDocument) {
+                        const h1 = iframe.contentDocument.querySelector('h1');
+                        if (h1) {
+                            const chapter = h1.textContent.trim();
+                            const fullTitle = 'Itoc 帮助文档 - ' + chapter;
+                            // 更新浏览器标签标题
+                            document.title = fullTitle;
+                            // 更新页面内 H1 标题
+                            const pageH1 = document.querySelector('.logo-area h1');
+                            if (pageH1) {
+                                pageH1.textContent = fullTitle;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // 跨域或加载中，静默忽略
+                }
+            }
+
+            // 监听 iframe 加载完成，自动更新标题
+            document.getElementById('contentFrame').addEventListener('load', function() {
+                updatePageTitle();
+            });
+
+            // 监听 hash 变化时也更新标题（兼容直接通过 URL 跳转）
             window.addEventListener('hashchange', function() {
                 const hash = window.location.hash.replace('#', '');
                 if (hash) {

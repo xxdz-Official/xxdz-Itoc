@@ -1,0 +1,255 @@
+<!-- timeline.html - 时间轴与事件块编辑 -->
+<style>
+    /* 正文样式 */
+    body {
+        font-family: "Consolas", "Microsoft YaHei", "Segoe UI", sans-serif;
+        line-height: 1.8;
+        color: #333;
+        padding: 24px 32px;
+        background: #fff;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* 标题 */
+    h1 { font-size: 28px; color: #444; border-bottom: 2px solid #d8cfef; padding-bottom: 8px; margin-top: 0; letter-spacing: 1px; }
+    h2 { font-size: 22px; color: #555; border-bottom: 1px solid #f0eaf8; padding-bottom: 6px; margin-top: 32px; }
+    h3 { font-size: 18px; color: #666; margin-top: 24px; }
+
+    /* 段落（首行缩进） */
+    p {
+        text-indent: 2em;
+        margin: 12px 0;
+    }
+
+    /* 列表 */
+    ol, ul {
+        padding-left: 24px;
+    }
+    li {
+        margin: 8px 0;
+    }
+
+    /* 提示框 */
+    .tip {
+        background: #f8f5ff;
+        border-left: 4px solid #ab92f5;
+        padding: 12px 18px;
+        margin: 16px 0;
+        border-radius: 0 6px 6px 0;
+    }
+    .tip strong {
+        color: #6b4a9a;
+    }
+
+    /* 警告框 */
+    .warning {
+        background: #fff5f5;
+        border-left: 4px solid #e74c3c;
+        padding: 12px 18px;
+        margin: 16px 0;
+        border-radius: 0 6px 6px 0;
+    }
+    .warning strong {
+        color: #c0392b;
+    }
+
+    /* 行内代码 */
+    code {
+        background: #f5f0ff;
+        padding: 2px 6px;
+        border: 1px solid #e8dfff;
+        font-family: "Consolas", monospace;
+        font-size: 13px;
+        color: #6b4a9a;
+    }
+
+    /* 键盘按键 */
+    kbd {
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        padding: 1px 6px;
+        font-family: "Consolas", monospace;
+        font-size: 13px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    /* 快捷键列表 */
+    .shortcut-grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 6px 20px;
+        margin: 12px 0 12px 24px;
+        font-size: 14px;
+    }
+    .shortcut-grid .key {
+        font-weight: bold;
+        color: #6b4a9a;
+        font-family: "Consolas", monospace;
+        white-space: nowrap;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+        font-size: 14px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 10px 14px;
+        text-align: left;
+        vertical-align: top;
+    }
+    th {
+        background: #f5f0ff;
+        color: #444;
+        font-weight: 600;
+        border-bottom: 2px solid #d8cfef;
+    }
+    tr:nth-child(even) {
+        background: #faf8ff;
+    }
+</style>
+
+<h1>⏱️ 时间轴与事件块编辑</h1>
+
+<p>时间轴是 Itoc 最核心的工作区域 你把 MIDI 文件导进去之后，所有的音符都会变成一个个彩色的方块，整整齐齐地排列在轨道上</p>
+
+<p>每个方块都是一个可以独立操作的时间线，我们叫它 <strong>「事件块」</strong> 事件块有两种：</p>
+<ul>
+    <li><strong>🎵 音符块</strong> — 来自 MIDI 文件，自带音高信息，可以触发 CZEmaker 弹窗</li>
+    <li><strong>📐 调整图层</strong> — 你手动绘制的，用来给画面叠加特效（故障、像素化、扫描线什么的）</li>
+</ul>
+
+<p>你可以选中它、修改它、给它挂上弹窗配置、或者直接删掉 咱们这一章就专门讲时间轴的操作，以及事件块编辑里面最常用的那些功能</p>
+
+<h2>时间轴长什么样？</h2>
+
+<p>打开 Itoc 之后，中间那一大块就是时间轴 它的结构大概是这样：</p>
+
+<ul>
+    <li><strong>顶部深色条</strong> — 时间标尺，你可以在这里用鼠标调整判定线的位置、截取时间选区，紧贴着下方是标记轨道（用户添加的时间点注释）</li>
+    <li><strong>橙色条区域</strong> — 全局命令时间轴，你在这里可以添加一些在特定时间点触发的命令</li>
+    <li><strong>浅色轨道区域</strong> — 这里就是放事件块的地方啦！每一行是一个轨道，每个彩色方块就是一个事件块</li>
+    <li><strong>左侧标签</strong> — 显示每个轨道的名称（默认叫“轨道1”、“轨道2”……），右键可以重命名等操作</li>
+    <li><strong>红色竖线</strong> — 判定线，表示当前播放到的位置</li>
+</ul>
+
+<h2>怎么操作事件块？</h2>
+
+<p>事件块的操作其实跟你在其他编辑器里差不多，但它有一些 Itoc 特有的小设计</p>
+
+<h3>单击选中</h3>
+<p>点一下任意一个事件块，它会变成带有粉色边框的选中状态 如果选中的是 <strong>音符块</strong>，底部面板的「CZEmakers」选项卡会自动加载它的弹窗配置；如果选中的是 <strong>调整图层</strong>，底部面板的「调整图层」选项卡会显示它的特效参数</p>
+
+<h3>框选多个</h3>
+<p>按住鼠标左键拖拽，可以画一个矩形框，框住的所有事件块都会被选中 或者按住 <kbd>Ctrl</kbd> 键，一个一个点，也可以加选</p>
+
+<h3>移动事件块</h3>
+<p>选中一个或多个事件块后，点击工具栏上的 <strong>「进入移动模式」</strong> 按钮，然后就可以用鼠标拖拽它们到别的轨道或者别的节拍位置去了 拖拽的时候会有一个半透明的预览框跟着走，松手就落位</p>
+
+<div class="tip">
+    <strong>💡 小技巧：</strong> 不想来回切换模式？按住 <kbd>Shift</kbd> 键再拖拽事件块，也可以直接移动 这个快捷键在任何模式下都有效
+</div>
+
+<h3>拉伸事件块</h3>
+<p>把鼠标移到事件块的左边缘或右边缘，光标会变成左右双向箭头 这时候按住左键拖拽，就可以改变事件块的起始位置或时长 非常方便调整入点和出点</p>
+
+<h2>调整图层（Adjust Layer）</h2>
+
+<p>调整图层是 Itoc 里一种特殊的“事件块”，它不是从 MIDI 来的，而是你手动在轨道上画出来的 它的作用是给画面叠加各种视觉效果，比如故障效果、像素化、扫描线、噪点、复古滤镜什么的</p>
+
+<h3>怎么画一个调整图层？</h3>
+<p>在菜单栏点击 <strong>「编辑(E)」→「绘制调整图层」</strong>，光标会变成十字准星 然后在轨道上按住左键拖拽，画出一个矩形区域，松手就创建好了</p>
+
+<p>创建出来的调整图层会显示为带条纹的紫色方块，边缘颜色就是你当前选中的颜色 它跟音符块一样，可以移动、拉伸、删除</p>
+
+<h3>调整图层的属性面板</h3>
+<p>选中一个调整图层后，切换到底部面板的 <strong>「调整图层」</strong> 选项卡，你会看到这些设置：</p>
+
+<ul>
+    <li><strong>滤镜模式：</strong> 选择特效类型——故障、像素化、扫描线、噪点、复古、颜色覆盖、无</li>
+    <li><strong>叠加颜色：</strong> 特效的主色调，可以用预设（霓虹、初音、天依、复古、電籽、黑白）或者自定义</li>
+    <li><strong>效果强度：</strong> 特效的猛烈程度（1-30）</li>
+    <li><strong>像素大小：</strong> 像素化效果时的像素块大小（4-30）</li>
+    <li><strong>不透明度：</strong> 特效的透明度（0-100）</li>
+    <li><strong>鼠标事件拦截：</strong> 勾选后，这个区域会拦截鼠标点击事件（可以用来做按钮区域什么的）</li>
+    <li><strong>局部调整：</strong> 勾选后可以指定特效作用的区域（坐标 X/Y、宽度、高度），用「拾取区域」按钮可以拖拽选取</li>
+    <li><strong>边框线：</strong> 显示/隐藏调整图层的边框</li>
+</ul>
+
+<div class="tip">
+    <strong>🎯 注意：</strong> 调整图层的「颜色」分两层——<strong>时间轴颜色</strong>（边框和装饰条的颜色）保存在 <code>layer["color"]</code> 中，<strong>叠加颜色</strong>（特效的主色调）保存在 <code>effect_params["color"]</code> 中 属性面板里改的是叠加颜色，双击调整图层弹出的「调整图层基础属性编辑」窗口里改的是时间轴颜色 两者互不干扰
+</div>
+
+<h2>编辑事件块属性</h2>
+
+<p>选中一个事件块后，双击它，或者右键点击选择 <strong>「编辑音符基础属性」</strong>（音符块）或 <strong>「编辑调整图层基础属性」</strong>（调整图层），会弹出对应的编辑窗口</p>
+
+<h3>音符块编辑窗口（midi_color 模块）</h3>
+<p>这个窗口主要管三件事：</p>
+
+<h4>1. 自定义文本</h4>
+<p>在编辑窗口最上面有一个输入框，你可以给音符写上任何文字 比如给一个音符写上 “高潮！”，它就会显示在音符块的正中央，而不是默认的音高数字 这个功能特别适合给重要的音符做标记，或者在上面写歌词</p>
+
+<h4>2. 音高设置</h4>
+<p>你可以直接改 MIDI 音高值（0-127），也可以用 <kbd>-1</kbd> 和 <kbd>+1</kbd> 按钮微调，或者直接拖拽滑动条 改了之后，音符块的颜色和显示的文字都会跟着变 右边还会实时显示对应的音名（比如 C4、A4 啥的），方便你确认</p>
+
+<h4>3. 颜色设置</h4>
+<p>这是最花哨的部分 你可以：</p>
+<ul>
+    <li><strong>选择颜色：</strong> 点「选择颜色...」打开系统调色板，选一个你喜欢的颜色</li>
+    <li><strong>预设色块：</strong> 下面有一排漂亮的扁平风格色块，点一下就直接换上</li>
+    <li><strong>亮度调节：</strong> 嫌颜色太暗或太亮？拖拽亮度滑块可以微调</li>
+    <li><strong>重置为默认：</strong> 点这个按钮，颜色会恢复到基于音高的自动配色，同时会彻底删除你之前保存的自定义颜色</li>
+</ul>
+
+<div class="tip">
+    <strong>🎯 重点：</strong> 编辑窗口右上角有个「重置为默认」按钮，它不光是把颜色改回去，还会从工程文件里把你之前保存的 <code>color</code> 字段删掉 这样下次打开工程的时候，颜色就会按照音高重新计算，而不是用你之前自定义的那个
+</div>
+
+<h4>多选编辑</h4>
+<p>如果同时选中了多个音符再双击，编辑窗口会进入「多选模式」 这时候：</p>
+<ul>
+    <li>左上角会显示 “编辑 N 个选中音符”</li>
+    <li>音高、自定义文本、颜色会统一设置到所有选中的音符上</li>
+    <li>时间信息区域会显示 “共 N 个选中音符”，不显示具体的时间</li>
+    <li>底部会多出一个「应用到选中」按钮 点它之后，会弹出一个对话框让你选择要应用哪些内容（音高、颜色、自定义文本），可以单独勾选</li>
+</ul>
+
+<div class="warning">
+    <strong>⚠️ 注意：</strong> 多选模式下，音高和时间信息不会显示单个音符的数据，因为每个音符可能不一样 你设置的是“统一应用”的值，而不是“编辑每个音符”
+</div>
+
+<h3>调整图层编辑窗口</h3>
+<p>双击调整图层打开的编辑窗口比属性面板更简洁，主要用来改两样东西：</p>
+<ul>
+    <li><strong>自定义文本：</strong> 跟音符块一样，你可以给调整图层写个名字（比如“故障特效”），它会显示在方块中央</li>
+    <li><strong>时间轴颜色：</strong> 调整图层边框和顶部/底部装饰条的颜色（不是特效的叠加颜色）</li>
+</ul>
+<p>颜色设置部分跟音符块编辑窗口是一样的——选择颜色、预设色块、亮度调节、重置为默认 改完之后点「确定」就会生效</p>
+
+<h2>其他快速操作</h2>
+
+<ul>
+    <li><kbd>Delete</kbd> — 删除选中的事件块</li>
+    <li><kbd>Ctrl+A</kbd> — 全选当前轨道或所有事件块</li>
+    <li><kbd>Ctrl+C</kbd> / <kbd>Ctrl+V</kbd> — 复制粘贴事件块（保持相对位置关系）</li>
+    <li><kbd>Ctrl+Q</kbd> — 禁用/启用选中的音符块（禁用的音符会变成灰色，并且不会触发弹窗；调整图层不支持这个快捷键）</li>
+</ul>
+
+<h2>事件块上的小标记</h2>
+
+<p>你可能会注意到，有些事件块上会有一些额外的标记：</p>
+
+<ul>
+    <li><strong>金黄色小三角（右上角）</strong> — 表示这个音符块已经绑定了 CZEmaker 弹窗配置（调整图层不会有这个标记）</li>
+    <li><strong>绿色竖条（左侧边缘）</strong> — 表示这个事件块有“入场动画”配置（过渡模块）</li>
+    <li><strong>橙色竖条（右侧边缘）</strong> — 表示这个事件块有“出场动画”配置（过渡模块）</li>
+    <li><strong>灰色音符块</strong> — 表示这个音符被禁用了（<kbd>Ctrl+Q</kbd>）</li>
+    <li><strong>紫色条纹方块</strong> — 就是调整图层啦，边上的颜色表示它当前的时间轴颜色</li>
+</ul>
+
+<p>好啦，时间轴和事件块编辑的基本操作就这些 掌握这些之后，你就能在时间轴上随心所欲地编排你的作品了 接下来可以看看 <strong>「CZEmarker 弹窗编排」</strong>，这才是 Itoc 真正好玩的灵魂所在！</p>

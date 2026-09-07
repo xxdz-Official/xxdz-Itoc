@@ -175,7 +175,7 @@
             border-bottom: 2px solid #444;
             margin-bottom: 30px;
         }
-        
+
         .download-banner {
             width: 100%;
             padding: 30px 35px;
@@ -911,6 +911,7 @@
             <a href="https://github.com/xxdz-Official/xxdz-Itoc" target="_blank">GitHub主页</a>
             <a href="Mode.html">插件市场</a>
             <a href="FriendURL.html">友情链接</a>
+            <a href="help/help.html">帮助文档</a>
         </div>
     </div>
 
@@ -930,7 +931,7 @@
     </div>
 
     <div class="popup-overlay" id="popupOverlay" onclick="closeDonationPopup()"></div>
-    
+
     <div class="donation-popup" id="donationPopup">
         <div class="popup-header">
             <h3>打赏支持开发者 小小电子xxdz 的创作</h3>
@@ -1321,7 +1322,7 @@
             const remark = document.getElementById('donorRemark').value || '无备注';
             const friendCheck = document.getElementById('friendCheck').checked;
             const id = document.getElementById('randomId').textContent;
-            
+
             // 构造要发送的数据
             const newEntry = {
                 name: name,
@@ -1361,10 +1362,10 @@
                         console.warn('解析现有数据失败，将创建新数组');
                     }
                 }
-                
+
                 // 添加新条目
                 existingData.push(newEntry);
-                
+
                 // 2. 更新 Gist
                 const payload = {
                     files: {
@@ -1373,7 +1374,7 @@
                         }
                     }
                 };
-                
+
                 return fetch(apiUrl, {
                     method: 'PATCH',
                     headers: {

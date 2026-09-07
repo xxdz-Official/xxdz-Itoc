@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <!-- 网站主页 -->
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/OwO.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- 帮助文档主入口 -->
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/help.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- ====== 帮助文档各个章节（独立页面） ====== -->
+    <!-- 入门篇 -->
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/start.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/install.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/interface.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/quickstart.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 核心功能篇 -->
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/timeline.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/czemaker.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/czemaker_advanced.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/preview.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/compile.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- 进阶篇 -->
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/uiclass.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/plugins.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/cooperation.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- 支持与社区 -->
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/faq.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/shortcuts.html</loc>
+        <lastmod>2026-09-07</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.6</priority>
+    </url>
+</urlset>

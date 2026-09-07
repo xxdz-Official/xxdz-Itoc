@@ -1,0 +1,256 @@
+<!-- czemaker_advanced.html - CZEmaker 弹窗编排（进阶篇） -->
+<!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc CZEmaker 弹窗编排进阶篇 - 小小电子xxdz开发的 xxdz Itoc 工具，深入讲解窗口位置控制、图片镂空、视频播放、模类框、自定义尺寸与窗口寿命等高级功能">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,CZEmaker,弹窗编排进阶,窗口位置,图片镂空,模类框,视频播放,Windows Crazy Error">
+<meta property="og:title" content="CZEmaker 弹窗编排 · 进阶篇 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc CZEmaker 弹窗编排进阶篇 - 小小电子xxdz开发的 xxdz Itoc 高级功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>CZEmaker 弹窗编排 · 进阶篇 - xxdz Itoc 帮助文档</title>
+<style>
+    body {
+        font-family: "Consolas", "Microsoft YaHei", "Segoe UI", sans-serif;
+        line-height: 1.8;
+        color: #333;
+        padding: 24px 32px;
+        background: #fff;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    h1 { font-size: 28px; color: #444; border-bottom: 2px solid #d8cfef; padding-bottom: 8px; margin-top: 0; letter-spacing: 1px; }
+    h2 { font-size: 22px; color: #555; border-bottom: 1px solid #f0eaf8; padding-bottom: 6px; margin-top: 32px; }
+    h3 { font-size: 18px; color: #666; margin-top: 24px; }
+    p { text-indent: 2em; margin: 12px 0; }
+    ol, ul { padding-left: 24px; }
+    li { margin: 8px 0; }
+    .tip {
+        background: #f8f5ff;
+        border-left: 4px solid #ab92f5;
+        padding: 12px 18px;
+        margin: 16px 0;
+        border-radius: 0 6px 6px 0;
+    }
+    .tip strong { color: #6b4a9a; }
+    .warning {
+        background: #fff5f5;
+        border-left: 4px solid #e74c3c;
+        padding: 12px 18px;
+        margin: 16px 0;
+        border-radius: 0 6px 6px 0;
+    }
+    .warning strong { color: #c0392b; }
+    code {
+        background: #f5f0ff;
+        padding: 2px 6px;
+        border: 1px solid #e8dfff;
+        font-family: "Consolas", monospace;
+        font-size: 13px;
+        color: #6b4a9a;
+    }
+    kbd {
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        padding: 1px 6px;
+        font-family: "Consolas", monospace;
+        font-size: 13px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+        font-size: 14px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 10px 14px;
+        text-align: left;
+        vertical-align: top;
+    }
+    th {
+        background: #f5f0ff;
+        color: #444;
+        font-weight: 600;
+        border-bottom: 2px solid #d8cfef;
+    }
+    tr:nth-child(even) { background: #faf8ff; }
+</style>
+
+<h1>🎯 CZEmaker 弹窗编排 · 进阶篇</h1>
+
+<p>基础篇教会了你「怎么让一个音符弹出窗口」。进阶篇要解决的是：<strong>这个窗口弹在哪儿？怎么弹？长什么样？</strong></p>
+
+<p>这里面涉及窗口位置控制（四种模式的完整参数）、特殊窗口类型（图片镂空、视频、模类框的完整配置）、顶部右侧功能区、自定义尺寸与窗口寿命的互斥关系。</p>
+
+
+
+<h2>特殊窗口类型</h2>
+
+<h3>图片框</h3>
+<p>弹窗里显示一张图片。支持 PNG、JPG、GIF（动图）、BMP、ICO。选择图片后会自动复制到工程的 <code>img/</code> 目录（<code>_copy_image_to_project</code>）。</p>
+
+<p><strong>缩放百分比（<code>scale_percent</code>）：</strong> 调整图片显示大小（10%-200%）。滑块和输入框联动（<code>scale_slider</code> 和 <code>scale_percent_var</code>），修改时通过 <code>_update_image_size_from_percent</code> 通知主面板更新 W/H 输入框。</p>
+
+<p><strong>镂空图片窗口（<code>hollow_enabled</code>）：</strong> 让图片的背景变透明。支持两种模式：</p>
+<ul>
+    <li><strong>透明通道（alpha）：</strong> 直接使用 PNG 自带的透明通道。选择 PNG 图片时，如果镂空已勾选，会自动切换到此模式（<code>_on_window_type_selected</code> 中自动处理）。</li>
+    <li><strong>色度抠图（chroma）：</strong> 指定一个颜色变成透明。透明色由 <code>hollow_color</code> 控制，点击「选择」按钮可以打开颜色选择器（<code>pick_hollow_color</code>），点击「拾取」按钮可以打开图片拾取窗口（<code>ColorPicker</code>）从图片上取色。</li>
+</ul>
+<p>镂空子选项（透明色输入框、选择/拾取按钮、颜色预览方块）的启用状态由 <code>on_hollow_option_changed</code> 和 <code>on_hollow_mode_changed</code> 控制。只有在「镂空已勾选 <strong>且</strong> 色度抠图模式」时，透明色相关控件才启用。</p>
+
+<div class="tip">
+    <strong>💡 GIF 动图：</strong> 选择 GIF 文件后，<code>load_and_display_image</code> 会检测到 GIF 并自动分离帧（<code>_gif_frames</code> 和 <code>_gif_durations</code>），启动动画播放（<code>_start_gif_animation</code>）。对于较大的 GIF，解释器会使用手动帧播放方式（<code>_scale_gif</code>）来优化性能。
+</div>
+
+<p><strong>自定义尺寸与图片比例匹配：</strong> 当「自定义尺寸」复选框勾选时，W/H 输入框启用。如果用户手动修改了 W/H 的值，<code>_on_image_video_wh_change</code> 会检查当前比例是否匹配原始图片比例：</p>
+<ul>
+    <li><strong>比例匹配：</strong> 启用缩放百分比滑块，并自动将百分比设置为 <code>int(w / orig_width * 100)</code>。</li>
+    <li><strong>比例不匹配：</strong> 禁用缩放百分比滑块，并在缩放后尺寸显示「(自定义比例)」提示。</li>
+</ul>
+<p>图片加载时，<code>_update_image_size_for_preview</code> 会通知主面板更新 W/H 输入框（显示原始尺寸，但输入框保持禁用），然后 <code>_sync_slider_from_wh_after_load</code> 检查比例并同步滑块状态。</p>
+
+<h3>视频框</h3>
+<p>弹窗里播放视频。支持 MP4、WMV、AVI、MOV、MKV、FLV、WebM。选择视频后会自动复制到工程的 <code>video/</code> 目录（<code>_copy_video_to_project</code>）。</p>
+
+<p><strong>缩放百分比（<code>video_scale_percent</code>）：</strong> 与图片框类似，通过滑块和输入框控制视频画面大小，通过 <code>_update_video_size_from_percent</code> 通知主面板更新 W/H。</p>
+
+<p><strong>播放视频：</strong> 点击「播放视频」按钮会打开一个独立的 Pygame 播放器窗口（<code>open_video_player_window</code> → <code>_run_pygame_player_direct</code>）。播放器窗口包含进度条（可拖拽跳转）、播放/暂停、停止按钮，支持 ESC 键退出。</p>
+
+<p><strong>视频尺寸控制：</strong> 与图片框一样，视频也支持「自定义尺寸」复选框。视频加载时，<code>_update_video_size_for_preview</code> 通知主面板更新 W/H，<code>_sync_slider_from_wh_after_load</code> 检查比例并同步滑块。</p>
+
+<div class="warning">
+    <strong>⚠️ 注意：</strong> 视频框在「测试运行」模式下使用独立的 Pygame 子进程播放（<code>create_video_popup</code>），视频需要提前转码为兼容格式。建议使用 MP4（H.264 编码）。Pygame 播放器窗口不会播放视频所带的音频（提示文本已说明）。
+</div>
+
+<h3>气泡/通知</h3>
+<p>屏幕角落弹出的通知条，几秒后自动消失。配置很简单：在文本框里写通知内容就行。没有窗口标题、类名这些概念。</p>
+<p>在解释器中，<code>create_windows_notification</code> 会依次尝试三种方式发送通知：</p>
+<ol>
+    <li>使用 <code>plyer</code> 库发送系统通知。</li>
+    <li>使用 <code>win10toast</code> 库发送 Toast 通知。</li>
+    <li>使用 <code>win32api.MessageBox</code> 作为最后的备选方案。</li>
+</ol>
+<p>气泡的通知内容来自 <code>notice_content</code> 字段，窗口标题可自定义（用于通知标题）。</p>
+
+<h3>执行代码</h3>
+<p>这个比较特殊——它实际上 <strong>不是一种窗口类型</strong>，而是一个 <strong>全局命令</strong>。在 CZEmaker 面板里把它当成窗口类型来配置，但解释器在检测到 <code>window_type == "code"</code> 时，会将代码内容交给 <code>GlobalCommandExecutor.execute_code()</code> 在后台执行，而不会弹窗。</p>
+
+<p><code>execute_code</code> 方法会在主线程中执行 Python 代码，并提供了 <code>QApplication</code>、<code>QWidget</code>、<code>player</code>、<code>self</code> 等上下文变量。代码内容保存在 <code>code_content</code> 字段中。</p>
+
+<div class="warning">
+    <strong>⚠️ 注意：</strong> 「预览和组装打包模式无法运用 Python 代码，只有编译模式可以」——也就是说，在 Itoc 里按 F5 测试运行时，代码不会执行。只有编译成 exe 后才会跑。所以别在测试阶段拿它调试逻辑。
+</div>
+
+<h3>模类框</h3>
+<p>窗口类型里有个特殊的「模类框」——它不直接配置弹窗内容，而是从「模类设计器」（UI Class）制作的模板文件里读取窗口结构。选「模类框」后，窗口类型选择器上方会出现一个「选择模类」下拉框（<code>_create_class_selector</code>）。</p>
+
+<p><strong>模类选择器的交互流程：</strong></p>
+<ol>
+    <li>下拉框中的模类名称来自工程内置模类（<code>ui_Class_data</code>）和全局模类（<code>UI_Class_Files</code> 目录）。</li>
+    <li>选择模类后，<code>_on_class_selected</code> 会判断该模类是否来自全局文件夹。如果是全局模类，<code>_copy_global_class_to_project</code> 会将其复制到工程内置模类（带进度条窗口）。</li>
+    <li>然后 <code>_load_selected_class</code> 在后台线程中读取模类数据，并在主线程中应用：设置窗口标题（禁用状态）、内容文本框显示控件列表（灰色背景）、加载编组、加载位置配置。</li>
+    <li>加载完成后，调用 <code>mark_config_modified(force=True)</code> 强制标记为已修改，让「应用」按钮可用。</li>
+</ol>
+
+<p><strong>模类框的特殊限制：</strong></p>
+<ul>
+    <li>窗口标题输入框被禁用（<code>state="disabled"</code>），内容文本框被禁用并变为灰色背景。</li>
+    <li>自定义尺寸复选框被强制禁用（<code>_force_disable_custom_size_check</code>）。</li>
+    <li>图标下拉菜单被禁用（<code>icon_combo.config(state="disabled")</code>）。</li>
+    <li>「选择模类」下拉框位于 <code>row1</code> 的第一个位置（在「窗口标题」之前）。</li>
+</ul>
+
+<p>在解释器中，模类框由 <code>create_class_popup</code> 方法处理，会解析模类数据中的 <code>components</code> 列表，动态创建 <code>QLabel</code>、<code>QPushButton</code>、<code>QLineEdit</code>、<code>QRadioButton</code>、<code>QCheckBox</code>、<code>QProgressBar</code>、<code>QGroupBox</code>、<code>QTabWidget</code> 等控件。模类数据从工程文件的 <code>class_data_project</code> 字段加载。</p>
+
+<h2>顶部右侧功能区</h2>
+<p>在窗口标题行的最右边，有五个控制选项（<code>top_right_frame</code>）。在「图片框」「视频框」「模类框」模式下，图标下拉菜单会被禁用；在「气泡/通知」「执行代码」模式下，整个 <code>top_right_frame</code> 会被隐藏（<code>_hide_top_right_frame</code>）。</p>
+
+<h3>图标（<code>icon_combo</code>）</h3>
+<p>窗口标题栏的图标样式，可模拟不同 Windows 版本风格。选项包括：自动、Windows11、Windows10、Windows Logon、Windows Vista、Windows 7、Windows 8、Windows XP、Windows XP以下。选择「自动」时，解释器会根据当前系统版本自动选择对应的图标文件夹。</p>
+
+<p>在解释器中，<code>get_icon_for_window_type</code> 会根据 <code>window_icon</code> 字段从对应的风格文件夹加载图标。如果指定风格找不到，会回退到系统检测的默认风格。</p>
+
+<h3>效果音（<code>sound_combo</code>）</h3>
+<p>弹窗出现时播放的音效。选项：自动、信息框、警告框、错误框、询问框、没有。选择「自动」时，解释器会根据窗口类型播放对应的系统提示音。选择「没有」则不播放任何声音。</p>
+<p>在解释器中，<code>play_system_sound</code> 会使用 <code>winsound</code> 播放系统提示音，支持 <code>MB_ICONASTERISK</code>、<code>MB_ICONEXCLAMATION</code>、<code>MB_ICONHAND</code>、<code>MB_ICONQUESTION</code> 四种声音类型。</p>
+
+<h3>控制钮（<code>control_combo</code>）</h3>
+<p>窗口标题栏显示哪些按钮（关闭、最大化、最小化）。下拉选项：「自动」和「设置」。选择「设置」后会打开一个对话框（<code>_open_control_settings_dialog</code>），用三个复选框分别控制关闭、最大化、最小化按钮的显示。</p>
+<p>选择「设置」并确认后，下拉菜单的选项会变成「自定义: 关闭、最大化、最小化」（<code>_update_control_combo_display</code>），并且在 <code>control_config</code> 中保存详细配置。保存配置时，<code>window_control</code> 字段为 <code>"custom"</code>，<code>window_control_detail</code> 包含三个布尔值。</p>
+
+<h3>按钮区（<code>button_combo</code>）</h3>
+<p>对话框底部的按钮（确定、取消、保存等），可以自定义顺序。下拉选项：「默认」和「设置」。选择「设置」后会打开一个更复杂的对话框（<code>_open_button_settings_dialog</code>），包含：</p>
+<ul>
+    <li><strong>按钮预览区域：</strong> 显示当前按钮列表，点击按钮可以调整顺序（← 向前移动 / 向后移动 →）或删除（✕ 删除）。</li>
+    <li><strong>预设按钮：</strong> 点击即可添加（确定、取消、保存、删除、应用、OK、是、否、关闭、重试、忽略）。</li>
+    <li><strong>自定义按钮：</strong> 输入框 + 添加按钮，可以添加自定义文本的按钮。</li>
+</ul>
+<p>关闭对话框时，<code>_update_button_combo_display</code> 会更新下拉菜单显示（如「自定义: 3个按钮」），<code>button_config</code> 中保存按钮列表。保存配置时，<code>window_button</code> 为 <code>"custom"</code>，<code>window_button_detail</code> 包含 <code>buttons</code> 列表。</p>
+
+<h3>透明度（<code>opacity_entry</code>）</h3>
+<p>窗口的透明度（0%-100%）。输入框绑定 <code>mark_config_modified</code>，修改后会自动标记为已修改。在解释器中，透明度会通过 <code>SetLayeredWindowAttributes</code>（Windows）或 <code>setWindowOpacity</code>（Qt）应用。</p>
+
+<h2>自定义尺寸与窗口寿命</h2>
+
+<h3>自定义尺寸（<code>custom_size_var</code>）</h3>
+<p>勾选后可以手动指定窗口的宽度和高度（单位：像素）。不勾选的话，窗口尺寸由系统根据内容自动决定。</p>
+
+<p><strong>互斥关系：</strong></p>
+<ul>
+    <li>「模类框」模式下，自定义尺寸复选框被强制禁用（<code>_force_disable_custom_size_check</code>），即使勾选了也会被取消。</li>
+    <li>「图片框」和「视频框」模式下，复选框本身是启用状态，但 W/H 输入框的启用状态由复选框控制（<code>_toggle_custom_size_controls</code>）。</li>
+    <li>切换窗口类型时，<code>_restore_saved_fields</code> 会恢复之前的自定义尺寸状态。</li>
+</ul>
+<p>W/H 输入框变化时，<code>_on_image_video_wh_change</code> 会检查图片/视频比例是否匹配，并相应地启用/禁用缩放滑块。</p>
+
+<h3>窗口寿命（<code>life_var</code>）</h3>
+<p>指定窗口显示多少毫秒后自动关闭。</p>
+
+<p><strong>「使用音符块时长」（<code>use_note_duration_var</code>）的互斥逻辑：</strong></p>
+<ul>
+    <li>当「寿命」未勾选时：寿命输入框禁用，「使用音符块时长」复选框禁用。</li>
+    <li>当「寿命」已勾选但「使用音符块时长」已勾选：寿命输入框禁用，「使用音符块时长」复选框启用。</li>
+    <li>当「寿命」已勾选且「使用音符块时长」未勾选：寿命输入框启用，「使用音符块时长」复选框启用。</li>
+</ul>
+<p>这个逻辑由 <code>_toggle_life_controls</code> 控制。如果「使用音符块时长」勾选，窗口寿命会由音符的 <code>duration_s</code> 字段决定（秒转毫秒），忽略寿命输入框中的值。</p>
+
+<p>在解释器中，<code>get_window_life_time</code> 会先检查 <code>use_note_duration</code>，如果为 <code>True</code> 则直接使用音符的 <code>duration_s</code> 字段，否则使用 <code>value</code> 字段（单位 ms）。</p>
+
+<h2>多选编辑的「属性编辑标记」</h2>
+<p>在多选模式下，<code>mark_property_edited(prop_name)</code> 会被每个控件的变化事件触发。被标记的属性名会加入到 <code>edited_properties</code> 集合中。支持的属性名包括：</p>
+<ul>
+    <li><code>window_title</code> — 窗口标题</li>
+    <li><code>window_content</code> — 窗口内容</li>
+    <li><code>window_class</code> — 窗口类名</li>
+    <li><code>window_group</code> — 所在编组</li>
+    <li><code>window_icon</code> — 图标</li>
+    <li><code>window_sound</code> — 效果音</li>
+    <li><code>window_control</code> — 控制钮</li>
+    <li><code>window_button</code> — 按钮区</li>
+    <li><code>window_opacity</code> — 透明度</li>
+    <li><code>window_life</code> — 窗口寿命（包括复选框和输入框）</li>
+    <li><code>window_position</code> — 窗口位置（所有位置相关的控件）</li>
+    <li><code>custom_size_enabled</code> — 自定义尺寸复选框</li>
+    <li><code>custom_width</code> / <code>custom_height</code> — 自定义尺寸 W/H</li>
+    <li><code>scale_percent</code> / <code>video_scale_percent</code> — 图片/视频缩放百分比</li>
+</ul>
+<p>应用时，只有 <code>edited_properties</code> 中的属性会被更新，其他属性保持不变。这就是「智能更新」的核心实现。</p>
+
+<h2>进阶篇小结</h2>
+<p>到这里，CZEmaker 的全部功能就都过了一遍：</p>
+<ul>
+    <li>窗口位置控制（四种模式，每种模式的完整参数和互斥关系）</li>
+    <li>特殊窗口类型（图片镂空、视频播放、气泡通知、执行代码、模类框）</li>
+    <li>顶部右侧功能区（图标、音效、控制钮、按钮区、透明度）</li>
+    <li>自定义尺寸与窗口寿命的互斥关系</li>
+    <li>多选编辑的智能更新机制</li>
+    <li>拦截层与修改保护</li>
+</ul>
+<p>还有两个相关的模块，这里先提一下，以后会专门讲：</p>
+<ul>
+    <li><strong>过渡（入场/出场动画）：</strong> 在「过渡」选项卡中配置，可以让窗口以滑动、缩放、淡入淡出等方式出现和消失——这个在 <strong>「过渡配置」</strong> 章节详细讲。</li>
+    <li><strong>模类设计器：</strong> 制作自定义窗口模板的工具——这个在 <strong>「模类设计器 (UI Class)」</strong> 章节详细讲。</li>
+</ul>
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>

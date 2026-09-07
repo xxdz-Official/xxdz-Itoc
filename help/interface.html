@@ -1,0 +1,200 @@
+<!-- 主界面介绍 - 初识 Itoc 的主界面 -->
+<!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 主界面概览 - 小小电子xxdz开发的 xxdz Itoc 编辑器界面介绍，包含工具栏、时间轴、音符轨道、底部选项卡等核心功能区域">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,主界面,时间轴,音符轨道,弹窗编辑,CZEmaker,Windows Crazy Error">
+<meta property="og:title" content="界面概览 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 主界面概览 - 小小电子xxdz开发的 xxdz Itoc 编辑器界面介绍">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>界面概览 - xxdz Itoc 帮助文档</title>
+<style>
+    body {
+        font-family: "Consolas", "Microsoft YaHei", "Segoe UI", sans-serif;
+        line-height: 1.8;
+        color: #333;
+        padding: 24px 32px;
+        background: #fff;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    h1 { font-size: 28px; color: #444; border-bottom: 2px solid #d8cfef; padding-bottom: 8px; margin-top: 0; letter-spacing: 1px; }
+    h2 { font-size: 22px; color: #555; border-bottom: 1px solid #f0eaf8; padding-bottom: 6px; margin-top: 32px; }
+    h3 { font-size: 18px; color: #666; }
+    p { text-indent: 2em; margin: 12px 0; }
+    ol, ul { padding-left: 24px; }
+    li { margin: 8px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th, td { border: 1px solid #ddd; padding: 10px 14px; text-align: left; vertical-align: top; }
+    th { background: #f5f0ff; color: #444; font-weight: 600; border-bottom: 2px solid #d8cfef; }
+    tr:nth-child(even) { background: #faf8ff; }
+    code { background: #f5f0ff; padding: 2px 6px; border: 1px solid #e8dfff; font-family: "Consolas", monospace; font-size: 13px; color: #6b4a9a; }
+    .highlight { color: #7c4dff; font-weight: 600; }
+    .soft { color: #888; font-size: 13px; }
+</style>
+
+<h1>初识 Itoc 的主界面</h1>
+
+<p>你一打开 Itoc，最先看到的就是一个 <strong>淡紫色调</strong> 的窗口，标题栏写着 <code>xxdz Itoc V2</code> 后面跟着你当前打开的工程名 整体布局是经典的三段式——上面工具栏、中间画布、下面选项卡，左右两侧还有滚动条 嗯...第一眼看过去密密麻麻的，但别怕，我带你挨个认一认</p>
+
+<h2>窗口大小和默认位置</h2>
+<p>Itoc 默认窗口尺寸是 <code>2348×1674</code> 像素，启动时会根据你上次保存的位置来恢复窗口状态 如果你上次最大化过窗口，这次它也会自动最大化 如果你喜欢小屏幕模式，可以在 视图 菜单里打开，窗口缩放比例会调整为 0.75 倍，适合 1366×768 这种小分辨率屏幕</p>
+
+<h2>顶部工具栏（一屏的按钮组）</h2>
+<p>窗口最上方是一大片按钮区域，从左到右依次是：</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>区域</th>
+            <th>里面的东西</th>
+            <th>它是干嘛的</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>文件选择组</td>
+            <td>打开工程、保存工程、关闭工程、加载MIDI、卸载MIDI、加载音频、卸载音频</td>
+            <td>图形样式的按钮，鼠标悬浮会变蓝色高亮，下面有灰色小标签显示当前加载的文件名</td>
+        </tr>
+        <tr>
+            <td>快捷操作栏¹</td>
+            <td>开启框选模式、进入移动模式、开启跟随、添加标记、添加全局命令</td>
+            <td>这些按钮长得像普通的 <code>ttk.Button</code>，灰色背景黑字，按下去会切换激活状态</td>
+        </tr>
+        <tr>
+            <td>快捷操作栏²</td>
+            <td>撤销 ↺、重做 ↻、测试运行、进入绘制、开始选区</td>
+            <td>撤销和重做是圆形的字符按钮，测试运行是宽一点的长方形按钮，绘制按钮文本是 "进入绘制"</td>
+        </tr>
+        <tr>
+            <td>播放控制组</td>
+            <td>播放 ▶、停止 ⏹</td>
+            <td>两个方形按钮，播放按钮点击后变成 ⏸ 暂停图标，停止按钮点击后回到开头</td>
+        </tr>
+        <tr>
+            <td>曲速调节组</td>
+            <td>目标BPM输入框、原速显示、使用原曲曲速按钮</td>
+            <td>一个小框子里：第一行是 "目标BPM" 标签加输入框，第二行显示 "原速：120BPM"，第三行是按钮</td>
+        </tr>
+        <tr>
+            <td>缩放组件</td>
+            <td>X轴缩放滑块、Y轴缩放滑块</td>
+            <td>两个水平滑块，X轴范围 0.2~10.0，Y轴范围 0.5~3.0，滑块很小巧只有 7px 高</td>
+        </tr>
+        <tr>
+            <td>轮播图组件</td>
+            <td>一个 336×83 的图片轮播区域</td>
+            <td>会每隔 3 秒自动切换一张宣传图，右下角有提示文字，如果有通知消息也会在这里弹出来</td>
+        </tr>
+        <tr>
+            <td>音量控制组</td>
+            <td>总音量、MIDI音量、音频音量</td>
+            <td>三个垂直堆叠的滑块，每个滑块上方有文字标签，滑块长度 80px，宽度 8px</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>这些按钮组之间用 <code>ttk.LabelFrame</code> 框起来，所以你会看到每个分组外有一圈浅色的边框，标题写在左上角 比如 "文件选择"、"快捷操作栏¹"、"播放控制" 这些灰色小标题</p>
+
+<h2>统计信息面板（一条横着的状态栏）</h2>
+<p>在工具栏下方、画布上方，有一条横着的统计栏 它默认是显示的，背景色和窗口边框一样，里面有这些文字：</p>
+
+<ul>
+    <li><code>总音符块：0</code> - 当前工程一共多少个音符</li>
+    <li><code>框选音符块：0</code> - 当前选中了多少个音符</li>
+    <li><code>当前节拍：0.0</code> - 判定线所在的节拍位置</li>
+    <li><code>时间：0.000s / 0.000s</code> - 音频播放进度</li>
+    <li><code>当前速度：120BPM（原速：120BPM）</code> - 当前BPM和原始BPM</li>
+    <li><code>音调强度：1.0x</code> - 音高偏移的强度</li>
+    <li><code>音频起始：0ms</code> - 音频起始偏移</li>
+</ul>
+
+<p>这些标签都是 <code>ttk.Label</code>，字体是 Microsoft YaHei 8号 小小的灰色文字，横向排列在一行里，如果你觉得碍眼，可以在 视图 菜单里折叠它</p>
+
+<h2>主画布（最核心的区域）</h2>
+<p>中间这一大块，背景色是 <code>#E8DBFF</code> 淡紫色，是你的灵感画板 画布上有这些元素：</p>
+
+<h3>时间轴（最上方）</h3>
+<p>画布顶部有一条 <code>30px</code> 高的深紫色条，颜色是 <code>#AE95F7</code> 上面有白色的刻度线和数字，每 4 拍一个主要刻度，显示节拍数字 刻度线的粗细和颜色根据是否"整拍"而变化：整拍是白色粗线，非整拍是浅灰色细线</p>
+
+<h3>全局命令时间轴（时间轴下方）</h3>
+<p>紧挨着时间轴下面，有一条 <code>15px</code> 高的橙色渐变条，从左到右从橘红色过渡到浅紫色 最左侧写着 "全局命令" 三个白色宋体字，如果给音符挂了全局命令，这里会出现亮蓝色的小方块标记，点击可以编辑</p>
+
+<h3>标记区域</h3>
+<p>在全局命令条下面，是标记的显示区域 标记是 <code>5px</code> 高的彩色小条，颜色由你指定（默认橙色），上面有文字描述 右键点击标记可以编辑或删除</p>
+
+<h3>音符轨道（主要区域）</h3>
+<p>画布主体是音符轨道，每个轨道 <code>60px</code> 高，轨道之间间隔 <code>10px</code> 轨道背景是 <code>#F5F0FF</code> 或 <code>#D4C8E0</code> 交替的淡紫色，上面有细网格线（每 4 拍一条虚线）</p>
+
+<p>音符块是蓝色的矩形，颜色根据音高变化——高音偏亮蓝，低音偏深蓝 音符块中央显示音高数字，左上角如果挂了 CZEmaker 配置会有一个黄色小三角 如果音符被禁用了，整个音符块会变成灰色并画一条红色对角线</p>
+
+<h3>判定线（红色竖线）</h3>
+<p>画布上有一条 <code>1px</code> 宽的纯红色竖线，顶部有个红色小箭头，贯穿整个画布高度 这条线就是你的"播放指针"，拖动它可以定位到歌曲的任意位置 播放时它会跟着音乐移动，你可以通过拖拽时间轴区域来手动控制它</p>
+
+<h3>媒体轨道（音频波形）</h3>
+<p>在时间轴和音符轨道之间，有一条 <code>40px</code> 高的媒体轨道，背景是 <code>#DEBFFF</code> 淡紫色 如果你加载了音频文件，这里会显示音频波形图（默认颜色是青色），波形上方有一个白色竖线表示当前播放位置</p>
+
+<h2>底部选项卡（功能面板区）</h2>
+<p>窗口最下面是一个 <code>ttk.Notebook</code> 选项卡控件，里面有好几个标签页：</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>选项卡</th>
+            <th>里面是什么</th>
+            <th>什么时候用</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>CZEmakers</strong></td>
+            <td>弹窗编辑器，左边是预览区，右边是属性配置区，有图片预览、文字输入、动画设置</td>
+            <td>默认选中这个，给音符挂弹窗配置就在这操作</td>
+        </tr>
+        <tr>
+            <td><strong>过渡配置</strong></td>
+            <td>音符入场/出场动画配置，比如淡入、缩放、旋转</td>
+            <td>想让音符动起来的时候用</td>
+        </tr>
+        <tr>
+            <td><strong>调整图层</strong></td>
+            <td>调整图层的属性和列表管理</td>
+            <td>需要批量调整音符属性的时候用</td>
+        </tr>
+        <tr>
+            <td><strong>媒体浏览器</strong></td>
+            <td>浏览本地音频、视频文件，快速拖入工程</td>
+            <td>找素材的时候用，可以预览音频</td>
+        </tr>
+        <tr>
+            <td><strong>音频音谱</strong></td>
+            <td>音频频谱分析显示，能看到实时波形频谱</td>
+            <td>调音的时候用，蛮酷的</td>
+        </tr>
+        <tr>
+            <td><strong>字幕</strong></td>
+            <td>SRT 字幕编辑器，加载字幕文件后同步显示</td>
+            <td>要给表演配字幕的时候用</td>
+        </tr>
+        <tr>
+            <td><strong>终端</strong></td>
+            <td>内嵌的 Python 终端，可以执行命令、调试脚本</td>
+            <td>高级玩家用的，可以写脚本控制 Itoc</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>默认选中的是 <code>CZEmakers</code> 选项卡，如果你没加载 MIDI 文件，这个面板会显示一个灰色的提示"请先选择音符" 一旦你选中了一个音符，这里就会自动切换成该音符的弹窗配置界面</p>
+
+<h2>滚动条</h2>
+<p>画布右侧有一根垂直滚动条，画布下方有一根水平滚动条 都是 <code>ttk.Scrollbar</code> 样式的，在 Windows 上看起来是那种细细的灰色条 鼠标滚轮可以垂直滚动，<kbd>Shift</kbd>+滚轮是水平滚动，中键拖拽画布也可以平移</p>
+
+<h2>整体视觉风格</h2>
+<p>整个 Itoc 用的是 <code>紫色系</code> 主题，所以有的部分带有一点点紫色系——从淡紫 <code>#E8DBFF</code> 到深紫 <code>#AE95F7</code>，再到橙色 <code>#E85D3A</code> 的全局命令条 音符块蓝色系 <code>#66ccff</code> 是唯一亮眼的对比色，红色判定线则负责提醒你"现在在哪"</p>
+
+<p>如果觉得默认配色不太好看，可以在 文件 → 首选项 里换皮肤，支持加载自定义图片做背景，透明度 0.5 左右，会覆盖在画布最底层</p>
+
+<p>主界面准备好后，右下角会弹出一个"每日小技巧"的小窗，教你一些冷知识 不喜欢的话可以在设置里关掉</p>
+
+<p>好了，这就是你打开 Itoc 后第一眼看到的所有东西 麻雀虽小五脏俱全，虽然按钮多，但每个都有它的用处 你多玩一会儿，它们就都是你熟悉的小伙伴了</p>

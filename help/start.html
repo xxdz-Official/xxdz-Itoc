@@ -1,0 +1,133 @@
+<!-- start.html - 初识 Itoc -->
+<!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 是一款由小小电子xxdz开发的 Windows Crazy Error 工具，通过 MIDI 音乐编排弹窗效果，让音符触发弹窗表演，支持 xxdz Itoc 完整工作流">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,Windows Crazy Error,MIDI编排,弹窗效果,弹窗开发工具,音乐可视化">
+<meta property="og:title" content="初识 Itoc - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 是一款由小小电子xxdz开发的 Windows Crazy Error 工具，通过 MIDI 音乐编排弹窗效果">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>初识 Itoc - xxdz Itoc 帮助文档</title>
+<!-- start.html 里的样式，加在 <body> 后面或 <head> 里 -->
+<style>
+    /* 正文样式 */
+    body {
+        font-family: "Consolas", "Microsoft YaHei", "Segoe UI", sans-serif;
+        line-height: 1.8;
+        color: #333;
+        padding: 24px 32px;
+        background: #fff;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* 标题 */
+    h1 { font-size: 28px; color: #444; border-bottom: 2px solid #d8cfef; padding-bottom: 8px; margin-top: 0; letter-spacing: 1px; }
+    h2 { font-size: 22px; color: #555; border-bottom: 1px solid #f0eaf8; padding-bottom: 6px; margin-top: 32px; }
+    h3 { font-size: 18px; color: #666; }
+
+    /* 段落（首行缩进） */
+    p {
+        text-indent: 2em;
+        margin: 12px 0;
+    }
+
+    /* 列表 */
+    ol, ul {
+        padding-left: 24px;
+    }
+    li {
+        margin: 8px 0;
+    }
+
+    /* 表格 */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+        font-size: 14px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 10px 14px;
+        text-align: left;
+        vertical-align: top;
+    }
+    th {
+        background: #f5f0ff;
+        color: #444;
+        font-weight: 600;
+        border-bottom: 2px solid #d8cfef;
+    }
+    tr:nth-child(even) {
+        background: #faf8ff;
+    }
+
+    /* 行内代码 */
+    code {
+        background: #f5f0ff;
+        padding: 2px 6px;
+        border: 1px solid #e8dfff;
+        font-family: "Consolas", monospace;
+        font-size: 13px;
+        color: #6b4a9a;
+    }
+</style>
+<h1>初识 Itoc</h1>
+
+<h2>Itoc 是做什么的呢？</h2>
+<p>Itoc 呢，是小小电子xxdz（也就是我...）开发的一个 <strong>Windows Crazy Error 开发工具</strong> 说白了，就是让你能把音乐（MIDI 文件）配上 Windows 的各种弹窗效果，做成那种一个接一个弹窗跳出来的表演</p>
+
+<p>以前想做这种效果，直接写代码可麻烦死了 你得懂 Windows API，还得自己写一堆跟音乐对齐的逻辑 现在呢，你只要把 MIDI 导进去，在音符上挂上弹窗，它就能跟着音乐节奏一个个蹦出来 就这么简单</p>
+
+<p>这整套工作流——把 MIDI 音乐当成演出模板，在音符上挂弹窗，按时间轴编排，测试运行，最后编译成 exe——在它出现之前呢...世界上没有项目这么干过 音乐就是剧本，音符就是可并行的时间线，整个流程从头到尾都是一个创新的东西呢</p>
+
+<h2>这个工具里面有哪些东西</h2>
+<p>你会用到这么几种 ITOC 文件类型：</p>
+<table>
+    <thead>
+        <tr>
+            <th>扩展名</th>
+            <th>它是啥</th>
+            <th>干嘛用的</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>.czemidi</code></td>
+            <td>工程文件</td>
+            <td>你平时编辑的就是这个，里面存了你所有的音符、弹窗、动画、命令这些设置 想在编辑器改你这个作品，就得打开这个文件</td>
+        </tr>
+        <tr>
+            <td><code>.UIclass</code></td>
+            <td>模类文件</td>
+            <td>这个是你自己用模类设计器搭建的弹窗模板，是 Itoc 最自由的弹窗 如果你老是要弹出同样样子的窗口，可以把它导入 Itoc 模类文件夹，下次直接用就行</td>
+        </tr>
+        <tr>
+            <td><code>.CzeData</code></td>
+            <td>中间数据文件</td>
+            <td>这是从工程渲染出来的中间文件，Itoc 的播放器会读它来演出 一般在开发的时候用，给播放器拿来跑一下看看效果 它不算最终产物</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>大概的工作流程</h2>
+<p>拿到 Itoc 之后，基本就是这几步：</p>
+<ol>
+    <li>
+        <strong>先把工程建起来</strong>
+        <p>新建一个工程，然后把你喜欢的 MIDI 音乐拖进去 把伴奏的 MP3 音频也顺便选一下</p>
+    </li>
+    <li>
+        <strong>然后在音符上挂弹窗</strong>
+        <p>在时间轴上挑一个音符，给它绑上一个弹窗 你想让它在哪出现、长什么样、什么动画、待多久，都在这里设好 一首歌变成一场演出，还挺有意思的哈</p>
+    </li>
+    <li>
+        <strong>先跑一下看看</strong>
+        <p>设好了之后点一下测试运行，不用编译，马上就能看到效果 如果弹窗位置不对或者动画太奇怪，回去改一改，再跑一下 直到你觉得对了为止 呃...其实这个阶段挺容易上头的，一改就停不下来 qwq</p>
+    </li>
+    <li>
+        <strong>最后再打包分享</strong>
+        <p>觉得差不多了，就可以把它编译成可以单独运行的 exe 程序，发给朋友玩喵 ( ⓛ ω ⓛ *)</p>
+    </li>
+</ol>

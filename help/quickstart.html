@@ -1,0 +1,112 @@
+<!-- quickstart.html - 快速上手：您的第一个项目 -->
+<!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 快速上手教程 - 小小电子xxdz开发的 xxdz Itoc 工具，教您创建第一个项目，导入 MIDI 和音频，在音符上挂弹窗，完成弹窗表演编排">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,快速上手,第一个项目,MIDI导入,弹窗编排,Windows Crazy Error">
+<meta property="og:title" content="快速上手：您的第一个项目 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 快速上手教程 - 小小电子xxdz开发的 xxdz Itoc 工具，创建第一个项目">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>快速上手：您的第一个项目 - xxdz Itoc 帮助文档</title>
+<style>
+    /* 正文样式 */
+    body {
+        font-family: "Consolas", "Microsoft YaHei", "Segoe UI", sans-serif;
+        line-height: 1.8;
+        color: #333;
+        padding: 24px 32px;
+        background: #fff;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* 标题 */
+    h1 { font-size: 28px; color: #444; border-bottom: 2px solid #d8cfef; padding-bottom: 8px; margin-top: 0; letter-spacing: 1px; }
+    h2 { font-size: 22px; color: #555; border-bottom: 1px solid #f0eaf8; padding-bottom: 6px; margin-top: 32px; }
+    h3 { font-size: 18px; color: #666; }
+
+    /* 段落（首行缩进） */
+    p {
+        text-indent: 2em;
+        margin: 12px 0;
+    }
+
+    /* 列表 */
+    ol, ul {
+        padding-left: 24px;
+    }
+    li {
+        margin: 8px 0;
+    }
+
+    /* 提示框 */
+    .tip {
+        background: #f8f5ff;
+        border-left: 4px solid #ab92f5;
+        padding: 12px 18px;
+        margin: 16px 0;
+        border-radius: 0 6px 6px 0;
+    }
+    .tip strong {
+        color: #6b4a9a;
+    }
+
+    /* 行内代码 */
+    code {
+        background: #f5f0ff;
+        padding: 2px 6px;
+        border: 1px solid #e8dfff;
+        font-family: "Consolas", monospace;
+        font-size: 13px;
+        color: #6b4a9a;
+    }
+
+    /* 步骤编号 */
+    .step-num {
+        display: inline-block;
+        background: #ab92f5;
+        color: #fff;
+        font-weight: bold;
+        width: 28px;
+        height: 28px;
+        text-align: center;
+        line-height: 28px;
+        border-radius: 50%;
+        margin-right: 10px;
+        font-size: 14px;
+    }
+</style>
+
+<h1>🚀 快速上手：您的第一个项目</h1>
+
+<p>好啦，光说不练假把式 咱们直接动手做一个最简单的小项目，让您亲自感受一下 Itoc 的魔力 别紧张，跟着下面这几步走，几分钟就能看到效果</p>
+
+<div class="tip">
+    <strong>💡 准备工作：</strong> 您需要准备一首 MIDI 音乐（随便什么歌都行）和它对应的 MP3 音频文件 没有的话，Itoc 安装目录下的 <code>demo/</code> 文件夹里有一些示例文件可以用
+</div>
+
+<h2>第一步：新建工程</h2>
+<p>
+    <span class="step-num">1</span>
+    打开 Itoc，在菜单栏点击 <strong>「文件(F)」→「新建空白工程」</strong>
+</p>
+<p>
+    在弹出的对话框里，给您的项目起个名字（比如 "权御天下...但是真程序！"），然后选一个文件夹存放它 点「创建」，一个全新的 <code>.czemidi</code> 工程就诞生啦 ✨
+</p>
+
+<h2>第二步：导入 MIDI 和音频</h2>
+<p>
+    <span class="step-num">2</span>
+    点击工具栏上的 <strong>「🎵 打开MIDI」</strong> 按钮（就是那个带音符图标的），选择您的 MIDI 文件（例如 权御天下.mid）
+</p>
+<p>
+    <span class="step-num">3</span>
+    再点击旁边的 <strong>「🎵 打开音频」</strong> 按钮，选择对应的 MP3 或 WAV 文件(例如 权御天下_洛天依.mp3)
+</p>
+<p>
+    这时候您应该能看到时间轴上出现了彩色的音符块（颜色代表音高，你可以直观的看到你熟悉的旋律），音频轨道也显示出了波形 很神奇吧，MIDI 里的每个音符都变成了可以单独操作的“时间线”！
+</p>
+
+<div class="tip">
+    <strong>🎯 小技巧：</strong> 如果 MIDI 有多个轨道，导入的时候会弹出一个对话框让您选择要导入哪些轨道 不确定的话，选「全部导入」就好，以后可以慢慢删掉不要的（一般是不会导入伴奏器乐轨，只导入人声轨的）
+</div>

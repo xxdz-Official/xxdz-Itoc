@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://xxdz-official.github.io/xxdz-Itoc/sitemap.xml

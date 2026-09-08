@@ -3,1401 +3,151 @@
 <head>
     <meta name="msvalidate.01" content="4BAEA6DA804D3EAD53ED426D2BFA8C0B" />
     <meta charset="UTF-8">
-    <!-- 移动端视口设置：确保各设备上正确缩放 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <title>Itoc 项目主页</title>
     <meta name="description" content="世界上首个用音乐去'编程'的可视化开发工具！">
     <meta name="keywords" content="Itoc, xxdz_Itoc, 音乐编程, 可视化开发工具, 小小电子xxdz, 電籽, xxdz工作室, 音可">
     <link rel="icon" href="icon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="icon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="xxdz-Itoc/web.css">
     <style>
-        /* 嗯对，直角/主题色 AB92F5，这是Itoc的风格喵！ */
-        * {
-            box-sizing: border-box;
-            font-family: "Consolas", "Microsoft YaHei", sans-serif;
-        }
-        /* 鼠标悬浮文字错位动画。。。。优雅永不过时！ */
-        .glitch-text {
-            display: inline-block;
-            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
-            cursor: default;
-            position: relative;
-        }
-        .glitch-text:hover {
-            transform: translate(-2px, -2px) scale(1.02);
-            color: #AB92F5;
-        }
-        .glitch-text:hover::before {
-            content: attr(data-text);
-            position: absolute;
-            left: 0;
-            top: 0;
-            color: #ff6b6b;
-            transform: translate(3px, -1px);
-            opacity: 0.6;
-            pointer-events: none;
-            clip-path: inset(0 0 60% 0);
-        }
-        .glitch-text:hover::after {
-            content: attr(data-text);
-            position: absolute;
-            left: 0;
-            top: 0;
-            color: #4ecdc4;
-            transform: translate(-3px, 1px);
-            opacity: 0.6;
-            pointer-events: none;
-            clip-path: inset(60% 0 0 0);
-        }
-        .glitch-subtle {
-            display: inline-block;
-            transition: transform 0.2s ease, color 0.2s ease;
-            cursor: default;
-        }
-        .glitch-subtle:hover {
-            transform: translateX(2px) translateY(-1px);
-            color: #AB92F5;
-        }
-        /* 文档卡片悬浮视差 */
-        .doc-card {
-            position: relative;
-            overflow: hidden;
-        }
-        .doc-card-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
-            z-index: 0;
-            transition: none;
-        }
-        .doc-card-content {
-            position: relative;
-            z-index: 1;
-            transition: transform 0.1s ease-out;
-            will-change: transform;
-        }
-        /* 头图内部内容视差 */
-        .banner-text {
-            will-change: transform;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: "Consolas", "Microsoft YaHei", sans-serif;
             color: #333;
-            line-height: 1.6;
-            padding: 20px 30px;
+            flex-direction: column;
+            gap: 24px;
+            padding: 20px;
+            text-align: center;
         }
-        /* 移动端舒适内边距 */
-        @media (max-width: 768px) {
-            body {
-                padding: 16px 18px;
-            }
-        }
-        @media (max-width: 560px) {
-            body {
-                padding: 14px 16px;
-            }
-        }
-        .header-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 6px;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .logo-img {
-            width: 48px;
-            height: 48px;
-            object-fit: contain;
-            border: 1px solid #888;
-        }
-        @media (max-width: 540px) {
-            .logo-img {
-                width: 40px;
-                height: 40px;
-            }
-        }
-        .logo-area h1 {
-            font-size: 28px;
-            color: #222;
-            border-bottom: none;
-            padding-bottom: 0;
-            margin-bottom: 0;
-        }
-        @media (max-width: 680px) {
-            .logo-area h1 {
-                font-size: 22px;
-            }
-        }
-        @media (max-width: 480px) {
-            .logo-area h1 {
-                font-size: 20px;
-            }
-        }
-        .top-bar {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .top-bar a {
-            color: #333;
-            text-decoration: none;
-            font-size: 15px;
-            padding: 5px 12px;
-            border: 1px solid #888;
+        .notice-box {
             background: #fff;
-            transition: background 0.2s, border-color 0.2s;
-            white-space: nowrap;
-        }
-        @media (max-width: 650px) {
-            .top-bar a {
-                font-size: 12px;
-                padding: 4px 8px;
-            }
-        }
-        .top-bar a:hover {
-            background: #AB92F5;
-            border-color: #AB92F5;
-            color: #fff;
-        }
-        .divider {
-            border-bottom: 2px solid #444;
-            margin-bottom: 30px;
-        }
-
-        .download-banner {
+            border: 3px solid #AB92F5;
+            padding: 40px 50px;
+            max-width: 600px;
             width: 100%;
-            padding: 30px 35px;
-            margin: 20px 0 30px 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border: none;
-            background: linear-gradient(145deg, #f0e0ff, #d9b5ff, #c6a0ff);
-            background-size: 300% 300%;
-            background-position: 0% 50%;
-            transition: background-position 0.8s ease;
-            background-image: url('itoc启动图.png'), linear-gradient(145deg, #f0e0ff, #d9b5ff, #c6a0ff);
-            background-repeat: no-repeat, repeat;
-            background-position: left center, 0% 50%;
-            background-size: 20% auto, 300% 300%;
-            min-height: 200px;
-            position: relative;
+            box-shadow: 0 4px 20px rgba(171, 146, 245, 0.2);
         }
-        @media (max-width: 900px) {
-            .download-banner {
-                background-size: 25% auto, 300% 300%;
-                padding: 25px 20px;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 20px;
-            }
-            .banner-left-spacer {
-                display: none;
-            }
-            .banner-text {
-                margin-right: 0 !important;
-                width: 100%;
-            }
-            .banner-credit {
-                position: static;
-                margin-top: 16px;
-                align-self: flex-end;
-            }
+        .notice-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #d32f2f;
+            margin-bottom: 16px;
         }
-        @media (max-width: 600px) {
-            .download-banner {
-                background-size: 35% auto, 300% 300%;
-                padding: 20px 18px;
-            }
-        }
-        .download-banner:hover {
-            background-position: left center, 100% 50%;
-        }
-        .banner-left-spacer {
-            width: 320px;
-            flex-shrink: 0;
-        }
-        .banner-text {
-            width: fit-content;
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 15px 25px;
-            border: none;
-            margin-right: 300px;
-        }
-        @media (max-width: 900px) {
-            .banner-text {
-                margin-right: 0;
-                width: auto;
-                max-width: 100%;
-            }
-            .version-row {
-                flex-wrap: wrap;
-                gap: 12px;
-            }
-        }
-        .banner-text h2 {
-            font-size: 32px;
-            font-weight: 600;
-            color: #1a1a1a;
+        .notice-icon {
+            font-size: 48px;
+            display: block;
             margin-bottom: 12px;
         }
-        @media (max-width: 560px) {
-            .banner-text h2 {
-                font-size: 24px;
-            }
-            .version-tag {
-                font-size: 22px !important;
-            }
-            .download-button, .donate-button {
-                font-size: 18px !important;
-                padding: 8px 22px !important;
-            }
-        }
-        .version-row {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            flex-wrap: wrap;
-        }
-        .version-tag {
-            font-size: 26px;
-            font-weight: 500;
-            color: #1e1e1e;
-        }
-        .download-button {
-            display: inline-block;
-            background: #fff;
-            border: 2px solid #AB92F5;
-            padding: 10px 32px;
-            font-size: 22px;
-            font-weight: 600;
-            color: #2b2b2b;
-            text-decoration: none;
-            transition: 0.15s;
-            line-height: 1.2;
-        }
-        .download-button:hover {
-            background: #AB92F5;
-            color: #fff;
-            border-color: #AB92F5;
-        }
-        .donate-button {
-            display: inline-block;
-            background: #fff;
-            border: 2px solid #AB92F5;
-            padding: 10px 18px;
-            font-size: 20px;
-            font-weight: 600;
-            color: #2b2b2b;
-            text-decoration: none;
-            transition: 0.15s;
-            line-height: 1.2;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        .donate-button:hover {
-            background: #AB92F5;
-            color: #fff;
-            border-color: #AB92F5;
-        }
-        .donation-popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotateX(-90deg) scale(0.8);
-            width: 820px;
-            max-width: 92vw;
-            max-height: 90vh;
-            background: #fff;
-            border: 2px solid #AB92F5;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            opacity: 0;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease-out;
-            transform-origin: center center;
-            perspective: 1000px;
-            overflow-y: auto;
-        }
-        @media (max-width: 700px) {
-            .donation-popup {
-                width: 95vw;
-                max-height: 85vh;
-            }
-        }
-        .donation-popup.show {
-            display: block;
-            transform: translate(-50%, -50%) rotateX(0) scale(1);
-            opacity: 1;
-        }
-        .popup-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 20px;
-            border-bottom: 1px solid #ddd;
-            background: #f8f8f8;
-            flex-wrap: wrap;
-        }
-        .popup-header h3 {
-            font-size: 20px;
-            color: #222;
-            margin: 0;
-        }
-        .close-popup {
-            background: #fff;
-            border: 1px solid #888;
-            padding: 4px 12px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.2s;
-        }
-        .close-popup:hover {
-            background: #AB92F5;
-            border-color: #AB92F5;
-            color: #fff;
-        }
-        .popup-content {
-            padding: 20px;
-            min-height: 480px;
-        }
-        .popup-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0);
-            z-index: 999;
-            transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .popup-overlay.show {
-            display: block;
-            background: rgba(0,0,0,0.5);
-        }
-        .donation-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .left-panel {
-            width: 320px;
-            border: 1px solid #ddd;
-            padding: 15px;
-            background: #fafafa;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        @media (max-width: 640px) {
-            .donation-container {
-                flex-direction: column;
-            }
-            .left-panel, .right-panel {
-                width: 100%;
-            }
-        }
-        .qr-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #07C160;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .qr-image {
-            width: 280px;
-            max-width: 100%;
-            height: 380px;
-            background: #f0f0f0;
-            border: 1px solid #ccc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .qr-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        .right-panel {
-            flex: 1;
-            padding: 10px 0;
-        }
-        .right-title {
+        .notice-text {
             font-size: 18px;
-            font-weight: bold;
-            color: #d32f2f;
-            margin-bottom: 15px;
-        }
-        .form-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .form-label {
-            width: 80px;
-            font-size: 14px;
-        }
-        .form-input {
-            flex: 1;
-            padding: 6px 8px;
-            border: 1px solid #ccc;
-            font-family: "Consolas", "Microsoft YaHei", sans-serif;
-            font-size: 14px;
-        }
-        .form-textarea {
-            width: 100%;
-            padding: 6px 8px;
-            border: 1px solid #ccc;
-            font-family: "Consolas", "Microsoft YaHei", sans-serif;
-            font-size: 14px;
-            resize: vertical;
-            min-height: 60px;
-        }
-        .tip-small {
-            font-size: 12px;
-            color: #666;
-            margin-left: 80px;
-            margin-bottom: 10px;
-        }
-        .checkbox-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 15px 0;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-        }
-        .friend-btn {
-            background: #fff;
-            border: 1px solid #888;
-            padding: 4px 12px;
-            cursor: pointer;
-            font-size: 13px;
-            text-decoration: none;
-            color: #333;
-        }
-        .friend-btn:hover {
-            background: #AB92F5;
-            border-color: #AB92F5;
-            color: #fff;
-        }
-        .id-box {
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-            margin: 10px 0;
-        }
-        .id-text {
-            font-size: 14px;
-            font-weight: bold;
-            color: #0078d4;
-        }
-        .donation-tip-box {
-            background: #fff8e1;
-            border: 1px solid #ffd54f;
-            padding: 10px;
-            margin: 10px 0;
-            text-align: center;
-        }
-        .donation-tip-text {
-            color: #b85c00;
-            font-size: 14px;
-        }
-        .submit-btn {
-            width: 100%;
-            background: #fff;
-            border: 2px solid #AB92F5;
-            padding: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #2b2b2b;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-        .submit-btn:hover {
-            background: #AB92F5;
-            color: #fff;
-        }
-        .submit-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .footer-text {
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-        }
-        .footer-link {
-            color: #66ccff;
-            font-size: 12px;
-            text-align: center;
-            margin-top: 5px;
-        }
-        .banner-credit {
-            position: absolute;
-            bottom: 8px;
-            right: 12px;
-            font-size: 12px;
-            color: rgba(51, 51, 51, 0.6);
-            font-style: italic;
-            margin: 0;
-            padding: 2px 6px;
-            background-color: rgba(255, 255, 255, 0.3);
-            border: none;
-        }
-        .content-row {
-            display: flex;
-            gap: 20px;
-            margin: 20px 0 30px 0;
-            width: 100%;
-            flex-wrap: wrap;
-        }
-        .daily-trick {
-            flex: 2;
-            min-width: 250px;
-            border: 1px solid #aaa;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            min-height: 280px;
-        }
-        .trick-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 20px;
-            border-bottom: 1px solid #ddd;
-            background: #f8f8f8;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .trick-header h3 {
-            font-size: 22px;
-            color: #222;
-            margin: 0;
-        }
-        .next-trick-btn {
-            background: #fff;
-            border: 1px solid #888;
-            padding: 6px 18px;
-            font-size: 15px;
-            color: #333;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .next-trick-btn:hover {
-            background: #AB92F5;
-            border-color: #AB92F5;
-            color: #fff;
-        }
-        .trick-content {
-            padding: 25px 20px;
-            min-height: 200px;
-            flex: 1;
-            position: relative;
-            background-image: none !important;
-        }
-        .trick-content::before {
-            content: '';
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            width: 150px;
-            height: 150px;
-            background-image: url('https://xxdz-official.github.io/xxdz-Itoc/%E6%AF%8F%E6%97%A5%E5%B0%8F%E6%8A%80%E5%B7%A7.png');
-            background-repeat: no-repeat;
-            background-position: right bottom;
-            background-size: contain;
-            pointer-events: none;
-            z-index: 1;
-            transform-origin: bottom;
-        }
-        @keyframes gentleBounceY {
-            0% { transform: scaleY(1); }
-            30% { transform: scaleY(1.15); }
-            60% { transform: scaleY(0.95); }
-            80% { transform: scaleY(1.05); }
-            100% { transform: scaleY(1); }
-        }
-        .trick-content.bg-bounce::before {
-            animation: gentleBounceY 0.4s ease-in-out forwards;
-        }
-        .trick-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #222;
-            margin-bottom: 15px;
-            border-left: 4px solid #AB92F5;
-            padding-left: 15px;
-            position: relative;
-            z-index: 2;
-        }
-        .trick-text {
-            font-size: 16px;
-            color: #444;
-            line-height: 1.8;
-            white-space: pre-line;
-            max-width: 70%;
-            position: relative;
-            z-index: 2;
-        }
-        @media (max-width: 560px) {
-            .trick-text {
-                max-width: 100%;
-            }
-        }
-        .loading-tip {
-            font-size: 18px;
-            color: #AB92F5;
-            padding: 20px;
-            text-align: center;
-            font-style: italic;
-            display: block !important;
-        }
-        .loading-tip::after {
-            content: "...";
-            animation: loadingDots 1.5s infinite;
-        }
-        @keyframes loadingDots {
-            0%, 20% { content: "."; }
-            40%, 60% { content: ".."; }
-            80%, 100% { content: "..."; }
-        }
-        .typing-cursor {
-            display: inline-block;
-            width: 2px;
-            height: 20px;
-            background-color: #AB92F5;
-            margin-left: 2px;
-            vertical-align: middle;
-            animation: blink 1s infinite;
-        }
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-        .developer-module {
-            flex: 1;
-            min-width: 240px;
-            border: 1px solid #aaa;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            min-height: 280px;
-        }
-        .dev-header {
-            padding: 12px 20px;
-            border-bottom: 1px solid #ddd;
-            background: #f8f8f8;
-        }
-        .dev-header h3 {
-            font-size: 22px;
-            color: #222;
-            margin: 0;
-        }
-        .dev-content {
-            padding: 20px;
-            display: flex;
-            flex-direction: row;
-            gap: 18px;
-            align-items: center;
-            flex: 1;
-            flex-wrap: wrap;
-        }
-        .dev-avatar {
-            width: 85px;
-            height: 85px;
-            border: 2px solid #AB92F5;
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-        .dev-info {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            flex: 1;
-        }
-        .dev-name {
-            font-size: 20px;
-            font-weight: 600;
-            color: #222;
-            line-height: 1.3;
-        }
-        .dev-bio {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.5;
-        }
-        .button-group {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .dev-link, .video-link {
-            display: inline-block;
-            background: #fff;
-            border: 1px solid #888;
-            padding: 6px 14px;
-            color: #333;
-            text-decoration: none;
-            font-size: 13px;
-            transition: all 0.2s;
-            width: fit-content;
-        }
-        .dev-link:hover, .video-link:hover {
-            background: #AB92F5;
-            border-color: #AB92F5;
-            color: #fff;
-        }
-        .version-list {
-            width: 100%;
-            background: #ffffff;
-            border: 1px solid #aaa;
-            padding: 20px 25px;
-            margin-top: 25px;
-        }
-        .version-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px dashed #bbb;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .version-item:last-child {
-            border-bottom: none;
-        }
-        .version-name {
-            font-size: 22px;
-            font-weight: 500;
-            color: #222;
-        }
-        @media (max-width: 500px) {
-            .version-name {
-                font-size: 18px;
-            }
-            .version-download {
-                font-size: 16px;
-                padding: 4px 18px;
-            }
-        }
-        .version-download {
-            background: #fff;
-            border: 1px solid #666;
-            padding: 6px 22px;
-            color: #333;
-            text-decoration: none;
-            font-size: 18px;
-        }
-        .version-download:hover {
-            background: #AB92F5;
-            border-color: #AB92F5;
-            color: #fff;
-        }
-        .footer {
-            margin-top: 35px;
-            border-top: 1px solid #aaa;
-            padding: 18px 0;
             color: #555;
-            font-size: 14px;
-            text-align: left;
+            line-height: 1.8;
         }
-        .image-bubble {
-            position: absolute;
-            bottom: calc(100% - 60px);
-            background: #ffffff;
-            border: 2px solid #AB92F5;
-            padding: 8px 14px;
-            font-size: 15px;
-            color: #222;
-            white-space: nowrap;
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
-            z-index: 20;
-            display: none;
-            pointer-events: auto;
-            font-family: "Consolas", "Microsoft YaHei", sans-serif;
-            line-height: 1.4;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .bubble-content {
-            display: flex;
-            flex-direction: column;
-            margin: -4px 0;
-        }
-        .bubble-main-text {
-            margin-bottom: 0;
-            line-height: 1.2;
-        }
-        .bubble-link {
-            align-self: flex-end;
+        .notice-text .highlight {
             color: #AB92F5;
-            font-size: 12px;
-            cursor: pointer;
-            text-decoration: none;
-            margin-top: 3px;
-            margin-bottom: -8px;
-            margin-right: -2px;
-            line-height: 1;
+            font-weight: 600;
         }
-        .bubble-link:hover {
+        .click-hint {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #999;
+            cursor: pointer;
+            padding: 12px 24px;
+            border: 2px dashed #ccc;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        .click-hint:hover {
+            border-color: #AB92F5;
+            background: #f5f0ff;
+            color: #AB92F5;
+        }
+        .click-hint:active {
+            transform: scale(0.97);
+        }
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #eee;
+            border-top-color: #AB92F5;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 10px auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .meta-note {
+            margin-top: 16px;
+            font-size: 12px;
+            color: #bbb;
+        }
+        .meta-note a {
+            color: #AB92F5;
+            text-decoration: none;
+        }
+        .meta-note a:hover {
             text-decoration: underline;
         }
-        .image-bubble.show-bubble {
-            display: block;
-            opacity: 1;
-            transform: scale(1);
-        }
-        .image-bubble.hide-bubble {
-            display: block;
-            opacity: 0;
-            transform: scale(0.6);
-            transition: opacity 0.15s ease, transform 0.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-        @media (max-width: 560px) {
-            .image-bubble {
-                white-space: normal;
-                width: 200px;
-            }
-        }
-        a, button, .donate-button {
-            cursor: pointer;
-            touch-action: manipulation;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
+        @media (max-width: 480px) {
+            .notice-box { padding: 28px 20px; }
+            .notice-title { font-size: 22px; }
+            .notice-text { font-size: 16px; }
+            .click-hint { font-size: 14px; padding: 10px 16px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="header-row">
-        <div class="logo-area">
-            <img src="icon.png" alt="Itoc logo" class="logo-img">
-            <h1>Itoc 编辑器 - 项目主页</h1>
+    <div class="notice-box">
+        <span class="notice-icon">🚫</span>
+        <div class="notice-title">此页面已停用</div>
+        <div class="loader"></div>
+        <div class="notice-text">
+            本页面已迁移至新地址（内容不变！）<br>
+            正在自动跳转至 <span class="highlight">Itoc 项目主页</span> ...
         </div>
-        <div class="top-bar">
-            <a href="https://message.bilibili.com/#/whisper/mid3461569935575626" target="_blank">联系作者</a>
-            <a href="https://miku66ccff.freeflarum.com/t/itoc" target="_blank">交流论坛</a>
-            <a href="https://github.com/xxdz-Official/xxdz-Itoc" target="_blank">GitHub主页</a>
-            <a href="Mode.html">插件市场</a>
-            <a href="FriendURL.html">友情链接</a>
-            <a href="help/help.html">帮助文档</a>
+        <div class="click-hint" id="clickHint">
+            如果未自动跳转，请点击此处喵~
         </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="download-banner" id="bannerContent" style="position:relative;">
-        <div class="banner-left-spacer"></div>
-        <div class="banner-text" style="will-change:transform;">
-            <h2>下载 Itoc 的最新版本</h2>
-            <div class="version-row">
-                <span class="version-tag">Itoc v1</span>
-                <a href="v1.html" class="download-button">前往下载 &gt;</a>
-                <span class="donate-button" onclick="openDonationPopup()">施舍~</span>
-            </div>
-        </div>
-        <h5 class="banner-credit">*本程序依靠deepseek辅助完成</h5>
-    </div>
-
-    <div class="popup-overlay" id="popupOverlay" onclick="closeDonationPopup()"></div>
-
-    <div class="donation-popup" id="donationPopup">
-        <div class="popup-header">
-            <h3>打赏支持开发者 小小电子xxdz 的创作</h3>
-            <span class="close-popup" onclick="closeDonationPopup()">×</span>
-        </div>
-        <div class="popup-content">
-            <div class="donation-container">
-                <div class="left-panel">
-                    <div class="qr-title">微信收款码</div>
-                    <div class="qr-image">
-                        <img src="https://message.biliimg.com/bfs/im_new/e0fcfb32aff6bd4abee0d791dd2aeaee3461569935575626.png" alt="微信收款码">
-                    </div>
-                </div>
-                <div class="right-panel">
-                    <div class="right-title">【非必填】感谢您滴支持 ♪(^∇^*)</div>
-                    <div class="form-row">
-                        <span class="form-label">尊姓大名:</span>
-                        <input type="text" class="form-input" id="donorName" placeholder="">
-                    </div>
-                    <div class="tip-small">*如果想加入友情链接请填微信昵称方便核对，勿填写隐私</div>
-                    <div style="margin: 10px 0;">
-                        <span class="form-label" style="display: block; margin-bottom: 5px;">请写备注:</span>
-                        <textarea class="form-textarea" id="donorRemark" placeholder=""></textarea>
-                    </div>
-                    <div class="checkbox-row">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="friendCheck" checked> 是否出现在官网友情链接里？
-                        </label>
-                        <button class="friend-btn" onclick="window.open('FriendURL.html')">查看友情链接</button>
-                    </div>
-                    <div class="id-box">
-                        <span class="id-text" id="randomId"></span>
-                    </div>
-                    <div class="donation-tip-box">
-                        <div class="donation-tip-text">请保留好您的施舍证据（支付记录）</div>
-                        <div class="donation-tip-text" style="margin-top: 5px;">感谢为小小电子xxdz的创作充电！</div>
-                    </div>
-                    <button class="submit-btn" id="submitBtn" onclick="submitDonation()">确认已施舍并提交信息</button>
-                    <div class="footer-text">您的支持是我们前进的动力！</div>
-                    <div class="footer-link">如有疑问请联系B站_小小电子xxdz</div>
-                </div>
-            </div>
+        <div class="meta-note">
+            <a href="index.html">直接访问 Itoc 项目主页</a> &nbsp;·&nbsp; 感谢您的支持
         </div>
     </div>
 
-    <!-- ===== 介绍文档区域 ===== -->
-    <div class="doc-card" style="width:100%; border:1px solid #aaa; margin:20px 0 16px 0; cursor:default; position:relative; overflow:hidden; background:#ffffff;" id="docCard">
-        <div class="doc-card-bg" style="background:#ffffff;"></div>
-        <div class="doc-card-content" style="padding:18px 30px; position:relative; z-index:1; transition:transform 0.08s ease-out; will-change:transform;" id="docContent">
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; border-bottom:2px solid #AB92F5; padding-bottom:8px;">
-            <img src="https://xxdz-official.github.io/xxdz-Itoc/icon.png" alt="Itoc编辑器图标" style="height:28px; width:28px; vertical-align:middle;">
-            <h2 style="margin:0; font-size:20px; color:#222; font-weight:600;">
-                <span class="glitch-text" data-text="欢迎使用">欢迎使用</span>
-                <span class="glitch-text" data-text="Itoc" style="margin-left:4px;">Itoc</span>
-                <span class="glitch-text" data-text="Crazy" style="margin-left:4px;">Crazy</span>
-                <span class="glitch-text" data-text="Error" style="margin-left:4px;">Error</span>
-                <span class="glitch-text" data-text="编辑器" style="margin-left:4px;">编辑器</span>
-            </h2>
-        </div>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px 30px;">
-            <!-- 左列 -->
-            <div>
-                <h3 style="font-size:16px; color:#222; margin:0 0 4px 0; border-left:4px solid #AB92F5; padding-left:12px;">
-                    <span class="glitch-subtle" data-text="关于">关于</span>
-                    <span class="glitch-subtle" data-text="Itoc" style="margin-left:2px;">Itoc</span>
-                    <span class="glitch-subtle" data-text="编辑器" style="margin-left:2px;">编辑器</span>
-                    <span style="color:#AB92F5; display:inline-block; transition:transform 0.2s ease;" onmouseover="this.style.transform='rotate(10deg) scale(1.1)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'">OwO</span>
-                </h3>
-                <p style="font-size:14px; color:#444; line-height:1.7; margin:0 0 8px 0;">
-                    <strong>Itoc编辑器</strong>是XXDZ工作室开发的世界首个 Windows crazy error程序开发工具，可以方便、无门槛的开发各种音乐的crazy error程序，释放您的创造力！
-                </p>
-                <p style="font-size:14px; color:#444; line-height:1.7; margin:0 0 10px 0;">
-                    无论您是刚接触编程的新手，还是想要快速制作有趣程序的老手，Itoc编辑器都能为您提供简单而强大的工具集。
-                </p>
-
-                <h3 style="font-size:16px; color:#222; margin:12px 0 4px 0; border-left:4px solid #AB92F5; padding-left:12px;">
-                    <span class="glitch-subtle" data-text="软件特点">软件特点</span>
-                    <span style="color:#AB92F5; display:inline-block; transition:transform 0.2s ease;" onmouseover="this.style.transform='rotate(5deg) scale(1.1)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'">♪(^∇^*)</span>
-                </h3>
-                <ul style="font-size:14px; color:#444; line-height:1.8; margin:0; padding-left:20px; columns:2; column-gap:20px;">
-                    <li>可视化界面设计</li>
-                    <li>导入midi谱子文件</li>
-                    <li>Windows弹窗效果库</li>
-                    <li>内置节拍分析工具</li>
-                    <li>一键导出可执行文件</li>
-                    <li>支持自定义视觉效果</li>
-                    <li>内置教程和示例</li>
-                    <li>支持全局命令</li>
-                    <li>支持运行cmd命令</li>
-                    <li>可编写python代码</li>
-                </ul>
-            </div>
-
-            <!-- 右列 -->
-            <div>
-                <h3 style="font-size:16px; color:#222; margin:0 0 4px 0; border-left:4px solid #AB92F5; padding-left:12px;">
-                    <span class="glitch-subtle" data-text="什么是">什么是</span>
-                    <span class="glitch-subtle" data-text="Crazy" style="margin-left:2px;">Crazy</span>
-                    <span class="glitch-subtle" data-text="Error？" style="margin-left:2px;">Error？</span>
-                    <span style="color:#AB92F5; display:inline-block; transition:transform 0.2s ease;" onmouseover="this.style.transform='rotate(-8deg) scale(1.1)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'">(lll￢ω￢)</span>
-                </h3>
-                <p style="font-size:14px; color:#444; line-height:1.7; margin:0 0 8px 0;">
-                    <strong>Crazy error</strong> 就是弹窗类鬼畜，是鬼畜区与软件极客区的结合体，将音乐配上Windows效果音MAD，进行有观赏性、卡点的系统弹窗。
-                </p>
-
-                <div style="background:#f5f0ff; border:1px solid #ddd; padding:10px 16px; margin:8px 0 10px 0;">
-                    <div style="font-size:12px; color:#666; text-align:center; margin-bottom:4px;">Crazy Error 效果演示</div>
-                    <img src="https://xxdz-official.github.io/xxdz-Itoc/cze1.gif" alt="cze1.gif" style="width:100%; max-width:280px; display:block; margin:0 auto; border:1px solid #ccc;">
-                    <div style="font-size:11px; color:#999; text-align:center; margin-top:4px;">*图片仅供参考</div>
-                </div>
-
-                <h3 style="font-size:16px; color:#222; margin:8px 0 4px 0; border-left:4px solid #AB92F5; padding-left:12px;">
-                    <span class="glitch-subtle" data-text="开发目的">开发目的</span>
-                    <span style="color:#AB92F5; display:inline-block; transition:transform 0.2s ease;" onmouseover="this.style.transform='rotate(6deg) scale(1.15)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'">QAQ</span>
-                </h3>
-                <p style="font-size:14px; color:#444; line-height:1.7; margin:0;">
-                    目前网上的crazy error多为视频+音频制作的多媒体作品，并非真实可运行的真程序。直接编写真程序难度极大，而本软件就是来无痛开发这种真程序的！
-                </p>
-            </div>
-        </div>
-
-        <!-- 底部：开始创作 -->
-        <div style="margin-top:14px; padding-top:12px; border-top:2px solid #AB92F5;">
-            <p style="font-size:14px; color:#444; line-height:1.7; margin:0; text-align:center;">
-                <span class="glitch-subtle" data-text="开始您的创作之旅" style="font-weight:bold;">开始您的创作之旅</span>
-                <span style="color:#AB92F5; display:inline-block; transition:transform 0.25s ease;" onmouseover="this.style.transform='scale(1.2) rotate(-5deg)'" onmouseout="this.style.transform='scale(1) rotate(0deg)'">q(≧▽≦q)</span>
-                &nbsp;·&nbsp;
-                <span class="glitch-subtle" data-text="现在就打开Itoc编辑器">现在就打开Itoc编辑器</span>
-                <span class="glitch-subtle" data-text="，从简单的节奏匹配开始">，从简单的节奏匹配开始</span>
-                <span class="glitch-subtle" data-text="，创造有趣的Windows交互体验吧！">，创造有趣的Windows交互体验吧！</span>
-                <span style="color:#AB92F5; display:inline-block; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15) rotate(8deg)'" onmouseout="this.style.transform='scale(1) rotate(0deg)'">QwQ</span>
-            </p>
-        </div>
-        </div>
-    </div>
-
-    <div class="content-row">
-        <div class="daily-trick" id="dailyTrick" style="position:relative;">
-            <div class="trick-header">
-                <h3>每天一个小寄巧</h3>
-                <button class="next-trick-btn" onclick="showRandomTip()">下一条 ↺</button>
-            </div>
-            <div class="trick-content" id="trickContent">
-                <div class="trick-title" id="tipTitle"></div>
-                <div class="trick-text" id="tipContent"></div>
-                <div class="image-bubble" id="imageBubble">
-                    <div class="bubble-content">
-                        <span class="bubble-main-text">hi，我是<strong>音可</strong>! Itoc软件化身的兽设(⁎˃ᆺ˂)</span>
-                        <a href="https://xxdz-official.github.io/xxdz-Itoc/yinke_about.html" class="bubble-link" target="_blank" rel="noopener noreferrer">让我康康</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="developer-module" id="developerModule" style="position:relative;">
-            <div class="dev-header">
-                <h3>关于作者</h3>
-            </div>
-            <div class="dev-content">
-                <img src="https://avatars.githubusercontent.com/u/193121306?v=4" alt="小小电子xxdz" class="dev-avatar">
-                <div class="dev-info">
-                    <div class="dev-name">小小电子xxdz</div>
-                    <div class="dev-bio">我叫電籽,一只爱好电脑 术曲滴小狼‖XXDZ工作室创始人</div>
-                    <div class="button-group">
-                        <a href="https://space.bilibili.com/3461569935575626" target="_blank" class="dev-link">访问主页 →</a>
-                        <a href="https://www.bilibili.com/video/BV1VsPKzNEPG" target="_blank" class="video-link">观看发布视频</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="version-list">
-        <h3 style="margin-bottom: 20px; font-size: 24px; border-left: 6px solid #AB92F5; padding-left: 15px;">历史版本下载列表</h3>
-        <div class="version-item">
-            <span class="version-name">Itoc v1 简体中文版</span>
-            <a href="v1.html" class="version-download">前往下载 &gt;</a>
-        </div>
-    </div>
-
-    <div class="footer">
-        <span class="glitch-subtle" data-text="© 2026">© 2026</span>
-        <span class="glitch-subtle" data-text="小小电子xxdz" style="margin-left:4px;">小小电子xxdz</span>
-        <span style="margin:0 4px;">·</span>
-        <span class="glitch-subtle" data-text="Itoc">Itoc</span>
-    </div>
     <script>
-        // ===== 全局鼠标视差效果（仅位移内部内容，背景不动） =====
-        (function() {
-            // 配置：容器id，内部内容选择器，位移倍率
-            const configs = [
-                { containerId: 'bannerContent', innerSelector: '.banner-text', xMul: 16, yMul: 12 },
-                { containerId: 'docCard', innerSelector: '.doc-card-content', xMul: 20, yMul: 14 },
-                { containerId: 'dailyTrick', innerSelector: '.trick-content', xMul: 14, yMul: 10 },
-                { containerId: 'developerModule', innerSelector: '.dev-content', xMul: 14, yMul: 10 }
-            ];
+        // ===== 自动跳转（延迟1.5秒，让用户看到提示） =====
+        var redirectUrl = 'index.html';
+        var redirectDelay = 1500;
 
-            const targets = [];
-            configs.forEach(function(cfg) {
-                const container = document.getElementById(cfg.containerId);
-                if (container) {
-                    const inner = container.querySelector(cfg.innerSelector);
-                    if (inner) {
-                        targets.push({
-                            container: container,
-                            inner: inner,
-                            xMul: cfg.xMul,
-                            yMul: cfg.yMul,
-                            currentX: 0,
-                            currentY: 0,
-                            targetX: 0,
-                            targetY: 0,
-                            active: false
-                        });
-                        // 确保内部元素有 will-change
-                        inner.style.willChange = 'transform';
-                    }
-                }
-            });
+        var timer = setTimeout(function() {
+            window.location.href = redirectUrl;
+        }, redirectDelay);
 
-            if (targets.length === 0) return;
-
-            let isHovering = false;
-            let mouseX = 0.5, mouseY = 0.5;
-
-            document.addEventListener('mousemove', function(e) {
-                const rect = document.body.getBoundingClientRect();
-                mouseX = (e.clientX - rect.left) / rect.width;
-                mouseY = (e.clientY - rect.top) / rect.height;
-                isHovering = true;
-            });
-
-            document.addEventListener('mouseleave', function() {
-                isHovering = false;
-                targets.forEach(function(t) {
-                    t.targetX = 0;
-                    t.targetY = 0;
-                });
-            });
-
-            targets.forEach(function(t) {
-                t.container.addEventListener('mouseenter', function() {
-                    t.active = true;
-                });
-                t.container.addEventListener('mouseleave', function() {
-                    t.active = false;
-                    t.targetX = 0;
-                    t.targetY = 0;
-                });
-            });
-
-            function smoothUpdate() {
-                targets.forEach(function(t) {
-                    if (t.active && isHovering) {
-                        t.targetX = (mouseX - 0.5) * t.xMul;
-                        t.targetY = (mouseY - 0.5) * t.yMul;
-                    }
-                    t.currentX += (t.targetX - t.currentX) * 0.12;
-                    t.currentY += (t.targetY - t.currentY) * 0.12;
-                    if (Math.abs(t.currentX) > 0.02 || Math.abs(t.currentY) > 0.02) {
-                        t.inner.style.transform = 'translate(' + t.currentX.toFixed(2) + 'px, ' + t.currentY.toFixed(2) + 'px)';
-                    } else {
-                        t.inner.style.transform = 'translate(0px, 0px)';
-                    }
-                });
-                requestAnimationFrame(smoothUpdate);
-            }
-            smoothUpdate();
-        })();
-
-        let tips = [];
-        let currentTipIndex = -1;
-        let typingTimer = null;
-
-        function showLoadingState() {
-            const titleEl = document.getElementById('tipTitle');
-            const contentEl = document.getElementById('tipContent');
-            if (titleEl) titleEl.textContent = '加载中';
-            if (contentEl) contentEl.innerHTML = '<span class="loading-tip" style="display:block!important;">正在加载</span>';
-        }
-        async function loadTips() {
-            showLoadingState();
-            const statusEl = document.getElementById('tipStatus');
-            if (statusEl) statusEl.textContent = '加载小技巧...';
-            try {
-                const response = await fetch('https://xxdz-official.github.io/xxdz-Itoc/Every_day_trick.json');
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                tips = await response.json();
-                if (statusEl) statusEl.textContent = '加载成功！共 ' + tips.length + ' 条';
-                if (tips.length > 0) {
-                    showRandomTip();
-                } else {
-                    if (statusEl) statusEl.textContent = '暂无小技巧数据';
-                }
-            } catch (error) {
-                console.error('加载失败', error);
-                if (statusEl) statusEl.textContent = '加载失败，请刷新重试';
-                tips = [{"title": "提示加载失败", "content": "无法连接到服务器，请稍后重试。"}];
-                showRandomTip();
-            }
-        }
-        function showRandomTip() {
-            if (!tips || tips.length === 0) {
-                tips = [
-                    {"title": "啊？我json数据呢？？坏！被魔理沙偷走了！"}
-                ];
-            }
-
-            let newIndex;
-            if (tips.length > 1) {
-                let attempts = 0;
-                do {
-                    newIndex = Math.floor(Math.random() * tips.length);
-                    attempts++;
-                } while (newIndex === currentTipIndex && attempts < 100);
-            } else {
-                newIndex = 0;
-            }
-            currentTipIndex = newIndex;
-            const tip = tips[currentTipIndex];
-
-            const titleEl = document.getElementById('tipTitle');
-            const contentEl = document.getElementById('tipContent');
-
-            if (titleEl) titleEl.textContent = tip.title || '每日小技巧';
-
-            const text = tip.content || '暂无内容';
-            if (typingTimer) clearInterval(typingTimer);
-
-            if (contentEl) {
-                contentEl.innerHTML = '';
-                const cursorSpan = document.createElement('span');
-                cursorSpan.className = 'typing-cursor';
-                contentEl.appendChild(cursorSpan);
-
-                let i = 0;
-                typingTimer = setInterval(() => {
-                    if (i < text.length) {
-                        const textNode = document.createTextNode(text.charAt(i));
-                        contentEl.insertBefore(textNode, cursorSpan);
-                        i++;
-                    } else {
-                        clearInterval(typingTimer);
-                        typingTimer = null;
-                    }
-                }, 30);
-            }
-        }
-
-        function openDonationPopup() {
-            const popup = document.getElementById('donationPopup');
-            const overlay = document.getElementById('popupOverlay');
-            popup.style.display = 'block';
-            overlay.style.display = 'block';
-            popup.offsetHeight;
-            popup.classList.add('show');
-            overlay.classList.add('show');
-            generateRandomId();
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            loadTips();
+        // ===== 点击任意处立即跳转 =====
+        document.addEventListener('click', function(e) {
+            clearTimeout(timer);
+            window.location.href = redirectUrl;
         });
 
-        function closeDonationPopup() {
-            const popup = document.getElementById('donationPopup');
-            const overlay = document.getElementById('popupOverlay');
-            popup.classList.remove('show');
-            overlay.classList.remove('show');
-            setTimeout(() => {
-                popup.style.display = 'none';
-                overlay.style.display = 'none';
-            }, 300);
-        }
+        // ===== 点击提示按钮跳转（兼容） =====
+        document.getElementById('clickHint').addEventListener('click', function(e) {
+            e.stopPropagation();
+            clearTimeout(timer);
+            window.location.href = redirectUrl;
+        });
 
-        function generateRandomId() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let result = 'ID-';
-            for (let i = 0; i < 8; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            document.getElementById('randomId').textContent = result;
-        }
-
-        function submitDonation() {
-            const name = document.getElementById('donorName').value || '匿名';
-            const remark = document.getElementById('donorRemark').value || '无备注';
-            const friendCheck = document.getElementById('friendCheck').checked;
-            const id = document.getElementById('randomId').textContent;
-
-            // 构造要发送的数据
-            const newEntry = {
-                name: name,
-                remark: remark,
-                friendLink: friendCheck,
-                id: id,
-                time: new Date().toLocaleString()
-            };
-
-            const gistId = 'b968e31916de23d878144020e1c5a623';
-            const filename = 'Money.json';
-            const token = 'ghp_HmYvI5HaXpWwtTjLLX' + 'W6C79aozj9Lo4V1g8O';
-            const apiUrl = 'https://api.github.com/gists/' + gistId;
-
-            // 1. 先读取现有数据
-            fetch(apiUrl, {
-                headers: {
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Authorization': 'token ' + token
-                }
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('读取Gist失败: ' + response.status);
-                return response.json();
-            })
-            .then(gistData => {
-                // 获取现有文件内容
-                let existingData = [];
-                const fileContent = gistData.files[filename]?.content;
-                if (fileContent) {
-                    try {
-                        const parsed = JSON.parse(fileContent);
-                        if (Array.isArray(parsed)) {
-                            existingData = parsed;
-                        }
-                    } catch (e) {
-                        console.warn('解析现有数据失败，将创建新数组');
-                    }
-                }
-
-                // 添加新条目
-                existingData.push(newEntry);
-
-                // 2. 更新 Gist
-                const payload = {
-                    files: {
-                        [filename]: {
-                            content: JSON.stringify(existingData, null, 2)
-                        }
-                    }
-                };
-
-                return fetch(apiUrl, {
-                    method: 'PATCH',
-                    headers: {
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Authorization': 'token ' + token,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('保存失败: ' + response.status);
-                return response.json();
-            })
-            .then(() => {
-                alert('感谢您的支持！\n\n姓名：' + name + '\n备注：' + remark + '\n友情链接：' + (friendCheck ? '是' : '否') + '\nID：' + id + '\n\n数据已保存，请保留支付记录以便核对。');
-                closeDonationPopup();
-            })
-            .catch(error => {
-                console.error('保存失败:', error);
-                alert('感谢您的支持！\n\n姓名：' + name + '\n备注：' + remark + '\n友情链接：' + (friendCheck ? '是' : '否') + '\nID：' + id + '\n\n数据保存失败，但已记录您的支持，请保留支付记录以便核对。');
-                closeDonationPopup();
-            });
-        }
-
+        // ===== 键盘任意键也触发跳转 =====
+        document.addEventListener('keydown', function() {
+            clearTimeout(timer);
+            window.location.href = redirectUrl;
+        });
     </script>
+
+</body>
+</html>

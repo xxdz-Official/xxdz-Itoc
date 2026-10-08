@@ -56,6 +56,7 @@ const TOC_DATA = [
     { title: '标记与轨道便利贴', file: 'marker_and_sticky_note.html' },
     { title: '媒体浏览器', file: 'media_browser.html' },
     { title: '高能进度表', file: 'high_energy_table.html' },
+    { title: '终端', file: 'terminal.html' },
 
     // ==================== 歌词、协作与历史 ====================
     { group: '歌词、协作与历史' },

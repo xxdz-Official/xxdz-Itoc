@@ -1,0 +1,298 @@
+<!-- test_run.html - 测试运行 帮助文档 -->
+<!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 测试运行 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解 F5 一键测试运行的入口、流程、解释器选择与资源处理">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,测试运行,一键运行,F5运行,预览运行">
+<meta property="og:title" content="测试运行 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 测试运行 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>测试运行 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>▶️ 测试运行</h1>
+
+<p>前面我们讲了 CZEmaker 弹窗、全局命令、音符块、调整图层、过渡动画、批量赋音效、渲染为音频文件、渲染视频文件、渲染为 Python 代码、渲染为 CZE 数据文件、编译为 exe、组装打包模式、解释器自定义配置。现在讲一个高频使用的功能——<strong>测试运行</strong>。它让你不用导出、不用编译，按一下 F5 就能立刻看到工程跑起来的样子。</p>
+
+<div class="note">
+    <strong>📌 本篇的范围：</strong><br>
+    讲的是测试运行的入口、前置条件、完整流程、解释器选择、资源处理和常见问题。关于解释器配置本身，请参考《解释器自定义配置》文档；关于编译分发，请参考《编译为 exe》和《组装打包模式》文档。
+</div>
+
+<h2>一、这个功能是干嘛的？</h2>
+
+<p>测试运行就是“把工程立刻跑一遍看看效果”。它会自动完成下面这些事：</p>
+
+<ol>
+    <li>把工程转换成 <code>runCZE.CzeData</code> 数据文件</li>
+    <li>把工程用到的图片、视频、音频、文档等资源复制到 <code>runCZE</code> 目录</li>
+    <li>把背景音频复制并重命名为 <code>runCZE/Audio.mp3</code></li>
+    <li>结束掉已经运行的旧解释器进程</li>
+    <li>启动解释器，播放弹窗</li>
+</ol>
+
+<p>整个过程一步到位，你只需要按一下 F5。适合在编辑过程中随时看效果。</p>
+
+<h2>二、从哪里打开？</h2>
+
+<p>菜单位置：<strong>「编译(C)」 → 「一键测试运行」</strong>。</p>
+
+<p>快捷键：<kbd>F5</kbd>。</p>
+
+<div class="tip">
+    <strong>💡 工具栏也有入口：</strong><br>
+    主界面上方的“快捷操作栏²”里有一个测试运行按钮（图标是一个播放三角），点它和按 F5 效果一样。
+</div>
+
+<h3>前置条件</h3>
+
+<table>
+    <thead>
+        <tr><th>检查项</th><th>不满足时的提示</th><th>怎么解决</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>是否有打开的工程</td><td>“请先打开或保存一个工程文件”</td><td>先新建或打开一个工程</td></tr>
+        <tr><td>工程里是否有音符</td><td>“当前工程没有音符数据”</td><td>先在时间轴上画几个音符</td></tr>
+    </tbody>
+</table>
+
+<p>如果工程已经改过（标题栏工程名带 <code>*</code>），会先弹一个确认框：</p>
+
+<table>
+    <thead>
+        <tr><th>选项</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>是</td><td>先保存工程，再测试运行</td></tr>
+        <tr><td>否</td><td>不保存，用未保存的修改测试运行</td></tr>
+        <tr><td>取消</td><td>取消本次测试运行</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 建议选“是”：</strong><br>
+    因为测试运行读的是工程里的数据。如果你改了但没保存，测试出来的效果可能不是你最新的修改。而且保存后再测试运行，如果测试出问题，回滚时也有一个干净的起点。
+</div>
+
+<h2>三、完整流程</h2>
+
+<p>按 F5 后，程序会在后台依次执行下面的步骤。整个过程很快，通常一两秒就完成了。</p>
+
+<h3>3.1 导出 CzeData</h3>
+
+<p>把工程里的音符、命令、调整图层从“节拍”单位转换成“秒”单位，生成 <code>runCZE/runCZE.CzeData</code> 文件。</p>
+
+<p>同时会导出这些数据：</p>
+
+<ul>
+    <li>模类数据（<code>ui_Class</code> 和 <code>class_data_project</code>）</li>
+    <li>阵列定义（工程内置 + Itoc 全局）</li>
+    <li>全局随机种子（如果工程里设置过）</li>
+    <li>音频文件路径信息</li>
+</ul>
+
+<h3>3.2 复制资源文件</h3>
+
+<p>程序会深度扫描工程数据里引用的所有文件路径，把存在的文件按类型复制到 <code>runCZE</code> 目录下的对应子目录：</p>
+
+<table>
+    <thead>
+        <tr><th>文件类型</th><th>目标目录</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>图片（png / jpg / jpeg / bmp / gif / webp / ico / svg）</td><td><code>runCZE/img/</code></td></tr>
+        <tr><td>视频（mp4 / wmv / avi / mov / mkv / flv / webm）</td><td><code>runCZE/video/</code></td></tr>
+        <tr><td>音频（mp3 / wav / ogg / flac / aac / m4a）</td><td><code>runCZE/audio/</code></td></tr>
+        <tr><td>文档（txt / pdf / doc / docx / xls / xlsx / ppt / pptx）</td><td><code>runCZE/docs/</code></td></tr>
+        <tr><td>其他文件</td><td><code>runCZE/files/</code></td></tr>
+    </tbody>
+</table>
+
+<p>复制时会检查目标文件是否已存在。如果内容相同（比较 MD5 或文件大小），会跳过；如果内容不同，会覆盖。</p>
+
+<div class="note">
+    <strong>📌 相对路径解析：</strong><br>
+    如果工程里的文件路径是相对路径，程序会基于工程文件所在目录尝试多种组合来找到实际文件，包括直接在工程目录、在 <code>img/</code> 子目录、在 <code>srt/</code> 子目录等。
+</div>
+
+<h3>3.3 复制背景音频</h3>
+
+<p>如果工程关联了背景音频，程序会把它复制到 <code>runCZE/Audio.mp3</code>，解释器启动时会自动读取这个文件播放。</p>
+
+<p>音频路径无论是相对路径还是绝对路径，都会被正确解析。如果工程里存的是相对路径 <code>audio/xxx.mp3</code>，程序会基于工程目录找到实际文件。</p>
+
+<h3>3.4 结束旧进程</h3>
+
+<p>在启动新解释器之前，程序会先检查是否已经有一个同名解释器进程在运行（比如 <code>runCZEx64window.exe</code>）。如果有，会先用 <code>taskkill</code> 结束它，然后等 1 秒，再启动新的。</p>
+
+<p>这样避免你连续按 F5 时弹出好几个解释器窗口，互相干扰。</p>
+
+<h3>3.5 启动解释器</h3>
+
+<p>程序切换到 <code>runCZE</code> 目录，然后启动解释器。解释器会读取 <code>runCZE.CzeData</code>，按照时间轴播放弹窗、执行命令、显示动画。</p>
+
+<h2>四、解释器怎么选？</h2>
+
+<p>测试运行使用哪个解释器，有一个明确的优先级顺序：</p>
+
+<table>
+    <thead>
+        <tr><th>优先级</th><th>来源</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>1</td><td>测试运行专用解释器</td><td>在「配置Itoc测试运行解释器」里配置的路径</td></tr>
+        <tr><td>2</td><td>主解释器配置</td><td>在「配置Itoc解释器」里当前选中模式的路径</td></tr>
+        <tr><td>3</td><td>默认窗口模式</td><td><code>runCZE/runCZEx64window.exe</code></td></tr>
+        <tr><td>4</td><td>默认控制台模式</td><td><code>runCZE/runCZEx64.exe</code></td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 推荐配置：</strong><br>
+    · 平时测试想看日志 → 把测试运行解释器配成“64位 - 控制台”，这样能看到运行输出。<br>
+    · 平时测试想看效果 → 测试运行解释器留空，用主解释器的“64位 - 窗口”模式。
+</div>
+
+<h2>五、相关菜单项</h2>
+
+<p>「编译(C)」菜单里除了“一键测试运行”，还有几个和测试相关的菜单项：</p>
+
+<table>
+    <thead>
+        <tr><th>菜单项</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>一键测试运行</td><td>执行完整的测试运行流程（F5）</td></tr>
+        <tr><td>结束进程</td><td>手动结束正在运行的 <code>runCZEx64.exe</code> 等解释器进程</td></tr>
+        <tr><td>重启进程</td><td>先结束进程，再重新测试运行一次</td></tr>
+        <tr><td>将 测试运行引用资源目录 打开于资源管理器</td><td>打开 <code>runCZE/img/</code> 目录，方便查看复制的资源</td></tr>
+        <tr><td>删除测试运行引用资源文件</td><td>清空 <code>runCZE/img/</code> 目录里的所有文件</td></tr>
+        <tr><td>配置Itoc测试运行解释器</td><td>打开测试运行解释器配置窗口</td></tr>
+    </tbody>
+</table>
+
+<h3>5.1 结束进程</h3>
+
+<p>如果你测试时解释器卡住了，或者窗口关不掉，可以用“结束进程”强制结束。它会用 <code>taskkill /F /IM</code> 结束掉所有同名的解释器进程。</p>
+
+<h3>5.2 重启进程</h3>
+
+<p>相当于“结束进程 + 测试运行”的组合操作。适合测试过程中改了工程，想立刻重新跑一遍的场景。</p>
+
+<h3>5.3 打开资源目录</h3>
+
+<p>打开 <code>runCZE/img/</code> 文件夹。测试运行复制的图片都在这里，可以检查是否正确复制、文件名是否对得上。</p>
+
+<h3>5.4 删除测试资源</h3>
+
+<p>清空 <code>runCZE/img/</code> 目录里的所有文件。适合工程里图片改了很多，想从头重新复制一遍的场景。删完之后再按 F5，会重新复制所有资源。</p>
+
+<div class="warning">
+    <strong>⚠️ 删除资源后首次运行会稍慢：</strong><br>
+    因为所有图片都要重新复制一遍。之后的运行会走“跳过相同文件”的快速路径。
+</div>
+
+<h2>六、测试运行都生成了什么？</h2>
+
+<p>测试运行会在 <code>runCZE</code> 目录下生成这些内容：</p>
+
+<table>
+    <thead>
+        <tr><th>文件/目录</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>runCZE.CzeData</code></td><td>工程数据文件（秒单位）</td></tr>
+        <tr><td><code>Audio.mp3</code></td><td>背景音频（如果工程关联了音频）</td></tr>
+        <tr><td><code>img/</code></td><td>图片资源</td></tr>
+        <tr><td><code>video/</code></td><td>视频资源</td></tr>
+        <tr><td><code>audio/</code></td><td>音频资源</td></tr>
+        <tr><td><code>docs/</code></td><td>文档资源</td></tr>
+        <tr><td><code>files/</code></td><td>其他文件</td></tr>
+    </tbody>
+</table>
+
+<div class="note">
+    <strong>📌 这些文件会自动保留：</strong><br>
+    测试运行生成的文件不会自动删除。下次测试运行时会检查并更新它们。如果你想让工程干净一点，可以用“删除测试运行引用资源文件”手动清理。
+</div>
+
+<h2>七、常见问题</h2>
+
+<h3>Q1：按 F5 没反应？</h3>
+
+<p>检查前置条件：有没有打开的工程、工程里有没有音符。如果工程已修改，确认框可能被其他窗口挡住了。</p>
+
+<h3>Q2：测试运行时弹窗和图片没显示？</h3>
+
+<p>看日志里“深度查找文件”部分，确认图片路径是否正确解析、文件是否存在。如果图片路径是相对路径，检查工程目录下是否有对应文件。也可以用“打开资源目录”看看 <code>img/</code> 里有没有图。</p>
+
+<h3>Q3：背景音频没播放？</h3>
+
+<p>检查 <code>runCZE/Audio.mp3</code> 是否存在。如果不存在，说明工程里没有关联音频，或者音频路径解析失败。看日志里 <code>[音频导出]</code> 开头的行，会说明具体情况。</p>
+
+<h3>Q4：连续按 F5 会弹好几个窗口？</h3>
+
+<p>不会。测试运行会先结束旧的解释器进程，再启动新的。所以你连续按 F5，始终只有一个解释器窗口。</p>
+
+<h3>Q5：解释器启动后立刻闪退？</h3>
+
+<p>可能是数据有问题，或者解释器本身出错了。试试把测试运行解释器配成“控制台模式”，这样能看到报错信息。也可以在工程里检查有没有异常的配置。</p>
+
+<h3>Q6：测试运行很慢？</h3>
+
+<p>第一次测试运行会比较慢，因为要复制所有资源。之后的运行会走“跳过相同文件”的快速路径，通常一两秒就完成。如果资源特别多（几百张图），第一次会比较久。</p>
+
+<h3>Q7：怎么知道测试运行用的是哪个解释器？</h3>
+
+<p>看日志里 <code>[测试运行解释器]</code> 开头的行，会明确写出当前使用的是自定义测试解释器、主解释器配置，还是默认解释器。</p>
+
+<h3>Q8：测试运行和编译 exe 有什么区别？</h3>
+
+<p>测试运行是“直接跑”，用现成的解释器读取 CzeData，速度快，不需要编译。编译 exe 是“打包成独立程序”，用 PyInstaller 把 Python 代码和依赖一起打包，速度慢，但可以分发给没有 Python 环境的人。</p>
+
+<h3>Q9：测试运行会修改我的工程文件吗？</h3>
+
+<p>不会。测试运行只读取工程文件，在 <code>runCZE</code> 目录下生成新文件，不会改动 <code>.czemidi</code> 工程文件本身。如果选了“是”保存，那保存的是你之前的编辑修改，不是测试运行造成的。</p>
+
+<h3>Q10：可以只测试运行一部分吗？</h3>
+
+<p>不支持。测试运行会处理整个工程。如果你想只看某一段，可以先用时间选区圈出范围，然后导出工程片段，再对片段测试运行。</p>
+
+<h3>Q11：测试运行后，窗口关不掉怎么办？</h3>
+
+<p>用「编译(C)」→「结束进程」强制结束。如果还不行，打开任务管理器，找到 <code>runCZEx64window.exe</code> 或 <code>runCZEx64.exe</code>，手动结束任务。</p>
+
+<h3>Q12：测试运行时，主程序会卡住吗？</h3>
+
+<p>不会。测试运行是在后台线程里执行的，主程序界面仍然可以操作。不过启动解释器的瞬间可能会有一点点延迟，属于正常现象。</p>
+
+<h2>八、小结</h2>
+
+<p>「测试运行」是编辑过程中最常用的功能，让你随时看到工程跑起来的样子。</p>
+
+<ul>
+    <li>入口：<strong>菜单「编译(C)」→「一键测试运行」</strong>，或 <kbd>F5</kbd></li>
+    <li>前置条件：有打开的工程 + 有音符数据</li>
+    <li>自动完成：导出 CzeData → 复制资源 → 复制音频 → 结束旧进程 → 启动解释器</li>
+    <li>解释器优先级：测试专用 > 主解释器 > 默认窗口 > 默认控制台</li>
+    <li>资源按类型分类复制到 <code>runCZE/</code> 下的子目录</li>
+    <li>相关菜单：结束进程、重启进程、打开资源目录、删除测试资源</li>
+    <li>不会修改工程文件，只读取数据生成临时文件</li>
+</ul>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'test_run.html'
+    });
+</script>

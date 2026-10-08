@@ -1,0 +1,592 @@
+<!-- language_pack.html - 语言包 帮助文档 -->
+<!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 语言包 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 多语言功能，讲解 .mui 语言包格式、导入、应用、模板翻译、自定义语言包制作">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,语言包,mui,多语言,国际化,翻译,Language">
+<meta property="og:title" content="语言包 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 语言包 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 多语言功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>语言包 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🌏 语言包</h1>
+
+<p>Itoc 原生的界面是中文的。但如果你的朋友是外国人，或者你就是想换个语言（比如日语、英语），Itoc 也支持通过<strong>语言包</strong>把整套界面翻译过去。不用改代码，只要放一个文件到 <code>Language/</code> 文件夹里，程序就能读。</p>
+
+<div class="note">
+    <strong>📌 这篇唠的是啥：</strong><br>
+    语言包的完整用法：怎么打开、怎么导入、怎么应用、格式怎么写、翻译机制是怎么工作的、以及"为什么切换完要重启"这件事。<br>
+    关于首选项窗口的其它分类，请参考《首选项（设置）》文档。
+</div>
+
+<h2>一、语言包是什么？</h2>
+
+<p>语言包就是一个 <code>.mui</code> 文件，内容是一个 <strong>JSON 字典</strong>。它的结构长这样：</p>
+
+<pre><code>{
+    "language_name": "English",
+    "文件(F)": "File(F)",
+    "编辑(E)": "Edit(E)",
+    "撤销": "Undo",
+    "重做": "Redo",
+    "保存工程": "Save Project",
+    ...
+}
+</code></pre>
+
+<p>左边是"原文"（也就是 Itoc 界面上显示的原始中文），右边是"译文"（你希望显示成什么）。程序启动时会读这个字典，然后把界面上所有能匹配到的文字都替换成译文。</p>
+
+<div class="tip">
+    <strong>💡 一句话理解：</strong><br>
+    语言包就是一份"中文原文 → 译文"的对照表。<br>
+    程序在显示任何文字之前，都会先查一下这个表，查到了就用译文，查不到就保持原样。<br>
+    所以语言包不需要覆盖所有文字，只翻译你想翻译的就行。
+</div>
+
+<h3>1.1 为什么用 .mui 而不是 .json？</h3>
+
+<p>因为 Windows 的 <code>.json</code> 文件经常和别的软件抢关联。用 <code>.mui</code> 这个自定义扩展名，可以避免误触，也方便在 Itoc 里识别。</p>
+
+<p>实际上文件内容就是纯 JSON，你把 <code>.mui</code> 改成 <code>.json</code> 也一样能读，只是程序扫描 <code>Language/</code> 文件夹时只认 <code>.mui</code>。</p>
+
+<h2>二、从哪儿打开？</h2>
+
+<p>菜单 <strong>「文件(F)」→「首选项」→ 左侧「语言 Language」分类</strong>。</p>
+
+<h2>三、界面长啥样？</h2>
+
+<p>「语言 Language」面板从上到下分成四块：</p>
+
+<pre><code>┌──────────────────────────────────────────────────┐
+│  当前语言: 中文 简体 (默认)                        │
+├──────────────────────────────────────────────────┤
+│  导入语言包:  [导入 .mui 文件...]                  │
+├──────────────────────────────────────────────────┤
+│  Language 文件夹中的语言包:                        │
+│  ┌──────────────────────────────────────────┐   │
+│  │ 中文 简体 (默认)                          │   │
+│  │ English.mui                              │   │
+│  │ 日本語.mui                                │   │
+│  │ ...                                       │   │
+│  └──────────────────────────────────────────┘   │
+├──────────────────────────────────────────────────┤
+│  [应用所选语言包（重启生效）]  [刷新列表]          │
+└──────────────────────────────────────────────────┘
+</code></pre>
+
+<h3>3.1 当前语言</h3>
+
+<p>第一行显示当前正在用什么语言。默认是"中文 简体 (默认)"。</p>
+
+<p>如果加载了语言包，这里会显示语言包里 <code>language_name</code> 字段的值（或者语言包文件名）。</p>
+
+<h3>3.2 导入语言包</h3>
+
+<p>点 <strong>「导入 .mui 文件...」</strong>，弹文件选择框，选一个 <code>.mui</code> 文件。程序会把它复制到 <code>Language/</code> 文件夹里，然后自动刷新列表。</p>
+
+<p>如果你导入的文件名已经存在，会弹窗问你"是否覆盖"。</p>
+
+<h3>3.3 语言列表</h3>
+
+<p>中间那个列表框，列出 <code>Language/</code> 文件夹里所有的 <code>.mui</code> 文件。<strong>第一项永远是"中文 简体 (默认)"</strong>，这是程序内置的，不依赖任何文件。</p>
+
+<p>列表里的顺序是按文件名排序的。</p>
+
+<h3>3.4 应用 / 刷新按钮</h3>
+
+<table>
+    <thead>
+        <tr><th>按钮</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>应用所选语言包（重启生效）</strong></td>
+            <td>把列表里选中的语言包加载到内存，写进配置文件，然后提示你重启</td>
+        </tr>
+        <tr>
+            <td><strong>刷新列表</strong></td>
+            <td>重新扫描 <code>Language/</code> 文件夹。手动往里面放文件之后点一下</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>四、怎么切换语言？</h2>
+
+<p>三步搞定：</p>
+
+<ol>
+    <li>从列表里选一个语言包（或选"中文 简体 (默认)"切回中文）</li>
+    <li>点 <strong>「应用所选语言包」</strong></li>
+    <li>看到"语言已切换为 xxx，请重启程序以完全生效"的提示后，<strong>重启 Itoc</strong></li>
+</ol>
+
+<div class="warning">
+    <strong>⚠️ 必须重启才完全生效：</strong><br>
+    语言包是在程序启动时加载的。运行期间改了内存里的映射表，很多已经创建好的控件不会自动重新翻译。<br>
+    所以切换语言之后，界面上可能会"翻译了一部分、还留着一部分"——这是正常的，重启之后就全好了。
+</div>
+
+<h3>4.1 Itoc 自带的语言包</h3>
+
+<p>不用你去找，<code>Language/</code> 文件夹里已经预置了几份语言包，开箱即用：</p>
+
+<table>
+    <thead>
+        <tr><th>文件名</th><th>语言</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>English.mui</code></td><td>English</td><td>英文翻译</td></tr>
+        <tr><td><code>Japanese.mui</code></td><td>日本語</td><td>日语翻译</td></tr>
+        <tr><td><code>中文 繁体.mui</code></td><td>中文 繁體</td><td>繁体中文（在简体基础上做差异翻译）</td></tr>
+        <tr><td><code>中文 简体 文言文.mui</code></td><td>中文 简体 文言文</td><td>文言文风格的简体中文（趣味语言包）</td></tr>
+    </tbody>
+</table>
+
+<p>打开首选项 → 语言，点「刷新列表」，就能在列表里看到它们。选中一个、应用、重启，界面就换语言了。</p>
+
+<div class="tip">
+    <strong>💡 自带语言包不用手动导入：</strong><br>
+    「导入 .mui 文件...」按钮是给你"从外面拿新语言包进来"用的。<br>
+    自带的这几份已经在 <code>Language/</code> 里了，直接选就行，不用导入。<br>
+    如果你手动往 <code>Language/</code> 里放了新的语言包，点一下「刷新列表」就能看到。
+</div>
+
+<h3>4.2 切回默认语言</h3>
+
+<p>从列表里选 <strong>"中文 简体 (默认)"</strong>，点应用，重启。程序会清空内存里的语言映射表，回到原生中文界面。</p>
+
+<p>这时候配置文件里的 <code>current_language</code> 会被写成 <code>default</code>。</p>
+
+<div class="note">
+    <strong>📌 "中文 简体 (默认)"和"中文 简体 文言文.mui"不是一回事：</strong><br>
+    · <strong>中文 简体 (默认)</strong>：列表第一项，<strong>不读任何文件</strong>，直接用程序里硬编码的中文。翻译完全不走语言包逻辑。<br>
+    · <strong>中文 简体 文言文.mui</strong>：是一个普通语言包文件，只不过它翻译的是"简体中文 → 文言文"而已。<br>
+    这俩名字有点像，别看错。
+</div>
+
+<h2>五、语言包是怎么被应用的？</h2>
+
+<p>这是理解语言包的关键。程序在启动后、界面创建完成后，会做这么几件事：</p>
+
+<ol>
+    <li><strong>读取配置</strong>：从 <code>shezhi.txt</code> 里读出 <code>current_language</code> 字段</li>
+    <li><strong>加载语言包</strong>：如果字段不是 <code>default</code>，就去 <code>Language/</code> 找对应的文件并读成字典</li>
+    <li><strong>翻译菜单</strong>：递归遍历所有菜单和子菜单，把 label 查表替换</li>
+    <li><strong>翻译界面控件</strong>：递归遍历所有控件，翻译 Label / Button / LabelFrame / Combobox 里的文字</li>
+    <li><strong>翻译模板</strong>：对于像"时间：0.000s / 0.000s"这种带数字的文本，用模板匹配的方式翻译</li>
+    <li><strong>通知子模块</strong>：通知侧边栏、代码视图、过渡管理器等模块，让它们也重新应用语言</li>
+</ol>
+
+<h3>5.1 三种匹配方式</h3>
+
+<p>程序翻译文字的时候，按这个优先级来：</p>
+
+<table>
+    <thead>
+        <tr><th>优先级</th><th>方式</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>① 精确匹配</td>
+            <td>原文完全一样</td>
+            <td>例如 "撤销" → "Undo"</td>
+        </tr>
+        <tr>
+            <td>② 模板匹配</td>
+            <td>带占位符的模板</td>
+            <td>例如 "时间：0.123s / 4.567s" 匹配模板 "时间：{current}s / {total}s"</td>
+        </tr>
+        <tr>
+            <td>③ 保持原样</td>
+            <td>没匹配到</td>
+            <td>直接显示原文，不做任何处理</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>5.2 模板匹配是怎么回事？</h3>
+
+<p>像"时间：0.123s / 4.567s"这种文本，数字每次都不一样，没法写死在语言包里。所以程序用了一种"模板"机制：</p>
+
+<p>语言包里写：</p>
+
+<pre><code>"时间：{current}s / {total}s": "Time: {current}s / {total}s"</code></pre>
+
+<p>然后程序遇到 "时间：0.123s / 4.567s" 时，会识别出它符合"时间：XXXs / XXXs"这个模式，提取出 current=0.123、total=4.567，然后把它们塞进译文的模板里，得到 "Time: 0.123s / 4.567s"。</p>
+
+<p>目前支持的模板包括（只列一部分）：</p>
+
+<table>
+    <thead>
+        <tr><th>模板键</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>原速：{value}BPM</code></td><td>BPM 显示</td></tr>
+        <tr><td><code>当前速度：{current}BPM（原速：{original}BPM）</code></td><td>状态栏 BPM 显示</td></tr>
+        <tr><td><code>时间：{current}s / {total}s</code></td><td>时间显示</td></tr>
+        <tr><td><code>当前节拍：{value}</code></td><td>节拍显示</td></tr>
+        <tr><td><code>总音符块：{count}</code></td><td>统计显示</td></tr>
+        <tr><td><code>框选音符块：{count}</code></td><td>统计显示</td></tr>
+        <tr><td><code>音调强度：{value}x</code></td><td>音调显示</td></tr>
+        <tr><td><code>音频起始: {value}ms</code></td><td>音频起始显示</td></tr>
+        <tr><td><code>时间选区: {value} ms</code></td><td>时间选区显示</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 想翻译模板怎么办？</strong><br>
+    在语言包里，把这些模板键作为 key，译文里也保留 <code>{xxx}</code> 占位符就行。<br>
+    例如：<code>"时间：{current}s / {total}s": "Time: {current}s / {total}s"</code>。<br>
+    占位符的名字不能改，改了就对不上号了。
+</div>
+
+<h3>5.3 子模块也要翻译</h3>
+
+<p>主界面翻译完之后，程序还会通知几个独立模块，让它们自己翻译：</p>
+
+<ul>
+    <li><strong>侧边栏</strong>：调用它的 <code>apply_language</code> 方法，翻译侧边栏里的选项卡标题和按钮</li>
+    <li><strong>代码视图</strong>：调用它的 <code>on_language_changed</code> 方法</li>
+    <li><strong>阵列模块</strong>：刷新它的语言包缓存</li>
+    <li><strong>过渡管理器</strong>：刷新过渡菜单的翻译</li>
+</ul>
+
+<p>所以换语言之后，这些模块也会跟着变。</p>
+
+<h2>六、语言包格式详解</h2>
+
+<h3>6.1 基本格式</h3>
+
+<p>就是一个 JSON 对象，UTF-8 编码。建议加 BOM，但不是必须的（程序会自己处理 BOM）。</p>
+
+<pre><code>{
+    "language_name": "English",
+    "文件(F)": "File(F)",
+    "编辑(E)": "Edit(E)",
+    ...
+}
+</code></pre>
+
+<h3>6.2 特殊字段</h3>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>language_name</code></td>
+            <td>语言名称，显示在"当前语言"那行。也可以写成 <code>Language</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>如果这两个字段都没有，程序会退而用文件名（不含扩展名）作为显示名。</p>
+
+<h3>6.3 什么样的 key 会被匹配？</h3>
+
+<p>程序翻译的时候，会拿界面上的文字去查表。这些文字包括：</p>
+
+<ul>
+    <li><strong>菜单 label</strong>：比如 "文件(F)"、"撤销"、"首选项"</li>
+    <li><strong>按钮 text</strong>：比如 "确定"、"取消"、"浏览..."</li>
+    <li><strong>标签 text</strong>：比如 "当前语言:"、"波形采样点数:"</li>
+    <li><strong>LabelFrame 标题</strong>：比如 "窗口设置"、"音频设置"</li>
+    <li><strong>Combobox 选项</strong>：比如主题下拉框里的 "vista"、"clam"（一般不翻译）</li>
+    <li><strong>Notebook 选项卡标题</strong>：比如 "CZEmakers"、"音频音谱"</li>
+</ul>
+
+<p>只要 key 和这些文字一字不差，就会被替换。</p>
+
+<h3>6.4 什么样的 key 不会被匹配？</h3>
+
+<ul>
+    <li>带动态数字的（如 "0.123 秒"），要用模板键</li>
+    <li>程序内部用的字段名（如 "current_language"、"undo_max_steps"）</li>
+    <li>菜单项里带快捷键标记的（如 "文件(F)" 的括号），要连括号一起写进 key</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 最稳的做法：</strong><br>
+    打开 Itoc，找到你想翻译的界面，<strong>把界面上显示的原文一字不差地抄下来</strong>，作为 key。<br>
+    括号、冒号、空格、标点都要对齐。差一个字符就匹配不上。
+</div>
+
+<h2>七、配置文件里的语言字段</h2>
+
+<p>语言设置存在 <code>shezhi.txt</code> 里，字段名是 <code>current_language</code>。可能的值：</p>
+
+<table>
+    <thead>
+        <tr><th>值</th><th>含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>default</code></td><td>不加载语言包，用原生中文</td></tr>
+        <tr><td><code>English.mui</code></td><td>加载 <code>Language/English.mui</code></td></tr>
+        <tr><td><code>日本語.mui</code></td><td>加载 <code>Language/日本語.mui</code></td></tr>
+    </tbody>
+</table>
+
+<p>程序启动时会读这个字段。如果字段为空、无效、或者对应的文件不存在，就静默回退到默认中文。</p>
+
+<div class="warning">
+    <strong>⚠️ 别手改成一个不存在的文件名：</strong><br>
+    如果 <code>current_language</code> 指向 <code>Language/</code> 里没有的文件，程序不会崩，但界面会保持中文。<br>
+    这种情况下去语言设置里重新选一个就好。
+</div>
+
+<h2>八、自己做一个语言包</h2>
+
+<p>做语言包这件事，有两种干法：一种是"从零开始，想到啥翻啥"，另一种是"拿别人的现成语言包改"。</p>
+
+<p>说实话，<strong>第二种更推荐</strong>。因为 Itoc 界面上的文字有两三千条，从零翻很容易漏。拿一份现成的语言包当底稿，只改你需要改的地方，效率高得多。</p>
+
+<p>下面两种方法都讲一下。</p>
+
+<h3>8.1 方法一：从零开始做</h3>
+
+<p>适合你只想翻译一小部分、或者想做一份"精简版"语言包。</p>
+
+<h4>8.1.1 第一步：准备一份空白 JSON</h4>
+
+<p>新建一个文本文件，用 UTF-8 编码，写：</p>
+
+<pre><code>{
+    "language_name": "Español"
+}</code></pre>
+
+<h4>8.1.2 第二步：把要翻译的原文加进去</h4>
+
+<p>打开 Itoc，看着界面，把想翻译的文字一条条加进去：</p>
+
+<pre><code>{
+    "language_name": "Español",
+    "文件(F)": "Archivo(F)",
+    "编辑(E)": "Editar(E)",
+    "撤销": "Deshacer",
+    "重做": "Rehacer"
+}</code></pre>
+
+<h4>8.1.3 第三步：存成 .mui 文件</h4>
+
+<p>把文件保存到 <code>Language/</code> 文件夹里，扩展名用 <code>.mui</code>，比如 <code>Español.mui</code>。</p>
+
+<h4>8.1.4 第四步：应用它</h4>
+
+<p>去首选项 → 语言，点「刷新列表」，就能看到你新做的语言包。选它、应用、重启，完事。</p>
+
+<h3>8.2 方法二：拿现成的语言包改（推荐）</h3>
+
+<p>这个方法更快、更全。核心思路是：<strong>找一份现成的语言包当底稿，在它基础上改</strong>。</p>
+
+<h4>8.2.1 底稿从哪来？</h4>
+
+<p>不用到处找。<strong>Itoc 自带的 <code>Language/</code> 文件夹里就有现成的底稿</strong>：</p>
+
+<ul>
+    <li><code>English.mui</code>（英文）—— 想改其它欧洲语言，拿它当底稿最顺手</li>
+    <li><code>Japanese.mui</code>（日语）—— 想改其它东亚语言，可以参考它的断句方式</li>
+    <li><code>中文 繁体.mui</code>（繁体中文）—— 想改其它中文变体，拿它当模板</li>
+    <li><code>中文 简体 文言文.mui</code>（文言文）—— 一份很"轻量"的语言包（只有几十 KB），适合拿来看"最小语言包长什么样"</li>
+</ul>
+
+<p>这几份底稿的 key 都是完整的中文原文，覆盖面比较全。拿它们当基础改，比从零开始省事太多了。</p>
+
+<p>另外，也可以：</p>
+
+<ul>
+    <li><strong>去官方论坛找</strong>：交流区里可能有别人分享的、更全的语言包</li>
+</ul>
+
+<h4>8.2.2 改起来也不复杂</h4>
+
+<p>拿到现成语言包之后：</p>
+
+<ol>
+    <li>用文本编辑器（推荐 VS Code / Notepad++ / Sublime Text）打开那个 <code>.mui</code> 文件</li>
+    <li>把 <code>language_name</code> 改成你要的语言名，比如 <code>"Français"</code></li>
+    <li>把右边的译文（value）改成你要的语言</li>
+    <li>保存到 <code>Language/</code> 文件夹，扩展名保持 <code>.mui</code></li>
+    <li>回 Itoc 点「刷新列表」，选它，应用，重启</li>
+</ol>
+
+<div class="tip">
+    <strong>💡 一个偷懒小技巧：</strong><br>
+    如果你要做的是"从英文翻到法语"，可以先拿 <code>English.mui</code> 当底稿，把左边的中文 key 换成英文 value 写进去？不行不行，key 必须是中文原文。<br>
+    正确做法是：拿中文 key 当固定结构，只改右边 value。比如：<br>
+    <code>"撤销": "Undo"</code> → <code>"撤销": "Annuler"</code><br>
+    左边永远不动，只改右边。
+</div>
+
+<h3>8.3 用 AI 帮你翻（最省事）</h3>
+
+<p>如果你手上已经有一份语言包，比如 <code>English.mui</code>，想把它翻译成别的语言，可以直接扔给 AI 帮你改。这样比人工一条条翻快得多。</p>
+
+<h4>8.3.1 推荐做法</h4>
+
+<p>给 AI 的提示词可以这么写：</p>
+
+<pre><code>下面是一个 JSON 格式的语言包文件，左边是中文原文（key），
+右边是英文译文（value）。
+
+请你把所有的英文译文改成【法语】，左边中文原文保持不动。
+
+要求：
+1. 只改 value，key 一个字都不能动
+2. 保持 JSON 格式正确
+3. language_name 字段改成 "Français"
+4. 不要加任何解释文字，直接输出 JSON
+
+下面是语言包内容：
+（把整个 .mui 文件的内容粘进来）</code></pre>
+
+<p>AI 会给你一份完整的 JSON，直接存成 <code>Français.mui</code> 丢进 <code>Language/</code> 就行。</p>
+
+<h4>8.3.2 注意事项</h4>
+
+<ul>
+    <li><strong>让 AI 只改 value，不动 key</strong>：这是铁律。key 一旦错了，整条翻译就失效了</li>
+    <li><strong>文件不要太长一次给 AI</strong>：如果语言包几千行，AI 可能会截断。可以拆成几段分次翻</li>
+    <li><strong>翻完要检查 JSON 格式</strong>：AI 有时会多加逗号、少加引号。丢进 <code>Language/</code> 之前，用在线 JSON 校验器查一遍</li>
+    <li><strong>术语一致性</strong>：如果工程里有专有名词（比如"配参""模类"），可以先在提示词里告诉 AI 这些词的标准译法，避免它瞎翻</li>
+</ul>
+
+<div class="warning">
+    <strong>⚠️ AI 翻译的坑：</strong><br>
+    · AI 可能"好心"帮你优化 key，比如把 "文件(F)" 改成 "文件"，结果就匹配不上了。<br>
+    · AI 可能把 {current} 这种占位符也一起翻译了，那就全乱套了。<br>
+    · AI 可能自作聪明地补全"缺失的翻译"，加一些你自己没写的 key。<br>
+    所以拿到 AI 的输出后，<strong>一定要先检查再使用</strong>，别直接扔进 <code>Language/</code>。
+</div>
+
+<h3>8.4 没翻的文字会怎样？</h3>
+
+<div class="tip">
+    <strong>💡 保持原样（也就是显示中文）：</strong><br>
+    语言包不需要覆盖所有文字，只翻译你想翻译的就行。<br>
+    程序遇到没匹配到的文字，会原样显示，不会报错、不会崩、不会显示空白。<br>
+    所以你可以慢慢加，翻多少算多少，不用一口气全翻完。
+</div>
+
+<h3>8.5 一份完整语言包大概多少条？</h3>
+
+<p>Itoc 界面上的文字量，粗估在 <strong>2000 ~ 3000 条</strong>左右（取决于你装了多少插件、多少功能模块被加载）。</p>
+
+<p>所以：</p>
+
+<ul>
+    <li><strong>从零手写</strong>：工程量很大，容易漏、容易错。适合只翻一小部分关键文字</li>
+    <li><strong>拿现成的改</strong>：省事很多，结构不用自己搭，只改译文就行</li>
+    <li><strong>用 AI 翻</strong>：最快。一份几千条的底稿，AI 几轮就能翻完，人只需要检查格式和术语</li>
+</ul>
+
+<p>三管齐下最合适：找一份现成的当底稿，用 AI 翻一版，人工校对格式和术语。出来的语言包质量最好。</p>
+
+<h2>九、常见问题</h2>
+
+<h3>Q1：切换完语言，界面只变了一半？</h3>
+
+<p>正常。语言包是在程序启动时加载的，运行期间切换只能改内存里的映射表，很多已经创建好的控件不会自动重新翻译。</p>
+
+<p><strong>重启 Itoc 之后</strong>，所有界面才会完全按新语言显示。</p>
+
+<h3>Q2：导入 .mui 之后，列表里没看到？</h3>
+
+<p>点一下「刷新列表」。列表不会自动刷新，是手动触发的。</p>
+
+<h3>Q3：语言包文件名能用中文吗？</h3>
+
+<p>能。程序对中文文件名没有限制，比如 <code>日本語.mui</code>、<code>한국어.mui</code> 都能正常读。</p>
+
+<h3>Q4：语言包里的原文写错了怎么办？</h3>
+
+<p>那条就不会被匹配，界面还是显示原文。检查一下是不是括号、标点、空格对不上。</p>
+
+<p>最稳的办法是把界面上显示的原文<strong>整段复制</strong>下来，作为 key。</p>
+
+<h3>Q5：切回默认语言，为什么还要重启？</h3>
+
+<p>因为程序启动时是把 <code>lang_map</code> 加载成字典的。切回默认意味着要把这个字典清空，但已经翻译过的控件不会自动变回中文，所以还是得重启。</p>
+
+<h3>Q6：语言包支持图片吗？</h3>
+
+<p>不支持。语言包只翻译<strong>文本</strong>，图标、图片这些东西不跟着变。</p>
+
+<h3>Q7：语言包能翻译快捷键吗？</h3>
+
+<p>菜单项的快捷键标记（比如 "Ctrl+S"）在 menu 项里是单独的 <code>accelerator</code> 属性，不走翻译逻辑。</p>
+
+<p>但菜单项的文字里如果带了快捷键提示（比如 "撤销"），可以翻译文字，快捷键本身不变。所以英文用户看到的是 "Undo    Ctrl+Z" 这种形式。</p>
+
+<h3>Q8：语言包放在哪？</h3>
+
+<p>放在 Itoc 安装目录下的 <code>Language/</code> 文件夹里。</p>
+
+<p>如果这个文件夹不存在，程序会在需要的时候自动创建。</p>
+
+<h3>Q9：怎么删除语言包？</h3>
+
+<p>语言设置里没有"删除"按钮。想删就直接去 <code>Language/</code> 文件夹里，把对应的 <code>.mui</code> 文件删掉，然后回程序里点「刷新列表」。</p>
+
+<p>如果这个语言包正在被使用，程序也不会崩，重启后会自动回退到默认中文。</p>
+
+<h3>Q10：可以同时用多个语言包吗？</h3>
+
+<p>不行。程序每次只加载一个语言包，由 <code>current_language</code> 字段决定用哪个。</p>
+
+<h3>Q11：语言包里的 <code>language_name</code> 字段必填吗？</h3>
+
+<p>不填也行。不填的话，"当前语言"那行会显示文件名（不含扩展名）。</p>
+
+<p>填了会显示得更好看一点，比如显示 "English" 而不是 "English.mui"。</p>
+
+<h3>Q12：Itoc 自带了哪些语言包？</h3>
+
+<p><code>Language/</code> 文件夹里预置了四份：</p>
+
+<ul>
+    <li><code>English.mui</code> —— 英文</li>
+    <li><code>Japanese.mui</code> —— 日语</li>
+    <li><code>中文 繁体.mui</code> —— 繁体中文</li>
+    <li><code>中文 简体 文言文.mui</code> —— 文言文风格的简体中文</li>
+</ul>
+
+<p>原生中文不依赖文件（硬编码在程序里），在语言列表里显示为"中文 简体 (默认)"。</p>
+
+<p>如果你做了不错的语言包，欢迎去官方论坛分享。</p>
+
+<h2>十、小结</h2>
+
+<p>「语言包」把 Itoc 的界面翻译成各种语言的机制。关键记住这几条：</p>
+
+<ul>
+    <li><strong>位置</strong>：文件(F) → 首选项 → 语言 Language</li>
+    <li><strong>语言包是 .mui 文件</strong>，内容是 JSON 格式的"原文 → 译文"对照表</li>
+    <li><strong>放在 Language/ 文件夹</strong>，程序启动时自动扫描</li>
+    <li><strong>三种匹配方式</strong>：精确匹配 → 模板匹配 → 保持原样</li>
+    <li><strong>模板匹配</strong>用于带数字的动态文本，占位符是 <code>{xxx}</code></li>
+    <li><strong>子模块也会翻译</strong>：侧边栏、代码视图、阵列、过渡管理器都会被通知</li>
+    <li><strong>切换后必须重启</strong>才完全生效</li>
+    <li><strong>没翻译的文字保持原样</strong>，不用一次翻完</li>
+    <li><strong>存到 shezhi.txt</strong> 的 <code>current_language</code> 字段</li>
+</ul>
+
+<p>做语言包不复杂，就是"抄原文 + 写译文"的体力活。做一份出来，你的外国朋友就能用上母语版 Itoc 了。（Itoc国际化喵？！（太中二了。。））</p>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'language_pack.html'
+    });
+</script>

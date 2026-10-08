@@ -1,0 +1,388 @@
+<!-- transition.html - 过渡动画帮助文档 -->
+<!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 过渡动画帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解入场/出场动画类型、设置方法、过渡配置选项卡、参数说明与工程字段">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,过渡动画,入场动画,出场动画,滑动,弹跳,弹性,展开,收缩,淡入淡出,闪烁,硬闪,透明度">
+<meta property="og:title" content="过渡动画 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 过渡动画帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>过渡动画 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🎬 过渡动画</h1>
+
+<p>前面我们讲了 CZEmaker 弹窗、全局命令、音符块、调整图层。现在轮到<strong>过渡动画</strong>了。它可以让弹窗或调整图层在出现和消失的时候，带上一段炫酷的动画效果——比如从屏幕边缘滑进来、弹跳着出现、以弹性方式展开，或者直接<strong>硬闪</strong>出来，等等。</p>
+
+<p>过渡动画不是单独的一个东西，它是挂在<strong>音符块</strong>和<strong>调整图层</strong>上的一个配置。你选中一个音符或调整图层，然后给它设置“入场动画”和“出场动画”，它下次弹窗或激活时就会按你选的效果来。</p>
+
+<div class="note">
+    <strong>📌 本篇的范围：</strong><br>
+    讲的是过渡动画的类型、设置方法、过渡配置选项卡、参数说明，以及它在工程文件里的字段。关于弹窗本身怎么配置，请参考《CZEmaker 弹窗编排》系列；关于调整图层的其他属性，请参考《调整图层》文档。
+</div>
+
+<h2>一、过渡动画是什么？</h2>
+
+<p>过渡动画分两种：</p>
+
+<ul>
+    <li><strong>入场动画：</strong> 弹窗/调整图层<strong>出现</strong>时播放的动画。</li>
+    <li><strong>出场动画：</strong> 弹窗/调整图层<strong>消失</strong>时播放的动画。</li>
+</ul>
+
+<p>你可以只设置入场，也可以只设置出场，也可以两个都设。不设置的话，弹窗就是直接出现、直接消失。</p>
+
+<p>设置好之后，音符块上会出现两个小竖条：</p>
+
+<table>
+    <thead>
+        <tr><th>标记</th><th>含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>左侧绿色小条</td><td>表示这个音符/调整图层设置了入场动画</td></tr>
+        <tr><td>右侧橙色小条</td><td>表示这个音符/调整图层设置了出场动画</td></tr>
+    </tbody>
+</table>
+
+<h2>二、怎么设置过渡动画？</h2>
+
+<p>有两种方式：菜单和选项卡。推荐用选项卡，因为可以设置时长；菜单只能快速选类型。</p>
+
+<h3>2.1 通过菜单设置</h3>
+
+<p>在菜单栏找到 <strong>「过渡(T)」</strong> 菜单，点开。你会看到：</p>
+
+<ul>
+    <li><strong>── 入场动画 ──</strong> 分组标题</li>
+    <li><strong>无：</strong> 清除入场动画</li>
+    <li>各种入场动画分组（淡入淡出、滑动、弹跳、弹性、展开、闪烁）</li>
+    <li><strong>── 出场动画 ──</strong> 分组标题</li>
+    <li><strong>无：</strong> 清除出场动画</li>
+    <li>各种出场动画分组（淡出淡入、滑动、弹跳、弹性、收缩、闪烁）</li>
+</ul>
+
+<p>选中一个或多个音符/调整图层，然后从菜单里点一个动画，就会立即应用（使用默认时长 500ms）。</p>
+
+<h3>2.2 通过过渡配置选项卡设置</h3>
+
+<p>在底部面板切换到 <strong>「过渡配置」</strong> 选项卡。选项卡里分左右两栏：左边是入场，右边是出场。</p>
+
+<p>每一栏都有：</p>
+
+<ul>
+    <li><strong>动画选择按钮：</strong> 点击后弹出一个分组菜单，选择动画类型。按钮上会显示当前选中的动画名称。</li>
+    <li><strong>时长输入框：</strong> 设置动画时长（单位毫秒，默认 500）。</li>
+</ul>
+
+<p>设置好之后，点右下角的 <strong>「应用 (Insert)」</strong> 按钮，就会把配置应用到选中的音符/调整图层上。</p>
+
+<div class="tip">
+    <strong>💡 多选时的“应用全部”：</strong><br>
+    如果你选中了多个目标，并且想把这些设置统一覆盖到所有目标上，可以点 <strong>「应用全部」</strong> 按钮。它会弹出确认框，确认后会把面板上所有设置强制覆盖到每个目标。
+</div>
+
+<h2>三、支持的动画类型</h2>
+
+<h3>3.1 入场动画</h3>
+
+<table>
+    <thead>
+        <tr><th>分组</th><th>动画名称</th><th>效果</th></tr>
+    </thead>
+    <tbody>
+        <tr><td rowspan="1">淡入淡出</td><td>淡入淡出</td><td>透明度从 0 到 1，平滑出现</td></tr>
+        <tr><td rowspan="4">滑动</td><td>← 从左滑入</td><td>从屏幕左边滑入到目标位置</td></tr>
+        <tr><td>→ 从右滑入</td><td>从屏幕右边滑入到目标位置</td></tr>
+        <tr><td>↑ 从上滑入</td><td>从屏幕上方滑入到目标位置</td></tr>
+        <tr><td>↓ 从下滑入</td><td>从屏幕下方滑入到目标位置</td></tr>
+        <tr><td rowspan="4">弹跳</td><td>← 左弹跳</td><td>从左边弹跳着出现（带反弹效果）</td></tr>
+        <tr><td>→ 右弹跳</td><td>从右边弹跳着出现</td></tr>
+        <tr><td>↑ 上弹跳</td><td>从上边弹跳着出现</td></tr>
+        <tr><td>↓ 下弹跳</td><td>从下边弹跳着出现</td></tr>
+        <tr><td rowspan="8">弹性</td><td>↖ 左上弹性</td><td>从左上角弹性拉伸出现</td></tr>
+        <tr><td>↗ 右上弹性</td><td>从右上角弹性拉伸出现</td></tr>
+        <tr><td>↙ 左下弹性</td><td>从左下角弹性拉伸出现</td></tr>
+        <tr><td>↘ 右下弹性</td><td>从右下角弹性拉伸出现</td></tr>
+        <tr><td>↑ 上弹性</td><td>从上边弹性拉伸出现</td></tr>
+        <tr><td>→ 右弹性</td><td>从右边弹性拉伸出现</td></tr>
+        <tr><td>↓ 下弹性</td><td>从下边弹性拉伸出现</td></tr>
+        <tr><td>← 左弹性</td><td>从左边弹性拉伸出现</td></tr>
+        <tr><td rowspan="8">展开</td><td>↑ 向上展开</td><td>从底部锚点向上展开到完整大小</td></tr>
+        <tr><td>↓ 向下展开</td><td>从顶部锚点向下展开</td></tr>
+        <tr><td>← 向左展开</td><td>从右边锚点向左展开</td></tr>
+        <tr><td>→ 向右展开</td><td>从左边锚点向右展开</td></tr>
+        <tr><td>↖ 左上展开</td><td>从右下角锚点向左上展开</td></tr>
+        <tr><td>↗ 右上展开</td><td>从左下角锚点向右上展开</td></tr>
+        <tr><td>↙ 左下展开</td><td>从右上角锚点向左下展开</td></tr>
+        <tr><td>↘ 右下展开</td><td>从左上角锚点向右下展开</td></tr>
+        <tr><td rowspan="2">闪烁</td><td>闪入</td><td>透明度快速闪烁 3 次（暗↔亮交替）后稳定显示</td></tr>
+        <tr><td>硬闪入</td><td>整个窗口连续彻底隐藏/出现（hide/show 切换）3 次，最后停在显示</td></tr>
+    </tbody>
+</table>
+
+<h3>3.2 出场动画</h3>
+
+<table>
+    <thead>
+        <tr><th>分组</th><th>动画名称</th><th>效果</th></tr>
+    </thead>
+    <tbody>
+        <tr><td rowspan="1">淡出淡入</td><td>淡出淡入</td><td>透明度从 1 到 0，平滑消失</td></tr>
+        <tr><td rowspan="4">滑动</td><td>← 向左滑出</td><td>向屏幕左边滑出</td></tr>
+        <tr><td>→ 向右滑出</td><td>向屏幕右边滑出</td></tr>
+        <tr><td>↑ 向上滑出</td><td>向屏幕上方滑出</td></tr>
+        <tr><td>↓ 向下滑出</td><td>向屏幕下方滑出</td></tr>
+        <tr><td rowspan="4">弹跳</td><td>← 左弹跳退出</td><td>向左弹跳着消失</td></tr>
+        <tr><td>→ 右弹跳退出</td><td>向右弹跳着消失</td></tr>
+        <tr><td>↑ 上弹跳退出</td><td>向上弹跳着消失</td></tr>
+        <tr><td>↓ 下弹跳退出</td><td>向下弹跳着消失</td></tr>
+        <tr><td rowspan="8">弹性</td><td>↖ 左上弹性退出</td><td>向左上弹性拉伸消失</td></tr>
+        <tr><td>↗ 右上弹性退出</td><td>向右上弹性拉伸消失</td></tr>
+        <tr><td>↙ 左下弹性退出</td><td>向左下弹性拉伸消失</td></tr>
+        <tr><td>↘ 右下弹性退出</td><td>向右下弹性拉伸消失</td></tr>
+        <tr><td>↑ 上弹性退出</td><td>向上弹性拉伸消失</td></tr>
+        <tr><td>→ 右弹性退出</td><td>向右弹性拉伸消失</td></tr>
+        <tr><td>↓ 下弹性退出</td><td>向下弹性拉伸消失</td></tr>
+        <tr><td>← 左弹性退出</td><td>向左弹性拉伸消失</td></tr>
+        <tr><td rowspan="8">收缩</td><td>↑ 向上收缩</td><td>从顶部锚点向上收缩消失</td></tr>
+        <tr><td>↓ 向下收缩</td><td>从底部锚点向下收缩消失</td></tr>
+        <tr><td>← 向左收缩</td><td>从左边锚点向左收缩消失</td></tr>
+        <tr><td>→ 向右收缩</td><td>从右边锚点向右收缩消失</td></tr>
+        <tr><td>↖ 左上收缩</td><td>向左上收缩消失</td></tr>
+        <tr><td>↗ 右上收缩</td><td>向右上收缩消失</td></tr>
+        <tr><td>↙ 左下收缩</td><td>向左下收缩消失</td></tr>
+        <tr><td>↘ 右下收缩</td><td>向右下收缩消失</td></tr>
+        <tr><td rowspan="2">闪烁</td><td>闪出</td><td>透明度快速闪烁 3 次（亮↔暗交替）后停在透明并关闭</td></tr>
+        <tr><td>硬闪出</td><td>整个窗口连续彻底显示/隐藏（show/hide 切换）3 次，最后停在隐藏并关闭</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 闪入 / 硬闪入 的区别：</strong><br>
+    <strong>闪入 / 闪出</strong> 是<strong>透明度</strong>闪烁——窗口始终可见，只是透明度在 0 和 目标值 之间反复横跳，看起来像在“忽明忽暗地闪”。<br>
+    <strong>硬闪入 / 硬闪出</strong> 是<strong>物理隐藏</strong>闪烁——窗口会真的 hide() 掉再 show() 回来，看起来像被“啪、啪、啪”地打了三下。后者更有冲击力，但也更“糙”一些，按需选择。
+</div>
+
+<h2>四、透明度支持</h2>
+
+<p>所有弹窗都支持通过 <code>window_opacity</code> 字段设置<strong>目标透明度</strong>（0% - 100%）。过渡动画会完整尊重这个设置：</p>
+
+<table>
+    <thead>
+        <tr><th>动画类型</th><th>透明度处理方式</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>淡入 / 淡出</td><td>从 0.0 渐变到用户设置的目标透明度（不再固定到 1.0）</td></tr>
+        <tr><td>滑动 / 弹跳 / 弹性 / 展开</td><td>整个动画过程保持用户设置的目标透明度，不会忽明忽暗</td></tr>
+        <tr><td>闪入 / 闪出</td><td>围绕用户设置的目标透明度做闪烁（0 ↔ 目标值），最终稳定在目标值</td></tr>
+        <tr><td>硬闪入 / 硬闪出</td><td>每次 show 出来时立即恢复用户设置的目标透明度</td></tr>
+    </tbody>
+</table>
+
+<div class="note">
+    <strong>📌 举个例子：</strong><br>
+    假设你把某个弹窗的透明度设置为 <code>50%</code>，并且给它设置了「从左边滑入」的入场动画。<br>
+    那么它从屏幕左边滑进来的整个过程中，透明度会<strong>全程保持 50%</strong>，而不会先变到 100% 再降回 50%。<br>
+    如果你给它设置的是「淡入」动画，那么它会从 0% 渐变到 50%，而不是渐变到 100%。
+</div>
+
+<h2>五、过渡配置选项卡详解</h2>
+
+<p>选项卡的布局如下：</p>
+
+<table>
+    <thead>
+        <tr><th>区域</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>顶部</td><td>显示当前选中的是音符还是调整图层，以及数量</td></tr>
+        <tr><td>左侧栏</td><td>入场动画设置：动画选择按钮 + 时长输入框</td></tr>
+        <tr><td>右侧栏</td><td>出场动画设置：动画选择按钮 + 时长输入框</td></tr>
+        <tr><td>底部按钮</td><td>重置 / 应用 (Insert) / 应用全部（多选时出现）</td></tr>
+    </tbody>
+</table>
+
+<h3>5.1 动画选择按钮</h3>
+
+<p>按钮上显示当前选中的动画名称，后面有一个 ▶ 符号表示可以点开菜单。菜单里按分组列出所有动画，点一个就选中。选“无”表示清除这个方向的动画。</p>
+
+<h3>5.2 时长输入框</h3>
+
+<p>设置动画持续多少毫秒。默认 500ms（0.5 秒）。可以填 0 到 10000 之间的整数。填 0 表示瞬间完成（可能看不到动画效果）。</p>
+
+<div class="tip">
+    <strong>💡 关于缓动曲线：</strong><br>
+    当前的版本<strong>没有缓动曲线的选择</strong>，所有动画使用内置的缓动效果（滑动用平滑缓动、弹跳用 OutBounce、弹性用 OutElastic、展开用 InCubic，等等）。你只需要设置「时长」这一个参数即可。
+</div>
+
+<h3>5.3 应用按钮</h3>
+
+<ul>
+    <li><strong>应用 (Insert)：</strong> 把当前面板的入场/出场设置应用到选中的目标上。多选时，只更新你<strong>修改过</strong>的字段（比如只改了入场，出场就不动）。</li>
+    <li><strong>重置：</strong> 清空选中目标的所有过渡配置（入场和出场都清掉）。会弹确认框。</li>
+    <li><strong>应用全部：</strong> 多选时出现。把面板上<strong>所有</strong>设置强制覆盖到每个选中的目标上。会弹确认框。</li>
+</ul>
+
+<h3>5.4 修改保护</h3>
+
+<p>如果你改了面板上的设置但还没点“应用”，画布上会出现一层半透明拦截层，阻止你点击其他音符。点击拦截层会弹出对话框，让你选择：</p>
+
+<ul>
+    <li><strong>是：</strong> 丢弃修改，继续操作</li>
+    <li><strong>应用：</strong> 应用当前设置</li>
+    <li><strong>否：</strong> 保留修改，取消操作</li>
+</ul>
+
+<h2>六、哪些目标可以设置过渡？</h2>
+
+<table>
+    <thead>
+        <tr><th>目标</th><th>是否支持</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>常规弹窗（信息/警告/错误/询问）</td><td>✅ 支持</td><td>需要有 CZEmaker 配参</td></tr>
+        <tr><td>图片框</td><td>✅ 支持</td><td>需要有 CZEmaker 配参</td></tr>
+        <tr><td>视频框</td><td>❌ <strong>不支持</strong></td><td>由于技术原因，视频框暂不支持过渡动画（透明度仍可正常设置）</td></tr>
+        <tr><td>模类框</td><td>✅ 支持</td><td>需要有 CZEmaker 配参</td></tr>
+        <tr><td>调整图层</td><td>✅ 支持</td><td>直接设置，不需要 CZEmaker</td></tr>
+        <tr><td>执行代码</td><td>❌ 不支持</td><td>它不弹窗，没有窗口可以动画</td></tr>
+        <tr><td>气泡/通知</td><td>❌ 不支持</td><td>系统通知无法控制动画</td></tr>
+    </tbody>
+</table>
+
+<div class="warning">
+    <strong>⚠️ 关于视频框的说明：</strong><br>
+    视频框是由外部 mpv 播放器独立创建的窗口，它的生命周期由 mpv 进程管理。虽然我们能在窗口出现后调整它的大小、位置、透明度，但<strong>无法在它出现/消失的那一瞬间插入 Qt 动画</strong>。所以视频框的入场/出场动画配置<strong>不会生效</strong>，设置的时候请直接忽略。<br><br>
+    如果你确实希望视频框有“出现动画”，可以考虑在时间轴上对视频框的<strong>位置</strong>做窗口位移动画（使用「窗口动画」命令），或者用一层调整图层（特效层）叠加出类似效果。
+</div>
+
+<div class="warning">
+    <strong>⚠️ 注意：</strong><br>
+    如果选中的音符没有 CZEmaker 配参，也没有任何过渡配置，那么过渡菜单和面板会处于禁用状态，你无法设置动画。请先给音符配置 CZEmaker，或者直接选中调整图层。
+</div>
+
+<h2>七、工程文件里的 transition 字段</h2>
+
+<p>过渡动画保存在音符或调整图层的 <code>transition</code> 字段里，结构如下：</p>
+
+<pre><code>{
+    "transition": {
+        "enter": {
+            "type": "slide_left",
+            "duration": 500
+        },
+        "exit": {
+            "type": "hard_flash",
+            "duration": 300
+        }
+    }
+}</code></pre>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>enter</code></td><td>入场动画配置</td></tr>
+        <tr><td><code>exit</code></td><td>出场动画配置</td></tr>
+        <tr><td><code>type</code></td><td>动画类型（英文键名，如 <code>slide_left</code>、<code>fade</code>、<code>flash</code>、<code>hard_flash</code>）</td></tr>
+        <tr><td><code>duration</code></td><td>动画时长（毫秒）</td></tr>
+    </tbody>
+</table>
+
+<p>如果某个方向没有配置，对应的字段就不存在。如果两个方向都没有，<code>transition</code> 字段本身也可能不存在。</p>
+
+<div class="note">
+    <strong>📌 调整图层的 transition 是一样的结构：</strong><br>
+    调整图层的数据里也有 <code>transition</code> 字段，格式完全相同。
+</div>
+
+<h3>7.1 全部动画类型键名速查</h3>
+
+<table>
+    <thead>
+        <tr><th>分组</th><th>键名</th><th>中文名</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>淡入淡出</td><td><code>fade</code></td><td>淡入淡出 / 淡出淡入</td></tr>
+        <tr><td rowspan="2">滑动</td><td><code>slide_left</code> / <code>slide_right</code> / <code>slide_top</code> / <code>slide_bottom</code></td><td>← → ↑ ↓ 滑动</td></tr>
+        <tr><td colspan="2">（同一键名在入场/出场菜单里显示不同中文，效果方向相反）</td></tr>
+        <tr><td rowspan="2">弹跳</td><td><code>bounce_left</code> / <code>bounce_right</code> / <code>bounce_top</code> / <code>bounce_bottom</code></td><td>← → ↑ ↓ 弹跳</td></tr>
+        <tr><td colspan="2"></td></tr>
+        <tr><td rowspan="2">弹性</td><td><code>elastic_top_left</code> / <code>elastic_top_right</code> / <code>elastic_bottom_left</code> / <code>elastic_bottom_right</code></td><td>四角弹性</td></tr>
+        <tr><td><code>elastic_top</code> / <code>elastic_right</code> / <code>elastic_bottom</code> / <code>elastic_left</code></td><td>上下左右弹性</td></tr>
+        <tr><td rowspan="2">展开 / 收缩</td><td><code>expand_up</code> / <code>expand_down</code> / <code>expand_left</code> / <code>expand_right</code></td><td>上下左右展开（出场为收缩）</td></tr>
+        <tr><td><code>expand_topleft</code> / <code>expand_topright</code> / <code>expand_bottomleft</code> / <code>expand_bottomright</code></td><td>四角展开（出场为收缩）</td></tr>
+        <tr><td rowspan="2">闪烁</td><td><code>flash</code></td><td>闪入 / 闪出（透明度闪烁）</td></tr>
+        <tr><td><code>hard_flash</code></td><td>硬闪入 / 硬闪出（hide/show 切换）</td></tr>
+    </tbody>
+</table>
+
+<h2>八、常见问题</h2>
+
+<h3>Q1：为什么我设置了动画，但弹窗没有效果？</h3>
+
+<p>可能的原因：</p>
+<ul>
+    <li>你设置的音符没有 CZEmaker 配参，或者窗口类型是“执行代码”“气泡/通知”，这些不支持过渡。</li>
+    <li>窗口类型是<strong>视频框</strong>，视频框由于技术原因不支持过渡动画。</li>
+    <li>动画时长太短（比如 0ms），肉眼看不出效果。</li>
+    <li>动画类型是“展开”类，但窗口本身有自定义尺寸，可能导致动画异常。</li>
+</ul>
+
+<h3>Q2：入场和出场可以设成不同的时长吗？</h3>
+
+<p>可以。左右两侧的时长输入框是独立的，你可以分别设置。</p>
+
+<h3>Q3：调整图层的过渡动画什么时候播放？</h3>
+
+<p>调整图层激活时播放<strong>入场动画</strong>，停用时播放<strong>出场动画</strong>。具体激活/停用逻辑请参考《调整图层》文档。</p>
+
+<h3>Q4：多个音符可以共用同一个过渡配置吗？</h3>
+
+<p>可以。选中多个音符，设置好动画后点“应用”，所有选中的音符都会应用相同的配置。如果只想改一部分，用“应用”的智能更新；想全部覆盖，用“应用全部”。</p>
+
+<h3>Q5：为什么闪入 / 硬闪入 看不出效果？</h3>
+
+<p>这两个动画的节奏比较快，如果时长设置得比较长（比如 2000ms），每一“闪”的时间会被拉得很长，看起来反而不像闪烁。建议闪类动画的时长设置在 <strong>300ms ~ 800ms</strong> 之间，节奏感最好。</p>
+
+<h3>Q6：设置透明度和设置过渡动画冲突吗？</h3>
+
+<p>不冲突。透明度是「最终稳定状态」，过渡动画是「从 A 到 B 的过程」。程序会把动画的终点对齐到你设置的透明度上，两者协同工作。具体规则见上面的「四、透明度支持」章节。</p>
+
+<h3>Q7：为什么视频框的过渡动画不生效？</h3>
+
+<p>视频框由外部 mpv 播放器独立渲染，窗口的创建和销毁时机由 mpv 掌握，Qt 这边没有办法在它出现的瞬间插入帧动画。这是技术限制，不是 bug。视频框的<strong>透明度</strong>、<strong>位置</strong>、<strong>尺寸</strong>都可以正常设置，唯独过渡动画不支持。</p>
+
+<h2>九、小结</h2>
+
+<p>过渡动画让弹窗和调整图层不再生硬地出现和消失，而是带上各种有趣的动画效果。</p>
+
+<ul>
+    <li>入场动画和出场动画分别设置</li>
+    <li>支持淡入淡出、滑动、弹跳、弹性、展开/收缩、闪烁六大类</li>
+    <li>新增 <code>flash</code>（闪入/闪出）和 <code>hard_flash</code>（硬闪入/硬闪出）两种闪烁动画</li>
+    <li>所有动画都<strong>尊重用户设置的窗口透明度</strong>，不会再强制动画到 100% 或从 100% 开始</li>
+    <li>可以通过菜单快速设置，也可以在过渡配置选项卡里精细设置</li>
+    <li>支持音符和调整图层</li>
+    <li>执行代码、气泡/通知不支持过渡</li>
+    <li><strong>视频框因技术原因暂不支持过渡动画</strong>（透明度仍可设置）</li>
+    <li>配置保存在 <code>transition</code> 字段里</li>
+</ul>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'transition.html'
+    });
+</script>

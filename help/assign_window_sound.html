@@ -1,0 +1,289 @@
+<!-- assign_window_sound.html - 根据窗口类型赋予自定义音效 帮助文档 -->
+<!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 根据窗口类型赋予自定义音效 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解按窗口类型批量赋予音效、工程音效管理、应用范围与工程字段">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,自定义音效,窗口类型,信息框,警告框,错误框,询问框,图片框,气泡通知,sound_path">
+<meta property="og:title" content="根据窗口类型赋予自定义音效 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 根据窗口类型赋予自定义音效 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>根据窗口类型赋予自定义音效 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🔊 根据窗口类型赋予自定义音效</h1>
+
+<p>前面我们讲了 CZEmaker 弹窗、全局命令、音符块、调整图层、过渡动画。现在讲一个"批量工具"——<strong>根据窗口类型赋予自定义音效</strong>。它能让你一次性把工程里所有"信息框"的音符配上某段音效、所有"警告框"的音符配上另一段音效，不用一个个点音符去改。</p>
+
+<div class="note">
+    <strong>📌 本篇的范围：</strong><br>
+    讲的是这个批量工具的界面、应用范围、音效文件管理，以及它写进工程文件的字段。关于单个音符怎么定义音效，请参考《音符块基础属性编辑》；关于音效在渲染时怎么用，请参考《渲染为音频文件》。
+</div>
+
+<h2>一、这个功能是干嘛的？</h2>
+
+<p>在 Itoc 里，音符块可以挂一段 <strong>自定义音效</strong>（比如一声"叮"、一句提示音、一小段采样），窗口弹出时就播放这段音效，而不是系统默认提示音。</p>
+
+<p>问题是：一个工程里可能有几十上百个音符，每个都要手动挂音效，太累了。</p>
+
+<p>「根据窗口类型赋予自定义音效」就是来干这件事的。它的逻辑很简单：</p>
+
+<ul>
+    <li>你告诉它：<strong>"信息框 → ding.wav"、"警告框 → warn.wav"</strong></li>
+    <li>它遍历工程里的音符，凡是 <code>window_type</code> 是 <code>info</code> 的就挂 <code>ding.wav</code>，是 <code>warning</code> 的就挂 <code>warn.wav</code></li>
+    <li>一次操作，全工程覆盖</li>
+</ul>
+
+<p>这个工具在渲染音频、导出视频、播放弹窗时都能用得上。它是"批量赋值"，不是"单个编辑"——单个编辑请用音符块属性编辑器里的"音效"下拉框。</p>
+
+<h2>二、怎么打开？</h2>
+
+<p>在菜单栏找到 <strong>「工具」</strong> 或 <strong>「批量」</strong> 相关的菜单，里面有 <strong>「根据窗口类型赋予自定义音效」</strong> 这一项。点开就是工具窗口。</p>
+
+<p>窗口是无模态的，打开后你可以一边看主界面一边操作。窗口右下角有 <strong>「应用」</strong> 和 <strong>「取消」</strong> 两个按钮。</p>
+
+<h2>三、界面详解</h2>
+
+<p>窗口从上到下分成三大块：<strong>窗口类型 → 音效映射表</strong>、<strong>应用范围</strong>、<strong>跳过已自定义 + 统计 + 按钮</strong>。</p>
+
+<h3>3.1 窗口类型 → 音效 映射表</h3>
+
+<p>这是最核心的区域。每一行是一个窗口类型，右边有一个下拉框，让你选这个类型对应哪段音效。</p>
+
+<table>
+    <thead>
+        <tr><th>窗口类型</th><th>对应的 window_type 值</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>信息框</td><td><code>info</code></td></tr>
+        <tr><td>警告框</td><td><code>warning</code></td></tr>
+        <tr><td>错误框</td><td><code>error</code></td></tr>
+        <tr><td>询问框</td><td><code>question</code></td></tr>
+        <tr><td>图片框</td><td><code>image</code></td></tr>
+        <tr><td>气泡/通知</td><td><code>notice</code></td></tr>
+        <tr><td>执行代码</td><td><code>code</code></td></tr>
+        <tr><td>视频框</td><td><code>video</code></td></tr>
+        <tr><td>模类框</td><td><code>UIclass</code></td></tr>
+    </tbody>
+</table>
+
+<p>下拉框的选项有三个来源：</p>
+
+<ul>
+    <li><strong>（不设置）</strong> —— 默认值。选这个表示"这个窗口类型不覆盖"，如果音符原本有音效就不动它，原本没有也不加。</li>
+    <li><strong>工程已有的音效文件</strong> —— 工程目录下 <code>audio/</code> 文件夹里的所有 <code>.wav</code> 文件，会自动列出来。</li>
+    <li><strong>通过"浏览..."按钮导入的音效</strong> —— 见下一节。</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 只处理 .wav 格式：</strong><br>
+    这个工具的音频文件只支持 <code>.wav</code>。如果你有 <code>.mp3</code> 或其它格式，需要先转成 wav 再导入。因为底层播放引擎只对 wav 做采样加载。
+</div>
+
+<h3>3.2 浏览并导入音效</h3>
+
+<p>每个窗口类型右侧有一个 <strong>「浏览...」</strong> 按钮。点它会弹出文件选择对话框，让你从电脑里挑一个 <code>.wav</code> 文件。</p>
+
+<p>选好之后，程序会做两件事：</p>
+
+<ol>
+    <li><strong>把文件复制到工程的 <code>audio/</code> 文件夹里</strong>（如果还没有的话）。</li>
+    <li><strong>把该窗口类型对应的下拉框选中这个新文件。</strong></li>
+</ol>
+
+<p>如果工程里已经有同名文件，会弹出确认框问你是否覆盖。</p>
+
+<div class="note">
+    <strong>📌 音效统一放在工程的 audio/ 目录下：</strong><br>
+    所有导入的音效都会集中到 <code>工程目录/audio/</code>。这样分享工程时，把整个工程目录打包带走，音效就跟着走了。
+</div>
+
+<h3>3.3 应用范围</h3>
+
+<p>跟音频渲染工具类似，这里也有三种范围：</p>
+
+<table>
+    <thead>
+        <tr><th>选项</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>全部音符</td><td>工程里所有音符都参与筛选（默认）</td></tr>
+        <tr><td>仅时间选区范围</td><td>只处理时间轴上有选区的那一段。如果当前没有时间选区，这个选项是灰色不可点的</td></tr>
+        <tr><td>自定义范围</td><td>手动输入起止秒数，只处理这一段。输入框单位是秒</td></tr>
+    </tbody>
+</table>
+
+<p>注意：这里的"范围筛选"是<strong>两层筛选</strong>之一。第一层是范围，第二层是"跳过已自定义"。</p>
+
+<h3>3.4 跳过已自定义音效</h3>
+
+<p>这是一个复选框，默认<strong>勾选</strong>。</p>
+
+<p>勾选时，如果一个音符已经有 <code>sound_path</code>（也就是已经被手动挂过音效），就会被<strong>跳过</strong>，不会被这次批量赋值覆盖掉。</p>
+
+<p>不勾选时，所有符合条件的音符都会被覆盖。哪怕它之前挂过音效，也会被改成新的。</p>
+
+<div class="warning">
+    <strong>⚠️ 不勾选"跳过"时请谨慎：</strong><br>
+    如果你已经为某个音符单独配过一段特别的音效（比如某个关键弹窗要播一段专属语音），然后把"跳过已自定义音效"取消掉再应用一次，那段专属音效就会被统一音效覆盖掉。而且撤销之后，原本的专属音效设置也会一起回退——虽然能撤销回来，但操作前最好心里有数。
+</div>
+
+<h3>3.5 统计信息</h3>
+
+<p>窗口底部有一行蓝色的统计文字，例如：</p>
+
+<pre><code>当前范围内共 128 个音符可处理（信息框:56、警告框:20、错误框:12、询问框:8、图片框:32）</code></pre>
+
+<p>它会实时告诉你：</p>
+
+<ul>
+    <li>当前范围里一共有多少个音符<strong>会被处理</strong>（已经过滤掉跳过项）</li>
+    <li>按窗口类型分别有多少个</li>
+</ul>
+
+<p>这个统计是"实时的"——切换范围、勾选/取消"跳过已自定义"时，数字会立刻更新。所以你可以先用它来检查一下即将影响的范围对不对，再决定要不要点"应用"。</p>
+
+<h3>3.6 应用按钮</h3>
+
+<p>点击 <strong>「应用」</strong> 后会：</p>
+
+<ol>
+    <li>遍历筛选出的音符</li>
+    <li>对每个音符，读取它的 <code>window_type</code>，从映射表里查对应的音效文件名</li>
+    <li>把音效文件名写进该音符的 <code>cze_makers.sound_path</code></li>
+    <li>标记工程已修改</li>
+    <li>刷新画布（更新音符块高亮小三角）</li>
+    <li>通过主界面右下角的轮播图弹出结果提示</li>
+</ol>
+
+<p>结果提示会显示三行数据：</p>
+
+<ul>
+    <li><strong>成功赋予音效</strong>的数量</li>
+    <li><strong>跳过（无窗口类型）</strong>的数量 —— 那些没配过 CZEmaker 的音符</li>
+    <li><strong>跳过（该类型未指定音效）</strong>的数量 —— 映射表里是"（不设置）"的窗口类型</li>
+</ul>
+
+<h2>四、工程文件里的字段</h2>
+
+<p>赋予的音效写在音符的 <code>cze_makers</code> 里，字段名是 <code>sound_path</code>：</p>
+
+<pre><code>{
+    "cze_makers": {
+        "window_type": "info",
+        "window_title": "提示",
+        "window_content": "操作成功",
+        "sound_path": "ding.wav"
+    }
+}</code></pre>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>sound_path</code></td><td>音效文件名（不含路径）。实际文件在 <code>工程目录/audio/</code> 下</td></tr>
+    </tbody>
+</table>
+
+<p>如果某个音符没有 <code>sound_path</code>，弹窗时会用系统的默认提示音（跟 <code>window_type</code> 匹配的那种）。</p>
+
+<p><code>sound_path</code> 的值是<strong>纯文件名</strong>（比如 <code>ding.wav</code>），不是绝对路径。这样分享工程时，音效文件跟着 <code>audio/</code> 目录一起走，不需要重新指向。</p>
+
+<h2>五、和"单个音符音效编辑"的关系</h2>
+
+<p>Itoc 里有两个地方可以给音符挂音效：</p>
+
+<table>
+    <thead>
+        <tr><th>入口</th><th>适用场景</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>音符块属性编辑器里的"音效"下拉框</td><td>单个音符需要专属音效时用</td></tr>
+        <tr><td>本工具（根据窗口类型赋予）</td><td>批量给同一类型的音符统一音效时用</td></tr>
+    </tbody>
+</table>
+
+<p>两者写的是同一个字段 <code>sound_path</code>，所以会互相覆盖。本工具的"跳过已自定义音效"就是用来避免误覆盖的——它会把已经手动配过音效的音符排除在外，只处理"还没配过"的那些。</p>
+
+<div class="tip">
+    <strong>💡 推荐工作流：</strong><br>
+    1. 先用本工具批量给一类窗口挂上统一的默认音效；<br>
+    2. 再手动挑出几个"需要专属音效"的音符，用单个编辑器改掉。<br>
+    这样批量操作一次搞定，专属音效只改一两个。
+</div>
+
+<h2>六、渲染时怎么用？</h2>
+
+<p>本工具只是"赋值"，真正"播放"发生在渲染和弹窗时。</p>
+
+<h3>6.1 在弹窗播放器里</h3>
+
+<p>当播放器弹出这个音符对应的窗口时，会读取 <code>sound_path</code>，从工程的 <code>audio/</code> 目录加载对应的 wav 文件并播放。如果没有 <code>sound_path</code>，就退回系统默认提示音。</p>
+
+<h3>6.2 在音频渲染里</h3>
+
+<p>「渲染为音频文件」工具的音源设置里，有一项是<strong>"工程内嵌音效（按音符配置）"</strong>：</p>
+
+<ul>
+    <li>选这个音源时，<strong>只渲染有 <code>sound_path</code> 的音符</strong>，其它音符静音。</li>
+    <li>选其它音源时（比如"自动跟随预览乐器"、"钢琴采样"），如果勾选了 <strong>"应用工程内嵌音效配置"</strong>，那么有 <code>sound_path</code> 的音符会优先用这段音效，其它音符用统一音源。</li>
+</ul>
+
+<p>所以本工具批量挂上的音效，在渲染时也会被用上。</p>
+
+<h2>七、常见问题</h2>
+
+<h3>Q1：为什么"仅时间选区范围"是灰的？</h3>
+
+<p>因为时间轴上当前没有选区。先在时间轴上拖拽出一段选区，再打开工具（或者重新打开工具），这个选项就能点了。</p>
+
+<h3>Q2：为什么应用完之后统计说"跳过（无窗口类型）"很多？</h3>
+
+<p>说明这些音符还没配过 CZEmaker。只有配过 CZEmaker（也就是音符的 <code>cze_makers</code> 里至少有 <code>window_type</code>）的音符才会被处理。如果想让它们也有音效，得先给它们配上 CZEmaker。</p>
+
+<h3>Q3：为什么我的音效文件是 .mp3，导入时点不动？</h3>
+
+<p>这个工具只支持 <code>.wav</code>。转一下格式即可。很多免费工具（Audacity、格式工厂等）都能无损转 wav。</p>
+
+<h3>Q4：音效文件被我删了，工程还能打开吗？</h3>
+
+<p>能。工程里只是记录了一个文件名，打开工程不会检查文件是否存在。但是弹窗播放、音频渲染时如果文件不在，就会退回默认提示音（或者静默，取决于场景）。</p>
+
+<h3>Q5：可以只处理某一个窗口类型吗？</h3>
+
+<p>间接可以。在映射表里把其它窗口类型都留在"（不设置）"，只给想要的那个类型选音效，然后应用。这样只有那一个类型会被处理，其它类型的音符会被统计为"跳过（该类型未指定音效）"。</p>
+
+<h3>Q6：应用后能撤销吗？</h3>
+
+<p>可以。工具在应用前会自动保存一次撤销快照。直接 <kbd>Ctrl</kbd>+<kbd>Z</kbd> 就能把整批操作一次性撤销。</p>
+
+<h2>八、小结</h2>
+
+<p>「根据窗口类型赋予自定义音效」是一个提高效率的批量工具，帮你把"按类型挂音效"这件事从手工活变成一键操作。</p>
+
+<ul>
+    <li>按窗口类型批量赋音效，覆盖全工程或指定范围</li>
+    <li>支持 9 种窗口类型：信息 / 警告 / 错误 / 询问 / 图片 / 气泡通知 / 执行代码 / 视频 / 模类</li>
+    <li>音效文件自动复制到 <code>工程目录/audio/</code>，跟着工程走</li>
+    <li>支持"跳过已自定义音效"避免误覆盖</li>
+    <li>支持时间选区和自定义范围</li>
+    <li>写入的是 <code>cze_makers.sound_path</code> 字段，和单个编辑器共用</li>
+    <li>只处理 .wav 格式</li>
+</ul>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'assign_window_sound.html'
+    });
+</script>

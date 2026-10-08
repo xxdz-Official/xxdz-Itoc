@@ -1,0 +1,303 @@
+<!-- assembly_package.html - 组装打包模式 帮助文档 -->
+<!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 组装打包模式 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解无需 Python 环境、通过复制文件打包工程为独立程序的入口、界面与操作流程">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,组装打包,打包模式,免Python环境,分发程序">
+<meta property="og:title" content="组装打包模式 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 组装打包模式 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>组装打包模式 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🧩 组装打包模式</h1>
+
+<p>前面我们讲了 CZEmaker 弹窗、全局命令、音符块、调整图层、过渡动画、批量赋音效、渲染为音频文件、渲染视频文件、渲染为 Python 代码、渲染为 CZE 数据文件、编译为 exe。现在讲另一个分发功能——<strong>组装打包模式</strong>。它和“编译为 exe”的目的类似，都是把工程变成可以独立分发的程序，但实现方式完全不同。</p>
+
+<div class="note">
+    <strong>📌 本篇的范围：</strong><br>
+    讲的是“组装打包模式”的入口、前置条件、窗口界面、操作步骤、生成结果和常见问题。关于“编译为 exe”的完整流程，请参考《编译为 exe》文档。
+</div>
+
+<h2>一、这个功能是干嘛的？</h2>
+
+<p>“编译为 exe”是用 PyInstaller 把 Python 代码打包成一个独立的 <code>.exe</code> 文件，需要本机有 Python 环境。而“组装打包模式”<strong>不需要 Python 环境，也不需要编译</strong>，它只是把已有的文件<strong>复制、拼装</strong>到一个文件夹里。</p>
+
+<p>具体来说，它会做这些事：</p>
+
+<ul>
+    <li>把工程数据转换成 <code>runCZE.CzeData</code></li>
+    <li>把工程用到的图片复制到 <code>img/</code> 文件夹</li>
+    <li>把背景音频复制并重命名为 <code>Audio.mp3</code></li>
+    <li>把 Itoc 解释器（一个现成的 exe）复制过来并重命名</li>
+    <li>把 <code>ico/</code> 图标文件夹复制过来</li>
+    <li>把 <code>img/</code> 素材文件夹合并进来</li>
+</ul>
+
+<p>最终得到一个文件夹，里面包含一个可直接双击运行的 exe 和它需要的所有资源。把这个文件夹打包发给别人，对方不需要安装任何东西就能运行。</p>
+
+<h2>二、和“编译为 exe”的区别</h2>
+
+<table>
+    <thead>
+        <tr><th></th><th>编译为 exe</th><th>组装打包模式</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>是否需要 Python 环境</td><td>需要</td><td><strong>不需要</strong></td></tr>
+        <tr><td>是否需要 PyInstaller</td><td>需要</td><td><strong>不需要</strong></td></tr>
+        <tr><td>打包速度</td><td>较慢（要编译）</td><td><strong>极快（只是复制文件）</strong></td></tr>
+        <tr><td>能否自定义 exe 图标</td><td>可以</td><td>不能（图标固定）</td></tr>
+        <tr><td>能否自定义版权、版本</td><td>可以</td><td>不能（需反编译修改）</td></tr>
+        <tr><td>生成物</td><td>一个 exe + 依赖文件夹</td><td>一个文件夹，含 exe 和资源</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 怎么选：</strong><br>
+    · 想快速出成品、不在意图标和版权信息 → 用组装打包模式。<br>
+    · 想自定义图标、版本、版权，且本机有 Python → 用编译为 exe。
+</div>
+
+<h2>三、从哪里打开？</h2>
+
+<p>菜单位置：<strong>「编译(C)」 → 「组装打包模式」</strong>。</p>
+
+<p>快捷键：目前没有默认快捷键，建议从菜单打开。</p>
+
+<h3>前置条件</h3>
+
+<p>打开组装打包前，程序会先检查：</p>
+
+<table>
+    <thead>
+        <tr><th>检查项</th><th>不满足时的提示</th><th>怎么解决</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>是否有打开的工程</td><td>“请先打开或保存一个工程文件”</td><td>先新建或打开一个工程</td></tr>
+        <tr><td>工程里是否有音符</td><td>“当前工程没有音符数据”</td><td>先在时间轴上画几个音符</td></tr>
+    </tbody>
+</table>
+
+<p>如果工程已经改过（标题栏工程名带 <code>*</code>），还会先弹一个确认框，建议你先保存工程再打包。</p>
+
+<h2>四、窗口界面</h2>
+
+<p>打开后会出现一个左右分栏的“组装打包模式”窗口。</p>
+
+<table>
+    <thead>
+        <tr><th>区域</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>左栏</td><td>模式说明、优点、缺点、解释器配置</td></tr>
+        <tr><td>右栏</td><td>选择可执行文件版本、输入导出程序名称、继续/取消按钮</td></tr>
+    </tbody>
+</table>
+
+<h3>4.1 优点</h3>
+
+<p>左栏会列出组装打包模式的优点：</p>
+
+<ul>
+    <li>无需 Python 环境——导出过程不需要本机安装 Python</li>
+    <li>无需依赖第三方 pip 运行库——所有依赖都已包含在程序中</li>
+    <li>打包速度极快——无需编译，只需复制拼装文件</li>
+</ul>
+
+<h3>4.2 缺点</h3>
+
+<p>也会列出缺点：</p>
+
+<ul>
+    <li>自定义程度低——无法通过常规手段修改生成程序的文件属性（版权、版本等）</li>
+    <li>软件图标固定——无法修改生成程序的图标</li>
+</ul>
+
+<p>如果需要修改程序属性或图标，需要使用反编译工具手动处理。</p>
+
+<h3>4.3 解释器配置</h3>
+
+<p>显示当前四种解释器模式的状态：</p>
+
+<table>
+    <thead>
+        <tr><th>模式</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>64位 - 窗口</td><td>64 位窗口模式，推荐</td></tr>
+        <tr><td>64位 - 控制台</td><td>64 位控制台模式</td></tr>
+        <tr><td>32位 - 窗口</td><td>32 位窗口模式</td></tr>
+        <tr><td>32位 - 控制台</td><td>32 位控制台模式</td></tr>
+    </tbody>
+</table>
+
+<p>每种模式会显示：</p>
+
+<ul>
+    <li><strong>✅ 用户自定义</strong>——你已经配置了自定义解释器路径</li>
+    <li><strong>⚪ Itoc 2.0 默认解释器</strong>——使用程序自带的默认解释器</li>
+    <li><strong>❌ 路径无效</strong>——配置的路径不存在</li>
+</ul>
+
+<p>当前选中的模式会显示在顶部。实际打包时使用哪个解释器，取决于你在“配置Itoc解释器”里选择的模式。</p>
+
+<h3>4.4 选择可执行文件版本</h3>
+
+<p>右栏让你选择打包时使用哪个解释器 exe：</p>
+
+<table>
+    <thead>
+        <tr><th>选项</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>x64 窗口模式（窗口）- 推荐</td><td>64 位，带窗口，适合大多数弹窗程序</td></tr>
+        <tr><td>x86 窗口模式（窗口）</td><td>32 位，带窗口</td></tr>
+        <tr><td>x64 控制台模式</td><td>64 位，带控制台窗口，适合调试</td></tr>
+        <tr><td>x86 控制台模式</td><td>32 位，带控制台窗口</td></tr>
+    </tbody>
+</table>
+
+<h3>4.5 导出程序名称</h3>
+
+<p>一个输入框，让你输入最终生成的 exe 文件名。默认会使用当前工程名。不需要手动加 <code>.exe</code> 后缀，程序会自动补上。</p>
+
+<p>文件名不能包含以下字符：<code>&lt; &gt; : " / \ | ? *</code>。如果包含，会弹窗提示。</p>
+
+<h3>4.6 底部按钮</h3>
+
+<table>
+    <thead>
+        <tr><th>按钮</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>取消</td><td>关闭窗口，不打包</td></tr>
+        <tr><td>继续打包</td><td>进入下一步，选择导出位置</td></tr>
+    </tbody>
+</table>
+
+<h2>五、操作步骤</h2>
+
+<ol>
+    <li>打开一个包含音符的工程。</li>
+    <li>点击菜单「编译(C)」→「组装打包模式」。</li>
+    <li>如果工程已修改，按提示选择是否保存。</li>
+    <li>在窗口里：
+        <ul>
+            <li>查看解释器配置，确认使用的解释器版本</li>
+            <li>选择可执行文件版本（一般选“x64 窗口模式”）</li>
+            <li>输入导出程序名称</li>
+        </ul>
+    </li>
+    <li>点“继续打包”。</li>
+    <li>在弹出的文件夹选择框里，选择一个<strong>基础目录</strong>。程序会在里面创建一个以导出程序名称命名的项目文件夹。</li>
+    <li>等待打包完成，会弹窗显示项目文件夹位置和包含的文件。</li>
+    <li>到项目文件夹里找到 exe，双击测试。</li>
+</ol>
+
+<div class="tip">
+    <strong>💡 关于“基础目录”：</strong><br>
+    你选择的不是最终文件夹，而是一个“父目录”。程序会在这个父目录下创建一个新的项目文件夹，名字就是你输入的导出程序名称。<br>
+    如果同名文件夹已存在，会自动加 <code>_1</code>、<code>_2</code> 后缀，不会覆盖。
+</div>
+
+<h2>六、生成结果</h2>
+
+<p>打包完成后，项目文件夹里会包含：</p>
+
+<table>
+    <thead>
+        <tr><th>文件/文件夹</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>你的程序.exe</code></td><td>主程序，由解释器复制并重命名而来</td></tr>
+        <tr><td><code>runCZE.CzeData</code></td><td>工程数据文件，exe 启动时读取</td></tr>
+        <tr><td><code>Audio.mp3</code></td><td>背景音频（如果工程关联了音频）</td></tr>
+        <tr><td><code>img/</code></td><td>图片素材文件夹，含工程用到的图片</td></tr>
+        <tr><td><code>ico/</code></td><td>图标文件夹，含程序运行需要的图标</td></tr>
+    </tbody>
+</table>
+
+<div class="note">
+    <strong>📌 分发时注意：</strong><br>
+    要把<strong>整个项目文件夹</strong>一起打包分发，不要只发 exe 文件。因为 exe 需要同目录下的 <code>runCZE.CzeData</code>、<code>img/</code>、<code>ico/</code>、<code>Audio.mp3</code> 等文件才能正常运行。
+</div>
+
+<h2>七、常见问题</h2>
+
+<h3>Q1：组装打包和编译为 exe 有什么本质区别？</h3>
+
+<p>组装打包是“复制拼装”，编译为 exe 是“编译打包”。前者不需要 Python 环境，速度极快，但图标和版权信息固定；后者需要 Python 和 PyInstaller，速度较慢，但可以自定义图标和版本信息。</p>
+
+<h3>Q2：为什么生成的 exe 图标不能改？</h3>
+
+<p>因为组装打包只是复制现成的解释器 exe，没有经过编译过程，所以无法在复制时修改 exe 的资源（图标、版本、版权）。如果确实需要修改，可以使用 Resource Hacker 等工具反编译后手动改。</p>
+
+<h3>Q3：打包后 exe 打不开怎么办？</h3>
+
+<p>检查以下几点：</p>
+<ul>
+    <li>是否把整个项目文件夹都复制过去了？</li>
+    <li><code>runCZE.CzeData</code> 是否在 exe 同目录下？</li>
+    <li><code>ico/</code> 文件夹是否存在？</li>
+    <li>如果工程有音频，<code>Audio.mp3</code> 是否存在？</li>
+</ul>
+
+<h3>Q4：音频文件没有复制过去？</h3>
+
+<p>组装打包会尝试从工程里读取音频路径并复制。如果工程没有关联音频，或者音频文件路径失效，就不会有 <code>Audio.mp3</code>。可以手动放一个 <code>Audio.mp3</code> 到项目文件夹里。</p>
+
+<h3>Q5：图片没有复制过去？</h3>
+
+<p>打包时会深度扫描工程数据里的图片路径，把存在的图片复制到 <code>img/</code>。如果某些图片路径不正确，或者图片不存在，就不会被复制。可以在打包后手动检查 <code>img/</code> 文件夹，缺什么补什么。</p>
+
+<h3>Q6：可以用 32 位解释器打包吗？</h3>
+
+<p>可以。在“选择可执行文件版本”里选 x86 的选项即可。前提是程序里已经配置了对应的 32 位解释器文件。</p>
+
+<h3>Q7：打包后的程序能在没有 Python 的电脑上运行吗？</h3>
+
+<p>可以。组装打包生成的文件夹里已经包含了运行所需的全部文件，目标电脑不需要安装 Python 或任何依赖。</p>
+
+<h3>Q8：打包过程中可以取消吗？</h3>
+
+<p>在“组装打包模式”窗口里点“取消”可以取消。但一旦选择了基础目录并开始复制，就没有取消按钮了，只能等它完成。因为复制过程通常很快，一般不需要取消。</p>
+
+<h3>Q9：为什么打包速度这么快？</h3>
+
+<p>因为组装打包不做任何编译，只是把已有的文件复制、重命名、整理到一个文件夹里。文件复制速度很快，所以整个打包过程通常几秒钟就完成了。</p>
+
+<h3>Q10：可以给不同的工程用同一个导出名称吗？</h3>
+
+<p>可以，但如果目标文件夹已存在，程序会自动加 <code>_1</code>、<code>_2</code> 后缀，避免覆盖。每次打包都会创建一个新的文件夹。</p>
+
+<h2>八、小结</h2>
+
+<p>「组装打包模式」是一种快速、免 Python 环境的分发方式，通过复制拼装文件把工程变成可独立运行的文件夹。</p>
+
+<ul>
+    <li>入口：<strong>菜单「编译(C)」→「组装打包模式」</strong></li>
+    <li>前置条件：有打开的工程 + 有音符数据</li>
+    <li>无需 Python 环境，无需 PyInstaller，打包速度极快</li>
+    <li>可以选择 64/32 位、窗口/控制台版本的解释器</li>
+    <li>可以自定义导出程序名称</li>
+    <li>生成物是一个文件夹，含 exe + CzeData + img + ico + Audio.mp3</li>
+    <li>缺点：无法自定义 exe 图标和版权/版本信息</li>
+    <li>分发时要复制整个文件夹，不能只发 exe</li>
+</ul>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'assembly_package.html'
+    });
+</script>

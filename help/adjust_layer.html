@@ -1,0 +1,317 @@
+<!-- adjust_layer.html - 调整图层帮助文档 -->
+<!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 调整图层帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解调整图层的绘制、属性、特效模式、窗口类名/编组关联、过渡动画、右键菜单与工程字段">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,调整图层,特效层,滤镜模式,局部调整,窗口类名,窗口编组">
+<meta property="og:title" content="调整图层 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 调整图层帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>调整图层 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🎛️ 调整图层</h1>
+
+<p>前面我们讲了 CZEmaker 弹窗、全局命令、音符块自身属性。但还有一个很酷的模块——<strong>调整图层</strong>。它可以让你在时间轴的某个时间段内，给屏幕上指定区域叠加一层滤镜特效，比如故障、扫描线、噪点、像素化等等。</p>
+
+<p>调整图层不是弹窗，也不是音符。它是一条独立的时间轴区间，在画布上表现为一个半透明的紫色矩形，上下各有一条彩色边，中间写着 <code>AL</code> 或你自定义的文字。它的作用是：<strong>当时间走到它所在的范围时，在屏幕上激活一层特效，让画面看起来更“鬼畜”。</strong></p>
+
+<div class="note">
+    <strong>📌 调整图层是一个独立模块：</strong><br>
+    本篇讲的是调整图层的绘制、属性、特效模式、与窗口类名/编组的关联、过渡动画、右键菜单和工程字段。涉及其他模块的部分（比如全局命令怎么操作调整图层、阵列是否接管调整图层）只做简要说明，完整功能请参考对应的专门文档。
+</div>
+
+<h2>一、调整图层长什么样？</h2>
+
+<p>在时间轴上，调整图层是一个<strong>半透明的紫色矩形</strong>，上下各有一条颜色边条，颜色由你设置的“时间轴颜色”决定。中间默认显示 <code>AL</code> 两个字，也可以改成自定义文本。</p>
+
+<table>
+    <thead>
+        <tr><th>外观元素</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>紫色半透明矩形</td><td>表示这是一个调整图层区间</td></tr>
+        <tr><td>上边条 / 下边条</td><td>颜色与图层的 <code>color</code> 字段一致</td></tr>
+        <tr><td>中间文字</td><td>默认 <code>AL</code>，可自定义</td></tr>
+        <tr><td>左侧绿色小条</td><td>表示有入场动画</td></tr>
+        <tr><td>右侧橙色小条</td><td>表示有出场动画</td></tr>
+    </tbody>
+</table>
+
+<h2>二、绘制调整图层</h2>
+
+<h3>2.1 进入绘制模式</h3>
+
+<p>在顶部工具栏或「编辑」菜单里找到「绘制调整图层」按钮，点击后进入绘制模式，鼠标会变成十字光标。</p>
+
+<h3>2.2 拖拽绘制</h3>
+
+<p>在时间轴的轨道区域按住鼠标左键拖拽，画出一个矩形区间，松开鼠标就创建了一个调整图层。绘制长度太短（小于 10 像素）会被忽略。</p>
+
+<div class="tip">
+    <strong>💡 自动避让重叠：</strong><br>
+    如果你画的区间和已有的音符或调整图层重叠，程序会自动帮你找一条“同一时间段没有冲突”的轨道，把调整图层放上去。如果所有已有轨道都冲突，会在下方新建一条空轨道。
+</div>
+
+<div class="tip">
+    <strong>💡 在空白区域绘制也会自动建轨道：</strong><br>
+    即使你画的区域下面没有现成轨道，程序也会自动创建一条新轨道，并画好背景、标题和节拍线。
+</div>
+
+<h3>2.3 退出绘制模式</h3>
+
+<p>再次点击「退出绘制图层」按钮（或按 <kbd>Esc</kbd>），光标恢复，退出绘制模式。</p>
+
+<h2>三、调整图层的属性面板</h2>
+
+<p>选中一个调整图层后，底部面板会切换到「调整图层」选项卡，显示它的所有属性。</p>
+
+<h3>3.1 通用属性</h3>
+
+<table>
+    <thead>
+        <tr><th>属性</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>滤镜模式</td><td>选择特效类型：无、故障、像素化、扫描线、噪点、复古、颜色覆盖</td></tr>
+        <tr><td>窗口类名</td><td>指定这个调整图层关联的窗口类名。当该类名窗口出现时，特效层会在屏幕上激活</td></tr>
+        <tr><td>所在编组</td><td>指定关联的编组。当该编组内的窗口出现时，特效层激活</td></tr>
+        <tr><td>叠加颜色</td><td>特效叠加的颜色，可以点击色块选色，也可以直接输入十六进制值，还有预设色块和亮度调节</td></tr>
+        <tr><td>效果强度</td><td>控制特效的强度（1-30），不同模式下含义不同</td></tr>
+        <tr><td>像素大小</td><td>像素化模式下的像素块大小（4-30）</td></tr>
+        <tr><td>不透明度</td><td>特效层的不透明度（0-100）</td></tr>
+        <tr><td>鼠标事件拦截</td><td>勾选后，特效层会拦截鼠标点击，防止点到下面的窗口</td></tr>
+    </tbody>
+</table>
+
+<h3>3.2 局部调整</h3>
+
+<table>
+    <thead>
+        <tr><th>属性</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>启用局部调整</td><td>勾选后，特效只显示在指定的矩形区域内；不勾选则全屏显示</td></tr>
+        <tr><td>坐标 X / Y</td><td>局部区域左上角的位置，单位是百分比（rpx）</td></tr>
+        <tr><td>区域宽度 / 高度</td><td>局部区域的尺寸，单位是百分比（rpx）</td></tr>
+        <tr><td>⊕ 拾取区域</td><td>点击后进入全屏拖拽模式，鼠标拖出一个矩形，自动填入坐标和尺寸</td></tr>
+        <tr><td>边框线</td><td>是否在局部区域周围显示虚线边框</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 拾取区域按钮：</strong><br>
+    点击「⊕ 拾取区域」后，屏幕会变暗，你可以按住鼠标左键拖拽出一个矩形。松开后，坐标和尺寸会自动填入，单位是屏幕百分比。按 <kbd>Esc</kbd> 取消。
+</div>
+
+<h3>3.3 应用与重置</h3>
+
+<ul>
+    <li><strong>应用：</strong> 把当前面板的设置应用到选中的调整图层。多选时，只更新你修改过的字段（智能更新）。</li>
+    <li><strong>应用全部：</strong> 多选时出现，把面板所有字段统一覆盖到所有选中的调整图层。</li>
+    <li><strong>重置：</strong> 把选中调整图层的特效参数恢复为默认值。</li>
+</ul>
+
+<h2>四、特效模式详解</h2>
+
+<table>
+    <thead>
+        <tr><th>模式</th><th>效果</th><th>主要参数</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>无</td><td>不显示任何特效</td><td>—</td></tr>
+        <tr><td>故障</td><td>类似电视故障的彩色偏移和色块抖动</td><td>效果强度、叠加颜色</td></tr>
+        <tr><td>像素化</td><td>把画面变成马赛克方块</td><td>像素大小、效果强度</td></tr>
+        <tr><td>扫描线</td><td>横向扫描线缓慢滚动</td><td>效果强度（控制线间距）</td></tr>
+        <tr><td>噪点</td><td>画面布满随机噪点</td><td>效果强度（控制噪点数量）</td></tr>
+        <tr><td>复古</td><td>泛黄、暗角的怀旧效果</td><td>效果强度</td></tr>
+        <tr><td>颜色覆盖</td><td>用叠加颜色覆盖整个区域</td><td>叠加颜色、效果强度（控制透明度）</td></tr>
+    </tbody>
+</table>
+
+<h2>五、调整图层与窗口类名 / 编组</h2>
+
+<p>调整图层最重要的功能就是<strong>和窗口联动</strong>。你可以在属性面板里指定一个「窗口类名」或「所在编组」。当对应类名或编组的窗口弹出时，特效层会自动激活，在屏幕上显示。</p>
+
+<h3>5.1 什么时候激活？</h3>
+
+<ul>
+    <li><strong>按时间激活：</strong> 当播放时间进入调整图层的 <code>start_beat</code> 到 <code>end_beat</code> 范围时，特效层会自动激活。</li>
+    <li><strong>按窗口激活：</strong> 当你指定了窗口类名或编组，并且该类名/编组的窗口被创建时，特效层也会立即激活。</li>
+</ul>
+
+<h3>5.2 什么时候停用？</h3>
+
+<ul>
+    <li>当播放时间超出调整图层的范围时，特效层自动停用。</li>
+    <li>当关联的窗口关闭时，特效层也会停用（如果配置了关闭清理）。</li>
+</ul>
+
+<div class="note">
+    <strong>📌 调整图层不是弹窗：</strong><br>
+    调整图层本身不会弹出一个窗口，它只是屏幕上的一层特效。但它会注册到窗口类名/编组系统，所以全局命令中的「窗口位移动画」「按类名/编组关闭」等命令也可以作用于调整图层。完整说明请参考《全局命令》专门文档。
+</div>
+
+<h2>六、调整图层的过渡动画</h2>
+
+<p>调整图层支持入场和出场过渡动画，和音符块一样，会在左侧/右侧显示绿色/橙色小条。</p>
+
+<ul>
+    <li>在「过渡配置」选项卡中设置调整图层的入场/出场动画。</li>
+    <li>支持的动画类型与弹窗过渡一致：淡入淡出、滑动、弹跳、弹性、展开等。</li>
+    <li>当调整图层激活时播放入场动画，停用时播放出场动画。</li>
+</ul>
+
+<div class="note">
+    <strong>📌 过渡动画是一个独立模块：</strong><br>
+    本篇只讲它在调整图层上的表现。完整动画参数和效果，请参考《过渡配置》专门文档。
+</div>
+
+<h2>七、调整图层的右键菜单</h2>
+
+<p>在时间轴上右键点击调整图层，会弹出菜单，包含：</p>
+
+<table>
+    <thead>
+        <tr><th>菜单项</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>编辑调整图层基础属性</td><td>打开一个小窗口，可以改叠加颜色和自定义文本</td></tr>
+        <tr><td>从当前调整图层新建并发事件点</td><td>以这个图层为模板创建并发事件点（详见《节奏事件点》文档）</td></tr>
+        <tr><td>从当前调整图层新建节奏事件点</td><td>以这个图层为模板创建节奏事件点（详见《节奏事件点》文档）</td></tr>
+        <tr><td>复制调整图层属性</td><td>复制效果参数和颜色</td></tr>
+        <tr><td>粘贴调整图层属性</td><td>把复制的参数粘贴到当前图层</td></tr>
+        <tr><td>复制调整图层</td><td>复制整个调整图层</td></tr>
+        <tr><td>粘贴调整图层</td><td>在鼠标位置粘贴一个新图层</td></tr>
+        <tr><td>禁用/启用调整图层</td><td>切换禁用状态（禁用后不激活特效）</td></tr>
+        <tr><td>删除调整图层</td><td>删除这个调整图层</td></tr>
+    </tbody>
+</table>
+
+<h2>八、调整图层在工程文件里长什么样？</h2>
+
+<p>调整图层保存在工程文件的 <code>adjust_layers</code> 数组里，每个图层是一个 JSON 对象：</p>
+
+<pre><code>{
+    "id": 123456789,
+    "track_idx": 0,
+    "start_beat": 4.0,
+    "duration": 2.0,
+    "color": "#66ccff",
+    "window_class": "我的窗口",
+    "window_group": "主弹窗",
+    "effect_params": {
+        "mode": "故障",
+        "glitch_strength": 10,
+        "pixel_size": 8,
+        "intensity": 5,
+        "local_enabled": true,
+        "area_width": 30,
+        "area_height": 30,
+        "area_x": 0,
+        "area_y": 0,
+        "color": "#66ccff",
+        "border_enabled": true,
+        "intercept_enabled": false
+    },
+    "transition": {
+        "enter": { "type": "fade", "duration": 500 },
+        "exit": { "type": "fade", "duration": 500 }
+    },
+    "custom_text": "AL"
+}</code></pre>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>id</code></td><td>唯一标识符</td></tr>
+        <tr><td><code>track_idx</code></td><td>所在轨道（从 0 开始）</td></tr>
+        <tr><td><code>start_beat</code></td><td>开始节拍</td></tr>
+        <tr><td><code>duration</code></td><td>持续节拍</td></tr>
+        <tr><td><code>color</code></td><td>时间轴颜色（上下边条的颜色）</td></tr>
+        <tr><td><code>window_class</code></td><td>关联的窗口类名</td></tr>
+        <tr><td><code>window_group</code></td><td>关联的窗口编组</td></tr>
+        <tr><td><code>effect_params</code></td><td>特效参数（详见下表）</td></tr>
+        <tr><td><code>transition</code></td><td>过渡动画配置</td></tr>
+        <tr><td><code>custom_text</code></td><td>自定义文本（默认 AL）</td></tr>
+    </tbody>
+</table>
+
+<h4>effect_params 字段说明</h4>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>mode</code></td><td>滤镜模式（无 / 故障 / 像素化 / 扫描线 / 噪点 / 复古 / 颜色覆盖）</td></tr>
+        <tr><td><code>glitch_strength</code></td><td>效果强度</td></tr>
+        <tr><td><code>pixel_size</code></td><td>像素大小</td></tr>
+        <tr><td><code>intensity</code></td><td>不透明度（0-100）</td></tr>
+        <tr><td><code>local_enabled</code></td><td>是否启用局部调整</td></tr>
+        <tr><td><code>area_width</code> / <code>area_height</code></td><td>局部区域宽高（百分比）</td></tr>
+        <tr><td><code>area_x</code> / <code>area_y</code></td><td>局部区域坐标（百分比）</td></tr>
+        <tr><td><code>color</code></td><td>叠加颜色（十六进制）</td></tr>
+        <tr><td><code>border_enabled</code></td><td>是否显示局部边框线</td></tr>
+        <tr><td><code>intercept_enabled</code></td><td>是否拦截鼠标事件</td></tr>
+    </tbody>
+</table>
+
+<h2>九、全局命令与调整图层的联动</h2>
+
+<p>调整图层在激活时，会把自己注册到窗口类名/编组系统。因此，以下全局命令也可以作用于调整图层（完整参数请参考《全局命令》文档）：</p>
+
+<ul>
+    <li><strong>窗口位移动画：</strong> 可以按类名或编组移动特效层的位置。</li>
+    <li><strong>关闭弹窗：</strong> 可以按类名或编组关闭特效层（停用）。</li>
+    <li><strong>获取焦点与置顶：</strong> 可以调整特效层的层级。</li>
+</ul>
+
+<div class="warning">
+    <strong>⚠️ 调整图层不是传统窗口：</strong><br>
+    某些窗口操作（比如全屏、任务栏显示）对调整图层不适用，具体限制以实际表现为准。如果全局命令对调整图层无效，请检查类名/编组是否正确指定。
+</div>
+
+<h2>十、注意事项</h2>
+
+<ul>
+    <li><strong>调整图层不能直接被阵列接管：</strong> 阵列变换只作用于弹窗，调整图层有自己的轨道，不参与阵列排布。</li>
+    <li><strong>局部调整的坐标是百分比：</strong> 以屏幕宽高为 100%，方便适配不同分辨率。</li>
+    <li><strong>鼠标事件拦截：</strong> 勾选后，特效层会挡住鼠标点击。如果不想挡住下面的窗口，请不要勾选。</li>
+    <li><strong>颜色覆盖模式：</strong> 叠加颜色的透明度由“不透明度”控制，注意不要设置过高导致画面完全被遮住。</li>
+    <li><strong>调整图层过多可能影响性能：</strong> 每个激活的特效层都会实时绘制，建议不要同时激活太多。</li>
+</ul>
+
+<h2>十一、小结</h2>
+
+<p>调整图层是 Itoc 里做鬼畜特效的利器：</p>
+
+<ul>
+    <li>用拖拽在时间轴上绘制一个区间</li>
+    <li>设置滤镜模式、叠加颜色、效果强度</li>
+    <li>指定窗口类名/编组，让特效和弹窗联动</li>
+    <li>支持局部调整、边框线、鼠标拦截</li>
+    <li>支持入场/出场过渡动画</li>
+    <li>右键菜单可以编辑、复制、粘贴、禁用、删除</li>
+</ul>
+
+<p>如果你想深入了解全局命令怎么操作调整图层，请参考《全局命令》文档；过渡动画的完整参数，请参考《过渡配置》文档。</p>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'adjust_layer.html'
+    });
+</script>

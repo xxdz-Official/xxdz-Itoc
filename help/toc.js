@@ -58,6 +58,7 @@ const TOC_DATA = [
     { title: '高能进度表', file: 'high_energy_table.html' },
     { title: '终端', file: 'terminal.html' },
     { title: '代码视图', file: 'code_view.html' },
+    { title: '窗口拾取器', file: 'window_picker.html' },
 
     // ==================== 歌词、协作与历史 ====================
     { group: '歌词、协作与历史' },

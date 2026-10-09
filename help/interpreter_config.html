@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 解释器自定义配置 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解主解释器与测试运行解释器的配置入口、四种模式、默认路径与常见问题">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,解释器配置,自定义解释器,测试运行解释器,runCZEx64window">
+<meta property="og:title" content="解释器自定义配置 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 解释器自定义配置 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>解释器自定义配置 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🎛️ 解释器自定义配置</h1>
+
+<p>前面我们讲了 CZEmaker 弹窗、全局命令、音符块、调整图层、过渡动画、批量赋音效、渲染为音频文件、渲染视频文件、渲染为 Python 代码、渲染为 CZE 数据文件、编译为 exe、组装打包模式。现在讲一个底层但重要的功能——<strong>解释器自定义配置</strong>。它决定了“用什么程序来运行你的工程”。</p>
+
+<div class="note">
+    <strong>📌 本篇的范围：</strong><br>
+    讲的是解释器的概念、两种配置（主解释器、测试运行解释器）、四种模式、配置入口、配置保存和常见问题。关于编译为 exe 和组装打包模式的完整流程，请参考对应的文档。
+</div>
+
+<h2>一、什么是解释器？</h2>
+
+<p>Itoc 工程本身只是数据，它需要“解释器”才能运行。解释器负责读取 <code>.CzeData</code> 数据文件，然后按照里面的时间轴播放弹窗、执行命令、显示动画。</p>
+
+<p>可以这么理解：</p>
+
+<table>
+    <thead>
+        <tr><th>角色</th><th>对应文件</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>编辑器</td><td>Itoc 主程序</td><td>写“源代码”（.czemidi 工程）</td></tr>
+        <tr><td>编译器</td><td>渲染器</td><td>把工程编译成 .CzeData</td></tr>
+        <tr><td><strong>解释器</strong></td><td><code>runCZEx64window.exe</code> 等</td><td><strong>运行 .CzeData，播放弹窗</strong></td></tr>
+    </tbody>
+</table>
+
+<p>解释器自定义配置就是让你指定“用哪个解释器程序来运行”。默认情况下，Itoc 自带四个解释器，但如果你有自己定制或修改过的解释器，可以通过这个功能替换。</p>
+
+<h2>二、两种解释器配置</h2>
+
+<p>Itoc 里有两个独立的解释器配置：</p>
+
+<table>
+    <thead>
+        <tr><th>配置</th><th>用途</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><strong>主解释器</strong></td><td>用于编译、组装打包、双击 .CzeData 文件等正式场合</td></tr>
+        <tr><td><strong>测试运行解释器</strong></td><td>专门用于 F5 一键测试运行，独立配置</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 为什么要分开？</strong><br>
+    因为测试运行经常需要调试、看日志、输出报错信息，所以你可能会用“带控制台窗口的解释器”来测试，但正式打包时希望用“无控制台窗口的解释器”。分开配置，互不干扰。
+</div>
+
+<h2>三、从哪里打开？</h2>
+
+<p>有两个入口可以打开解释器配置：</p>
+
+<h3>3.1 从「编译(C)」菜单打开</h3>
+
+<table>
+    <thead>
+        <tr><th>菜单项</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>配置Itoc解释器</td><td>打开主解释器配置窗口</td></tr>
+        <tr><td>配置Itoc测试运行解释器</td><td>打开测试运行解释器配置窗口</td></tr>
+    </tbody>
+</table>
+
+<h3>3.2 从「首选项」→「解释器」打开</h3>
+
+<p>打开首选项窗口（菜单「文件」→「首选项」），在左侧分类里点「解释器」，右侧会出现两个按钮：</p>
+
+<ul>
+    <li><strong>打开Itoc解释器配置</strong> —— 主解释器</li>
+    <li><strong>打开测试运行解释器配置</strong> —— 测试运行专用</li>
+</ul>
+
+<div class="note">
+    <strong>📌 建议：</strong><br>
+    首选项里的解释器页面只是入口按钮，真正的配置窗口是独立的。点按钮后弹出的就是配置窗口。
+</div>
+
+<h2>四、四种解释器模式</h2>
+
+<p>每种解释器配置（主解释器、测试运行解释器）都支持四种模式：</p>
+
+<table>
+    <thead>
+        <tr><th>模式</th><th>默认文件</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><strong>64位 - 窗口</strong></td><td><code>runCZEx64window.exe</code></td><td>64 位，带窗口，推荐</td></tr>
+        <tr><td><strong>64位 - 控制台</strong></td><td><code>runCZEx64.exe</code></td><td>64 位，带控制台窗口，方便调试</td></tr>
+        <tr><td><strong>32位 - 窗口</strong></td><td><code>runCZEx86window.exe</code></td><td>32 位，带窗口</td></tr>
+        <tr><td><strong>32位 - 控制台</strong></td><td><code>runCZEx86.exe</code></td><td>32 位，带控制台窗口</td></tr>
+    </tbody>
+</table>
+
+<h3>4.1 64位 vs 32位</h3>
+
+<ul>
+    <li><strong>64位</strong>：适合现代 64 位 Windows 系统，推荐默认使用。</li>
+    <li><strong>32位</strong>：适合老旧系统或特殊兼容需求。</li>
+</ul>
+
+<h3>4.2 窗口 vs 控制台</h3>
+
+<ul>
+    <li><strong>窗口模式</strong>：只有弹窗，没有命令行窗口，画面干净，适合正式演出。</li>
+    <li><strong>控制台模式</strong>：会保留一个黑色的命令行窗口，能看到运行日志和报错信息，适合调试。</li>
+</ul>
+
+<h3>4.3 当前选中模式</h3>
+
+<p>四种模式里，同一时刻只有一个被选中为“当前使用模式”。编译为 exe、组装打包、双击 .CzeData 等操作，都会使用当前选中模式的解释器路径。</p>
+
+<h2>五、配置窗口界面</h2>
+
+<p>点开解释器配置后，会看到四种模式的配置项：</p>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>模式名称</td><td>显示“64位 - 窗口”等标签</td></tr>
+        <tr><td>当前状态</td><td>显示使用的是自定义路径还是默认解释器</td></tr>
+        <tr><td>路径输入框</td><td>可以手动输入解释器路径</td></tr>
+        <tr><td>浏览按钮</td><td>从文件对话框里选择一个 exe 文件</td></tr>
+        <tr><td>单选按钮</td><td>选中某个模式作为当前使用模式</td></tr>
+    </tbody>
+</table>
+
+<h3>5.1 自定义 vs 默认</h3>
+
+<p>每种模式都可以：</p>
+
+<ul>
+    <li><strong>留空</strong>：使用 Itoc 自带的默认解释器（<code>runCZE</code> 目录下的对应文件）</li>
+    <li><strong>填自定义路径</strong>：使用你指定的解释器</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 什么时候需要自定义？</strong><br>
+    · 你修改过解释器源码，重新编译了一个定制版<br>
+    · 你把解释器放在了别的目录<br>
+    · 你需要用某个特定版本的 Python 或解释器
+</div>
+
+<h2>六、测试运行解释器</h2>
+
+<p>测试运行解释器是独立于主解释器的，专门用于 F5 一键测试运行。它有自己的配置窗口和配置字段。</p>
+
+<h3>6.1 为什么要独立配置</h3>
+
+<p>测试运行的场景和正式运行不太一样：</p>
+
+<ul>
+    <li>你可能希望测试时看到日志和控制台，所以用控制台模式</li>
+    <li>你可能希望测试时用另一个 Python 环境</li>
+    <li>你可能不希望测试时的调试信息影响正式运行</li>
+</ul>
+
+<h3>6.2 留空则用主解释器</h3>
+
+<p>如果测试运行解释器<strong>留空</strong>，那么 F5 测试运行会自动使用主解释器配置。只有当你填了自定义路径，才会用独立的测试解释器。</p>
+
+<h2>七、配置保存在哪里？</h2>
+
+<p>解释器配置保存在 <code>shezhi.txt</code> 里，字段如下：</p>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>interpreter_64_window</code></td><td>64 位窗口解释器路径</td></tr>
+        <tr><td><code>interpreter_64_console</code></td><td>64 位控制台解释器路径</td></tr>
+        <tr><td><code>interpreter_32_window</code></td><td>32 位窗口解释器路径</td></tr>
+        <tr><td><code>interpreter_32_console</code></td><td>32 位控制台解释器路径</td></tr>
+        <tr><td><code>current_interpreter_mode</code></td><td>当前选中模式，取值为 <code>64_window</code> / <code>64_console</code> / <code>32_window</code> / <code>32_console</code></td></tr>
+        <tr><td><code>test_interpreter_path</code></td><td>测试运行专用解释器路径（留空则用主解释器）</td></tr>
+    </tbody>
+</table>
+
+<p>这些配置在程序启动时自动加载，关闭时自动保存。不需要手动编辑。</p>
+
+<h2>八、解释器用在哪里？</h2>
+
+<p>配置好的解释器会在这些地方被使用：</p>
+
+<table>
+    <thead>
+        <tr><th>场景</th><th>使用的解释器</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>F5 一键测试运行</td><td>测试运行解释器（留空则主解释器）</td></tr>
+        <tr><td>编译为 exe</td><td>不直接用解释器，而是用 PyInstaller 打包</td></tr>
+        <tr><td>组装打包模式</td><td>主解释器</td></tr>
+        <tr><td>双击 .CzeData 文件</td><td>主解释器</td></tr>
+        <tr><td>运行库管理</td><td>当前 Python 环境</td></tr>
+    </tbody>
+</table>
+
+<div class="note">
+    <strong>📌 组装打包模式特别重要：</strong><br>
+    组装打包模式会把主解释器复制过去并重命名成你的程序名。所以主解释器配置直接决定了组装打包出来的程序用哪个解释器版本。
+</div>
+
+<h2>九、常见问题</h2>
+
+<h3>Q1：我不知道该选哪个模式？</h3>
+
+<p>一般选 <strong>64位 - 窗口</strong>。这是最通用的模式，64 位 Windows 系统都能用，而且没有控制台窗口，画面干净。</p>
+
+<h3>Q2：自定义路径填错了会怎样？</h3>
+
+<p>程序会检测路径是否存在。如果路径无效（文件不存在），会显示“❌ 路径无效”。这种情况下，使用该模式时会回退到默认解释器，或者报错提示找不到解释器。</p>
+
+<h3>Q3：默认解释器在哪里？</h3>
+
+<p>默认解释器位于程序目录下的 <code>runCZE/</code> 文件夹里，对应四个文件名。如果这些文件存在，就会自动作为默认值使用。</p>
+
+<h3>Q4：可以同时使用多个解释器吗？</h3>
+
+<p>不可以。同一时刻只有一个“当前选中模式”生效。四种模式的配置可以同时存在，但当前使用的只有一个。</p>
+
+<h3>Q5：测试运行解释器可以不配置吗？</h3>
+
+<p>可以。留空即可。留空时，F5 测试运行会用主解释器的当前选中模式。</p>
+
+<h3>Q6：解释器配置会影响工程文件吗？</h3>
+
+<p>不会。解释器配置保存在 <code>shezhi.txt</code> 里，属于软件设置，不会写进工程文件。分享工程文件给别人时，对方用自己的解释器配置。</p>
+
+<h3>Q7：我把解释器放到别的目录了，怎么配置？</h3>
+
+<p>在对应的模式里，点“浏览”按钮，选择你的解释器 exe 文件即可。或者手动把路径粘贴到输入框里。</p>
+
+<h3>Q8：为什么编译为 exe 不直接用解释器？</h3>
+
+<p>编译为 exe 是用 PyInstaller 把 Python 代码打包成一个独立的 exe，不是简单地复制解释器。所以它走的是另一条路径，不使用解释器配置。<br>
+如果你想要“复制解释器”的分发方式，请用<strong>组装打包模式</strong>。</p>
+
+<h3>Q9：解释器配置和运行库是什么关系？</h3>
+
+<p>解释器是一个已经打包好的独立程序，它自带运行所需的依赖。运行库是指当前电脑上 Python 环境里的第三方库，两者是独立的。<br>
+编译为 exe 时需要运行库，组装打包模式不需要。</p>
+
+<h3>Q10：可以分享我的解释器配置给别人吗？</h3>
+
+<p>可以，但一般不需要。解释器配置属于个人环境设置，别人可能有不同的安装路径。如果确实需要，可以把 <code>shezhi.txt</code> 里对应的字段复制给对方。</p>
+
+<h2>十、小结</h2>
+
+<p>「解释器自定义配置」是 Itoc 的底层设置，决定了“用什么程序来运行你的工程”。</p>
+
+<ul>
+    <li>入口：<strong>菜单「编译(C)」→「配置Itoc解释器」/「配置Itoc测试运行解释器」</strong>，或<strong>「首选项」→「解释器」</strong></li>
+    <li>两种配置：主解释器、测试运行解释器</li>
+    <li>四种模式：64位窗口 / 64位控制台 / 32位窗口 / 32位控制台</li>
+    <li>每种模式可以留空（用默认）或自定义路径</li>
+    <li>当前选中模式决定了组装打包、双击 .CzeData 等使用哪个解释器</li>
+    <li>测试运行解释器留空时会自动用主解释器</li>
+    <li>配置保存在 <code>shezhi.txt</code>，属于软件设置，不影响工程文件</li>
+</ul>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'interpreter_config.html'
+    });
+</script>
+</body>
+</html>

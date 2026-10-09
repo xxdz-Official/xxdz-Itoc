@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 音频音谱 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 音频电平表功能，讲解 LED 电平、dB 刻度、峰值保持、音频波形与音符估算两种模式">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,音频音谱,音频电平表,LED电平,dB刻度,峰值保持,波形数据,音符估算">
+<meta property="og:title" content="音频音谱 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 音频音谱 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 音频电平表功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>音频音谱 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🔊 音频音谱</h1>
+
+<p>底部选项卡里有一个「音频音谱」，点开一看是一排会跳的小灯——绿的、黄的、红的，跟着音频忽上忽下。对，那就是它。连我自己都管它叫「<strong>没啥用的 · 音频电平表</strong>」，主打一个没用。。。</p>
+
+<div class="note">
+    <strong>📌 这篇唠的是啥：</strong><br>
+    就讲底部选项卡里的「音频音谱」——它长啥样、LED 颜色咋分的、两种电平来源、底部信息栏咋看。<br>
+    关于音频文件本身的加载，请参考《文件操作》相关文档。
+</div>
+
+<h2>一、这玩意儿是干啥的？</h2>
+
+<p>简单说，它就是个<strong>LED 电平表</strong>。播放工程的时候，那排小灯跟着音频的高低一跳一跳，让你一眼就能看出「现在这段响不响」。</p>
+
+<p>它一共 <strong>36 个 LED</strong>，从左边往右边点亮。音频越响，点亮的 LED 越多，颜色也跟着从绿→黄→红过渡。</p>
+
+<div class="tip">
+    <strong>💡 说句实话：</strong><br>
+    这玩意儿确实"没啥用"——它不参与任何编辑操作，也不会影响渲染结果。<br>
+    但看着那排小灯跟着音乐跳，确实挺带感的，就当是个氛围组件吧。
+</div>
+
+<h2>二、界面长啥样？</h2>
+
+<p>从上到下分成三块：</p>
+
+<table>
+    <thead>
+        <tr><th>区域</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>顶部标题栏</strong></td>
+            <td>左边写着「没啥用的 · 音频电平表」，右边显示实时信息（FPS 和延迟）</td>
+        </tr>
+        <tr>
+            <td><strong>中间电平表</strong></td>
+            <td>一整排 LED，加上 dB 刻度和峰值指示线</td>
+        </tr>
+        <tr>
+            <td><strong>底部信息栏</strong></td>
+            <td>左边显示「当前」和「峰值」的 dB 值，右边显示活动状态（音符数 + LED 数，或"静音待机"）</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>2.1 电平表的 LED</h3>
+
+<p>LED 是<strong>横向排列</strong>的，从左边开始点亮，颜色分三段：</p>
+
+<table>
+    <thead>
+        <tr><th>位置</th><th>颜色</th><th>含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>左侧 0% ~ 70%</td><td>🟢 绿色</td><td>正常电平，安全区</td></tr>
+        <tr><td>中间 70% ~ 90%</td><td>🟡 黄色</td><td>偏高电平，要注意</td></tr>
+        <tr><td>右侧 90% ~ 100%</td><td>🔴 红色</td><td>接近满电平，可能会削波</td></tr>
+    </tbody>
+</table>
+
+<p>每个点亮的 LED 亮度会随着位置变化——越靠近"当前电平前沿"的 LED 越暗，越靠左的越亮，看起来有个渐变效果。</p>
+
+<h3>2.2 dB 刻度</h3>
+
+<p>电平表顶部有一排刻度，标着 dB 值：</p>
+
+<pre><code>0     -6    -12          -24         -36              -48        -60
+|      |      |            |           |                |          |
+红     黄     黄           绿          绿               灰         灰
+</code></pre>
+
+<p>从右往左，数值越来越大（0 dB 在右边，-60 dB 在左边）。刻度线是虚线，颜色跟着区段走。</p>
+
+<h3>2.3 峰值指示</h3>
+
+<p>除了那排会跳的 LED，还有一个<strong>橙色的峰值指示器</strong>：</p>
+
+<ul>
+    <li>一条橙色垂直线，显示近期达到过的最高电平</li>
+    <li>线顶有一个小三角，三角上方写着具体的峰值 dB 数值</li>
+    <li>峰值会保持 <strong>1 秒</strong>，然后慢慢往下降</li>
+</ul>
+
+<p>这个峰值线让你能"抓住"一瞬间的尖峰——有些极短的爆音，LED 一闪就过去了，但峰值线会留在那里，方便你事后检查。</p>
+
+<h2>三、电平是怎么算的？</h2>
+
+<p>它有两种模式，按优先级自动切换：</p>
+
+<h3>3.1 有音频文件时：读真实波形</h3>
+
+<p>如果你已经加载了音频文件，电平表会直接去读音频的<strong>真实波形数据</strong>：</p>
+
+<ol>
+    <li>从 <code>MMBTrack</code> 里取出已经解码好的波形数据（就是画波形图那份数据）</li>
+    <li>根据当前播放位置，找到对应时刻的波形数据点</li>
+    <li>取这一小段的 <strong>max / min 绝对值里较大的那个</strong>作为电平值</li>
+    <li>做一个 5 点滑动平均，避免电平跳得太猛</li>
+    <li>再乘一个 1.4 的放大系数，让视觉上更带劲</li>
+</ol>
+
+<p>这样算出来的电平，跟音频实际响度是对得上的——哪里鼓点重，哪里灯就跳得高。</p>
+
+<h3>3.2 没有音频时：按音符数量估算</h3>
+
+<p>如果没加载音频，它就退而求其次，根据<strong>当前正在播放的音符数量</strong>来估算：</p>
+
+<table>
+    <thead>
+        <tr><th>同时播放的音符数</th><th>估算电平</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>0 个</td><td>0%（并且带 0.6 秒的衰减期，不会"啪"一下归零）</td></tr>
+        <tr><td>1 个</td><td>35%</td></tr>
+        <tr><td>2 个</td><td>55%</td></tr>
+        <tr><td>3 个</td><td>70%</td></tr>
+        <tr><td>4 个</td><td>82%</td></tr>
+        <tr><td>5 个</td><td>90%</td></tr>
+        <tr><td>6 ~ 8 个</td><td>93% ~ 99%</td></tr>
+        <tr><td>8 个以上</td><td>最多 99%</td></tr>
+    </tbody>
+</table>
+
+<p>为了不让灯看起来死板，估算模式下还会加一点<strong>随机波动</strong>（±0.02），看起来更"活"。</p>
+
+<div class="tip">
+    <strong>💡 两种模式怎么选？</strong><br>
+    不用你选，程序自动判断：<br>
+    · <strong>有音频文件</strong> → 走真实波形模式（准确）<br>
+    · <strong>没有音频文件</strong> → 走音符估算模式（凑合看）<br>
+    所以想要灯跳得准，记得加载音频文件。
+</div>
+
+<h3>3.3 上升和下降的速度</h3>
+
+<p>灯跳起来是有讲究的，不是"咻"一下到顶也不是"啪"一下掉底：</p>
+
+<table>
+    <thead>
+        <tr><th>方向</th><th>响应速度</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>上升（变响）</td><td>快，系数 0.7</td><td>音频一响，灯立马跟上去</td></tr>
+        <tr><td>下降（变轻）</td><td>慢，系数 0.1</td><td>音频轻了，灯慢慢退下来，更接近真实听感</td></tr>
+    </tbody>
+</table>
+
+<p>这个"快升慢降"的行为，就是真正的专业电平表会干的事——因为人耳对"变响"更敏感，对"变轻"反应慢。</p>
+
+<h2>四、底部信息栏</h2>
+
+<h3>4.1 当前 / 峰值</h3>
+
+<p>左边两个标签：</p>
+
+<ul>
+    <li><strong>当前</strong>：现在的电平，单位 dB，范围 -60 ~ 0 dB</li>
+    <li><strong>峰值</strong>：保持 1 秒内的最高电平，单位 dB</li>
+</ul>
+
+<p>dB 值是这么换算的：<code>dB = 电平值 × 60 - 60</code>，所以 0% 对应 -60 dB，100% 对应 0 dB。</p>
+
+<h3>4.2 活动状态</h3>
+
+<p>右边显示当前的状态，分两种情况：</p>
+
+<table>
+    <thead>
+        <tr><th>显示内容</th><th>含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>🎵 N 音符 | 💡 M LED</td><td>有音符正在播放，显示音符数和点亮的 LED 数</td></tr>
+        <tr><td>🔇 静音待机</td><td>没有音符播放</td></tr>
+    </tbody>
+</table>
+
+<p>这个标签的颜色也会跟着电平变：</p>
+
+<ul>
+    <li>🔴 红色：电平高（dB &gt; -12）</li>
+    <li>🟡 黄色：电平中（-24 &lt; dB ≤ -12）</li>
+    <li>🟢 绿色：电平低（dB ≤ -24）</li>
+</ul>
+
+<h3>4.3 FPS 和延迟</h3>
+
+<p>顶部右上角会显示类似 <code>FPS: 14 | 延迟: 70ms</code> 的文字，告诉你当前刷新速度。</p>
+
+<p>默认是 <strong>70ms 刷新一次</strong>，也就是大约 14 FPS。这个速度足够让灯看起来流畅，又不会吃太多 CPU。</p>
+
+<h2>五、什么时候用？</h2>
+
+<p>坦白说，它不影响任何编辑功能，纯粹是"看着爽"。不过有几种场景确实能用上：</p>
+
+<ul>
+    <li><strong>检查音频响度</strong>：如果灯一直在红色区，说明音频可能削波了，需要降音量</li>
+    <li><strong>对齐鼓点</strong>：看着灯在鼓点上跳一下，比看波形图更直观</li>
+    <li><strong>调音量</strong>：一边拖音量滑块一边看灯跳的高度，比纯靠耳朵准</li>
+    <li><strong>纯粹好看</strong>：讲真，这排灯跟着音乐跳，确实挺有感觉的</li>
+</ul>
+
+<h2>六、常见问题</h2>
+
+<h3>Q1：灯一直不动，全灭？</h3>
+
+<p>可能的原因：</p>
+
+<ul>
+    <li>没在播放（点了播放按钮吗？）</li>
+    <li>没加载音频，也没音符在播（那就真的没声音，灯不亮是正常的）</li>
+    <li>音频文件没加载成功，路径失效了</li>
+</ul>
+
+<h3>Q2：灯跳得不准，跟听到的声音对不上？</h3>
+
+<p>检查一下有没有加载音频文件：</p>
+
+<ul>
+    <li><strong>有音频</strong>：应该跟音频响度一致，如果差太多，可能是波形数据没加载好，切到别的选项卡再切回来试试</li>
+    <li><strong>没音频</strong>：走的是音符估算模式，本来就是"大致对应"，不可能完全精准</li>
+</ul>
+
+<h3>Q3：红色区老是亮着，是不是有问题？</h3>
+
+<p>说明你的音频电平经常接近满值。这种情况有两种可能：</p>
+
+<ol>
+    <li>音频本身就录得很满，属于正常</li>
+    <li>音频有削波（爆音），建议去调低一下总音量或者音频音量</li>
+</ol>
+
+<p>看「当前」dB 值，如果经常贴在 0 dB 附近，就说明该降音量了。</p>
+
+<h3>Q4：为什么有时候灯跳得很"虚"？</h3>
+
+<p>因为你没加载音频，走的是音符估算模式。这种情况下，灯的高低是<strong>按音符数量算的</strong>，跟实际响度没关系。加载音频之后就准了。</p>
+
+<h3>Q5：这个电平表影响渲染结果吗？</h3>
+
+<p>不影响。它只是一个"看"的东西，纯粹显示用。你导出的音频、视频、exe 里都不会带上这个电平表。</p>
+
+<h3>Q6：能关掉吗？</h3>
+
+<p>它就在底部选项卡里，你不点它就不显示。切到别的选项卡（比如 CZEmakers）它就停了，不占资源。</p>
+
+<h3>Q7：FPS 和延迟能调吗？</h3>
+
+<p>当前版本固定是 70ms 刷新一次，没做成可调项。我觉得这个速度是"流畅 + 省资源"的平衡点。</p>
+
+<h2>七、小结</h2>
+
+<p>「音频音谱」就是底部选项卡里的那个 LED 电平表，我自己也常说它"没啥用"。关键记住这几条：</p>
+
+<ul>
+    <li><strong>位置</strong>：底部选项卡 →「音频音谱」</li>
+    <li><strong>外观</strong>：36 个 LED，绿 → 黄 → 红，从左边往右边点亮</li>
+    <li><strong>两种模式</strong>：有音频走真实波形，没音频按音符数估算</li>
+    <li><strong>峰值保持</strong>：橙色线显示近期最高电平，保持 1 秒</li>
+    <li><strong>快升慢降</strong>：变响时灯立刻跟上，变轻时灯慢慢退下</li>
+    <li><strong>刷新速度</strong>：70ms 一次，约 14 FPS</li>
+    <li><strong>不影响渲染</strong>：纯显示，不会出现在导出结果里</li>
+</ul>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'yinpin_yinpu.html'
+    });
+</script>
+</body>
+</html>

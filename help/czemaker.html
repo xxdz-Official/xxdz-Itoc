@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc CZEmaker 弹窗编排基础篇 - 小小电子xxdz开发的 xxdz Itoc 核心功能，教您选中音符、选择窗口类型、配置标题内容类名，让音符触发弹窗">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,CZEmaker,弹窗编排,窗口类型,弹窗配置,音符触发,Windows Crazy Error">
+<meta property="og:title" content="CZEmaker 弹窗编排 · 基础篇 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc CZEmaker 弹窗编排基础篇 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>CZEmaker 弹窗编排 · 基础篇 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🎯 CZEmaker 弹窗编排 · 基础篇</h1>
+
+<p>CZEmaker 是 Itoc 最核心的灵魂模块。它让你能把一个平平无奇的音符，变成一个会说话、会动、会搞事情的弹窗。选一个音符，在面板里填好配置，点一下「应用」，音符块右上角就会出现金黄色小三角——弹窗就绑好了。</p>
+
+<p>这篇讲的是 <strong>基础配置</strong>，也就是你每次打开 CZEmaker 面板都会用到的那些东西。</p>
+
+<h2>先选中一个音符</h2>
+<p>在时间轴上点一下任意一个音符块（或者框选多个），然后切换到底部面板的 <strong>「CZEmakers」</strong> 选项卡。如果选中的是单个音符，面板会加载这个音符现有的配置；如果是多选，面板会清空并提示「配置混合，请编辑后统一应用」。</p>
+
+<div class="tip">
+    <strong>🎯 记住：</strong> 所有配置都是「先选中，再编辑，最后应用」。选不中音符，面板就是灰色的，啥也改不了。
+</div>
+
+<h2>窗口类型选择器</h2>
+<p>这是第一个要决定的事——你想弹个什么样的窗口？Itoc 提供了 9 种窗口类型（在左侧预览区上方以单选框形式排列）。选择窗口类型后，面板会根据类型自动调整界面。</p>
+
+<table>
+    <thead>
+        <tr><th>中文名称</th><th>英文键名</th><th>解释器实际行为</th><th>特殊行为</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>信息框</td><td><code>info</code></td><td>常规弹窗，显示信息图标和内容</td><td>—</td></tr>
+        <tr><td>警告框</td><td><code>warning</code></td><td>常规弹窗，显示警告图标和内容</td><td>—</td></tr>
+        <tr><td>错误框</td><td><code>error</code></td><td>常规弹窗，显示错误图标和内容</td><td>—</td></tr>
+        <tr><td>询问框</td><td><code>question</code></td><td>常规弹窗，显示询问图标和内容</td><td>—</td></tr>
+        <tr><td>图片框</td><td><code>image</code></td><td>显示图片的窗口（支持 PNG/JPG/GIF/BMP/ICO）</td><td>图标下拉菜单被禁用</td></tr>
+        <tr><td>气泡/通知</td><td><code>notice</code></td><td>Windows 系统通知（非弹窗）</td><td>隐藏顶部右侧功能区，隐藏位置配置区域</td></tr>
+        <tr><td>执行代码</td><td><code>code</code></td><td>后台执行 Python 代码，不弹窗</td><td>隐藏顶部右侧功能区，隐藏位置配置区域</td></tr>
+        <tr><td>视频框</td><td><code>video</code></td><td>内嵌 mpv 播放器播放视频</td><td>图标下拉菜单被禁用</td></tr>
+        <tr><td>模类框</td><td><code>UIclass</code> / <code>class</code></td><td>使用模类设计器制作的窗口</td><td>禁用图标下拉菜单，禁用自定义尺寸复选框，内容文本框变灰只读，在窗口标题行插入「选择模类」下拉框</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 执行代码的特殊性：</strong> 它实际上不是一个窗口类型，而是一个全局命令。在解释器中检测到「执行代码」时不会弹窗，而是直接在后台执行 Python 代码。所以它在面板里虽然被归类为窗口类型，但实际行为完全不同。
+</div>
+
+<h3>窗口类型切换的副作用</h3>
+<p>当你切换窗口类型时，面板会做以下事情：</p>
+<ul>
+    <li><strong>保存当前字段：</strong> 窗口标题、窗口内容、窗口类名、所在编组、窗口位置配置会被临时保存，切换后恢复，防止数据丢失。</li>
+    <li><strong>切换特殊功能区：</strong> 如果当前有图片框/视频框/气泡/执行代码的专属配置区，并且类型真的变了，才会切换；同类型切换时会保留并刷新内容。</li>
+    <li><strong>切换模类选择器：</strong> 如果当前是模类框模式，「选择模类」下拉框会出现；切回其他类型时会被移走。同类型切换时保留。</li>
+    <li><strong>标记为已修改：</strong> 「应用」按钮会亮起来。</li>
+</ul>
+<div class="warning">
+    <strong>⚠️ 注意：</strong> 切换窗口类型会标记为已修改，即使没有选中音符也一样。所以如果你只是切着玩，记得点「重置」或者取消选中，不然「应用」按钮会一直亮着。
+</div>
+
+<h2>三个核心字段</h2>
+
+<h3>窗口标题</h3>
+<p>就是弹窗标题栏上显示的那行字。在「窗口标题」输入框里直接填就行。旁边的 <strong>◥</strong> 按钮可以打开一个多行文本编辑器，支持查找/替换、全选、撤销/重做（<kbd>Ctrl+Z</kbd> / <kbd>Ctrl+Shift+Z</kbd>），方便写长标题。</p>
+<p>保存到配置文件的字段是 <code>window_title</code>。</p>
+
+<h3>窗口内容</h3>
+<p>弹窗正文区域显示的文字。支持多行文本，直接往文本框里敲。清空按钮（✕）可以一键清空内容。旁边的 <strong>◥</strong> 按钮同样可以打开大编辑器。</p>
+<p><strong>特殊行为：</strong> 当切换到「图片框」或「视频框」时，内容文本框会被禁用并变成灰色。切换到「模类框」时同样禁用，但会显示模类中的控件列表。</p>
+<p>保存到配置文件的字段是 <code>window_content</code>。</p>
+
+<h3>窗口类名</h3>
+<p>这是给弹窗起的一个「身份证号」。同一个工程里，类名不能重复。它的主要用处是让别的窗口能「链接」到你——比如 A 窗口弹出来之后，B 窗口可以跟在它旁边。如果你不玩窗口链接，留空就行，Itoc 会自动生成一个唯一的类名。</p>
+<p>类名输入框旁边有个 <strong>↠∅</strong> 按钮，点击后会弹出销毁模式菜单：</p>
+<ul>
+    <li><strong>销毁即销毁（<code>destroy</code>）：</strong> 窗口关闭时彻底销毁，所有资源被释放（默认）。</li>
+    <li><strong>销毁即脱壳（<code>shell</code>）：</strong> 窗口关闭时保留几何信息（位置、尺寸），供后续同名类窗口的「链接」定位使用。</li>
+</ul>
+<p>保存到配置文件的字段是 <code>window_class</code> 和 <code>window_class_destroy_mode</code>。</p>
+<div class="tip">
+    <strong>💡 类名与销毁模式的联动：</strong> 即使类名为空，「销毁模式」按钮也是启用状态。销毁模式会独立保存，不依赖类名是否为空。
+</div>
+
+<h2>所在编组</h2>
+<p>编组是用来把一类弹窗归到一起的标签。选了编组之后，在工程里方便查找和管理。下拉框里选「新建编组」可以创建新的编组名称，输入名称后点确定即可，旁边还有一个「复制」按钮可以把名称复制到剪贴板。</p>
+<p>保存到配置文件的字段是 <code>window_group</code>。</p>
+
+<p>编组在解释器里还有几个实际用途：</p>
+<ul>
+    <li><strong>批量关闭：</strong> 全局命令可以一键关闭某个编组里的所有窗口。</li>
+    <li><strong>批量移动：</strong> 窗口位移动画支持以编组为单位，整体移动编组内的所有窗口。</li>
+    <li><strong>编组管理：</strong> 在 CZEmaker 面板中可以通过编组下拉框快速筛选和定位同一编组的音符。</li>
+</ul>
+<p>编组列表会从工程中的所有音符自动收集，确保下拉框中始终包含所有已使用的编组。</p>
+<div class="tip">
+    <strong>💡 刷新配参列表：</strong> 主程序菜单里有「刷新配参列表」项，会重新扫描工程中所有音符，重建编组下拉框。独立窗口也会同步刷新。
+</div>
+
+<h2>窗口位置控制（四种模式）</h2>
+
+<p>在 CZEmaker 面板的中部，有四个主单选框和一堆坐标输入框——这里就是控制窗口位置的地方。选中的模式会启用对应的配置列，其他列被禁用。配置整体保存在 <code>window_position</code> 字段中，其中有一个 <code>type</code> 表示使用哪种模式。</p>
+
+<h3>1. 屏幕坐标系</h3>
+<p>直接指定窗口左上角在屏幕上的 <strong>绝对坐标</strong>（像素）或 <strong>相对坐标</strong>（相对于屏幕宽高的百分比）。用 <strong>⊕ 拾取坐标</strong> 按钮可以鼠标点击屏幕快速定位。</p>
+
+<p><strong>绝对坐标 vs 相对坐标的切换：</strong></p>
+<ul>
+    <li>绝对坐标：x、y 输入框启用，相对坐标输入框禁用，对应的拾取坐标按钮启用。</li>
+    <li>相对坐标：相对坐标输入框启用，绝对坐标输入框禁用，改用另一个「拾取坐标」按钮拾取相对坐标。</li>
+</ul>
+
+<p>保存到配置文件的字段结构如下：</p>
+<ul>
+    <li><code>type</code>：<code>"screen"</code></li>
+    <li><code>screen_coords</code>：
+        <ul>
+            <li><code>coord_type</code>：<code>"abs"</code>（绝对）或 <code>"rel"</code>（相对）</li>
+            <li><code>x_abs</code> / <code>y_abs</code>：绝对坐标（像素）</li>
+            <li><code>x_rel</code> / <code>y_rel</code>：相对坐标（百分比）</li>
+        </ul>
+    </li>
+</ul>
+
+<h3>2. 屏幕对齐</h3>
+<p>窗口「贴」在屏幕的某个边缘或角落。在 3×3 的方向按钮矩阵里点一下就行了，然后填上「距离屏幕边缘多少像素/百分比」。</p>
+
+<p><strong>方向按钮的视觉反馈：</strong> 点击方向按钮时，选中的按钮会高亮显示。选中的方向会保存到配置里（<code>direction</code> 字段），取值是方向箭头符号（<code>↖</code> <code>↑</code> <code>↗</code> <code>←</code> <code>•</code> <code>→</code> <code>↙</code> <code>↓</code> <code>↘</code>）。</p>
+
+<p><strong>屏幕对齐的坐标类型切换：</strong> 与屏幕坐标系一样，支持绝对坐标和相对坐标。</p>
+
+<p>保存到配置文件的字段结构如下：</p>
+<ul>
+    <li><code>type</code>：<code>"align"</code></li>
+    <li><code>align_coords</code>：
+        <ul>
+            <li><code>direction</code>：方向箭头</li>
+            <li><code>coord_type</code>：<code>"abs"</code> 或 <code>"rel"</code></li>
+            <li><code>x_abs</code> / <code>y_abs</code>：绝对偏移（像素）</li>
+            <li><code>x_rel</code> / <code>y_rel</code>：相对偏移（百分比）</li>
+        </ul>
+    </li>
+</ul>
+
+<p>在解释器中，会根据方向计算窗口左上角坐标，并应用偏移量。偏移量的单位取决于坐标类型：绝对坐标为像素，相对坐标为百分比（相对于屏幕尺寸）。</p>
+
+<h3>3. 与窗口链接</h3>
+<p>让新窗口出现在 <strong>另一个窗口的旁边</strong>。你需要指定「跟谁链接」（用窗口类名），以及「相对于那个窗口的什么位置」（方向按钮矩阵）。</p>
+
+<p><strong>「系统」vs「相加」：</strong></p>
+<ul>
+    <li><strong>系统（<code>sys</code>）：</strong> 窗口紧贴着目标窗口的边缘，偏移量由默认值（约 40 像素）决定。</li>
+    <li><strong>相加（<code>add</code>）：</strong> 在紧贴的基础上再偏移一段距离，由输入框和单位下拉框（<code>px</code> / <code>%</code>）共同决定。选择「相加」时输入框和下拉框启用，选择「系统」时禁用。</li>
+</ul>
+
+<p><strong>脱壳模式：</strong> 如果目标窗口已经被关闭，但它的类名设置了「销毁即脱壳」，解释器会使用该窗口关闭前最后一次记录的几何位置来计算链接位置。</p>
+
+<p>保存到配置文件的字段结构如下：</p>
+<ul>
+    <li><code>type</code>：<code>"link"</code></li>
+    <li><code>link_window</code>：
+        <ul>
+            <li><code>window_name</code>：目标窗口的类名</li>
+            <li><code>link_type</code>：<code>"sys"</code> 或 <code>"add"</code></li>
+            <li><code>add_value</code>：相加偏移值（仅 <code>add</code> 模式）</li>
+            <li><code>add_unit</code>：<code>"px"</code> 或 <code>"%"</code>（仅 <code>add</code> 模式）</li>
+            <li><code>direction</code>：方向箭头</li>
+        </ul>
+    </li>
+</ul>
+
+<p>在解释器中，查找目标窗口的顺序是：先查活跃窗口，再查脱壳缓存。如果目标窗口既不存在也没有缓存，则回退到屏幕中央。</p>
+
+<h3>4. 屏幕随机坐标</h3>
+<p>窗口每次出现都在屏幕上的随机位置。这个模式没有额外的配置项，只需要选中单选框即可。保存到配置文件的字段结构如下：</p>
+<ul>
+    <li><code>type</code>：<code>"random"</code></li>
+</ul>
+<p>如果配置了区域限制、边缘避让等随机设置，会进一步约束随机范围。</p>
+
+<h2>应用、重置和智能更新</h2>
+
+<h3>应用 (Insert)</h3>
+<p>把当前面板上的配置保存到选中的音符上。点「应用」按钮或按 <kbd>Insert</kbd> 键都可以，会根据选中的音符数量走不同分支：</p>
+<ul>
+    <li><strong>单选：</strong> 直接完整覆盖该音符的配置。使用多线程 + 进度条窗口，不阻塞主界面。</li>
+    <li><strong>多选（智能更新）：</strong> 只更新你修改过的字段。会遍历每个选中的音符，只更新被编辑过的属性，其他属性保持不变。确认前会列出即将更新的中文属性名，让你二次确认。</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 智能更新的原理：</strong> 你修改的每一个字段都会被记录下来。多选应用时，只更新这些被碰过的字段，其他字段保持不变。
+</div>
+
+<div class="tip">
+    <strong>💡 类名唯一性检查：</strong> 智能应用和应用全部时，如果类名被编辑过，会检查该类名是否被其他未选中的音符使用。如果重复，会弹出警告对话框让你确认是否继续。
+</div>
+
+<h3>应用全部</h3>
+<p>多选时才出现。会把面板上的 <strong>所有配置</strong>「强行统一」应用到所有选中的音符上——不管它们之前有什么配置，全部覆盖。慎用。</p>
+
+<h3>重置</h3>
+<p>清空选中音符的 CZEmaker 配置，同时移除金黄色小三角。会弹出确认对话框，确认后清空配置，过渡配置也会被清空。</p>
+
+<div class="warning">
+    <strong>⚠️ 注意：</strong> 「重置」会删除 <strong>所有</strong> CZEmaker 配置，包括窗口位置、类名、编组等，同时也会清空过渡配置。不可撤销，点之前想清楚。
+</div>
+
+<h2>新建配参（草稿模式）</h2>
+<p>主程序菜单里有「新建配参」入口，进入草稿模式：</p>
+<ul>
+    <li>清空面板输入字段，清除选中音符状态。</li>
+    <li>激活功能区（只放开顶层入口，子控件按正常规则摆平）。</li>
+    <li>「应用 (Insert)」按钮文字变成「保存 (Insert)」。点「保存」时走保存配参流程，而不是应用到音符。</li>
+</ul>
+
+<h3>保存范围与保存目标</h3>
+<p>保存草稿时：</p>
+<ol>
+    <li>检查配参是否引用了外部资源（图片/视频/音频）。</li>
+    <li>如果有外部资源，弹出「保存范围」对话框：<strong>只保存通用属性</strong>（剔除外部资源字段）或 <strong>全部都保存</strong>。</li>
+    <li>弹出「保存目标」对话框：<strong>保存为全局配参</strong>（程序目录的 <code>CZEmaker_Files/</code> 文件夹）、<strong>保存到配参文件 (.CZEmaker)</strong>、<strong>以上两者都保存</strong>。</li>
+    <li>如果有外部资源，最后弹出提醒，提醒你分享/迁移时记得带上资源。</li>
+</ol>
+<p>保存成功后退出草稿模式，恢复按钮文字和面板状态。</p>
+
+<h2>编辑全局配参模式</h2>
+<p>从主程序的「配参菜单」加载一个全局配参时，面板会记住来源文件路径，进入「编辑全局配参模式」：</p>
+<ul>
+    <li>点「应用 (Insert)」时，不会应用到音符，而是把当前面板的通用属性 <strong>回写覆盖原配参文件</strong>。</li>
+    <li>状态栏提示「已保存配参: xxx」，并刷新主程序的配参菜单。</li>
+    <li>轮播图会显示通知「已更新全局配参: xxx」。</li>
+    <li>切换选中音符时，会解除与配参文件的关联（避免误写回）。</li>
+</ul>
+<div class="warning">
+    <strong>⚠️ 注意：</strong> 编辑全局配参模式下，即使没有选中音符，面板控件也可以编辑。这是为了方便你直接编辑配参本身。
+</div>
+
+<h2>左侧预览区域的折叠</h2>
+<p>左侧预览区域（窗口类型选择器 + 预览画布）可以通过 <strong>◀</strong> / <strong>▶</strong> 按钮折叠/展开。折叠后，窗口类型选择器会变成紧凑的单列竖向排列，预览画布被隐藏，为右侧功能配置区腾出更多空间。</p>
+<p>折叠状态会保存到配置文件，下次启动时自动恢复。独立窗口也会同步折叠状态。</p>
+<div class="tip">
+    <strong>💡 状态标签的滚动效果：</strong> 折叠预览区后，状态标签如果文字超过 6 个字，会自动启动滚动效果，方便查看长状态信息。展开预览区后滚动停止，显示完整文字。
+</div>
+
+<h2>多选模式与编辑记录</h2>
+<p>同时选中多个音符时，CZEmaker 面板会进入「多选模式」：</p>
+<ul>
+    <li>面板上所有输入框会被清空（因为每个音符的配置可能不一样）。</li>
+    <li>状态栏会显示「已选中 N 个音符，配置混合，请编辑后统一应用」。</li>
+    <li>你修改的 <strong>每一个字段</strong>，都会被单独记录下来。</li>
+    <li>点「应用」时，只更新你碰过的字段，其他字段保持不变——这就是 <strong>智能更新</strong>。</li>
+    <li>点「应用全部」时，所有字段统一覆盖，会弹出确认对话框提示「这将覆盖这些音符现有的所有 CZEmaker 配置！」。</li>
+</ul>
+<p>多选模式特别适合批量修改：比如给 50 个音符统一改个编组，或者给一堆音符加上同一个类名。</p>
+
+<div class="tip">
+    <strong>💡 多选时保留用户编辑：</strong> 如果用户已经手动选择/新建了编组，重建编组下拉框后会优先保留用户选择，不被选中音符的旧配置覆盖。
+</div>
+
+<h2>拦截层与修改保护</h2>
+<p>当配置被修改但尚未应用时，画布上会覆盖一层半透明矩形，阻止你点击画布上的音符。这是为了防止你「改了配置但忘了应用」就切换到其他操作，导致配置丢失。</p>
+<p>点击拦截层会弹出一个对话框，让你选择：</p>
+<ul>
+    <li><strong>「丢弃修改」：</strong> 丢弃修改，继续操作。</li>
+    <li><strong>「应用」：</strong> 应用当前设置。</li>
+    <li><strong>「应用全部」：</strong> 多选时出现，应用全部设置。</li>
+    <li><strong>「取消」：</strong> 保留修改，取消操作（回到编辑状态）。</li>
+</ul>
+<div class="warning">
+    <strong>⚠️ 注意：</strong> 拦截层只会在 <strong>有选中音符且配置被修改</strong> 时激活。如果你没有选中音符，修改控件不会触发拦截层。
+</div>
+
+<h2>独立窗口</h2>
+<p>主程序支持把 CZEmaker 面板「弹出」成一个独立窗口：</p>
+<ul>
+    <li>创建独立的 CZEmaker 面板实例，和主面板共享同一份工程数据。</li>
+    <li>从主面板同步数据：选中音符、编组列表、窗口类型、折叠状态、当前编辑音符 ID。</li>
+    <li>根据窗口类型调整界面（特殊窗口）。</li>
+    <li>独立窗口关闭后，不影响主面板。</li>
+</ul>
+
+<h2>撤销/重做</h2>
+<p>窗口标题、窗口内容、类名等输入框都支持撤销/重做：</p>
+<ul>
+    <li><kbd>Ctrl+Z</kbd> 撤销上一步输入。</li>
+    <li><kbd>Ctrl+Shift+Z</kbd> 重做刚才撤销的输入。</li>
+</ul>
+<p>窗口内容是多行文本框，支持完整的撤销栈；单行输入框有轻量级的撤销记录，最多 200 步。</p>
+
+<h2>顶部右侧功能区（基础）</h2>
+<p>在窗口标题行的最右边，有五个控制选项。在「图片框」「视频框」「模类框」模式下，图标下拉菜单会被禁用；在「气泡/通知」「执行代码」模式下，整个顶部右侧功能区会被隐藏，切换到其他类型时恢复显示。</p>
+
+<h3>图标</h3>
+<p>窗口标题栏的图标样式，可模拟不同 Windows 版本风格。选项包括：自动、Windows11、Windows10、Windows Logon、Windows Vista、Windows 7、Windows 8、Windows XP、Windows XP以下。选择「自动」时，解释器会根据当前系统版本自动选择对应的图标文件夹。</p>
+<p>保存到配置文件的字段是 <code>window_icon</code>。</p>
+
+<h3>效果音</h3>
+<p>弹窗出现时播放的音效。选项：自动、信息框、警告框、错误框、询问框、没有。选择「自动」时，解释器会根据窗口类型播放对应的系统提示音。选择「没有」则不播放任何声音。</p>
+<p>保存到配置文件的字段是 <code>window_sound</code>，取值包括 <code>default</code> / <code>info</code> / <code>warning</code> / <code>error</code> / <code>question</code> / <code>none</code>。</p>
+
+<h3>控制钮</h3>
+<p>窗口标题栏显示哪些按钮（关闭、最大化、最小化）。下拉选项：「自动」和「设置」。选择「设置」后会打开一个对话框，用三个复选框分别控制关闭、最大化、最小化按钮的显示。</p>
+<p>选择「设置」并确认后，下拉菜单的选项会变成「自定义: 关闭、最大化、最小化」。保存到配置文件的字段是 <code>window_control</code>（值为 <code>"custom"</code> 或 <code>"default"</code>）和 <code>window_control_detail</code>（包含 <code>close</code> / <code>maximize</code> / <code>minimize</code> 三个布尔值）。</p>
+
+<h3>按钮区</h3>
+<p>对话框底部的按钮（确定、取消、保存等），可以自定义顺序。下拉选项：「默认」和「设置」。选择「设置」后会打开一个更复杂的对话框，包含：</p>
+<ul>
+    <li><strong>按钮预览区域：</strong> 显示当前按钮列表，点击按钮可以弹出菜单调整顺序（← 向前移动 / 向后移动 →）或删除（✕ 删除）。</li>
+    <li><strong>预设按钮：</strong> 点击即可添加（确定、取消、保存、删除、应用、OK、是、否、关闭、重试、忽略）。</li>
+    <li><strong>自定义按钮：</strong> 输入框 + 添加按钮，可以添加自定义文本的按钮。</li>
+</ul>
+<p>关闭对话框时，下拉菜单显示会更新（如「自定义: 3个按钮」）。保存到配置文件的字段是 <code>window_button</code>（值为 <code>"custom"</code> 或 <code>"default"</code>）和 <code>window_button_detail</code>（包含 <code>buttons</code> 列表）。</p>
+
+<h3>透明度</h3>
+<p>窗口的透明度（0%-100%）。输入框修改后会自动标记为已修改。在解释器中，透明度会应用到窗口上。</p>
+<p>保存到配置文件的字段是 <code>window_opacity</code>。</p>
+
+<h2>通用配置字段一览</h2>
+<p>以下字段会保存到音符的 CZEmaker 配置里（即 <code>cze_makers</code> 字段），方便你对照导出的工程文件：</p>
+<table>
+    <thead>
+        <tr><th>字段名</th><th>含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>window_type</code></td><td>窗口类型（英文键名）</td></tr>
+        <tr><td><code>window_title</code></td><td>窗口标题</td></tr>
+        <tr><td><code>window_content</code></td><td>窗口内容</td></tr>
+        <tr><td><code>window_group</code></td><td>所在编组</td></tr>
+        <tr><td><code>window_class</code></td><td>窗口类名</td></tr>
+        <tr><td><code>window_class_destroy_mode</code></td><td>销毁模式（<code>destroy</code> / <code>shell</code>）</td></tr>
+        <tr><td><code>window_icon</code></td><td>图标风格</td></tr>
+        <tr><td><code>window_sound</code></td><td>效果音</td></tr>
+        <tr><td><code>window_control</code> / <code>window_control_detail</code></td><td>控制钮配置</td></tr>
+        <tr><td><code>window_button</code> / <code>window_button_detail</code></td><td>按钮区配置</td></tr>
+        <tr><td><code>window_opacity</code></td><td>透明度</td></tr>
+        <tr><td><code>window_life</code></td><td>窗口寿命</td></tr>
+        <tr><td><code>window_position</code></td><td>窗口位置</td></tr>
+        <tr><td><code>custom_size_enabled</code> / <code>custom_width</code> / <code>custom_height</code></td><td>自定义尺寸</td></tr>
+        <tr><td><code>show_in_taskbar</code></td><td>在任务栏显示</td></tr>
+        <tr><td><code>resizable</code></td><td>可调窗口</td></tr>
+    </tbody>
+</table>
+
+<h2>基础篇小结</h2>
+<p>到这里，你已经掌握了 CZEmaker 的核心工作流：<strong>选音符 → 选窗口类型 → 填标题/内容/类名 → 选编组 → 点应用</strong>。也了解了「智能更新」「拦截层」「折叠预览区」「新建配参」「编辑全局配参」「独立窗口」「撤销重做」这些交互细节。</p>
+<p>下一篇进阶篇，我们会深入讲解 <strong>窗口位置控制（四种模式的完整参数）</strong>、<strong>特殊窗口类型（图片镂空、GIF 动画、mpv 视频、模类框的完整配置）</strong>、<strong>顶部右侧功能区（图标、音效、控制钮、按钮区、透明度的所有选项）</strong>、以及 <strong>自定义尺寸和窗口寿命的互斥关系</strong>。</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'czemaker.html'
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 模类进阶篇 - 深入理解模类存储机制、模类管理器进阶用法、模类在解释器中的运行机制、模类与全局命令联动，由小小电子xxdz开发的 xxdz Itoc 高级功能">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,模类管理器,工程内置模类,Itoc全局模类,哈希去重,CZEmaker,runCZE,全局命令">
+<meta property="og:title" content="模类进阶与生态 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 模类进阶篇 - 深入理解模类存储机制、模类管理器进阶用法、模类在解释器中的运行机制">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<title>模类进阶与生态 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🚀 模类进阶与生态</h1>
+
+<p>前两篇我们搞懂了模类是什么、怎么设计、怎么保存、怎么用模类管理器、怎么在工程里使用它。这一篇我们来聊聊"模类的生态"——它在 Itoc 整个体系里怎么和其他模块配合，怎么在解释器里跑起来，怎么和全局命令联动，以及有哪些进阶操作和注意事项。</p>
+
+<p>准备好了吗？Let's dive in！</p>
+
+<h2>一、深入理解模类的三种存在形式</h2>
+
+<p>第一篇里我们简单提过模类的存储方式，这里我们要把背后的机制讲透。理解这个，你才能明白"为什么我保存了模类却用不了"这类问题的根源。</p>
+
+<h3>1.1 三种形式对照表</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th>📄 独立文件</th>
+            <th>📦 工程内置模类</th>
+            <th>💾 Itoc 全局模类</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>存储位置</td>
+            <td>磁盘上的 <code>.UIclass</code> 文件</td>
+            <td>工程文件的内置模类数据里</td>
+            <td><code>UI_Class_Files</code> 文件夹</td>
+        </tr>
+        <tr>
+            <td>标识方式</td>
+            <td>文件路径</td>
+            <td>内部 ID（形如 <code>名称_32位哈希</code>）</td>
+            <td>文件路径</td>
+        </tr>
+        <tr>
+            <td>随工程移动</td>
+            <td>❌ 不会，需要手动导入</td>
+            <td>✅ 会，模类数据直接存在工程文件里</td>
+            <td>❌ 不会，需要目标机器上也有对应文件</td>
+        </tr>
+        <tr>
+            <td>跨工程使用</td>
+            <td>❌ 只属于导入它的工程</td>
+            <td>❌ 只属于当前工程</td>
+            <td>✅ 所有工程都能用</td>
+        </tr>
+        <tr>
+            <td>运行解释器能用吗</td>
+            <td>❌ 不行（除非导入到工程）</td>
+            <td>✅ 可以（从工程内置模类读取）</td>
+            <td>❌ 不行（运行时只读工程内置模类）</td>
+        </tr>
+        <tr>
+            <td>适合场景</td>
+            <td>归档、分享、备份</td>
+            <td>工程专用模类</td>
+            <td>通用模类仓库</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="warning">
+    <strong>⚠️ 关键中的关键：运行时只读工程内置模类！</strong><br>
+    运行时查找模类，只会从工程内置模类数据里找。全局模类文件夹 <code>UI_Class_Files</code> 和外部 <code>.UIclass</code> 文件都不会被读取。<br><br>
+    所以如果你想把一个模类用在最终的作品里，<strong>必须确保它被保存到工程内置</strong>。这也是为什么第一篇推荐新手选"保存到 czemidi 工程内置"或者"以上两者都保存"。
+</div>
+
+<h3>1.2 内部 ID 是怎么生成的？</h3>
+
+<p>工程内置模类用内部 ID 作为标识，格式是 <code>名称_32位哈希</code>。这个 ID 是怎么生成的呢？</p>
+
+<p>当你在模类管理器里导入一个 <code>.UIclass</code> 文件时，程序会：</p>
+
+<ol>
+    <li>读取文件内容，得到模类数据</li>
+    <li>根据文件内容算出一个 32 位哈希值作为"内容指纹"</li>
+    <li>把文件名（不含扩展名）作为显示名，拼上哈希值，得到内部 ID，比如 <code>文件复制框_a1b2c3d4e5f6...</code></li>
+    <li>以这个内部 ID 为键，把模类数据存进工程内置模类数据里</li>
+</ol>
+
+<p>这样做有个好处：<strong>内容完全相同的模类会算出相同的哈希值</strong>，于是可以直接用哈希做去重判断——避免同一个模类被重复导入。</p>
+
+<h3>1.3 为什么会有这个区别？</h3>
+
+<p>你可能想问：为什么不像 CZEmaker 那样直接按名字存，非要搞个内部 ID？</p>
+
+<p>原因很简单：<strong>模类名可以重复，但内部 ID 必须唯一</strong>。</p>
+
+<p>想象一下：你有一个模类叫"信息框"，朋友分享的模类包里也有一个叫"信息框"，但内容完全不同。如果按名字存，后导入的会覆盖先导入的，或者出现命名冲突。用哈希做后缀就能完美解决——两个"信息框"会生成两个不同的内部 ID，互不干扰。</p>
+
+<h2>二、模类管理器的进阶用法</h2>
+
+<p>第一篇里我们介绍了模类管理器的基础操作。这一节我们来讲讲进阶部分——这些是你在管理大量模类时才会遇到的场景。</p>
+
+<h3>2.1 哈希去重：导入时自动识别相同内容</h3>
+
+<p>当你用模类管理器导入模类时，程序会先算出新模类的哈希值，然后和已有的模类逐个比对：</p>
+
+<ul>
+    <li>如果是<strong>工程内置导入</strong>：和工程里所有已导入的模类对比，找到相同哈希就跳过</li>
+    <li>如果是<strong>全局导入</strong>：和 <code>UI_Class_Files</code> 文件夹里所有模类对比，找到相同哈希就跳过</li>
+</ul>
+
+<p>如果发现重复，导入对话框里会显示「已存在相同内容的模类 (哈希重复)」，并自动跳过。</p>
+
+<div class="tip">
+    <strong>💡 哈希去重有什么实际意义？</strong><br>
+    考虑这个场景：你从网上下载了一个模类包，里面可能有 50 个模类，有些你之前已经导入过了。如果没有哈希去重，你就会得到一个充满重复模类的列表。有了哈希去重，重复的会被自动跳过，导入结果很干净。
+</div>
+
+<h3>2.2 同名冲突处理对话框</h3>
+
+<p>比哈希去重更复杂的情况是：<strong>同名但内容不同</strong>。比如你导入的模类叫"信息框"，而工程里已经有一个叫"信息框"的模类了，但两者内容完全不一样。</p>
+
+<p>这时候模类管理器会弹出一个<strong>同名冲突处理对话框</strong>，让你选择处理方式：</p>
+
+<table>
+    <thead>
+        <tr><th>按钮</th><th>作用</th><th>适用场景</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>自动添加标识</td>
+            <td>自动在名字后面加 <code>_1</code>、<code>_2</code> 这样的后缀</td>
+            <td>不想手动改名字，快速导入</td>
+        </tr>
+        <tr>
+            <td>覆盖</td>
+            <td>用新模类替换旧的（仅全局模式下可用）</td>
+            <td>确认新版本要替换旧版本</td>
+        </tr>
+        <tr>
+            <td>确认</td>
+            <td>使用你在输入框里填的新名称导入</td>
+            <td>想手动改名</td>
+        </tr>
+        <tr>
+            <td>取消</td>
+            <td>取消导入这个模类</td>
+            <td>不想导入这个模类</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>对话框里还会显示已存在的同名模类列表，让你看看到底有哪些重名的。</p>
+
+<h3>2.3 克隆到另一个选项卡</h3>
+
+<p>模类管理器有一个很巧妙的功能：<strong>克隆</strong>。它可以把当前选项卡选中的模类，克隆到另一个选项卡里。</p>
+
+<table>
+    <thead>
+        <tr><th>当前选项卡</th><th>按钮文字</th><th>克隆方向</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>工程内置</td><td>克隆到 Itoc全局</td><td>把工程里的模类复制到全局文件夹</td></tr>
+        <tr><td>Itoc全局</td><td>克隆到工程内置</td><td>把全局模类复制到当前工程</td></tr>
+    </tbody>
+</table>
+
+<p>克隆时会做<strong>哈希去重</strong>和<strong>同名冲突处理</strong>，所以不会产生重复模类。</p>
+
+<div class="tip">
+    <strong>💡 克隆的实际用途：</strong><br>
+    · 你在某个工程里做了一个很棒的模类，想以后别的工程也能用 → 克隆到 Itoc 全局<br>
+    · 你从网上找了一个全局模类，想在当前工程里使用 → 克隆到工程内置<br>
+    · 你想把全局模类库里的模类整理进特定工程 → 批量勾选后克隆到工程内置
+</div>
+
+<h3>2.4 重命名机制</h3>
+
+<p>重命名会根据当前选项卡的类型，对模类做不同的操作：</p>
+
+<ul>
+    <li><strong>工程内置模类</strong>：只修改显示名称，内部 ID 不变</li>
+    <li><strong>Itoc 全局模类</strong>：重命名磁盘上的物理文件（比如 <code>旧名字.UIclass</code> → <code>新名字.UIclass</code>）</li>
+</ul>
+
+<p>重命名对话框里会显示当前文件名，你只需要输入新名字（不含扩展名），点确定就行。如果新名字已被占用，会弹出冲突提示。</p>
+
+<h3>2.5 搜索过滤机制</h3>
+
+<p>模类管理器的搜索框支持<strong>按窗口名或文件名</strong>搜索。你每输入一个字符，表格就会立刻过滤一次，实时显示匹配结果。</p>
+
+<h2>三、模类与 CZEmaker 的深入配合</h2>
+
+<p>第一篇我们简单提过模类和 CZEmaker 的关系。这里我们要深入讲讲它们在数据层面是怎么配合的。</p>
+
+<h3>3.1 模类框在 CZEmaker 面板里的表现</h3>
+
+<p>当你在 CZEmaker 面板里把<strong>窗口类型</strong>选成<strong>「模类框」</strong>时，面板会自动调整 UI：</p>
+
+<table>
+    <thead>
+        <tr><th>变化</th><th>原因</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>禁用图标下拉菜单</td><td>模类不用系统图标</td></tr>
+        <tr><td>禁用自定义尺寸复选框</td><td>尺寸由模类自己决定</td></tr>
+        <tr><td>内容文本框变灰只读</td><td>模类的内容在模类里定义</td></tr>
+        <tr><td>在窗口标题行中插入「选择模类」下拉框</td><td>让用户选择具体用哪个模类</td></tr>
+    </tbody>
+</table>
+
+<p>这个下拉框里会列出当前工程所有可用的模类名称，只包含工程内置模类，不包含全局模类。所以想在这里看到某个模类，必须先把它们导入到工程内置。</p>
+
+<h3>3.2 模类框的 window_type 键名兼容性</h3>
+
+<p>在 CZEmaker 里，模类框的 <code>window_type</code> 英文键名是 <code>UIclass</code>，但同时也兼容下面这些写法：</p>
+
+<table>
+    <thead>
+        <tr><th>写法</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>UIclass</code></td><td>标准英文键名（推荐）</td></tr>
+        <tr><td><code>class</code></td><td>简化写法</td></tr>
+        <tr><td><code>模类框</code></td><td>中文写法（旧格式兼容）</td></tr>
+    </tbody>
+</table>
+
+<p>运行时会自动识别这三种写法中任意一种，都会走模类窗口创建流程。</p>
+
+<h3>3.3 一个模类可以被多个音符使用</h3>
+
+<p>因为模类是一个独立的"外观模板"，所以它不绑定具体的音符。同一个模类可以被工程里任意多个音符引用。如果你修改了模类，所有引用它的音符都会跟着变。</p>
+
+<div class="tip">
+    <strong>💡 模类的复用价值：</strong><br>
+    比如你做了一个"文件复制进度框"模类，然后在工程里用 20 个音符分别在不同时间点弹出它，就能模拟出"连续复制多个文件"的效果。修改一次模类，20 个音符全部生效，非常高效。
+</div>
+
+<h3>3.4 使用"配参赋值"菜单批量挂模类</h3>
+
+<p>如果你想给大量音符挂同一个模类配参，可以用<strong>「配参(G)」菜单</strong>里的「使用 czemaker(配参)赋值」功能：</p>
+
+<ol>
+    <li>选中一个已经挂好模类配参的音符</li>
+    <li>右键 →「另存为当前 czemaker(配参)...」，把配参保存为 <code>.CZEmaker</code> 文件</li>
+    <li>选中所有需要挂这个模类的音符</li>
+    <li>右键 →「使用 czemaker(配参)赋值」→ 选择刚才保存的配参文件</li>
+    <li>所有选中的音符会被统一赋上同一个配参</li>
+</ol>
+
+<p>这样你就不需要一个一个音符去配置了。</p>
+
+<h2>四、模类在解释器中的运行机制</h2>
+
+<p>这一节我们来看看模类在解释器里到底是怎么被"弹出来"的。</p>
+
+<h3>4.1 触发流程</h3>
+
+<div class="flow">运行主循环
+  ↓
+音符触发（到达触发时刻）
+  ↓
+检测窗口类型是否为模类框
+  ↓
+从工程内置模类中查找选中的模类数据
+  ↓
+构建模类窗口
+  ↓
+注册到窗口系统（可按类名、编组查找）
+  ↓
+显示窗口（带过渡动画）</div>
+
+<h3>4.2 运行时会做哪些事情？</h3>
+
+<p>运行时创建一个模类窗口，主要会做这些事情：</p>
+
+<ol>
+    <li><strong>查找模类数据</strong>：从工程内置模类里查找选中的模类（不读全局文件夹）</li>
+    <li><strong>读取窗口属性</strong>：读取模类里的 <code>name</code>、<code>width</code>、<code>height</code>、<code>bg_color</code>、<code>minimize_btn</code>、<code>maximize_btn</code>、<code>close_btn</code>、<code>help_btn</code>、<code>taskbar_show</code>、<code>esc_close</code>、<code>close_btn_close</code>、<code>resizable</code></li>
+    <li><strong>计算窗口位置</strong>：根据 CZEmaker 里的 <code>window_position</code> 配置计算位置，支持屏幕坐标、屏幕对齐、窗口链接、屏幕随机四种模式</li>
+    <li><strong>处理阵列接管</strong>：如果编组被阵列接管，会用绿点位置覆盖计算出的位置</li>
+    <li><strong>应用控制钮</strong>：根据控制钮配置显示/隐藏窗口标题栏上的关闭、最大化、最小化、帮助按钮</li>
+    <li><strong>创建主窗口</strong>：设置标题、尺寸、位置、置顶、透明度、图标</li>
+    <li><strong>应用背景色</strong>：把模类里的 <code>bg_color</code> 应用到窗口</li>
+    <li><strong>创建控件</strong>：先创建容器（编组框、选项卡），再创建其他控件（标签、编辑框、图片、按钮、单选框、复选框、进度条、矩形）</li>
+    <li><strong>处理链接</strong>：根据 <code>linked_tab_id</code> / <code>linked_tab_page</code> / <code>linked_groupbox_id</code> 把控件放进对应的容器</li>
+    <li><strong>启动进度条动画</strong>：每个进度条按 <code>duration</code> 秒从 <code>initial_value</code> 过渡到 <code>end_value</code></li>
+    <li><strong>启动链接进度标签</strong>：链接了进度条的标签每 100ms 更新一次文本</li>
+    <li><strong>处理 ESC 关闭</strong>：允许 ESC 键关闭时启用</li>
+    <li><strong>处理关闭事件</strong>：窗口关闭时播放出场动画</li>
+    <li><strong>注册窗口</strong>：把窗口注册到系统的窗口列表里，方便全局命令操作</li>
+    <li><strong>显示窗口</strong>：带过渡动画显示</li>
+    <li><strong>设置寿命</strong>：如果设置了窗口寿命，定时关闭</li>
+</ol>
+
+<h3>4.3 预览和运行时的关系</h3>
+
+<p>模类设计器里"▶ 运行"预览的窗口构建逻辑，和最终在 Itoc 里弹出来的效果几乎完全一致。两者都遵循同样的控件创建顺序、同样的样式、同样的进度条动画逻辑。所以预览看到的效果，就是最终效果。</p>
+
+<div class="note">
+    <strong>📌 唯一的区别：</strong><br>
+    预览直接使用当前正在编辑的模类数据，而运行时是从工程内置模类里按名称查找模类数据。除了数据来源不同，其他逻辑基本一致。
+</div>
+
+<h3>4.4 为什么容器要单独一遍创建？</h3>
+
+<p>因为容器控件（编组框、选项卡）必须先创建好，才能让链接到它们内部的控件找到"父容器"。所以运行时会先创建所有容器，再创建其他控件；第二遍创建时，如果某个控件链接到了某个容器，就能直接放进去。</p>
+
+<h2>五、模类与全局命令的联动</h2>
+
+<p>模类窗口创建之后，会被注册到 Itoc 的窗口系统里，这意味着它可以被全局命令操作。具体来说：</p>
+
+<table>
+    <thead>
+        <tr><th>注册项</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>按类名注册</td><td>用于"窗口类名"模式的操作</td></tr>
+        <tr><td>按编组注册</td><td>用于"窗口编组"模式的操作</td></tr>
+        <tr><td>活跃窗口列表</td><td>所有活跃窗口的列表</td></tr>
+    </tbody>
+</table>
+
+<p>所以你可以对模类窗口使用这些全局命令：</p>
+
+<table>
+    <thead>
+        <tr><th>命令</th><th>效果</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>窗口位移动画</td><td>按类名或编组整体移动</td></tr>
+        <tr><td>按类名关闭弹窗</td><td>关闭指定类名的所有窗口</td></tr>
+        <tr><td>按编组关闭弹窗</td><td>关闭指定编组的所有窗口</td></tr>
+        <tr><td>关闭所有弹窗</td><td>关闭所有弹窗（包括模类窗口）</td></tr>
+        <tr><td>窗口焦点</td><td>获取焦点并置顶</td></tr>
+        <tr><td>阵列变换</td><td>阵列变换（如果编组被阵列接管）</td></tr>
+        <tr><td>镜像克隆编组</td><td>镜像克隆编组</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 模类 + 位移动画 = 假装系统窗口在飞：</strong><br>
+    你可以给模类窗口设置一个类名（比如 <code>fake_copy_window</code>），然后在音乐的高潮部分用窗口位移动画命令把它从屏幕左边移动到右边，再配合几个一模一样的模类窗口依次弹出，就能做出"文件复制窗口排队飞过"的效果。这就是 Crazy Error 的精髓喵！
+</div>
+
+<h3>5.1 与"销毁即脱壳"模式的配合</h3>
+
+<p>模类窗口也支持 CZEmaker 的"销毁即脱壳"模式。当类名的销毁模式设为"脱壳"时，模类窗口关闭前会把几何信息（位置、尺寸）记录下来。之后如果有其他窗口想"链接到它"，即使它已经关闭了，也能通过缓存找到它的位置。</p>
+
+<p>具体来说：</p>
+
+<ol>
+    <li>模类窗口关闭时，如果它的类名设置了"销毁即脱壳"，窗口的位置和尺寸会被记录下来</li>
+    <li>这些几何信息会保留在内存里，供后续同名类窗口的"链接"定位使用</li>
+    <li>后续如果有窗口链接到这个类名，会先查活跃窗口，查不到再查脱壳缓存</li>
+</ol>
+
+<h2>六、模类的图标、背景与过渡动画</h2>
+
+<h3>6.1 窗口图标</h3>
+
+<p>模类支持自定义窗口图标，保存在 <code>icon_data_base64</code> 字段里（ICO 格式的 Base64 数据）。在模类设计器里，选中窗口背景（不选中任何控件），属性面板里会显示「窗口图标」一项，点击 ⇗ 按钮选择 ICO 文件即可。</p>
+
+<p>运行时，会读取这个字段并加载图标设置到窗口上。如果模类没有自定义图标，会使用默认图标 <code>img/icon.ico</code>。</p>
+
+<h3>6.2 窗口背景色</h3>
+
+<p>模类的背景色由 <code>bg_color</code> 字段控制，默认 <code>#FFFFFF</code>（白色）。在模类设计器里，选中窗口背景，属性面板里会显示「背景颜色」一项，点击 ▼ 按钮可以选预设颜色，也可以选「自定义颜色...」打开颜色选择器。</p>
+
+<h3>6.3 窗口透明度</h3>
+
+<p>窗口透明度不在模类文件里，而是在 CZEmaker 配置的 <code>window_opacity</code> 字段里。在 CZEmaker 面板里有一个「透明度」输入框，可以填 0~100 的数值。运行时会按这个值设置窗口透明度。</p>
+
+<h3>6.4 过渡动画</h3>
+
+<p>模类窗口支持入场/出场过渡动画。过渡配置保存在音符的 <code>transition</code> 字段里（独立于 CZEmaker 配置），由过渡模块管理。</p>
+
+<p>支持的动画类型：</p>
+
+<table>
+    <thead>
+        <tr><th>分类</th><th>动画类型</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>淡入淡出</td>
+            <td><code>fade</code></td>
+            <td>透明度 0 → 1（入场）/ 1 → 0（出场）</td>
+        </tr>
+        <tr>
+            <td rowspan="4">滑动</td>
+            <td><code>slide_left</code></td>
+            <td>从左滑入/滑出</td>
+        </tr>
+        <tr><td><code>slide_right</code></td><td>从右滑入/滑出</td></tr>
+        <tr><td><code>slide_top</code></td><td>从上滑入/滑出</td></tr>
+        <tr><td><code>slide_bottom</code></td><td>从下滑入/滑出</td></tr>
+        <tr>
+            <td rowspan="4">弹跳</td>
+            <td><code>bounce_left</code></td>
+            <td>左弹跳</td>
+        </tr>
+        <tr><td><code>bounce_right</code></td><td>右弹跳</td></tr>
+        <tr><td><code>bounce_top</code></td><td>上弹跳</td></tr>
+        <tr><td><code>bounce_bottom</code></td><td>下弹跳</td></tr>
+        <tr>
+            <td rowspan="8">弹性</td>
+            <td><code>elastic_top_left</code></td>
+            <td>左上弹性</td>
+        </tr>
+        <tr><td><code>elastic_top_right</code></td><td>右上弹性</td></tr>
+        <tr><td><code>elastic_bottom_left</code></td><td>左下弹性</td></tr>
+        <tr><td><code>elastic_bottom_right</code></td><td>右下弹性</td></tr>
+        <tr><td><code>elastic_top</code></td><td>上弹性</td></tr>
+        <tr><td><code>elastic_right</code></td><td>右弹性</td></tr>
+        <tr><td><code>elastic_bottom</code></td><td>下弹性</td></tr>
+        <tr><td><code>elastic_left</code></td><td>左弹性</td></tr>
+        <tr>
+            <td rowspan="8">展开</td>
+            <td><code>expand_up</code></td>
+            <td>向上展开（从底部锚点收缩到完整大小）</td>
+        </tr>
+        <tr><td><code>expand_down</code></td><td>向下展开</td></tr>
+        <tr><td><code>expand_left</code></td><td>向左展开</td></tr>
+        <tr><td><code>expand_right</code></td><td>向右展开</td></tr>
+        <tr><td><code>expand_topleft</code></td><td>左上展开</td></tr>
+        <tr><td><code>expand_topright</code></td><td>右上展开</td></tr>
+        <tr><td><code>expand_bottomleft</code></td><td>左下展开</td></tr>
+        <tr><td><code>expand_bottomright</code></td><td>右下展开</td></tr>
+    </tbody>
+</table>
+
+<p>模类窗口的过渡动画由过渡系统统一处理。<code>expand_*</code> 类动画会对窗口尺寸做动画，其他动画会对窗口位置或透明度做动画。</p>
+
+<h2>七、模类的注意事项与已知限制</h2>
+
+<h3>7.1 链接系统的可靠性</h3>
+
+<p>文档已经明确警告了链接系统的不稳定性。总结一下：</p>
+
+<ul>
+    <li><strong>坐标偏移</strong>：链接后控件位置可能与设计器中的显示位置不一致</li>
+    <li><strong>链接丢失</strong>：编辑过程中链接关系可能意外丢失</li>
+    <li><strong>预览异常</strong>：预览时嵌套控件可能无法正确显示</li>
+    <li><strong>保存损坏</strong>：链接信息在保存/加载循环中可能被错误修改</li>
+</ul>
+
+<p><strong>建议：</strong>尽量不用链接字段，直接把子控件放在容器的坐标范围内。如果必须用，请保存后重新打开验证效果。</p>
+
+<h3>7.2 运行时只读工程内置模类</h3>
+
+<p>前面已经强调过：运行时只会从工程内置模类里查找模类，不读全局文件夹。所以如果你想在运行时使用某个模类，必须把它保存到工程内置。</p>
+
+<h3>7.3 模类不支持代码逻辑</h3>
+
+<p>模类没有代码逻辑，按钮、单选框、复选框都不会响应点击。所有"交互"都需要靠 Itoc 全局命令来模拟。</p>
+
+<h3>7.4 性能与兼容性</h3>
+
+<ul>
+    <li>大量控件（超过 200 个）可能影响编辑器性能</li>
+    <li>大尺寸图片（超过 5MB）的 Base64 数据会显著增加文件大小</li>
+    <li>建议单文件大小不超过 10MB</li>
+    <li>嵌套层级过深（超过 3 层）可能导致坐标计算异常</li>
+</ul>
+
+<h3>7.5 模类窗口的系统级限制</h3>
+
+<p>模类窗口受到操作系统窗口系统的各种限制。比如：</p>
+
+<ul>
+    <li>如果 <code>taskbar_show</code> 为 <code>false</code>，窗口不会出现在任务栏</li>
+    <li>如果 <code>resizable</code> 为 <code>false</code>，窗口会被设为固定大小</li>
+    <li>如果 <code>close_btn</code> 为 <code>false</code>，窗口只剩标题栏</li>
+    <li>帮助按钮会占用最大化按钮的位置，所以启用帮助时自动禁用最大化</li>
+</ul>
+
+<h2>八、模类的最佳实践</h2>
+
+<h3>8.1 命名规范</h3>
+
+<ul>
+    <li>模类名称用中文描述功能，比如「文件复制进度框」「UAC提权窗口」「密码输入框」</li>
+    <li>控件名称用有意义的名字，比如 <code>进度条_主</code>、<code>标签_百分比</code>，方便在属性面板里查找</li>
+    <li>如果工程里模类很多，建议用前缀分类，比如 <code>系统_复制框</code>、<code>系统_UAC</code></li>
+</ul>
+
+<h3>8.2 布局建议</h3>
+
+<ul>
+    <li>控件坐标尽量用整十数（比如 10、20、30），方便对齐</li>
+    <li>同类型控件保持相同的宽度和高度，视觉上更整齐</li>
+    <li>编组框的高度至少 80 像素，否则标题栏会挤掉内容</li>
+    <li>选项卡的高度至少 100 像素，宽度至少 150 像素</li>
+</ul>
+
+<h3>8.3 图片使用建议</h3>
+
+<ul>
+    <li>图片尽量压缩后再导入，避免文件过大</li>
+    <li>优先使用 PNG（支持透明通道），避免 BMP</li>
+    <li>GIF 动图虽然支持，但 Base64 数据通常很大，慎用</li>
+    <li>窗口图标用 ICO 格式，建议 32×32 或 256×256</li>
+</ul>
+
+<h3>8.4 进度条使用建议</h3>
+
+<ul>
+    <li>进度条的 <code>initial_value</code> 一般设 0，<code>end_value</code> 设 100</li>
+    <li><code>duration</code> 根据音符时长设置，保证进度条在窗口关闭前跑完</li>
+    <li>如果想让进度条循环跑，可以用多个音符重复弹出同一个模类</li>
+    <li>配合标签的 <code>linked_progress_id</code> 显示百分比，效果更逼真</li>
+</ul>
+
+<h3>8.5 复用建议</h3>
+
+<ul>
+    <li>通用模类（比如"文件复制框"）保存到 Itoc 全局，所有工程都能用</li>
+    <li>工程专用模类保存到工程内置，随工程一起走</li>
+    <li>如果模类经常修改，建议同时保存到两处，方便复用和备份</li>
+    <li>导出模类分享给朋友时，记得用「📤 导出选中」功能</li>
+</ul>
+
+<h2>九、模类与 CZEmaker 的完整工作流</h2>
+
+<p>最后，我们来梳理一下从零开始做一个"模类弹窗"的完整流程：</p>
+
+<div class="flow">① 在模类设计器里搭一个模类
+    · 新建模类 → 拖控件 → 调属性 → 预览 → 保存到工程内置
+    ↓
+② 在 CZEmaker 里创建一个配参
+    · 选中音符 → 窗口类型选「模类框」→ 选模类 → 配置其他属性 → 应用
+    ↓
+③ 在时间轴上给多个音符挂同一个配参
+    · 复制配参 / 使用「使用 czemaker(配参)赋值」菜单批量赋值
+    ↓
+④ 用全局命令控制弹出时机和位置
+    · 窗口位移动画、按类名/编组关闭窗口等
+    ↓
+⑤ 测试运行 → 调整 → 保存工程 → 编译 exe
+    · F5 测试运行，看效果，不满意就回模类设计器改
+    ↓
+⑥ 完成！(大概吧，除非你只为了测试模类)</div>
+
+<h2>十、总结</h2>
+
+<p>这一篇我们讲了模类的生态和进阶知识：</p>
+
+<ul>
+    <li>模类的三种存在形式：独立文件、工程内置（随工程走）、Itoc 全局（跨工程复用）</li>
+    <li>内部 ID 的生成机制（名称 + 32位哈希），以及为什么需要它</li>
+    <li>模类管理器的进阶用法：哈希去重、同名冲突处理对话框、克隆、重命名机制、搜索过滤</li>
+    <li>模类与 CZEmaker 的深入配合：模类框 UI 变化、window_type 兼容性、配参复用</li>
+    <li>模类在解释器中的运行机制：创建流程、两遍创建控件的原因</li>
+    <li>模类与全局命令的联动：位移动画、关闭、焦点、阵列、镜像克隆、脱壳模式</li>
+    <li>模类的图标、背景、透明度、过渡动画</li>
+    <li>注意事项与已知限制：链接系统可靠性、运行时只读工程内置、性能建议</li>
+    <li>最佳实践：命名、布局、图片、进度条、复用</li>
+    <li>完整工作流：从搭模类到测试运行的六步流程</li>
+</ul>
+
+<p>到这里，模类的三篇帮助文档就全部讲完了。从"是什么"到"怎么用"再到"怎么玩出花"，希望这三篇能帮你把模类玩得明明白白。如果还有不明白的地方，可以打开模类设计器里的「了解模类语法」文档，那里有最权威的字段说明。</p>
+
+<p>最后，祝你玩得开心，做出让人眼前一亮的 Crazy Error 作品喵！ ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'uiclass_3.html'
+    });
+</script>
+</body>
+</html>

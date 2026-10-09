@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+    <meta name="description" content="Itoc 帮助文档 - 一款创新的 Windows Crazy Error 开发工具，支持 MIDI 音乐编排弹窗效果，提供完整的弹窗编排、模类设计、插件系统等功能。">
+    <meta name="keywords" content="Itoc, Windows Crazy Error, MIDI编排, 弹窗效果, CZEmaker, 模类设计, 音乐可视化, 弹窗开发, 帮助文档,xxdz_Itoc">
+    <meta property="og:title" content="Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 帮助文档 - 一款创新的 Windows Crazy Error 开发工具，支持 MIDI 音乐编排弹窗效果。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="">
+    <title>Itoc 帮助文档</title>
+    <link rel="icon" href="../icon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../icon.ico" type="image/x-icon">
+    <style>
+        * { box-sizing: border-box; font-family: "Consolas", "Microsoft YaHei", "Segoe UI", sans-serif; }
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+
+        /* ============================================================
+           欢迎页
+           ============================================================ */
+        #welcome {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #f4f0fa 0%, #e8dfff 40%, #d8c8f8 100%);
+            z-index: 100;
+            overflow: hidden;
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        #welcome.fade-out {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
+        }
+
+        /* ========== 背景装饰光斑 ========== */
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.55;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-blob.b1 {
+            width: 420px; height: 420px;
+            background: #ab92f5;
+            top: -120px; left: -120px;
+            animation: float1 9s ease-in-out infinite;
+        }
+        .bg-blob.b2 {
+            width: 520px; height: 520px;
+            background: #c8b8f8;
+            bottom: -180px; right: -180px;
+            animation: float2 11s ease-in-out infinite;
+        }
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(40px, -30px) scale(1.1); }
+        }
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, 30px) scale(1.08); }
+        }
+
+        /* ============================================================
+           两侧非对称刀锋多边形（带屏幕外安全边距）
+           ============================================================ */
+        .blade {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            z-index: 1;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        /* 左侧刀锋：大、深、慢，从屏幕左边外很远的地方斜插进来 */
+        .blade-left {
+            left: -10vw;
+            width: calc(50vw + 10vw);
+            background: linear-gradient(135deg, #6b4a9a 0%, #8b6ee8 40%, #ab92f5 100%);
+            clip-path: polygon(0 0, 78% 0, 46% 100%, 0 100%);
+            transform: translateX(-120%) skewX(-2deg);
+            animation: bladeInLeft 1.15s cubic-bezier(0.22, 1.2, 0.36, 1) 0.15s forwards;
+            box-shadow: 20px 0 60px rgba(107, 74, 154, 0.35);
+        }
+        @keyframes bladeInLeft {
+            0%   { transform: translateX(-120%) skewX(-2deg); }
+            70%  { transform: translateX(3%) skewX(-2deg); }
+            100% { transform: translateX(0) skewX(0); }
+        }
+
+        /* 右侧刀锋：小、浅、快，从屏幕右边外很远的地方斜插进来 */
+        .blade-right {
+            right: -8vw;
+            width: calc(34vw + 8vw);
+            background: linear-gradient(225deg, #ab92f5 0%, #d8c8f8 100%);
+            clip-path: polygon(24% 0, 100% 0, 100% 100%, 0 100%);
+            transform: translateX(120%) skewX(2deg);
+            animation: bladeInRight 1s cubic-bezier(0.22, 1.2, 0.36, 1) 0.05s forwards;
+            box-shadow: -20px 0 60px rgba(107, 74, 154, 0.3);
+            opacity: 0.9;
+        }
+        @keyframes bladeInRight {
+            0%   { transform: translateX(120%) skewX(2deg); }
+            70%  { transform: translateX(-3%) skewX(2deg); }
+            100% { transform: translateX(0) skewX(0); }
+        }
+
+        /* 左侧刀锋的斜纹装饰 */
+        .blade-left::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                135deg,
+                transparent 0,
+                transparent 40px,
+                rgba(255, 255, 255, 0.08) 40px,
+                rgba(255, 255, 255, 0.08) 41px
+            );
+            pointer-events: none;
+        }
+
+        /* ============================================================
+           顶栏（保留）
+           ============================================================ */
+        .welcome-topbar {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 28px;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(216, 207, 239, 0.5);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .welcome-topbar .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .welcome-topbar .logo-img {
+            width: 40px; height: 40px;
+            object-fit: contain;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .welcome-topbar .logo-area h1 {
+            font-size: 22px;
+            color: #333;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+        .welcome-topbar .top-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .welcome-topbar .top-bar a {
+            color: #555;
+            text-decoration: none;
+            font-size: 13px;
+            padding: 6px 12px;
+            border: 1px solid rgba(221, 221, 221, 0.7);
+            background: rgba(255, 255, 255, 0.5);
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.15s ease, border-color 0.15s ease;
+        }
+        .welcome-topbar .top-bar a span { position: relative; z-index: 1; }
+        .welcome-topbar .top-bar a::before {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; bottom: 0; top: 0;
+            background: #AB92F5;
+            transform: translateY(100%);
+            transition: transform 0.25s ease;
+        }
+        .welcome-topbar .top-bar a:hover::before { transform: translateY(0%); }
+        .welcome-topbar .top-bar a:hover { color: #fff; border-color: #AB92F5; }
+
+        /* ============================================================
+           欢迎卡片（居中）—— 倒角风格
+           ============================================================ */
+        .welcome-center {
+            position: relative;
+            z-index: 5;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .welcome-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 0;
+            clip-path: polygon(
+                14px 0, calc(100% - 14px) 0, 100% 14px,
+                100% calc(100% - 14px), calc(100% - 14px) 100%,
+                14px 100%, 0 calc(100% - 14px), 0 14px
+            );
+            padding: 56px 76px;
+            text-align: center;
+            box-shadow:
+                0 20px 60px rgba(107, 74, 154, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            max-width: 90vw;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: cardIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s forwards;
+        }
+        @keyframes cardIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片外层的装饰边框（内部斜切光边） */
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            inset: 6px;
+            pointer-events: none;
+            clip-path: polygon(
+                10px 0, calc(100% - 10px) 0, 100% 10px,
+                100% calc(100% - 10px), calc(100% - 10px) 100%,
+                10px 100%, 0 calc(100% - 10px), 0 10px
+            );
+            background: linear-gradient(135deg, rgba(171, 146, 245, 0.15), rgba(171, 146, 245, 0.02));
+            z-index: -1;
+        }
+
+        /* 标题逐字浮现 */
+        .welcome-title {
+            font-size: 64px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            margin: 0 0 12px 0;
+            color: #ae95f7;
+            font-style: italic;
+            /* 斜体时字间距稍微收一点，避免倾斜后显松散 */
+            padding-right: 6px;
+        }
+        .welcome-title span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(30px) rotateX(-90deg);
+            animation: charIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            font-style: italic;
+        }
+        @keyframes charIn {
+            to { opacity: 1; transform: translateY(0) rotateX(0); }
+        }
+        .welcome-title span:nth-child(1) { animation-delay: 0.9s; }
+        .welcome-title span:nth-child(2) { animation-delay: 1.0s; }
+        .welcome-title span:nth-child(3) { animation-delay: 1.1s; }
+        .welcome-title span:nth-child(4) { animation-delay: 1.2s; }
+
+        /* 副标题 */
+        .welcome-sub {
+            font-size: 16px;
+            color: #888;
+            letter-spacing: 2px;
+            margin: 0 0 36px 0;
+            opacity: 0;
+            animation: subIn 0.8s ease 1.4s forwards;
+        }
+        @keyframes subIn {
+            to { opacity: 1; }
+        }
+
+        /* 装饰分割线 */
+        .welcome-divider {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ab92f5, transparent);
+            margin: 0 auto 36px auto;
+            opacity: 0;
+            animation: subIn 0.8s ease 1.6s forwards;
+        }
+
+        /* 开始阅读按钮 —— 倒角 */
+        .start-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 42px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #ab92f5 0%, #8b6ee8 100%);
+            border: none;
+            border-radius: 0;
+            clip-path: polygon(
+                10px 0, calc(100% - 10px) 0, 100% 10px,
+                100% calc(100% - 10px), calc(100% - 10px) 100%,
+                10px 100%, 0 calc(100% - 10px), 0 10px
+            );
+            cursor: pointer;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 24px rgba(171, 146, 245, 0.5);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            animation: subIn 0.8s ease 1.8s forwards;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .start-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 14px 36px rgba(171, 146, 245, 0.7);
+        }
+        .start-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+        .start-btn .arrow {
+            transition: transform 0.3s ease;
+        }
+        .start-btn:hover .arrow {
+            transform: translateX(6px);
+        }
+        /* 按钮光晕脉冲（放在按钮背后，用外层包裹器） */
+        .start-btn-wrap {
+            position: relative;
+            display: inline-block;
+        }
+        .start-btn-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            background: linear-gradient(135deg, #ab92f5, #c8b8f8, #ab92f5);
+            background-size: 200% 200%;
+            z-index: 0;
+            animation: glow 3s linear infinite;
+            opacity: 0.5;
+            filter: blur(16px);
+            clip-path: polygon(
+                16px 0, calc(100% - 16px) 0, 100% 16px,
+                100% calc(100% - 16px), calc(100% - 16px) 100%,
+                16px 100%, 0 calc(100% - 16px), 0 16px
+            );
+            pointer-events: none;
+        }
+        @keyframes glow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 页脚小字 */
+        .welcome-footer {
+            margin-top: 32px;
+            font-size: 12px;
+            color: #aaa;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: subIn 0.8s ease 2.0s forwards;
+        }
+        /* 页脚里的作者链接 */
+        .welcome-footer .author-link {
+            color: #8b6ee8;
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(139, 110, 232, 0.5);
+            padding-bottom: 1px;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+        .welcome-footer .author-link:hover {
+            color: #6b4a9a;
+            border-bottom-color: #6b4a9a;
+            border-bottom-style: solid;
+        }
+
+        /* ============================================================
+           响应式
+           ============================================================ */
+        @media (max-width: 768px) {
+            .welcome-title { font-size: 44px; }
+            .welcome-card { padding: 40px 32px; }
+            .blade-left { left: -18vw; width: calc(70vw + 18vw); }
+            .blade-right { right: -14vw; width: calc(44vw + 14vw); }
+            .welcome-topbar { padding: 10px 16px; }
+            .welcome-topbar .logo-area h1 { font-size: 18px; }
+            .welcome-topbar .top-bar a { font-size: 11px; padding: 4px 8px; }
+        }
+        @media (max-width: 480px) {
+            .welcome-title { font-size: 36px; }
+            .start-btn { padding: 14px 32px; font-size: 15px; }
+            .blade-left { left: -22vw; width: calc(82vw + 22vw); }
+            .blade-right { right: -18vw; width: calc(56vw + 18vw); opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="welcome">
+        <!-- 背景光斑 -->
+        <div class="bg-blob b1"></div>
+        <div class="bg-blob b2"></div>
+
+        <!-- 两侧非对称刀锋多边形 -->
+        <div class="blade blade-left"></div>
+        <div class="blade blade-right"></div>
+
+        <!-- 顶栏 -->
+        <div class="welcome-topbar">
+            <div class="logo-area">
+                <img src="../icon.png" alt="Itoc logo" class="logo-img">
+                <h1>Itoc 帮助文档</h1>
+            </div>
+            <div class="top-bar">
+                <a href="https://message.bilibili.com/#/whisper/mid3461569935575626" target="_blank"><span>联系作者</span></a>
+                <a href="https://miku66ccff.freeflarum.com/t/itoc" target="_blank"><span>交流论坛</span></a>
+                <a href="https://github.com/xxdz-Official/xxdz-Itoc" target="_blank"><span>GitHub主页</span></a>
+                <a href="../Mode.html"><span>插件市场</span></a>
+                <a href="../FriendURL.html"><span>友情链接</span></a>
+                <a href="help.html" class="active"><span>帮助文档</span></a>
+            </div>
+        </div>
+
+        <!-- 居中的欢迎卡片 -->
+        <div class="welcome-center">
+            <div class="welcome-card">
+                <h1 class="welcome-title">
+                    <span>I</span><span>t</span><span>o</span><span>c</span>
+                </h1>
+                <p class="welcome-sub">Windows Crazy Error 开发工具</p>
+                <div class="welcome-divider"></div>
+                <div class="start-btn-wrap">
+                    <button class="start-btn" id="startBtn">
+                        <span>开始阅读</span>
+                        <span class="arrow">→</span>
+                    </button>
+                </div>
+                <div class="welcome-footer">xxdz_Itoc · 作者：<a href="https://space.bilibili.com/3461569935575626" target="_blank" rel="noopener" class="author-link">小小电子xxdz</a></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const welcome = document.getElementById('welcome');
+            const startBtn = document.getElementById('startBtn');
+
+            // ============================================================
+            // 点击"开始阅读"：刀锋向内咬合 + 欢迎页淡出 → 跳转到 start.html
+            // ============================================================
+            startBtn.addEventListener('click', function() {
+                // 让两侧刀锋"咬合"进来（压迫感收尾）
+                const left = document.querySelector('.blade-left');
+                const right = document.querySelector('.blade-right');
+                if (left) {
+                    left.style.transition = 'transform 0.6s cubic-bezier(0.6, 0, 0.8, 1)';
+                    left.style.transform = 'translateX(140%)';
+                }
+                if (right) {
+                    right.style.transition = 'transform 0.6s cubic-bezier(0.6, 0, 0.8, 1)';
+                    right.style.transform = 'translateX(-140%)';
+                }
+
+                // 欢迎页淡出
+                welcome.classList.add('fade-out');
+
+                // 等待动画完成，跳转到目录的第一项（start.html）
+                setTimeout(function() {
+                    window.location.href = 'start.html';
+                }, 650);
+            });
+
+            // 如果 URL 里带 hash（比如 help.html#czemaker），
+            // 直接跳到对应的章节，跳过欢迎页
+            if (window.location.hash) {
+                const hash = window.location.hash.replace('#', '');
+                if (hash) {
+                    window.location.replace(hash + '.html');
+                }
+            }
+        })();
+    </script>
+</body>
+</html>

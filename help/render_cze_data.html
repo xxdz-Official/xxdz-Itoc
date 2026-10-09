@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 渲染为CZE数据文件 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解将工程转换为 CzeData 数据文件的入口、窗口界面、参数设置与生成结果">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,渲染CZE数据,CzeData,工程转换,解释器数据">
+<meta property="og:title" content="渲染为CZE数据文件 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 渲染为CZE数据文件 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>渲染为CZE数据文件 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>📦 渲染为 CZE 数据文件</h1>
+
+<p>前面我们讲了 CZEmaker 弹窗、全局命令、音符块、调整图层、过渡动画、批量赋音效、渲染为音频文件、渲染视频文件、渲染为 Python 代码。现在讲另一个输出功能——<strong>渲染为 CZE 数据文件</strong>。它能把整份 Itoc 工程转换成一个 <code>.CzeData</code> 文件，这个文件就是 Itoc 解释器直接读取的“代码”。</p>
+
+<div class="note">
+    <strong>📌 本篇的范围：</strong><br>
+    讲的是“渲染为 CZE 数据文件”的入口、前置条件、窗口界面、参数设置、生成结果和常见问题。关于工程本身怎么编辑，请参考《CZEmaker 弹窗编排》系列；关于其他输出格式，请参考《渲染为音频文件》《渲染视频文件》《渲染为 Python 代码》等文档。
+</div>
+
+<h2>一、这个功能是干嘛的？</h2>
+
+<p>Itoc 工程文件（<code>.czemidi</code>）是给编辑器用的，里面存的是“节拍”单位的音符、命令、图层等数据。而 Itoc 解释器运行时，需要的是“秒”单位的数据。渲染为 CZE 数据文件，就是做这个转换：把工程里的节拍数据换算成秒，打包成一个 <code>.CzeData</code> 文件。</p>
+
+<p>你可以把 <code>.CzeData</code> 理解成 <strong>Itoc 这个特定领域的“代码”</strong>。编辑器负责写“源代码”（工程文件），渲染器负责把它编译成“可执行代码”（CzeData），解释器负责运行这段“代码”。</p>
+
+<p>跟其他输出格式相比，它的定位是：</p>
+
+<table>
+    <thead>
+        <tr><th>输出格式</th><th>用途</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>.czemidi</code> 工程文件</td><td>给编辑器用，保存编辑状态，节拍单位</td></tr>
+        <tr><td><strong><code>.CzeData</code></strong></td><td><strong>给解释器用，秒单位，可直接运行</strong></td></tr>
+        <tr><td><code>.py</code> Python 代码</td><td>给开发者用，把数据嵌入 Python 脚本</td></tr>
+        <tr><td>音频 / 视频文件</td><td>给观众看/听，最终成品</td></tr>
+    </tbody>
+</table>
+
+<h2>二、从哪里打开？</h2>
+
+<p>菜单位置：<strong>「渲染(R)」 → 「渲染为CZE数据文件」</strong>。</p>
+
+<p>快捷键：<kbd>Ctrl</kbd> + <kbd>R</kbd>。</p>
+
+<div class="tip">
+    <strong>💡 别按错了：</strong><br>
+    CZE 数据文件是 <kbd>Ctrl</kbd>+<kbd>R</kbd>，Python 代码是 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>，音频渲染是 <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>E</kbd>，视频渲染是 <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>V</kbd>。四个入口别搞混。
+</div>
+
+<h3>前置条件</h3>
+
+<p>打开渲染窗口前，程序会先检查：</p>
+
+<table>
+    <thead>
+        <tr><th>检查项</th><th>不满足时的提示</th><th>怎么解决</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>是否有打开的工程</td><td>“请先打开或保存一个工程文件”</td><td>先新建或打开一个工程</td></tr>
+        <tr><td>工程里是否有音符</td><td>“当前工程没有音符数据”</td><td>先在时间轴上画几个音符</td></tr>
+    </tbody>
+</table>
+
+<p>如果工程已经改过（标题栏工程名带 <code>*</code>），还会先弹一个确认框：</p>
+
+<ul>
+    <li><strong>是</strong>：先保存工程，再打开渲染窗口</li>
+    <li><strong>否</strong>：不保存，直接用未保存的修改进行渲染</li>
+</ul>
+
+<div class="note">
+    <strong>📌 为什么建议先保存？</strong><br>
+    渲染过程读的是工程文件里的数据。如果你在编辑器里改了但没保存，渲染出来的 CzeData 会缺少最新的修改。所以程序会提醒你先保存。
+</div>
+
+<h2>三、窗口界面</h2>
+
+<p>打开后是一个左右分栏的窗口，左边是设置，右边是转换预览。</p>
+
+<table>
+    <thead>
+        <tr><th>区域</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>左栏</td><td>工程信息、BPM 设置、选项、输出设置、开始/取消按钮</td></tr>
+        <tr><td>右栏</td><td>转换预览表格（音符、命令列表）</td></tr>
+    </tbody>
+</table>
+
+<h3>3.1 工程信息</h3>
+
+<p>显示当前工程的文件名、音符数量、命令数量、目标 BPM。这些信息是只读的，帮你确认打开的是正确的工程。</p>
+
+<h3>3.2 BPM 设置</h3>
+
+<p>一个输入框，让你设置转换时使用的 BPM。默认是工程当前的 target_bpm。旁边会实时显示“每拍多少秒”和“每秒多少拍”。</p>
+
+<p>BPM 决定了节拍到秒的换算关系。比如 BPM 设成 120，那么 1 拍 = 0.5 秒；BPM 设成 60，那么 1 拍 = 1 秒。修改 BPM 后，音符和命令的时间都会按新 BPM 重新换算。</p>
+
+<h3>3.3 选项</h3>
+
+<table>
+    <thead>
+        <tr><th>选项</th><th>默认</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>包含CZEmaker</td><td>勾选</td><td>是否把音符的 CZEmaker 配置（弹窗参数）一起写进 CzeData</td></tr>
+        <tr><td>保留节拍数据</td><td>不勾选</td><td>是否在 CzeData 里同时保留节拍单位（默认只保留秒单位）</td></tr>
+        <tr><td>包含全局命令</td><td>勾选</td><td>是否把全局命令一起写进 CzeData</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 选项怎么选：</strong><br>
+    · 如果你只是想让解释器正常播放，保持默认即可。<br>
+    · 如果你不需要弹窗配置，可以取消“包含CZEmaker”，文件会更小。<br>
+    · 如果你需要节拍数据做其他计算，可以勾选“保留节拍数据”。
+</div>
+
+<h3>3.4 输出设置</h3>
+
+<p>一个输入框，显示默认输出路径。默认是：</p>
+
+<pre><code>工程目录/工程名.CzeData</code></pre>
+
+<p>点右边的 <code>...</code> 按钮可以自定义保存位置和文件名。</p>
+
+<h3>3.5 转换预览</h3>
+
+<p>右栏是一个表格，显示转换后的音符和命令数据。表格列包括：序号、类型、音高/描述、时间(s)、时长(s)、结束(s)。</p>
+
+<p>下方会显示统计信息：音符数、命令数、CZE配置数、总时长。最多显示前 100 条数据。</p>
+
+<p>点击“刷新预览”按钮可以重新生成预览。修改 BPM 或选项后，预览不会自动刷新，需要手动点一下“刷新预览”。</p>
+
+<h3>3.6 底部按钮</h3>
+
+<table>
+    <thead>
+        <tr><th>按钮</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>开始渲染</td><td>按当前设置生成 <code>.CzeData</code> 文件</td></tr>
+        <tr><td>取消</td><td>关闭窗口，不生成文件</td></tr>
+        <tr><td>刷新预览</td><td>用当前设置重新生成预览</td></tr>
+    </tbody>
+</table>
+
+<h2>四、操作步骤</h2>
+
+<ol>
+    <li>打开一个包含音符的工程。</li>
+    <li>点击菜单「渲染(R)」→「渲染为CZE数据文件」，或按 <kbd>Ctrl</kbd>+<kbd>R</kbd>。</li>
+    <li>如果工程已修改，按提示选择是否保存。</li>
+    <li>在窗口里调整 BPM 和选项（一般保持默认即可）。</li>
+    <li>点“刷新预览”查看转换后的数据。</li>
+    <li>确认输出路径无误后，点“开始渲染”。</li>
+    <li>渲染完成后会弹窗提示，显示输出文件名、转换音符数、转换命令数、总时长等信息。</li>
+</ol>
+
+<h2>五、生成的 CzeData 里有什么</h2>
+
+<p>生成的 <code>.CzeData</code> 是一个 JSON 文件，结构大致如下：</p>
+
+<pre><code>{
+    "version": "2.0",
+    "source_project": "工程文件名",
+    "render_time": "渲染时间",
+    "render_bpm": 120,
+    "notes": [
+        {
+            "note_value": 60,
+            "start_s": 0.0,
+            "duration_s": 0.5,
+            "end_s": 0.5,
+            "cze_makers": { ... },
+            "transition": { ... }
+        },
+        ...
+    ],
+    "global_commands": [ ... ],
+    "adjust_layers": [ ... ],
+    "ui_Class": [ ... ],
+    "class_data_project": { ... },
+    "audio_file": "背景音乐文件名",
+    "global_random_seed": 123456,
+    "arrays": [ ... ]
+}</code></pre>
+
+<p>各字段的含义：</p>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>version</code></td><td>CzeData 格式版本</td></tr>
+        <tr><td><code>source_project</code></td><td>来源工程文件名</td></tr>
+        <tr><td><code>render_time</code></td><td>渲染时间</td></tr>
+        <tr><td><code>render_bpm</code></td><td>渲染时使用的 BPM</td></tr>
+        <tr><td><code>notes</code></td><td>音符列表，时间单位是秒</td></tr>
+        <tr><td><code>global_commands</code></td><td>全局命令列表（勾选“包含全局命令”时才有）</td></tr>
+        <tr><td><code>adjust_layers</code></td><td>调整图层列表，时间单位是秒</td></tr>
+        <tr><td><code>ui_Class</code></td><td>工程内置模类的标识列表</td></tr>
+        <tr><td><code>class_data_project</code></td><td>工程内置模类的完整数据</td></tr>
+        <tr><td><code>audio_file</code></td><td>工程关联的背景音频文件名</td></tr>
+        <tr><td><code>global_random_seed</code></td><td>全局随机种子（如果工程里设置过）</td></tr>
+        <tr><td><code>arrays</code></td><td>阵列定义（含绑定的编组信息）</td></tr>
+    </tbody>
+</table>
+
+<div class="note">
+    <strong>📌 生成的文件怎么用？</strong><br>
+    用 Itoc 解释器打开这个 <code>.CzeData</code> 文件，就可以直接运行工程里的弹窗、动画、命令等内容。也可以自己解析这个 JSON 文件，提取需要的数据做二次开发。
+</div>
+
+<h2>六、常见问题</h2>
+
+<h3>Q1：渲染出来的 CzeData 能直接播放吗？</h3>
+
+<p>不能。CzeData 是数据文件，需要配合 Itoc 解释器才能运行。解释器会读取里面的音符、命令、弹窗配置，然后按时间轴播放出来。</p>
+
+<h3>Q2：CzeData 和工程文件有什么区别？</h3>
+
+<p>工程文件（<code>.czemidi</code>）是给编辑器用的，保存的是“节拍”单位的数据和编辑状态。CzeData 是给解释器用的，保存的是“秒”单位的数据，去掉了编辑相关的字段，结构更精简。</p>
+
+<h3>Q3：BPM 改了，但预览没变？</h3>
+
+<p>需要手动点一下“刷新预览”按钮。BPM 输入框修改后不会自动刷新预览。</p>
+
+<h3>Q4：渲染后文件在哪？</h3>
+
+<p>默认保存在工程文件所在目录，文件名是“工程名.CzeData”。你也可以在输出设置里自定义路径。</p>
+
+<h3>Q5：为什么生成的 CzeData 里没有调整图层 / 模类 / 阵列？</h3>
+
+<p>如果工程里本来就没有这些数据，CzeData 里自然也不会有。如果工程里有，它们会一并导出。检查一下工程里是否确实配置了调整图层、模类或阵列。</p>
+
+<h3>Q6：可以只导出部分音符吗？</h3>
+
+<p>这个功能目前不支持范围选择，它会处理工程里的全部音符。如果你只想导出部分内容，可以先用时间选区圈出范围，导出工程片段，再对片段进行渲染。</p>
+
+<h3>Q7：勾选“保留节拍数据”有什么好处？</h3>
+
+<p>勾选后，每个音符里会额外保留 <code>start_beat</code> 和 <code>duration_beat</code> 字段，方便你在后续处理中同时使用节拍和秒两种单位。不勾选的话，只保留秒单位，文件更小。</p>
+
+<h2>七、小结</h2>
+
+<p>「渲染为 CZE 数据文件」是 Itoc 输出环节的基础功能，把工程编译成解释器可以直接读取的“代码”。</p>
+
+<ul>
+    <li>入口：<strong>菜单「渲染(R)」→「渲染为CZE数据文件」</strong>，或 <kbd>Ctrl</kbd>+<kbd>R</kbd></li>
+    <li>前置条件：有打开的工程 + 有音符数据</li>
+    <li>把节拍单位的工程数据转换成秒单位的 CzeData</li>
+    <li>支持 BPM 设置、包含/排除 CZEmaker、全局命令、保留节拍数据</li>
+    <li>生成 <code>.CzeData</code> 文件，供 Itoc 解释器直接读取</li>
+    <li>同时导出调整图层、模类、阵列、背景音频、随机种子等数据</li>
+    <li>窗口内提供转换预览，方便确认结果</li>
+</ul>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'render_cze_data.html'
+    });
+</script>
+</body>
+</html>

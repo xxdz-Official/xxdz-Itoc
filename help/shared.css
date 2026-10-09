@@ -1,0 +1,1074 @@
+/* ============================================================
+   shared.css - Itoc 帮助文档共享样式
+   包含：侧边栏、顶栏、正文排版
+   ============================================================ */
+
+* { box-sizing: border-box; font-family: "Consolas", "Microsoft YaHei", "Segoe UI", sans-serif; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #f4f0fa;
+    color: #333;
+    line-height: 1.8;
+    height: 100%;
+    /* 移动端点击高亮色 */
+    -webkit-tap-highlight-color: rgba(171, 146, 245, 0.15);
+    /* 防止移动端整页被内容撑开导致滚动条出现在 body 上 */
+    overflow: hidden;
+    /* 注意：不要在这里加 scrollbar-width / scrollbar-color，
+       Chrome 117+ 会因此覆盖掉 ::-webkit-scrollbar 的自定义样式 */
+}
+
+/* 移动端：为侧边栏和内容区提供更稳定的高度计算 */
+@media (max-width: 900px) {
+    /* 用 --vh 变量代替 100vh，兼容移动端地址栏伸缩 */
+    /* 如果 --vh 未设置，回退到 100vh */
+    .sidebar {
+        height: calc(var(--vh, 1vh) * 30);
+        max-height: 40vh;
+    }
+}
+/* 桌面端：恢复正常的 html/body 滚动行为 */
+@media (min-width: 901px) {
+    html, body {
+        overflow: auto;
+    }
+}
+
+/* ==================== 顶栏 ==================== */
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    background: #fff;
+    border-bottom: 2px solid #d8cfef;
+    flex-wrap: wrap;
+    gap: 12px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* 覆盖 <a> 的默认样式 */
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.logo-area:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+}
+.logo-img { width: 40px; height: 40px; object-fit: contain; border: 1px solid #ddd; }
+.logo-area h1 { font-size: 24px; color: #333; margin: 0; letter-spacing: 1px; }
+.logo-area:hover h1 { color: #6b4a9a; }
+.top-bar { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* 向上扫描按钮 */
+.top-bar a {
+    color: #555;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 14px;
+    border: 1px solid #ddd;
+    background: #fff;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+.top-bar a span { position: relative; z-index: 1; }
+.top-bar a::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0; top: 0;
+    background: #AB92F5;
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+}
+.top-bar a:hover::before,
+.top-bar a.active::before { transform: translateY(0%); }
+.top-bar a:hover { color: #fff; border-color: #AB92F5; }
+.top-bar a.active { color: #fff; border-color: #AB92F5; }
+
+/* ==================== 主容器 ==================== */
+.main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    padding: 16px 24px;
+    gap: 20px;
+    background: #f4f0fa;
+    min-height: calc(100vh - 72px);
+}
+
+/* ==================== 侧边栏 ==================== */
+.sidebar {
+    width: 260px;
+    min-width: 220px;
+    background: #fff;
+    border: 1px solid #e0d8f0;
+    /* 顶部/底部 padding 改为 0，由 h3 和搜索框自己控制 */
+    padding: 0;
+    overflow-y: auto;
+    flex-shrink: 0;
+    height: calc(100vh - 104px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+}
+
+/* 目录列表：自动填充剩余高度 */
+.sidebar ul#tocList {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* 移动端：惯性滚动 */
+    -webkit-overflow-scrolling: touch;
+    /* 滚动时保持流畅 */
+    overscroll-behavior: contain;
+}
+.sidebar h3 {
+    font-size: 15px;
+    margin: 0 0 10px 0;
+    color: #666;
+    padding: 0 20px 12px 20px;
+    border-bottom: 1px solid #f0eaf8;
+    letter-spacing: 2px;
+    font-weight: 500;
+}
+.sidebar ul { list-style: none; margin: 0; padding: 0; }
+
+/* 侧边栏向上扫描 */
+.sidebar li {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    border-left: 3px solid transparent;
+    margin: 2px 8px;
+    position: relative;
+    overflow: hidden;
+}
+.sidebar li span { position: relative; z-index: 1; }
+.sidebar li::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0; top: 0;
+    background: #f8f5ff;
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+}
+.sidebar li:hover::before { transform: translateY(0%); }
+.sidebar li:hover { color: #333; }
+.sidebar li.active {
+    border-left-color: #AB92F5;
+    color: #444;
+    font-weight: 600;
+}
+.sidebar li.active::before { transform: translateY(0%); }
+
+/* 分组标题 */
+.sidebar li.toc-group {
+    padding: 14px 20px 4px 20px;
+    font-size: 12px;
+    color: #999;
+    letter-spacing: 2px;
+    cursor: default;
+    border-left: 3px solid transparent;
+    font-weight: 500;
+}
+.sidebar li.toc-group::before { display: none; }
+.sidebar li.toc-group:hover { color: #999; }
+
+/* ==================== 侧边栏标题（固定高度、固定位置） ==================== */
+.sidebar h3.sidebar-title {
+    /* 关键：把所有可能影响位置的属性全部锁死 */
+    height: 44px;
+    min-height: 44px;
+    max-height: 44px;
+    line-height: 44px;
+    padding: 0 20px;
+    margin: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #f0eaf8;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+/* ==================== 目录搜索框（固定高度、固定位置） ==================== */
+.toc-search-box {
+    position: relative;
+    /* 关键：高度锁死，上下 padding 归零，用 line-height 对齐 */
+    height: 52px;
+    min-height: 52px;
+    max-height: 52px;
+    box-sizing: border-box;
+    padding: 0 16px;
+    border-bottom: 1px solid #f0eaf8;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+/* 内部 field 容器：让图标、输入框、清空按钮都相对它定位 */
+.toc-search-field {
+    position: relative;
+    width: 100%;
+    height: 32px;
+}
+
+/* 搜索图标（左侧，放在输入框内部，不被 clip-path 影响） */
+.toc-search-icon {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    color: #8b7ab8;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: color 0.22s ease;
+}
+
+/* 输入框：无圆角，左上 + 右下切角，右上 + 左下直角 */
+.toc-search-input {
+    width: 100%;
+    height: 32px;
+    box-sizing: border-box;
+    padding: 0 30px 0 34px;
+    font-size: 13px;
+    color: #444;
+    background: #faf8ff;
+    border: 1px solid #e0d8f0;
+    border-radius: 0;
+    outline: none;
+    font-family: inherit;
+    letter-spacing: 0.2px;
+    /* 左上、右下两个斜切角；右上、左下保持直角 */
+    clip-path: polygon(
+        8px 0, 100% 0,
+        100% calc(100% - 8px), calc(100% - 8px) 100%,
+        0 100%, 0 8px
+    );
+    transition: background 0.22s ease, border-color 0.22s ease, color 0.22s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.toc-search-input::placeholder {
+    color: #aaa;
+    transition: color 0.22s ease;
+}
+.toc-search-input:hover {
+    background: #f5f0ff;
+    border-color: #d0c4e8;
+}
+.toc-search-input:focus {
+    background: #fff;
+    border-color: #ab92f5;
+    color: #333;
+}
+
+/* 聚焦时图标变紫 */
+.toc-search-field:focus-within .toc-search-icon {
+    color: #ab92f5;
+}
+
+/* 清空按钮：无圆角，1 个斜切角（右下），其他直角 */
+.toc-search-clear {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%) scale(0.8);
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: #e0d8f0;
+    color: #666;
+    border-radius: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+    /* 右下斜切角，其他直角 */
+    clip-path: polygon(
+        0 0, 100% 0,
+        100% calc(100% - 5px), calc(100% - 5px) 100%,
+        0 100%
+    );
+    transition: background 0.22s ease, color 0.22s ease, opacity 0.22s ease, transform 0.22s ease;
+}
+.toc-search-clear.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1);
+}
+.toc-search-clear:hover {
+    background: #ab92f5;
+    color: #fff;
+}
+
+/* 空提示：淡入 */
+.toc-empty-tip {
+    padding: 10px 20px;
+    font-size: 13px;
+    color: #999;
+    text-align: center;
+    opacity: 0;
+}
+.toc-empty-tip.toc-anim-in {
+    animation: tocFadeInUp 0.3s ease forwards;
+}
+
+/* ==================== 目录条目搜索淡入动画 ==================== */
+.sidebar li.toc-item {
+    transition: padding-left 0.22s ease, background 0.22s ease;
+}
+.sidebar li.toc-item.toc-anim-in {
+    animation: tocFadeInUp 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes tocFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==================== 目录加载动画 ==================== */
+/* ul 本身加载前：完全不可见 */
+.sidebar ul#tocList.toc-list-loading {
+    opacity: 0;
+}
+/* ul 本身加载后：淡入 */
+.sidebar ul#tocList.toc-list-ready {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+/* 子项加载中：完全隐藏 */
+.sidebar li.toc-loading {
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+}
+
+/* 子项入场动画 */
+.sidebar li.toc-enter {
+    animation: tocItemEnter 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes tocItemEnter {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==================== 清空搜索时的淡出动画 ==================== */
+/* 清空搜索时，当前可见条目先淡出 */
+.sidebar li.toc-clear-out {
+    animation: tocItemExit 0.18s ease forwards;
+    pointer-events: none;
+}
+
+@keyframes tocItemExit {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+}
+
+/* ==================== 正文加载动画 ==================== */
+/* 整体向上位移 + 透明度从 50% 到 100% */
+.content-area.content-entrance {
+    animation: contentEntrance 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+    will-change: opacity, transform;
+}
+
+@keyframes contentEntrance {
+    from {
+        opacity: 0.5;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 如果用户系统开启了"减少动态效果"，直接不显示动画 */
+@media (prefers-reduced-motion: reduce) {
+    .content-area.content-entrance {
+        animation: none;
+    }
+}
+
+/* ==================== 滚动条（斜切角风格） ==================== */
+/*
+   说明：::-webkit-scrollbar-thumb 不支持 clip-path（浏览器限制），
+   所以改用 background 渐变 + border 模拟"斜切角"的视觉。
+   真正的斜切角用 linear-gradient 在两端画出透明三角。
+*/
+
+/* 侧边栏纵向滚动条 */
+.sidebar ul#tocList::-webkit-scrollbar { width: 8px; height: 8px; }
+.sidebar ul#tocList::-webkit-scrollbar-thumb {
+    background: #d0c4e8;
+    /* 上边斜切（左上角透明三角）+ 下边斜切（右下角透明三角） */
+    background-image: linear-gradient(
+        135deg,
+        transparent 0,
+        transparent 5px,
+        #d0c4e8 5px,
+        #d0c4e8 calc(100% - 5px),
+        transparent calc(100% - 5px),
+        transparent 100%
+    );
+    background-color: transparent;
+    border: none;
+}
+.sidebar ul#tocList::-webkit-scrollbar-track { background: transparent; }
+.sidebar ul#tocList::-webkit-scrollbar-thumb:hover {
+    background-image: linear-gradient(
+        135deg,
+        transparent 0,
+        transparent 5px,
+        #ab92f5 5px,
+        #ab92f5 calc(100% - 5px),
+        transparent calc(100% - 5px),
+        transparent 100%
+    );
+}
+
+/* 侧边栏横向滚动条（移动端目录用） */
+.sidebar ul#tocList::-webkit-scrollbar:horizontal {
+    height: 8px;
+}
+.sidebar ul#tocList::-webkit-scrollbar-thumb:horizontal {
+    background: #d0c4e8;
+    /* 左边斜切（左上角透明三角）+ 右边斜切（右下角透明三角） */
+    background-image: linear-gradient(
+        45deg,
+        transparent 0,
+        transparent 5px,
+        #d0c4e8 5px,
+        #d0c4e8 calc(100% - 5px),
+        transparent calc(100% - 5px),
+        transparent 100%
+    );
+    background-color: transparent;
+    border: none;
+}
+.sidebar ul#tocList::-webkit-scrollbar-thumb:horizontal:hover {
+    background-image: linear-gradient(
+        45deg,
+        transparent 0,
+        transparent 5px,
+        #ab92f5 5px,
+        #ab92f5 calc(100% - 5px),
+        transparent calc(100% - 5px),
+        transparent 100%
+    );
+}
+.sidebar ul#tocList::-webkit-scrollbar-track:horizontal {
+    background: transparent;
+}
+
+/* 同时保留侧边栏自身的滚动条定义（桌面端纵向滚动发生在这里） */
+.sidebar::-webkit-scrollbar { width: 8px; height: 8px; }
+.sidebar::-webkit-scrollbar-thumb {
+    background: #d0c4e8;
+    background-image: linear-gradient(
+        135deg,
+        transparent 0,
+        transparent 5px,
+        #d0c4e8 5px,
+        #d0c4e8 calc(100% - 5px),
+        transparent calc(100% - 5px),
+        transparent 100%
+    );
+    background-color: transparent;
+    border: none;
+}
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background-image: linear-gradient(
+        135deg,
+        transparent 0,
+        transparent 5px,
+        #ab92f5 5px,
+        #ab92f5 calc(100% - 5px),
+        transparent calc(100% - 5px),
+        transparent 100%
+    );
+}
+
+/* ==================== 内容区 ==================== */
+.content-area {
+    flex: 1;
+    background: #fff;
+    border: 1px solid #e0d8f0;
+    overflow-y: auto;
+    height: calc(100vh - 104px);
+    padding: 32px 40px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    /* 移动端：惯性滚动 + 防止滚动穿透 */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* ==================== 正文排版 ==================== */
+.content-area h1 {
+    font-size: 28px;
+    color: #444;
+    border-bottom: 2px solid #d8cfef;
+    padding-bottom: 8px;
+    margin-top: 0;
+    letter-spacing: 1px;
+}
+.content-area h2 {
+    font-size: 22px;
+    color: #555;
+    border-bottom: 1px solid #f0eaf8;
+    padding-bottom: 6px;
+    margin-top: 32px;
+}
+.content-area h3 { font-size: 18px; color: #666; margin-top: 24px; }
+.content-area h4 { font-size: 16px; color: #777; margin-top: 20px; }
+
+.content-area p { text-indent: 2em; margin: 12px 0; }
+.content-area ol,
+.content-area ul { padding-left: 24px; }
+.content-area li { margin: 8px 0; }
+
+/* 表格 */
+.content-area table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+}
+.content-area th,
+.content-area td {
+    border: 1px solid #ddd;
+    padding: 10px 14px;
+    text-align: left;
+    vertical-align: top;
+}
+.content-area th {
+    background: #f5f0ff;
+    color: #444;
+    font-weight: 600;
+    border-bottom: 2px solid #d8cfef;
+}
+.content-area tr:nth-child(even) { background: #faf8ff; }
+
+/* 行内代码 */
+.content-area code {
+    background: #f5f0ff;
+    padding: 2px 6px;
+    border: 1px solid #e8dfff;
+    font-family: "Consolas", monospace;
+    font-size: 13px;
+    color: #6b4a9a;
+}
+
+/* 键盘按键 */
+.content-area kbd {
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-family: "Consolas", monospace;
+    font-size: 13px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* 代码块 */
+.content-area pre {
+    background: #1e1a2b;
+    color: #e8e0f0;
+    padding: 14px 18px;
+    border-radius: 8px 0 8px 0;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.6;
+    border: 1px solid #3a2a5a;
+    position: relative;
+}
+.content-area pre code {
+    background: transparent;
+    border: none;
+    color: inherit;
+    padding: 0;
+}
+
+/* ==================== 代码块复制按钮 ==================== */
+.content-area pre.has-copy-btn {
+    /* 顶部多留一点空间，避免按钮压住第一行代码 */
+    padding-top: 40px;
+}
+
+.code-copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-family: inherit;
+    color: #b8a8e0;
+    background: rgba(171, 146, 245, 0.12);
+    border: 1px solid rgba(171, 146, 245, 0.35);
+    border-radius: 0;
+    cursor: pointer;
+    /* 左上斜切角，右下斜切角，右上+左下直角 */
+    clip-path: polygon(
+        5px 0, 100% 0,
+        100% calc(100% - 5px), calc(100% - 5px) 100%,
+        0 100%, 0 5px
+    );
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+    opacity: 0.6;
+    z-index: 2;
+    user-select: none;
+    -webkit-user-select: none;
+}
+.code-copy-btn:hover {
+    background: rgba(171, 146, 245, 0.25);
+    color: #fff;
+    border-color: rgba(171, 146, 245, 0.7);
+    opacity: 1;
+}
+.code-copy-btn:active {
+    background: rgba(171, 146, 245, 0.4);
+}
+.code-copy-btn.copied {
+    background: rgba(80, 200, 120, 0.2);
+    color: #7ee0a0;
+    border-color: rgba(80, 200, 120, 0.6);
+    opacity: 1;
+}
+.code-copy-btn .code-copy-text {
+    line-height: 1;
+}
+.code-copy-btn svg {
+    display: block;
+    flex-shrink: 0;
+}
+
+/* 移动端：按钮稍微小一点 */
+@media (max-width: 480px) {
+    .code-copy-btn {
+        padding: 3px 6px;
+        font-size: 11px;
+    }
+    .code-copy-btn .code-copy-text {
+        display: none; /* 小屏幕只显示图标 */
+    }
+}
+
+/* 提示框 */
+.content-area .tip {
+    background: #f8f5ff;
+    border-left: 4px solid #ab92f5;
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+}
+.content-area .tip strong { color: #6b4a9a; }
+
+/* 警告框 */
+.content-area .warning {
+    background: #fff5f5;
+    border-left: 4px solid #e74c3c;
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+}
+.content-area .warning strong { color: #c0392b; }
+
+/* 说明框 */
+.content-area .note {
+    background: #f0f8ff;
+    border-left: 4px solid #4a90e2;
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+}
+.content-area .note strong { color: #2c6fb8; }
+
+/* 滚动条（斜切角风格，和侧边栏统一） */
+.content-area::-webkit-scrollbar { width: 8px; height: 8px; }
+.content-area::-webkit-scrollbar-thumb {
+    background: #d0c4e8;
+    background-image: linear-gradient(
+        135deg,
+        transparent 0,
+        transparent 5px,
+        #d0c4e8 5px,
+        #d0c4e8 calc(100% - 5px),
+        transparent calc(100% - 5px),
+        transparent 100%
+    );
+    background-color: transparent;
+    border: none;
+}
+.content-area::-webkit-scrollbar-thumb:hover {
+    background-image: linear-gradient(
+        135deg,
+        transparent 0,
+        transparent 5px,
+        #ab92f5 5px,
+        #ab92f5 calc(100% - 5px),
+        transparent calc(100% - 5px),
+        transparent 100%
+    );
+}
+.content-area::-webkit-scrollbar-track { background: transparent; }
+
+/* ==================== 响应式（平板） ==================== */
+@media (max-width: 900px) {
+    /* 移动端布局：顶栏 → 侧边栏 → 内容区，纵向排列 */
+    /* 关键：整页不滚动，滚动交给内部容器 */
+    html, body {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .main-container {
+        flex-direction: column;
+        padding: 10px;
+        gap: 10px;
+        /* 关键：让 main-container 撑满剩余高度，并允许子元素 flex 分配 */
+        height: calc(100vh - 62px);
+        height: calc(var(--vh, 1vh) * 100 - 62px);
+        min-height: 0;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    /* 侧边栏：横向卡片，限高，目录变网格 */
+    .sidebar {
+        width: 100%;
+        min-width: unset;
+        height: auto;
+        min-height: 0;
+        max-height: 52vh;
+        flex-shrink: 0;
+        flex-grow: 0;
+        overflow: hidden;
+    }
+
+    /* 移动端：目录列表变成横向滚动的 flex 布局 */
+    .sidebar ul#tocList {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        gap: 6px;
+        padding: 8px 10px 12px 10px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        /* 横向惯性滚动 */
+        -webkit-overflow-scrolling: touch;
+        /* 注意：不要加 scrollbar-width / scrollbar-color，
+           会覆盖 ::-webkit-scrollbar 的自定义样式 */
+    }
+
+    /* 移动端：分组标题变成"分隔块"，竖排显示 */
+    .sidebar li.toc-group {
+        flex: 0 0 auto;
+        align-self: center;
+        padding: 6px 8px;
+        margin: 0;
+        font-size: 11px;
+        letter-spacing: 1px;
+        color: #a89bc4;
+        background: #f8f5ff;
+        border: 1px dashed #d8cfef;
+        white-space: nowrap;
+        /* 左上 + 右下斜切角 */
+        clip-path: polygon(
+            4px 0, 100% 0,
+            100% calc(100% - 4px), calc(100% - 4px) 100%,
+            0 100%, 0 4px
+        );
+    }
+
+    /* 移动端：目录条目变成固定宽度的小卡片 */
+    .sidebar li.toc-item {
+        flex: 0 0 auto;
+        width: 130px;
+        min-height: 44px;
+        padding: 8px 10px;
+        margin: 0;
+        font-size: 12.5px;
+        line-height: 1.35;
+        border-left: none;
+        border-radius: 0;
+        /* 左上 + 右下斜切角，和其他风格统一 */
+        clip-path: polygon(
+            5px 0, 100% 0,
+            100% calc(100% - 5px), calc(100% - 5px) 100%,
+            0 100%, 0 5px
+        );
+        background: #faf8ff;
+        border: 1px solid #ece6f8;
+        transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        /* 文字两行省略 */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        word-break: break-word;
+    }
+
+    /* 移动端：hover 效果保持 */
+    .sidebar li.toc-item::before {
+        display: none;
+    }
+    .sidebar li.toc-item:hover {
+        background: #f5f0ff;
+        border-color: #d0c4e8;
+    }
+
+    /* 移动端：当前高亮项 */
+    .sidebar li.toc-item.active {
+        background: #ede4ff;
+        border-color: #ab92f5;
+        color: #4a3a7a;
+        font-weight: 600;
+        border-left: none;
+    }
+
+    /* 内容区：占满剩余空间，内部滚动 */
+    .content-area {
+        flex: 1 1 auto;
+        min-height: 0;
+        height: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 24px 22px;
+        /* 移动端惯性滚动 */
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+
+    /* 顶栏：压缩内边距 */
+    .header-row {
+        padding: 10px 14px;
+        gap: 8px;
+    }
+    .logo-img { width: 32px; height: 32px; }
+    .logo-area h1 { font-size: 18px; letter-spacing: 0; }
+    .logo-area { gap: 8px; }
+    .top-bar { gap: 6px; }
+    .top-bar a { font-size: 12px; padding: 4px 10px; }
+
+    /* 正文标题稍微缩小 */
+    .content-area h1 { font-size: 24px; padding-bottom: 6px; }
+    .content-area h2 { font-size: 19px; margin-top: 26px; padding-bottom: 5px; }
+    .content-area h3 { font-size: 16px; margin-top: 20px; }
+    .content-area h4 { font-size: 15px; margin-top: 16px; }
+
+    /* 正文段落：稍微缩进 */
+    .content-area p { text-indent: 1.6em; }
+
+    /* 表格：横向滚动，避免撑破布局 */
+    .content-area table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    .content-area th,
+    .content-area td {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+
+    /* 代码块：横向滚动 + 惯性 */
+    .content-area pre {
+        font-size: 12px;
+        padding: 12px 14px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .content-area pre.has-copy-btn {
+        padding-top: 38px;
+    }
+}
+
+/* ==================== 响应式（手机） ==================== */
+@media (max-width: 480px) {
+    /* 顶栏：允许换行，按钮变小 */
+    .header-row {
+        padding: 8px 10px;
+        gap: 6px;
+    }
+    .logo-img { width: 28px; height: 28px; }
+    .logo-area h1 { font-size: 16px; }
+    .top-bar { gap: 4px; }
+    .top-bar a {
+        font-size: 11px;
+        padding: 3px 7px;
+        border-width: 1px;
+    }
+
+    /* 侧边栏更紧凑 */
+    .sidebar {
+        height: auto;
+        max-height: 52vh;
+    }
+    .sidebar ul#tocList {
+        gap: 5px;
+        padding: 6px 8px 10px 8px;
+    }
+    .sidebar li.toc-item {
+        width: 118px;
+        min-height: 42px;
+        padding: 7px 8px;
+        font-size: 12px;
+        line-height: 1.3;
+    }
+    .sidebar li.toc-group {
+        padding: 5px 7px;
+        font-size: 10.5px;
+        letter-spacing: 1px;
+    }
+    .sidebar h3.sidebar-title {
+        height: 40px;
+        min-height: 40px;
+        max-height: 40px;
+        line-height: 40px;
+        padding: 0 14px;
+        font-size: 14px;
+    }
+    .toc-search-box {
+        height: 46px;
+        min-height: 46px;
+        max-height: 46px;
+        padding: 0 12px;
+    }
+    .toc-search-field { height: 30px; }
+    .toc-search-input {
+        height: 30px;
+        padding: 0 28px 0 30px;
+        font-size: 12px;
+    }
+    .toc-search-icon {
+        left: 9px;
+        width: 13px;
+        height: 13px;
+    }
+    .toc-search-clear {
+        right: 5px;
+        width: 18px;
+        height: 18px;
+    }
+
+    /* 内容区更紧凑 */
+    .content-area {
+        padding: 16px 14px;
+        min-height: 320px;
+    }
+    .content-area h1 { font-size: 21px; }
+    .content-area h2 { font-size: 17px; margin-top: 22px; }
+    .content-area h3 { font-size: 15px; margin-top: 18px; }
+    .content-area h4 { font-size: 14px; margin-top: 14px; }
+    .content-area p { text-indent: 1.4em; line-height: 1.7; }
+
+    /* 列表缩进减少 */
+    .content-area ol,
+    .content-area ul { padding-left: 20px; }
+    .content-area li { margin: 6px 0; }
+
+    /* 表格更紧凑 */
+    .content-area th,
+    .content-area td {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+
+    /* 提示框、警告框、说明框：左右 padding 减少 */
+    .content-area .tip,
+    .content-area .warning,
+    .content-area .note {
+        padding: 10px 14px;
+        margin: 12px 0;
+    }
+
+    /* 代码块更紧凑 */
+    .content-area pre {
+        font-size: 11.5px;
+        padding: 10px 12px;
+        line-height: 1.55;
+        border-radius: 6px 0 6px 0;
+    }
+    .content-area pre.has-copy-btn {
+        padding-top: 36px;
+    }
+
+    /* 行内代码和 kbd 稍微缩小 */
+    .content-area code { font-size: 12px; padding: 1px 5px; }
+    .content-area kbd { font-size: 12px; padding: 1px 5px; }
+
+    /* 代码复制按钮：小屏只显示图标 */
+    .code-copy-btn {
+        padding: 3px 6px;
+        font-size: 11px;
+        top: 6px;
+        right: 6px;
+    }
+    .code-copy-btn .code-copy-text {
+        display: none;
+    }
+}
+
+/* ==================== 响应式（超小屏） ==================== */
+@media (max-width: 360px) {
+    .header-row { padding: 6px 8px; }
+    .logo-area h1 { font-size: 15px; }
+    .top-bar a { font-size: 10px; padding: 2px 6px; }
+    .content-area { padding: 12px 10px; }
+    .content-area h1 { font-size: 19px; }
+    .content-area h2 { font-size: 16px; }
+    .sidebar li.toc-item {
+        width: 106px;
+        min-height: 40px;
+        padding: 6px 7px;
+        font-size: 11.5px;
+    }
+    .sidebar ul#tocList { gap: 4px; padding: 5px 6px 8px 6px; }
+}

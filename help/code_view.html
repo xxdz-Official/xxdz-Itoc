@@ -1,0 +1,494 @@
+<!-- code_view.html - 代码视图 帮助文档 -->
+<!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 代码视图 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解以 PyCharm 风格显示并编辑工程 JSON 的代码视图，包含工具栏、行号栏、查找替换、跳转行列、语法高亮、撤销重做保护">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,代码视图,Code View,JSON编辑,查找替换,语法高亮,行号栏,跳转行列">
+<meta property="og:title" content="代码视图 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 代码视图 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>代码视图 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>💻 代码视图</h1>
+
+<p>Itoc 平时是靠鼠标点来点去的——点音符、拖滑块、拉面板。但有时候，你偏偏想<strong>直接看工程文件到底长什么样</strong>，甚至<strong>直接用键盘改数据</strong>。这时候，就该「代码视图」出场了。</p>
+
+<p>代码视图是底部选项卡里的一个面板，把整个工程的内容以 <strong>PyCharm 风格的 JSON 代码</strong>展示出来。带行号、带语法高亮、带查找替换、带撤销重做——就像一个迷你版 IDE，专门用来读和改工程数据。</p>
+
+<div class="note">
+    <strong>📌 本篇的范围：</strong><br>
+    讲的是「代码视图」面板的界面布局、工具栏按钮、行号栏用法、查找替换面板、跳转行:列、快捷键、撤销重做保护机制、应用修改的流程、主题和语言支持。关于工程文件本身的字段含义，请参考《音符块自身属性》《调整图层》《CZEmaker 弹窗编排》等文档。
+</div>
+
+<h2>一、这个功能是干嘛的？</h2>
+
+<p>代码视图本质上是一个「<strong>工程数据的文本编辑器</strong>」。它做的事：</p>
+
+<ol>
+    <li><strong>读取</strong>：把当前工程的所有数据（音符、标记、命令、图层、编组、阵列等）整理成一份 JSON。</li>
+    <li><strong>展示</strong>：用 PyCharm 风格的代码编辑器呈现出来，带行号、语法高亮、滚动同步。</li>
+    <li><strong>编辑</strong>：你可以直接在文本框里改内容，像写代码一样。</li>
+    <li><strong>应用</strong>：改完之后点「应用」，程序会重新加载工程，让修改生效。</li>
+</ol>
+
+<p>它最大的价值是：<strong>批量修改、精确查找、结构对照</strong>。</p>
+
+<div class="tip">
+    <strong>💡 什么时候用代码视图？</strong><br>
+    · 想一次性把所有某字段的值改掉（比如把所有音符的某个配参字段统一改一个值）<br>
+    · 想看清楚工程 JSON 的嵌套结构，检查字段名拼写<br>
+    · 想快速统计某个字段出现了多少次（配合查找）<br>
+    · 想手动调一下 JSON 缩进、格式化一下看结构<br>
+    · 想复制整个工程的 JSON 出来，做备份或发给别人参考
+</div>
+
+<h2>二、从哪里打开？</h2>
+
+<p>代码视图不是独立窗口，它就在<strong>底部选项卡栏</strong>里，选项卡标题是「代码视图」。它和「CZEmakers」「过渡配置」「调整图层」「媒体浏览器」「音频音谱」「终端」这些选项卡并排在一起。</p>
+
+<p>如果底部选项卡栏当前没有显示，先通过菜单「视图(V)」→「显示底部选项卡」把它显示出来，然后点「代码视图」选项卡即可。</p>
+
+<h2>三、界面布局</h2>
+
+<p>代码视图从上到下分成四部分：</p>
+
+<table>
+    <thead>
+        <tr><th>区域</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>顶部工具栏</td><td>刷新、应用、格式化、复制全部、撤销、重做、查找、替换、跳转行:列、状态标签</td></tr>
+        <tr><td>中部编辑区</td><td>左侧行号栏 + 中间代码编辑区 + 右侧垂直滚动条</td></tr>
+        <tr><td>底部横向滚动条</td><td>长行横向滚动</td></tr>
+        <tr><td>底部状态栏</td><td>左侧显示行数/字符数，右侧显示光标行列位置</td></tr>
+    </tbody>
+</table>
+
+<p>当查找/替换面板打开时，编辑区右侧会挤出一块<strong>查找替换面板</strong>，编辑区自动收窄。</p>
+
+<h2>四、工具栏按钮详解</h2>
+
+<table>
+    <thead>
+        <tr><th>按钮</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><strong>刷新</strong></td><td>从当前工程重新读取数据，覆盖编辑区内容。如果编辑区有未应用的修改，会弹确认框</td></tr>
+        <tr><td><strong>应用</strong></td><td>把编辑区的内容解析成 JSON，写回工程。会先保存撤销快照，再重新加载工程</td></tr>
+        <tr><td><strong>格式化</strong></td><td>把编辑区的 JSON 重新排版（缩进对齐）。如果 JSON 格式有错，会弹错误提示</td></tr>
+        <tr><td><strong>复制全部</strong></td><td>把编辑区的内容整体复制到剪贴板</td></tr>
+        <tr><td><strong>↺ 撤销</strong></td><td>撤销<strong>代码视图编辑区</strong>内的修改（不是主程序的撤销）</td></tr>
+        <tr><td><strong>↻ 重做</strong></td><td>重做<strong>代码视图编辑区</strong>内的修改</td></tr>
+        <tr><td><strong>🔍 查找</strong></td><td>打开/关闭查找面板（也可用 <kbd>Ctrl</kbd>+<kbd>F</kbd>）</td></tr>
+        <tr><td><strong>🔁 替换</strong></td><td>打开/切换替换面板（也可用 <kbd>Ctrl</kbd>+<kbd>H</kbd>）</td></tr>
+        <tr><td><strong>🧭 跳转行:列</strong></td><td>打开跳转对话框，输入行号或 行:列（也可用 <kbd>Ctrl</kbd>+<kbd>G</kbd>）</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 状态标签（右上角）：</strong><br>
+    显示当前代码视图的状态，比如「已同步 12:34:56」「● 已修改未应用」「JSON 格式错误」等。<br>
+    橙色文字通常表示"有未应用修改"，红色表示"出错了"，蓝色表示"已同步"。
+</div>
+
+<h3>4.1 撤销/重做按钮 vs 主程序撤销</h3>
+
+<p>这两个按钮<strong>只管代码视图里的编辑</strong>，跟主程序（Ctrl+Z 撤销音符、命令那个）完全是两套系统。</p>
+
+<table>
+    <thead>
+        <tr><th>操作</th><th>撤销的是什么</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>主界面按 <kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>撤销对工程的修改（音符移动、删除等）</td></tr>
+        <tr><td>代码视图里按 <kbd>Ctrl</kbd>+<kbd>Z</kbd> 或点工具栏「↺ 撤销」</td><td>撤销代码视图编辑区内的文字修改</td></tr>
+    </tbody>
+</table>
+
+<div class="warning">
+    <strong>⚠️ 代码视图的撤销/重做不会影响到主程序，主程序也不会影响到代码视图。</strong><br>
+    你在代码视图里改了很多，撤回时也是撤代码视图的文字，不会触发主程序去改数据。应用之前，工程本身还没变。
+</div>
+
+<h2>五、行号栏的用法</h2>
+
+<p>左侧的行号栏不只是"显示行号"这么简单，它还有几个很好用的功能：</p>
+
+<table>
+    <thead>
+        <tr><th>操作</th><th>效果</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>鼠标悬停行号</td><td>整行淡蓝色高亮，方便看清光标在哪一行</td></tr>
+        <tr><td>单击行号</td><td>选中整行（从行首到行尾）</td></tr>
+        <tr><td><kbd>Shift</kbd> + 单击</td><td>从上一次点击的行到当前行，整段选中</td></tr>
+        <tr><td>按住拖拽</td><td>从按下行到当前行，整段选中</td></tr>
+        <tr><td>滚轮</td><td>滚动编辑区（和编辑区同步）</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 行号栏宽度自适应：</strong><br>
+    行号栏的宽度会根据最大行号的位数自动调整。工程很大（比如上万行）时，行号栏会自动变宽一点，保证行号不会显示不全。
+</div>
+
+<h2>六、查找替换面板</h2>
+
+<p>按 <kbd>Ctrl</kbd>+<kbd>F</kbd> 打开查找面板，按 <kbd>Ctrl</kbd>+<kbd>H</kbd> 打开替换面板。面板出现在编辑区右侧，占大概 480 像素宽。</p>
+
+<h3>6.1 面板结构</h3>
+
+<table>
+    <thead>
+        <tr><th>区域</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>顶部标题行</td><td>「查找」和「替换」两个标题（替换模式才显示）</td></tr>
+        <tr><td>输入区</td><td>左边是查找输入框，右边是替换输入框（查找模式只显示左边的）</td></tr>
+        <tr><td>按钮区</td><td>左边「上一个」「下一个」，右边「替换」「全部替换」</td></tr>
+        <tr><td>选项区</td><td>区分大小写、全字匹配、正则表达式、多行模式、循环查找</td></tr>
+        <tr><td>状态区</td><td>「找到 N 个匹配（第 M 个）」或「未找到匹配」等提示</td></tr>
+        <tr><td>底部按钮</td><td>「关闭替换」和「关闭 ✕」</td></tr>
+    </tbody>
+</table>
+
+<h3>6.2 查找 / 替换输入框</h3>
+
+<p>两个输入框都是<strong>多行文本框</strong>（高度 3 行左右），支持多行关键词查找。这意味着你可以查找跨行的字符串。</p>
+
+<div class="tip">
+    <strong>💡 自动填入选中文本：</strong><br>
+    打开查找面板时，如果编辑区里有选中的文本（且不超过 500 字符），会自动填到查找框里，省得你手动复制。
+</div>
+
+<h3>6.3 查找选项</h3>
+
+<table>
+    <thead>
+        <tr><th>选项</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><strong>区分大小写</strong></td><td>勾选后，"Note" 和 "note" 是两回事</td></tr>
+        <tr><td><strong>全字匹配</strong></td><td>只匹配完整的单词（前后是词边界）。跟「正则表达式」互斥</td></tr>
+        <tr><td><strong>正则表达式</strong></td><td>把查找词当作正则表达式来解析。勾选后会自动取消「全字匹配」</td></tr>
+        <tr><td><strong>多行模式</strong></td><td>勾选（默认）：查找内容里的换行符原样匹配。不勾：把换行符替换成空格再匹配（位置映射是 1:1 的）</td></tr>
+        <tr><td><strong>循环查找</strong></td><td>勾选（默认）：查到头会绕回开头。不勾：查到头就停</td></tr>
+    </tbody>
+</table>
+
+<h3>6.4 查找高亮</h3>
+
+<p>找到的匹配会以两种颜色显示：</p>
+
+<table>
+    <thead>
+        <tr><th>类型</th><th>浅色主题</th><th>深色主题</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>全部匹配</td><td>淡黄色背景（<code>#FFEB99</code>）</td><td>深褐色背景（<code>#5C4A1E</code>）</td></tr>
+        <tr><td>当前匹配</td><td>橙黄色背景（<code>#FFC800</code>）+ 蓝色边框</td><td>琥珀色背景（<code>#7A5C10</code>）+ 蓝色边框</td></tr>
+    </tbody>
+</table>
+
+<p>「当前匹配」就是你按「下一个 / 上一个」时跳到的那一个，会显眼得多。</p>
+
+<h3>6.5 查找的快捷键</h3>
+
+<table>
+    <thead>
+        <tr><th>快捷键</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>F</kbd></td><td>打开查找面板</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>H</kbd></td><td>打开替换面板</td></tr>
+        <tr><td><kbd>F3</kbd></td><td>查找下一个</td></tr>
+        <tr><td><kbd>Shift</kbd>+<kbd>F3</kbd></td><td>查找上一个</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>G</kbd></td><td>跳转行:列</td></tr>
+        <tr><td><kbd>Enter</kbd>（查找框里）</td><td>查找下一个</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>关闭查找/替换面板</td></tr>
+    </tbody>
+</table>
+
+<h3>6.6 查找面板的「查找 / 替换」按钮行为</h3>
+
+<p>工具栏上的「🔍 查找」和「🔁 替换」按钮，行为有点讲究：</p>
+
+<table>
+    <thead>
+        <tr><th>当前状态</th><th>点「🔍 查找」</th><th>点「🔁 替换」</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>面板未打开</td><td>打开查找模式面板</td><td>打开替换模式面板（查找+替换都显示）</td></tr>
+        <tr><td>面板已开（查找模式）</td><td>关闭整个面板</td><td>展开替换栏（切到替换模式）</td></tr>
+        <tr><td>面板已开（替换模式）</td><td>收起替换栏（切回查找模式）</td><td>收起替换栏（切回查找模式）</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 一句话记忆：</strong><br>
+    · 点「查找」→ 找东西；如果再点一次就关。<br>
+    · 点「替换」→ 打开替换；如果再点一次，只把替换那一栏收起来，保留查找栏。<br>
+    · 想彻底关掉面板，点「查找」关掉，或者直接按 <kbd>Esc</kbd>。
+</div>
+
+<h3>6.7 替换操作</h3>
+
+<ul>
+    <li><strong>替换</strong>：把当前选中的匹配替换成替换框里的内容，然后自动跳到下一个匹配。</li>
+    <li><strong>全部替换</strong>：把工程里所有匹配都替换掉。如果匹配数超过 1 个，会弹确认框，提醒「全部替换可能破坏 JSON 结构」。</li>
+</ul>
+
+<div class="warning">
+    <strong>⚠️ 全部替换要小心：</strong><br>
+    因为 JSON 里可能出现大量重复的字段名（比如每个音符都有 <code>"note_value"</code>），如果你只想着改某一个字段的某一处，但用了「全部替换」，就会全改掉。<br>
+    建议：先用「查找」定位，确认范围后，再用「替换」逐个换，或者用「全部替换」前先保存一份工程。
+</div>
+
+<h2>七、跳转到 行:列</h2>
+
+<p>点工具栏的「🧭 跳转行:列」按钮，或按 <kbd>Ctrl</kbd>+<kbd>G</kbd>，会弹出一个小对话框。</p>
+
+<table>
+    <thead>
+        <tr><th>输入格式</th><th>效果</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>42</code></td><td>跳到第 42 行第 1 列</td></tr>
+        <tr><td><code>42:10</code></td><td>跳到第 42 行第 10 列</td></tr>
+    </tbody>
+</table>
+
+<p>对话框打开时，输入框里会预填当前光标的行:列，光标全选，方便直接输入新值。</p>
+
+<p>跳转时，如果输入的行号/列号超出范围，程序会自动夹到合法范围内（比如工程只有 100 行，你输了 200，会跳到第 100 行）。</p>
+
+<h2>八、快捷键与右键菜单</h2>
+
+<h3>8.1 编辑区快捷键</h3>
+
+<table>
+    <thead>
+        <tr><th>快捷键</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>Ctrl</kbd>+<kbd>H</kbd></td><td>打开查找 / 替换面板</td></tr>
+        <tr><td><kbd>F3</kbd> / <kbd>Shift</kbd>+<kbd>F3</kbd></td><td>查找下一个 / 上一个</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>G</kbd></td><td>跳转行:列</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>关闭查找/替换面板</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>撤销编辑区内的修改（不触发主程序）</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Y</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd></td><td>重做编辑区内的修改</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd> / <kbd>Ctrl</kbd>+<kbd>V</kbd> / <kbd>Ctrl</kbd>+<kbd>X</kbd> / <kbd>Ctrl</kbd>+<kbd>A</kbd></td><td>复制 / 粘贴 / 剪切 / 全选（<strong>只作用于编辑区，不触发主程序</strong>）</td></tr>
+    </tbody>
+</table>
+
+<div class="note">
+    <strong>📌 为什么这些快捷键要"拦截"？</strong><br>
+    因为主程序本身也用 <kbd>Ctrl</kbd>+<kbd>C</kbd> / <kbd>Ctrl</kbd>+<kbd>V</kbd> 这些快捷键来复制粘贴音符。代码视图里如果直接用，就会"串味"——你想复制代码视图里的文本，结果主程序把选中的音符复制走了。<br>
+    所以代码视图专门拦截了这些快捷键，把它们"锁"在编辑区里。
+</div>
+
+<h3>8.2 右键菜单</h3>
+
+<p>在编辑区（以及查找框、替换框）里点右键，会弹出一个菜单：</p>
+
+<table>
+    <thead>
+        <tr><th>菜单项</th><th>快捷键</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>撤销</td><td>Ctrl+Z</td><td>撤销编辑区内的修改</td></tr>
+        <tr><td>重做</td><td>Ctrl+Y</td><td>重做编辑区内的修改</td></tr>
+        <tr><td>剪切</td><td>Ctrl+X</td><td>剪切选中的文本（无选中时置灰）</td></tr>
+        <tr><td>复制</td><td>Ctrl+C</td><td>复制选中的文本（无选中时置灰）</td></tr>
+        <tr><td>粘贴</td><td>Ctrl+V</td><td>粘贴（剪贴板为空时置灰）</td></tr>
+        <tr><td>删除</td><td>Del</td><td>删除选中的文本（无选中时置灰）</td></tr>
+        <tr><td>全选</td><td>Ctrl+A</td><td>全选编辑区内容</td></tr>
+    </tbody>
+</table>
+
+<p>菜单文字会自动跟随语言包翻译。</p>
+
+<h2>九、撤销 / 重做的保护机制</h2>
+
+<p>代码视图的撤销有一个很贴心的设计：<strong>防止编辑区被撤销成空</strong>。</p>
+
+<p>普通的 tk.Text 组件，如果一直按 Ctrl+Z，最终会撤销到一个空内容（所有输入都被撤回了）。这在代码视图里是不好的——用户会看到一片空白，还以为工程没了。</p>
+
+<p>所以代码视图做了一个保护：</p>
+
+<ol>
+    <li>每次从工程刷新内容时，会把当前内容存一份「<strong>最早状态快照</strong>」（<code>_editor_initial_snapshot</code>）。</li>
+    <li>当你一直撤销，撤到内容变成空、但撤销前不是空时，说明"撤销触底"了。</li>
+    <li>程序会自动把编辑区内容恢复成「最早状态快照」，而不是留一个空框。</li>
+    <li>状态栏会显示「已是最早状态」。</li>
+</ol>
+
+<p>这样，你随便按 Ctrl+Z 都不会把编辑区搞空，最多回到"刚刷新时"的样子。</p>
+
+<div class="tip">
+    <strong>💡 什么时候"最早状态"会被重置？</strong><br>
+    · 点「刷新」后，最早状态 = 刷新后的内容。<br>
+    · 点「格式化」后，最早状态 = 格式化后的内容。<br>
+    · 点「应用」后，会重新刷新，最早状态自然也是最新的。
+</div>
+
+<h2>十、应用修改的流程</h2>
+
+<p>改完代码视图的内容，点「应用」之后，程序会做这一系列操作：</p>
+
+<ol>
+    <li><strong>解析 JSON</strong>：把你编辑的内容解析成 JSON 对象。如果格式错了，会弹「JSON 格式错误」的提示，不会继续。</li>
+    <li><strong>比对变化</strong>：把新数据跟工程当前的数据对比。如果没变化，会提示「内容没有变化，无需应用」。</li>
+    <li><strong>保存撤销快照</strong>：调用主程序的 <code>save_undo_snapshot_before_modify</code>，让这次应用可以被 Ctrl+Z 撤销。</li>
+    <li><strong>写临时文件</strong>：把 JSON 写到一个 <code>.czemidi</code> 临时文件。</li>
+    <li><strong>重新加载工程</strong>：调用主程序的 <code>open_cze_project_from_path</code> 加载临时文件，让改动生效。</li>
+    <li><strong>恢复工程路径</strong>：因为加载的是临时文件，所以要把工程路径改回原路径。</li>
+    <li><strong>标记已修改</strong>：让标题栏出现 <code>*</code>，提醒你保存。</li>
+    <li><strong>刷新代码视图</strong>：用最新的工程数据重新填一遍编辑区。</li>
+    <li><strong>轮播图通知</strong>：主界面右下角弹一个通知「代码视图已应用到工程」。</li>
+</ol>
+
+<div class="warning">
+    <strong>⚠️ 应用前会先弹确认框：</strong><br>
+    「确定要把代码视图中的内容应用到工程吗？应用后主工程会被重新加载，旧状态会保留在撤销栈中。」<br>
+    确认之后才会真正执行。所以万一点错了，可以点取消。
+</div>
+
+<h2>十一、自动同步</h2>
+
+<p>代码视图会跟主工程自动同步，但有几条规则：</p>
+
+<table>
+    <thead>
+        <tr><th>时机</th><th>行为</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>切换到代码视图选项卡时</td><td>自动从工程刷新内容（如果之前有未应用的修改，会弹窗问你是丢弃还是保留）</td></tr>
+        <tr><td>在主界面做了修改（比如拖了个音符）</td><td>延迟 500ms 后，如果代码视图没有未应用修改，会自动刷新</td></tr>
+        <tr><td>代码视图有未应用修改时</td><td>不自动刷新（避免覆盖你的编辑）</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 自动刷新是"防抖"的：</strong><br>
+    如果你在主界面连续做了很多操作，代码视图不会每一下都刷新。它会等 500ms 内的操作都做完，然后一次性刷新。这样不会拖慢主程序。
+</div>
+
+<h2>十二、主题与语言</h2>
+
+<h3>12.1 主题</h3>
+
+<p>代码视图会自动检测主程序当前用的是浅色还是深色主题，并切换配色。当前支持两套配色：</p>
+
+<table>
+    <thead>
+        <tr><th>配色</th><th>背景</th><th>文字</th><th>关键字</th><th>字符串</th><th>数字</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>浅色（默认）</td><td>白</td><td>黑</td><td>紫</td><td>绿</td><td>蓝</td></tr>
+        <tr><td>深色</td><td>深灰</td><td>浅灰</td><td>橙</td><td>绿</td><td>蓝</td></tr>
+    </tbody>
+</table>
+
+<h3>12.2 语言</h3>
+
+<p>切换语言包后，代码视图里的按钮、标签、菜单文字都会跟着翻译。状态栏里动态显示的文本（如「共 N 行 / M 字符」「第 X 行, 第 Y 列」）也会重新翻译。</p>
+
+<h2>十三、常见问题</h2>
+
+<h3>Q1：代码视图里改的内容，什么时候生效？</h3>
+
+<p><strong>点「应用」之后才生效。</strong> 编辑区里的内容只是"草稿"，改了不会立刻影响工程。想生效必须点「应用」。</p>
+
+<h3>Q2：我改了一半，切走选项卡，回来发现内容没了？</h3>
+
+<p>切换选项卡时，如果有未应用的修改，会弹窗问你：「点击『是』：丢弃这些修改，显示最新的工程内容；点击『否』：保留修改，不刷新」。如果你点「是」，就会丢弃；点「否」就能保留。</p>
+
+<h3>Q3：按 Ctrl+Z 撤销，为什么撤着撤着回到"初始状态"就不动了？</h3>
+
+<p>因为已经撤到"最早状态"了（也就是你打开代码视图、或者上次点刷新/格式化时的内容）。再撤销就没有历史了。程序会显示「已是最早状态」。</p>
+
+<h3>Q4：为什么 Ctrl+C / Ctrl+V 在代码视图里"不管用"？</h3>
+
+<p>不是不管用，而是<strong>只作用于代码视图内部</strong>。代码视图拦截了这几个快捷键，把它们的操作范围"锁"在编辑区里，不触发主程序的复制粘贴音符。<br>
+想复制代码视图里的文本，直接在编辑区里用 Ctrl+C 就行。想复制整个编辑区内容，用工具栏的「复制全部」按钮。</p>
+
+<h3>Q5：应用之后发现改错了，怎么办？</h3>
+
+<p>按主程序的 <kbd>Ctrl</kbd>+<kbd>Z</kbd> 就能撤销。因为应用前保存了撤销快照，所以整个"应用"操作是可以一键撤销的。</p>
+
+<h3>Q6：代码视图能改哪些内容？</h3>
+
+<p>理论上所有工程数据都能改：音符、标记、命令、调整图层、编组、阵列、模类、时间选区等等。但<strong>改的时候要小心</strong>，因为代码视图不做字段校验——你写错了字段名，程序认不出来，可能加载时会丢数据或报错。</p>
+
+<div class="tip">
+    <strong>💡 建议的工作流：</strong><br>
+    1. 先用主界面正常操作，让工程处于正确状态。<br>
+    2. 打开代码视图，看看 JSON 长什么样，熟悉字段名。<br>
+    3. 想做批量修改时，先备份工程，再在代码视图里改。<br>
+    4. 改完点「格式化」检查一下 JSON 是否合法。<br>
+    5. 点「应用」，然后 <kbd>Ctrl</kbd>+<kbd>S</kbd> 保存工程。
+</div>
+
+<h3>Q7：为什么有时候应用后工程看起来"没变"？</h3>
+
+<p>可能的原因：</p>
+<ul>
+    <li>你改的字段是程序内部使用的，不直接影响显示（比如某些元数据）。</li>
+    <li>你改的值跟原来的值等价（比如 <code>1</code> 改成 <code>1.0</code>）。</li>
+    <li>主程序里有缓存，需要切一下选项卡或者刷新一下画布才能看到变化。</li>
+</ul>
+
+<h3>Q8：代码视图能一键清空工程吗？</h3>
+
+<p>能，但<strong>不建议</strong>。如果你把内容改成 <code>{}</code> 或 <code>{"notes": []}</code> 然后应用，就会得到一份"空工程"。这个操作是可撤销的（Ctrl+Z），但应用前最好想想清楚。</p>
+
+<h3>Q9：行号栏能用鼠标滚轮滚吗？</h3>
+
+<p>能。行号栏和编辑区是同步滚动的。在行号栏上滚轮，编辑区也会一起滚。</p>
+
+<h3>Q10：为什么状态栏里有时候显示"已同步"，有时候显示"已修改未应用"？</h3>
+
+<ul>
+    <li><strong>已同步</strong>（蓝色）：代码视图内容和工程一致，没有未应用的修改。</li>
+    <li><strong>已修改未应用</strong>（橙色）：你在代码视图里改了东西，但还没点「应用」。</li>
+    <li><strong>已应用到工程</strong>（绿色）：应用成功。</li>
+    <li><strong>JSON 格式错误</strong>（红色）：JSON 解析失败，不能应用。</li>
+</ul>
+
+<h2>十四、小结</h2>
+
+<p>「代码视图」是 Itoc 里的"底层编辑器"，把工程 JSON 摊开给你看、给你改。</p>
+
+<ul>
+    <li>位置：底部选项卡 →「代码视图」</li>
+    <li>工具栏：刷新、应用、格式化、复制全部、撤销、重做、查找、替换、跳转行:列</li>
+    <li>编辑区：PyCharm 风格，带行号、语法高亮、撤销重做</li>
+    <li>行号栏：悬停高亮、单击选行、Shift+单击选范围、拖拽选范围</li>
+    <li>查找替换：<kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>Ctrl</kbd>+<kbd>H</kbd>，支持正则、多行、全字、循环</li>
+    <li>跳转：<kbd>Ctrl</kbd>+<kbd>G</kbd>，输入 <code>42</code> 或 <code>42:10</code></li>
+    <li>撤销保护：撤到底会回到"最早状态"，不会清空</li>
+    <li>快捷键拦截：代码视图内的 Ctrl+C/V/X/A/Z/Y 都只作用于编辑区</li>
+    <li>应用流程：解析 JSON → 保存撤销快照 → 写临时文件 → 重新加载工程</li>
+    <li>自动同步：切到选项卡时刷新；主程序修改后延迟 500ms 刷新（有未应用修改时不刷）</li>
+</ul>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'code_view.html'
+    });
+</script>
+</body>
+</html>

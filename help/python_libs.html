@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc Python运行库管理 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 编译辅助功能，讲解安装Python运行库、浏览已安装库、检查未安装库，以及pip环境操作">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,Python运行库,pip安装,依赖检查,已安装库,未安装库,编译辅助">
+<meta property="og:title" content="Python运行库 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc Python运行库管理 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 编译辅助功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>Python运行库 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🐍 Python运行库</h1>
+
+<p>Itoc 的编译功能依赖 Python 环境，而编译出来的 exe 也需要一些第三方库才能正常跑。如果你机器上缺了某个库，编译就会报错，或者编译出来的 exe 一闪而过。这时候就需要「Python运行库」这套工具来帮你查漏补缺。</p>
+
+<div class="note">
+    <strong>📌 本篇唠的是啥：</strong><br>
+    菜单「编译(C)」里的三个运行库相关功能：<strong>安装Python运行库、浏览已安装的Python运行库、检查未安装的Python运行库</strong>。<br>
+    它们本质上是在管理你电脑上 Python 环境的 pip 包，跟 Itoc 工程本身无关，属于“工欲善其事必先利其器”的工具。
+</div>
+
+<h2>一、这功能是干嘛的？</h2>
+
+<p>简单说就是：<strong>帮你检查并管理 Itoc 编译所需要的 Python 第三方库。</strong></p>
+
+<ul>
+    <li><strong>检查</strong>：扫描 Itoc 模板文件里用到了哪些库，然后跟已安装的库对比，告诉你缺了哪些。</li>
+    <li><strong>浏览</strong>：列出你当前 Python 环境里所有已安装的包，支持搜索、保存成 txt。</li>
+    <li><strong>安装</strong>：打开一个 CMD 终端，让你手动执行 pip 命令来安装缺失的库。</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 一句话理解：</strong><br>
+    就是“编译前的体检”。检查缺什么，然后自己去补。补完了，编译就能顺顺利利。
+</div>
+
+<h2>二、从哪儿打开？</h2>
+
+<p>三个功能都在菜单 <strong>「编译(C)」</strong> 里：</p>
+
+<table>
+    <thead>
+        <tr><th>菜单项</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>安装Python运行库</td><td>打开 CMD 终端，进入 Python 环境，手动 pip 安装</td></tr>
+        <tr><td>浏览已安装的Python运行库</td><td>打开一个 GUI 窗口，列出所有已安装的包</td></tr>
+        <tr><td>检查未安装的Python运行库</td><td>检查模板需要的库，告诉你缺了哪些，并能生成安装命令</td></tr>
+    </tbody>
+</table>
+
+<div class="warning">
+    <strong>⚠️ 前提：</strong><br>
+    你的电脑上得先装好 Python，并且把 Python 加到系统环境变量里（也就是命令行里敲 <code>python</code> 能跑起来）。<br>
+    Itoc 用的就是你当前系统里的 Python 环境。
+</div>
+
+<h2>三、安装Python运行库</h2>
+
+<p>这个功能其实<strong>不帮你自动安装</strong>，而是打开一个 CMD 终端，让你自己敲 pip 命令。</p>
+
+<h3>3.1 操作流程</h3>
+
+<ol>
+    <li>点「编译(C)」→「安装Python运行库」。</li>
+    <li>弹出一个 CMD 窗口，里面显示着当前 Python 环境的路径，以及一些可用的 pip 命令提示。</li>
+    <li>你手动敲 <code>pip install 包名</code> 来安装缺失的库。</li>
+</ol>
+
+<h3>3.2 窗口里都有啥？</h3>
+
+<p>CMD 窗口里会打印类似这样的提示：</p>
+
+<pre><code>OK喵！已进入Python运行库管理环境
+
+可用命令:
+  pip install 包名
+  pip list
+  pip uninstall 包名
+
+当前Python环境: C:\Python39\python.exe
+</code></pre>
+
+<p>你可以直接在这里敲命令，比如：</p>
+
+<pre><code>pip install pygame
+pip install numpy
+pip install pywin32</code></pre>
+
+<div class="tip">
+    <strong>💡 为什么不做成自动安装？</strong><br>
+    因为每个机器的环境不一样，有时候需要指定版本、换源、用管理员权限，自动化反而容易出问题。<br>
+    直接给一个终端，让你自己控制，最稳。
+</div>
+
+<h3>3.3 常用 pip 命令速查</h3>
+
+<table>
+    <thead>
+        <tr><th>命令</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>pip list</code></td><td>列出所有已安装的包</td></tr>
+        <tr><td><code>pip install 包名</code></td><td>安装一个包</td></tr>
+        <tr><td><code>pip install 包名==版本号</code></td><td>安装指定版本</td></tr>
+        <tr><td><code>pip uninstall 包名</code></td><td>卸载一个包</td></tr>
+        <tr><td><code>pip install -i https://pypi.tuna.tsinghua.edu.cn/simple 包名</code></td><td>用清华源安装，速度更快</td></tr>
+    </tbody>
+</table>
+
+<h2>四、浏览已安装的Python运行库</h2>
+
+<p>这个功能会打开一个独立窗口，把你当前 Python 环境里<strong>所有已安装的包</strong>列出来，支持搜索和保存。</p>
+
+<h3>4.1 操作流程</h3>
+
+<ol>
+    <li>点「编译(C)」→「浏览已安装的Python运行库」。</li>
+    <li>弹出一个窗口，中间是一个表格，列出所有包名和版本号。</li>
+    <li>你可以在上方搜索框里输入关键字，实时过滤。</li>
+    <li>点「💾 保存列表 (TXT)」可以把完整列表存成文本文件。</li>
+    <li>点「🔄 刷新」可以重新扫描一遍。</li>
+</ol>
+
+<h3>4.2 窗口结构</h3>
+
+<table>
+    <thead>
+        <tr><th>区域</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>顶部标题</td><td>“已安装的Python运行库” + 包总数统计</td></tr>
+        <tr><td>搜索框</td><td>输入关键字过滤包名，旁边有「✕ 清除」按钮</td></tr>
+        <tr><td>表格</td><td>两列：包名、版本。按名称排序，带垂直滚动条</td></tr>
+        <tr><td>底部按钮</td><td>💾 保存列表 (TXT)、🔄 刷新</td></tr>
+    </tbody>
+</table>
+
+<h3>4.3 搜索与过滤</h3>
+
+<p>在搜索框里打字，列表会实时过滤。比如输入 <code>pygame</code>，就只显示包名里包含 pygame 的包。</p>
+
+<p>搜索不区分大小写，支持部分匹配。</p>
+
+<h3>4.4 保存列表</h3>
+
+<p>点「💾 保存列表 (TXT)」，选个路径，就会生成一个纯文本文件，格式类似：</p>
+
+<pre><code>已安装的Python运行库列表
+生成时间: 2026-10-08 15:30:00
+============================================================
+
+【所有已安装的包】
+包名                                     版本
+------------------------------------------------------------
+certifi                                  2024.2.2
+numpy                                    1.24.3
+pygame                                   2.5.0
+...
+</code></pre>
+
+<p>这个文件可以发给别人，或者自己留档，方便对比环境。</p>
+
+<h2>五、检查未安装的Python运行库</h2>
+
+<p>这是最常用的一个功能。它会读取 Itoc 的 Python 模板文件（<code>to_py_Original.txt</code>），分析里面 import 了哪些第三方库，然后跟已安装的库对比，告诉你<strong>缺了哪些</strong>。</p>
+
+<h3>5.1 操作流程</h3>
+
+<ol>
+    <li>点「编译(C)」→「检查未安装的Python运行库」。</li>
+    <li>弹出一个检查结果窗口。</li>
+    <li>窗口顶部会显示“✅ 所有需要的库已安装”或“❌ 发现 N 个未安装的库”。</li>
+    <li>如果缺库，中间会列出缺失的库名，并自动生成一行 <code>pip install ...</code> 安装命令。</li>
+    <li>可以点「📋 复制」把安装命令复制到剪贴板。</li>
+    <li>点「📦 安装缺失的库」会跳转到安装功能（打开 CMD 终端）。</li>
+    <li>点「💾 保存报告 (TXT)」可以把检查结果存成文本。</li>
+</ol>
+
+<h3>5.2 窗口结构</h3>
+
+<table>
+    <thead>
+        <tr><th>区域</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>顶部标题</td><td>“❌ 检查未安装的Python运行库”或“✅ ...”，带统计信息</td></tr>
+        <tr><td>摘要区</td><td>显示缺失的库名列表，以及一行可复制的安装命令</td></tr>
+        <tr><td>详细列表</td><td>表格：库名、状态（✅已安装 / ❌未安装）、已安装版本</td></tr>
+        <tr><td>底部按钮</td><td>📦 安装缺失的库、💾 保存报告 (TXT)、关闭</td></tr>
+    </tbody>
+</table>
+
+<h3>5.3 它是怎么判断的？</h3>
+
+<p>程序会扫描模板文件 <code>sys_accessories/to_py/to_py_Original.txt</code>（或者 .py），提取所有 <code>import</code> 和 <code>from ... import</code> 语句，然后：</p>
+
+<ul>
+    <li>排除 Python 标准库（比如 <code>os</code>、<code>sys</code>、<code>json</code>）。</li>
+    <li>排除 Windows 特有库和已知的内置库（比如 <code>cv2</code>、<code>numpy</code>、<code>win32api</code>）。</li>
+    <li>剩下的就是需要第三方安装的库。</li>
+</ul>
+
+<p>然后调 <code>pip list</code> 拿到已安装列表，逐个比对，找出缺失的。</p>
+
+<div class="note">
+    <strong>📌 为什么有些库被排除了？</strong><br>
+    因为模板里有些 import 是写在 <code>try-except</code> 里的，或者只在子进程里用。强行扫描它们只会造成误报。<br>
+    所以程序内置了一个忽略列表，把那些库直接跳过。
+</div>
+
+<h3>5.4 复制安装命令</h3>
+
+<p>如果缺了多个库，摘要区会生成一行完整的安装命令，比如：</p>
+
+<pre><code>pip install pygame numpy pywin32</code></pre>
+
+<p>点「📋 复制」就能复制到剪贴板，然后粘贴到 CMD 里执行。</p>
+
+<h2>六、常见问题</h2>
+
+<h3>Q1：点了安装，只弹出一个黑窗口，没有自动装？</h3>
+
+<p>这是正常设计。安装功能就是打开一个 CMD 终端，让你自己敲 pip 命令。因为不同环境可能需要不同的参数（版本、源、权限），自动化反而容易出问题。</p>
+
+<h3>Q2：检查说缺库，但我明明装了啊？</h3>
+
+<p>可能的原因：</p>
+<ul>
+    <li>Itoc 用的 Python 和你平时用的不是同一个。检查一下菜单里“当前Python环境”的路径。</li>
+    <li>库名大小写不一致，或者包名和导入名不一样（比如 <code>PIL</code> 实际包名是 <code>Pillow</code>）。</li>
+    <li>库装在虚拟环境里，但 Itoc 用的是系统 Python。</li>
+</ul>
+
+<h3>Q3：pip 安装很慢怎么办？</h3>
+
+<p>可以换国内源，比如清华源：</p>
+<pre><code>pip install -i https://pypi.tuna.tsinghua.edu.cn/simple 包名</code></pre>
+
+<h3>Q4：浏览已安装库时，搜索框没反应？</h3>
+
+<p>搜索是实时过滤的，打字就会刷新列表。如果没反应，可能是包名里确实没有匹配的。</p>
+
+<h3>Q5：保存的 TXT 文件有什么格式？</h3>
+
+<p>就是纯文本，对齐的表格样式，方便阅读和打印。没有特殊格式，用记事本就能打开。</p>
+
+<h3>Q6：检查报告里的“已安装版本”为空是怎么回事？</h3>
+
+<p>说明 pip list 里没找到这个包，或者包名匹配不上。状态列会显示“❌ 未安装”。</p>
+
+<h2>七、小结</h2>
+
+<p>「Python运行库」是 Itoc 编译功能的辅助工具，一共三个：</p>
+
+<ul>
+    <li><strong>安装Python运行库</strong>：打开 CMD 终端，手动 pip 安装。</li>
+    <li><strong>浏览已安装的Python运行库</strong>：列出所有已安装包，支持搜索和保存。</li>
+    <li><strong>检查未安装的Python运行库</strong>：分析模板需要哪些库，告诉你缺了啥，并生成安装命令。</li>
+</ul>
+
+<p>它们都依赖你系统里的 Python 环境。编译之前先检查一下，缺啥补啥，能省掉很多莫名其妙的编译错误。</p>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'python_libs.html'
+    });
+</script>
+</body>
+</html>

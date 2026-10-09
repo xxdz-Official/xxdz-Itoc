@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 插件开发指南 - 小小电子xxdz开发的 xxdz Itoc 插件 API 完整参考，包含插件结构、生命周期、菜单/工具栏/快捷键/事件/右键菜单/侧边栏 API、数据读写、完整示例插件代码">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,插件开发,插件API,ItocMod,SupportedMOD,插件示例,Python插件,侧边栏选项卡">
+<meta property="og:title" content="插件开发指南 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 插件开发指南 - 小小电子xxdz开发的 xxdz Itoc 插件 API 完整参考">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>插件开发指南 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🛠️ 插件开发指南</h1>
+
+<p>Itoc 插件系统基于 Python，用一个 <code>ItocMod.py</code> 入口文件 + 一个 <code>Attribute.txt</code> 元信息文件，就能把自定义功能挂进 Itoc 的菜单、工具栏、右键菜单和侧边栏。</p>
+
+<div class="note">
+    <strong>📌 本篇的范围：</strong><br>
+    讲的是<strong>怎么开发 Itoc 插件</strong>：目录结构、生命周期、完整 API 参考、示例代码。<br>
+    如果你只是想用别人写好的插件，请参考《插件使用指南》文档。
+</div>
+
+<div class="warning">
+    <strong>⚠️ 前置要求：</strong><br>
+    写插件需要一定的 Python 基础。你需要会：<br>
+    · Python 基本语法（函数、类、字典、列表）<br>
+    · tkinter 的基本用法（知道 Frame、Button、Label 是什么）（是的，目前只支持TK框架，不支持PYQT框架嘤嘤嘤）<br>
+    · 看得懂 JSON 格式<br>
+    如果这些还不熟，建议先补一下再回来。
+</div>
+
+<div class="tip">
+    <strong>💡 一个偷懒的办法：</strong><br>
+    如果你对 Python 不熟，但又有想实现的功能，可以把<strong>这份开发文档</strong>直接喂给 DeepSeek（或其他 AI），然后描述你想要的功能，让它帮你生成插件代码。<br>
+    比如这样说：<br>
+    <code>“根据这份 Itoc 插件开发文档，帮我写一个插件，功能是：把所有选中音符的音高 +3，并且弹一个通知。”</code><br>
+    AI 会照着文档里的 API 给你写出能跑的 <code>ItocMod.py</code>。你只要复制到 <code>mod/你的插件名/</code> 里，再配一个 <code>Attribute.txt</code> 就能用了。<br>
+    <br>
+    当然，前提是<strong>你要能看懂 AI 生成的代码有没有问题</strong>——至少知道它有没有在乱改数据、有没有漏掉保存快照。完全不懂的话，建议还是先补一下基础，或者找个懂 Python 的朋友帮你把关。
+</div>
+
+<h2>一、插件目录结构</h2>
+
+<p>一个插件的目录长这样：</p>
+
+<pre><code>mod/
+└── 音符批量工具/              ← 插件文件夹（名字随意，但建议用英文/拼音）
+    ├── ItocMod.py            ← 【必须】插件入口文件
+    ├── Attribute.txt         ← 【必须】插件元信息
+    ├── icon.png              ← 可选：插件自己的资源
+    └── helper/               ← 可选：插件自己的子模块
+        └── utils.py
+</code></pre>
+
+<p>Itoc 启动时会扫描 <code>mod/</code> 下的所有子文件夹，每个包含 <code>ItocMod.py</code> 的文件夹就是一个插件。</p>
+
+<h2>二、Attribute.txt 格式</h2>
+
+<p>这个文件告诉 Itoc 插件的基本信息，格式是"键: 值"，一行一条：</p>
+
+<pre><code>name: 音符批量工具
+version: 1.0.0
+author: 小小电子xxdz
+website: https://xxdz-official.github.io/x
+description: 演示新版插件 API 的完整示例，包含菜单、工具栏、快捷键、事件、右键菜单、侧边栏选项卡。
+</code></pre>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>是否必须</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>name</code></td><td>是</td><td>插件的显示名（会出现在插件管理器里）</td></tr>
+        <tr><td><code>version</code></td><td>是</td><td>版本号，字符串</td></tr>
+        <tr><td><code>author</code></td><td>是</td><td>作者名</td></tr>
+        <tr><td><code>website</code></td><td>否</td><td>作者网站，可点击打开</td></tr>
+        <tr><td><code>description</code></td><td>否</td><td>插件描述，支持多行（用 <code>\n</code> 换行）</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 文件编码用 UTF-8：</strong><br>
+    中文写进去要保存成 UTF-8 格式，否则读出来可能是乱码。
+</div>
+
+<h2>三、ItocMod.py 入口文件</h2>
+
+<p>这是插件的核心文件。Itoc 加载插件时会调用里面<strong>四个模块级函数</strong>：</p>
+
+<table>
+    <thead>
+        <tr><th>函数</th><th>调用时机</th><th>是否必须</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>initialize_mod(app, tab_frame, app_data, api)</code></td>
+            <td>插件被加载时（启动 Itoc 时，或插件启用时）</td>
+            <td>是</td>
+        </tr>
+        <tr>
+            <td><code>activate_mod(app)</code></td>
+            <td>插件选项卡被切到时</td>
+            <td>否</td>
+        </tr>
+        <tr>
+            <td><code>deactivate_mod(app)</code></td>
+            <td>插件选项卡被切走时</td>
+            <td>否</td>
+        </tr>
+        <tr>
+            <td><code>cleanup_mod(app)</code></td>
+            <td>插件被卸载或程序退出时</td>
+            <td>否</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>3.1 initialize_mod 的参数</h3>
+
+<table>
+    <thead>
+        <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>app</code></td><td>MidiToCZE 实例</td><td>主程序实例，可以直接访问 <code>app.all_notes</code>、<code>app.canvas</code> 等</td></tr>
+        <tr><td><code>tab_frame</code></td><td>ttk.Frame</td><td>分配给插件的底部选项卡 Frame，你的插件 UI 放这里面</td></tr>
+        <tr><td><code>app_data</code></td><td>对象</td><td>旧版数据传递对象，保留兼容，新插件建议用 <code>api</code></td></tr>
+        <tr><td><code>api</code></td><td>ModAPI 实例</td><td>新版 API 对象，推荐用这个</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 推荐用 api：</strong><br>
+    <code>api</code> 是官方（我..）封装好的接口，屏蔽了主程序内部细节。直接用 <code>app.xxx</code> 虽然也能跑，但主程序内部改动时你的插件可能会挂。
+</div>
+
+<h2>四、ModAPI 完整参考</h2>
+
+<p><code>api</code> 对象提供以下方法。所有方法都做了异常保护，调用失败不会让 Itoc 崩溃。</p>
+
+<h3>4.1 菜单相关</h3>
+
+<h4>add_custom_menu_items(menu_title, items)</h4>
+
+<p>在菜单栏创建一个<strong>全新的主菜单</strong>。</p>
+
+<table>
+    <thead>
+        <tr><th>参数</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>menu_title</code></td><td>菜单标题，如 <code>"音符工具"</code></td></tr>
+        <tr><td><code>items</code></td><td>菜单项列表，每项是 <code>(label, command, icon_key)</code> 或 <code>None</code>（None 表示分隔线）</td></tr>
+    </tbody>
+</table>
+
+<pre><code>api.add_custom_menu_items("音符工具", [
+    ("📋 查看选中音符列表", self.show_selected_notes, "manager"),
+    ("📤 导出选中音符为 JSON", self.export_selected_json, "export"),
+    None,  # 分隔线
+    ("＋ 全部音高 +1", lambda: self.shift_pitch(1), "move_up"),
+])
+</code></pre>
+
+<h4>add_menu_item(parent_menu_label, label, command, icon_key=None)</h4>
+
+<p>把菜单项挂到<strong>主程序已有的菜单</strong>下。</p>
+
+<table>
+    <thead>
+        <tr><th>参数</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>parent_menu_label</code></td><td>父菜单名，如 <code>"编辑"</code>、<code>"文件"</code>、<code>"视图"</code></td></tr>
+        <tr><td><code>label</code></td><td>菜单项文字</td></tr>
+        <tr><td><code>command</code></td><td>点击回调（无参数函数）</td></tr>
+        <tr><td><code>icon_key</code></td><td>可选，图标 key（见附录 A）</td></tr>
+    </tbody>
+</table>
+
+<pre><code>api.add_menu_item(
+    "编辑",
+    "★ 音符工具：音高 +1",
+    lambda: self.shift_pitch(1),
+    icon_key="move_up"
+)
+</code></pre>
+
+<h3>4.2 工具栏相关</h3>
+
+<h4>add_toolbar_button(text, command, icon_key=None, tooltip=None, slot="left")</h4>
+
+<p>在工具栏添加一个按钮。Itoc 工具栏有四个位置可以挂：</p>
+
+<table>
+    <thead>
+        <tr><th>slot 值</th><th>位置</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>"left"</code>（默认）</td><td>快捷操作栏¹（第一行左侧）</td></tr>
+        <tr><td><code>"left2"</code></td><td>快捷操作栏²（第二行右侧）</td></tr>
+        <tr><td><code>"file"</code></td><td>文件选择栏</td></tr>
+        <tr><td><code>"play"</code></td><td>播放控制栏</td></tr>
+    </tbody>
+</table>
+
+<pre><code>api.add_toolbar_button(
+    "升2音",
+    lambda: self.shift_pitch(2),
+    icon_key="move_up",
+    tooltip="【快捷操作栏¹】把所有选中的音符升高 2 个半音",
+    slot="left"
+)
+
+api.add_toolbar_button(
+    "全选",
+    self.select_all_notes,
+    icon_key="select_all",
+    tooltip="【播放控制栏】选中所有音符",
+    slot="play"
+)
+</code></pre>
+
+<h3>4.3 快捷键相关</h3>
+
+<h4>register_hotkey(keysym, callback, description="")</h4>
+
+<p>注册一个全局快捷键。</p>
+
+<table>
+    <thead>
+        <tr><th>参数</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>keysym</code></td><td>tkinter 格式的按键，如 <code>"&lt;Control-Alt-Up&gt;"</code></td></tr>
+        <tr><td><code>callback</code></td><td>按下时调用的函数（无参数）</td></tr>
+        <tr><td><code>description</code></td><td>可选，描述文字</td></tr>
+    </tbody>
+</table>
+
+<pre><code>api.register_hotkey(
+    "&lt;Control-Alt-Up&gt;",
+    lambda: self.shift_pitch(1),
+    description="选中音符音高 +1"
+)
+</code></pre>
+
+<h3>4.4 事件订阅</h3>
+
+<h4>subscribe_event(event_name, callback)</h4>
+
+<p>订阅主程序的事件。事件触发时，主程序会调用你的 <code>callback(event_data)</code>。</p>
+
+<p>目前支持的事件：</p>
+
+<table>
+    <thead>
+        <tr><th>事件名</th><th>触发时机</th><th>event_data</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>"selection_changed"</code></td><td>选中音符变化时</td><td>选中音符列表</td></tr>
+    </tbody>
+</table>
+
+<pre><code>api.subscribe_event("selection_changed", self._on_selection_changed)
+
+def _on_selection_changed(self, event_data):
+    print(f"选中变化: {len(event_data)} 个音符")
+</code></pre>
+
+<h3>4.5 右键菜单</h3>
+
+<h4>add_context_menu(target, label, callback)</h4>
+
+<p>在右键菜单里添加一项。</p>
+
+<table>
+    <thead>
+        <tr><th>target 值</th><th>位置</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>"note"</code></td><td>音符右键</td></tr>
+        <tr><td><code>"track"</code></td><td>轨道右键</td></tr>
+        <tr><td><code>"canvas_blank"</code></td><td>画布空白右键</td></tr>
+        <tr><td><code>"adjust_layer"</code></td><td>调整图层右键</td></tr>
+    </tbody>
+</table>
+
+<pre><code>api.add_context_menu("note", "🎵 本音符显示八度", self.ctx_show_note_octave)
+api.add_context_menu("track", "🎼 本轨道全部升 2 音", self.ctx_shift_track_up)
+api.add_context_menu("canvas_blank", "✨ 全选所有音符", self.select_all_notes)
+api.add_context_menu("adjust_layer", "🎨 查看图层信息", self.ctx_show_adjust_layer_info)
+</code></pre>
+
+<h3>4.6 侧边栏选项卡</h3>
+
+<h4>add_sidebar_tab(title, build_func, group="bottom")</h4>
+
+<p>在侧边栏添加一个选项卡。</p>
+
+<table>
+    <thead>
+        <tr><th>参数</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>title</code></td><td>选项卡标题</td></tr>
+        <tr><td><code>build_func(parent)</code></td><td>构建函数，接收到一个空的 <code>parent</code> Frame，往里面 pack 控件即可</td></tr>
+        <tr><td><code>group</code></td><td><code>"bottom"</code>（默认，参考媒体/字幕/便签/全局命令那一排）或 <code>"top"</code>（显示器/历史/窗口类名/窗口编组那一排）</td></tr>
+    </tbody>
+</table>
+
+<pre><code>api.add_sidebar_tab(
+    "音符工具面板",
+    self._build_sidebar_panel,
+    group="bottom"
+)
+
+def _build_sidebar_panel(self, parent):
+    ttk.Label(parent, text="🎵 音符工具面板").pack(pady=10)
+    ttk.Button(parent, text="音高 +1",
+               command=lambda: self.shift_pitch(1)).pack(pady=3, fill="x", padx=8)
+</code></pre>
+
+<h3>4.7 数据读写</h3>
+
+<table>
+    <thead>
+        <tr><th>方法</th><th>返回</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>get_selected_notes()</code></td>
+            <td>list[dict]</td>
+            <td>获取当前选中的音符，每个是字典，含 <code>note_id</code>、<code>track_idx</code>、<code>start_beat</code>、<code>duration</code>、<code>note_value</code></td>
+        </tr>
+        <tr>
+            <td><code>get_all_notes()</code></td>
+            <td>list[dict]</td>
+            <td>获取工程里所有音符，格式同上</td>
+        </tr>
+        <tr>
+            <td><code>update_note(note_id, **kwargs)</code></td>
+            <td>bool</td>
+            <td>更新指定音符的字段，如 <code>update_note(123, note_value=64)</code></td>
+        </tr>
+        <tr>
+            <td><code>select_notes(note_ids)</code></td>
+            <td>None</td>
+            <td>选中指定的音符（传入 note_id 列表）</td>
+        </tr>
+        <tr>
+            <td><code>get_project_info()</code></td>
+            <td>dict</td>
+            <td>获取工程信息：<code>path</code>、<code>target_bpm</code>、<code>original_bpm</code>、<code>total_beats</code>、<code>current_beat</code>、<code>has_midi</code>、<code>has_audio</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<pre><code>notes = api.get_selected_notes()
+for n in notes:
+    print(n["note_id"], n["note_value"])
+
+# 全部升 2 个半音
+for n in notes:
+    new_val = min(127, n["note_value"] + 2)
+    api.update_note(n["note_id"], note_value=new_val)
+</code></pre>
+
+<h3>4.8 通知 / 弹窗</h3>
+
+<table>
+    <thead>
+        <tr><th>方法</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>notify(message)</code></td><td>用主程序底部的轮播图显示一条通知（不弹窗）</td></tr>
+        <tr><td><code>show_info(title, message)</code></td><td>弹一个信息框</td></tr>
+        <tr><td><code>show_warning(title, message)</code></td><td>弹一个警告框</td></tr>
+        <tr><td><code>show_error(title, message)</code></td><td>弹一个错误框</td></tr>
+    </tbody>
+</table>
+
+<h3>4.9 高级用法</h3>
+
+<p><code>api.app</code> 直接返回主程序实例，可以用它访问主程序的任何公开属性 / 方法。比如：</p>
+
+<pre><code>app = api.app
+
+# 直接改 all_notes（谨慎使用）
+app.all_notes[0] = (0, 0.0, 1.0, 60, 12345)
+
+# 调用主程序的重绘
+app.draw_all_notes_from_data()
+
+# 保存撤销快照
+app.save_undo_snapshot_before_modify("我的插件修改")
+
+# 标记工程已修改
+app.mark_project_modified()
+</code></pre>
+
+<div class="warning">
+    <strong>⚠️ 用 api.app 是双刃剑：</strong><br>
+    灵活但危险。主程序内部实现可能变化，你的插件可能会挂。<br>
+    能用 <code>api.xxx</code> 的，尽量用 <code>api.xxx</code>。
+</div>
+
+<h2>五、图标 key 列表（附录 A）</h2>
+
+<p>菜单项和工具栏按钮可以用 Itoc 内置的图标。以下是常用的 <code>icon_key</code>：</p>
+
+<table>
+    <thead>
+        <tr><th>key</th><th>图标</th><th>适用场景</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>new_project</code></td><td>新建工程</td><td>新建类操作</td></tr>
+        <tr><td><code>open_project</code></td><td>打开工程</td><td>打开类操作</td></tr>
+        <tr><td><code>save_project</code></td><td>保存工程</td><td>保存类操作</td></tr>
+        <tr><td><code>undo</code></td><td>撤销</td><td>撤销类操作</td></tr>
+        <tr><td><code>redo</code></td><td>重做</td><td>重做类操作</td></tr>
+        <tr><td><code>manager</code></td><td>管理器</td><td>管理类窗口</td></tr>
+        <tr><td><code>export</code></td><td>导出</td><td>导出类操作</td></tr>
+        <tr><td><code>import</code></td><td>导入</td><td>导入类操作</td></tr>
+        <tr><td><code>refresh</code></td><td>刷新</td><td>刷新列表</td></tr>
+        <tr><td><code>delete</code></td><td>删除</td><td>删除类操作</td></tr>
+        <tr><td><code>select_all</code></td><td>全选</td><td>全选操作</td></tr>
+        <tr><td><code>move_up</code></td><td>向上</td><td>上移 / 升调</td></tr>
+        <tr><td><code>move_down</code></td><td>向下</td><td>下移 / 降调</td></tr>
+        <tr><td><code>run</code></td><td>运行</td><td>测试运行</td></tr>
+        <tr><td><code>marker</code></td><td>标记</td><td>标记 / 便签</td></tr>
+        <tr><td><code>new_global_cmd</code></td><td>新建全局命令</td><td>全局命令</td></tr>
+        <tr><td><code>random_seed</code></td><td>随机种子</td><td>随机相关</td></tr>
+        <tr><td><code>edit</code></td><td>编辑</td><td>编辑类操作</td></tr>
+        <tr><td><code>copy</code></td><td>复制</td><td>复制类操作</td></tr>
+        <tr><td><code>paste</code></td><td>粘贴</td><td>粘贴类操作</td></tr>
+        <tr><td><code>disable</code></td><td>禁用</td><td>禁用 / 启用</td></tr>
+        <tr><td><code>favorite</code></td><td>收藏夹</td><td>收藏类操作</td></tr>
+        <tr><td><code>split</code></td><td>拆分</td><td>拆分谱子</td></tr>
+        <tr><td><code>cze_maker</code></td><td>CZEmaker</td><td>配参相关</td></tr>
+        <tr><td><code>insert_lyrics</code></td><td>插入歌词</td><td>歌词相关</td></tr>
+        <tr><td><code>window_class</code></td><td>窗口类名</td><td>窗口类名列表</td></tr>
+        <tr><td><code>window_group</code></td><td>窗口编组</td><td>窗口编组列表</td></tr>
+        <tr><td><code>concurrent_event</code></td><td>并发事件点</td><td>并发事件</td></tr>
+        <tr><td><code>beat_point</code></td><td>节奏事件点</td><td>节奏事件</td></tr>
+        <tr><td><code>array_icon</code></td><td>阵列</td><td>阵列相关</td></tr>
+        <tr><td><code>time_sel_in</code></td><td>时间选区入点</td><td>标记入点</td></tr>
+        <tr><td><code>time_sel_out</code></td><td>时间选区出点</td><td>标记出点</td></tr>
+        <tr><td><code>settings</code></td><td>首选项</td><td>设置类操作</td></tr>
+        <tr><td><code>help_doc</code></td><td>帮助文档</td><td>帮助类操作</td></tr>
+        <tr><td><code>about</code></td><td>关于</td><td>信息类操作</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 icon_key 可以留空：</strong><br>
+    如果不传 <code>icon_key</code> 或传 <code>None</code>，菜单项 / 按钮就只显示文字，不显示图标。
+</div>
+
+<h2>六、完整示例插件源码</h2>
+
+<p>下面是一个<strong>功能完整的示例插件</strong>，演示了所有 API 的用法。你可以把它复制到 <code>mod/音符批量工具/ItocMod.py</code>，直接就能跑。</p>
+
+<pre><code># mod/音符批量工具/ItocMod.py
+# 音符批量工具 - Itoc 新版插件 API 官方示例（完整版 + 侧边栏选项卡）
+
+import tkinter as tk
+from tkinter import ttk, messagebox, filedialog
+import json
+import os
+from datetime import datetime
+
+
+# ============================================================
+# 插件主类
+# ============================================================
+class NoteBatchTool:
+    """音符批量工具 - 演示新版插件 API 所有能力
+
+    功能演示清单：
+      1. 自定义主菜单（add_custom_menu_item / add_custom_menu_items）
+      2. 挂到主程序已有菜单（add_menu_item）
+      3. 工具栏按钮多位置挂载（add_toolbar_button 的 slot 参数）
+         - left  → 快捷操作栏¹
+         - left2 → 快捷操作栏²
+         - file  → 文件选择栏
+         - play  → 播放控制栏
+      4. 全局快捷键（register_hotkey）
+      5. 事件订阅（subscribe_event）
+      6. 右键菜单（add_context_menu）
+         - note          → 音符右键
+         - track         → 轨道右键
+         - canvas_blank  → 画布空白右键
+         - adjust_layer  → 调整图层右键
+      7. 数据读写（get_selected_notes / update_note / ...）
+      8. 通知 / 弹窗（notify / show_info / show_warning）
+      9. 侧边栏选项卡（add_sidebar_tab）
+         - group="bottom" → 下组（参考媒体/字幕/便签/全局命令）
+         - group="top"    → 上组（显示器/历史/窗口类名/窗口编组）
+      10. 高级用法：直接访问主程序实例（api.app）
+    """
+
+    def __init__(self, app, tab_frame, app_data, api):
+        self.app = app
+        self.tab_frame = tab_frame
+        self.app_data = app_data
+        self.api = api
+
+        # 页面上的动态标签
+        self.status_var = None
+
+        # 侧边栏面板里的动态标签
+        self.sidebar_status_var = None
+        self.sidebar_top_status_var = None
+
+        # 先构建插件页面 UI（底部选项卡）
+        self._build_ui()
+
+        # 再注册菜单 / 工具栏 / 快捷键 / 事件 / 右键菜单 / 侧边栏
+        self._register_actions()
+
+        # 立即刷新一次状态
+        self.refresh_status()
+
+        print("[音符批量工具] 初始化完成")
+
+    # --------------------------------------------------------
+    # 1. 构建插件页面（显示在底部选项卡里）
+    # --------------------------------------------------------
+    def _build_ui(self):
+        # 清掉可能残留的内容
+        for w in self.tab_frame.winfo_children():
+            w.destroy()
+
+        # 顶部标题
+        ttk.Label(
+            self.tab_frame,
+            text="🎼 音符批量工具（完整示例）",
+            font=("Microsoft YaHei", 14, "bold")
+        ).pack(pady=(10, 5))
+
+        # 状态栏：显示当前选中的音符数量
+        self.status_var = tk.StringVar(value="当前选中：0 个音符")
+        ttk.Label(
+            self.tab_frame,
+            textvariable=self.status_var,
+            font=("Microsoft YaHei", 10),
+            foreground="#0066CC"
+        ).pack(pady=5)
+
+        ttk.Separator(self.tab_frame, orient="horizontal").pack(fill="x", padx=20, pady=8)
+
+        # ===== 第一排：音高调节 =====
+        row1 = ttk.LabelFrame(self.tab_frame, text="音高调节", padding=8)
+        row1.pack(fill="x", padx=20, pady=5)
+        ttk.Button(row1, text="音高 +1", width=10,
+                   command=lambda: self.shift_pitch(1)).pack(side="left", padx=3)
+        ttk.Button(row1, text="音高 -1", width=10,
+                   command=lambda: self.shift_pitch(-1)).pack(side="left", padx=3)
+        ttk.Button(row1, text="音高 +12", width=10,
+                   command=lambda: self.shift_pitch(12)).pack(side="left", padx=3)
+        ttk.Button(row1, text="音高 -12", width=10,
+                   command=lambda: self.shift_pitch(-12)).pack(side="left", padx=3)
+        ttk.Button(row1, text="镜像音高", width=10,
+                   command=self.mirror_pitch).pack(side="left", padx=3)
+
+        # ===== 第二排：数据工具 =====
+        row2 = ttk.LabelFrame(self.tab_frame, text="数据工具", padding=8)
+        row2.pack(fill="x", padx=20, pady=5)
+        ttk.Button(row2, text="📋 查看选中列表", width=14,
+                   command=self.show_selected_notes).pack(side="left", padx=3)
+        ttk.Button(row2, text="📤 导出为 JSON", width=14,
+                   command=self.export_selected_json).pack(side="left", padx=3)
+        ttk.Button(row2, text="🎯 全选所有音符", width=14,
+                   command=self.select_all_notes).pack(side="left", padx=3)
+
+        # ===== 第三排：右键菜单演示说明 =====
+        row3 = ttk.LabelFrame(self.tab_frame, text="右键菜单演示", padding=8)
+        row3.pack(fill="x", padx=20, pady=5)
+        ttk.Label(
+            row3,
+            text="本插件已注册以下右键菜单，去对应位置右键试试：\n"
+                 "  · 音符上右键  → 「本音符显示八度」\n"
+                 "  · 轨道上右键  → 「本轨道全部升 2 音」\n"
+                 "  · 画布空白右键 → 「全选所有音符」\n"
+                 "  · 调整图层右键 → 「查看图层信息」",
+            font=("Microsoft YaHei", 9),
+            foreground="#555555",
+            justify="left"
+        ).pack(anchor="w")
+
+        # ===== 第四排：侧边栏演示说明 =====
+        row4 = ttk.LabelFrame(self.tab_frame, text="侧边栏演示", padding=8)
+        row4.pack(fill="x", padx=20, pady=5)
+        ttk.Label(
+            row4,
+            text="本插件已经在左侧侧边栏里挂载了 2 个选项卡：\n"
+                 "  · 下组： 「音符工具面板」\n"
+                 "  · 上组： 「音符工具工具」\n"
+                 "去侧边栏切换选项卡看看～",
+            font=("Microsoft YaHei", 9),
+            foreground="#555555",
+            justify="left"
+        ).pack(anchor="w")
+
+        # ===== 底部提示 =====
+        ttk.Label(
+            self.tab_frame,
+            text="提示：先在主界面选中音符，再点上面的按钮。\n"
+                 "工具栏按钮挂在 4 个不同位置，找找看～",
+            font=("Microsoft YaHei", 9),
+            foreground="#888888",
+            justify="center"
+        ).pack(pady=(10, 5))
+
+    # --------------------------------------------------------
+    # 2. 注册菜单 / 工具栏 / 快捷键 / 事件 / 右键菜单 / 侧边栏
+    # --------------------------------------------------------
+    def _register_actions(self):
+        api = self.api
+
+        # ========== 2.1 自定义主菜单「音符工具」 ==========
+        api.add_custom_menu_items("音符工具", [
+            ("📋 查看选中音符列表", self.show_selected_notes, "manager"),
+            ("📤 导出选中音符为 JSON", self.export_selected_json, "export"),
+            ("🎯 全选所有音符", self.select_all_notes, "select_all"),
+            None,  # None 会被自动跳过（此处仅作演示）
+            ("＋ 全部音高 +1", lambda: self.shift_pitch(1), "move_up"),
+            ("－ 全部音高 -1", lambda: self.shift_pitch(-1), "move_down"),
+            ("＋ 全部音高 +12", lambda: self.shift_pitch(12), "move_up"),
+            ("－ 全部音高 -12", lambda: self.shift_pitch(-12), "move_down"),
+            ("🔄 镜像音高 (127 - 音高)", self.mirror_pitch),
+        ])
+
+        # ========== 2.2 挂到主程序「编辑」菜单下 ==========
+        api.add_menu_item(
+            "编辑",
+            "★ 音符工具：音高 +1",
+            lambda: self.shift_pitch(1),
+            icon_key="move_up"
+        )
+
+        # ========== 2.3 工具栏按钮 - 挂到 4 个不同位置 ==========
+
+        # 位置 1：快捷操作栏¹（默认位置）
+        api.add_toolbar_button(
+            "升2音",
+            lambda: self.shift_pitch(2),
+            icon_key="move_up",
+            tooltip="【快捷操作栏¹】把所有选中的音符升高 2 个半音",
+            slot="left"
+        )
+
+        # 位置 2：快捷操作栏²
+        api.add_toolbar_button(
+            "降2音",
+            lambda: self.shift_pitch(-2),
+            icon_key="move_down",
+            tooltip="【快捷操作栏²】把所有选中的音符降低 2 个半音",
+            slot="left2"
+        )
+
+        # 位置 3：文件选择栏
+        api.add_toolbar_button(
+            "音符列表",
+            self.show_selected_notes,
+            icon_key="manager",
+            tooltip="【文件选择栏】查看选中音符的详细列表",
+            slot="file"
+        )
+
+        # 位置 4：播放控制栏
+        api.add_toolbar_button(
+            "全选",
+            self.select_all_notes,
+            icon_key="select_all",
+            tooltip="【播放控制栏】选中所有音符",
+            slot="play"
+        )
+
+        # ========== 2.4 快捷键 ==========
+        api.register_hotkey(
+            "<Control-Alt-Up>",
+            lambda: self.shift_pitch(1),
+            description="选中音符音高 +1"
+        )
+        api.register_hotkey(
+            "<Control-Alt-Down>",
+            lambda: self.shift_pitch(-1),
+            description="选中音符音高 -1"
+        )
+
+        # ========== 2.5 订阅事件 ==========
+        api.subscribe_event("selection_changed", self._on_selection_changed)
+
+        # ========== 2.6 右键菜单 - 4 种类型全演示 ==========
+
+        # 音符右键
+        api.add_context_menu(
+            "note",
+            "🎵 本音符显示八度",
+            self.ctx_show_note_octave
+        )
+
+        # 轨道右键
+        api.add_context_menu(
+            "track",
+            "🎼 本轨道全部升 2 音",
+            self.ctx_shift_track_up
+        )
+
+        # 画布空白右键
+        api.add_context_menu(
+            "canvas_blank",
+            "✨ 全选所有音符",
+            self.select_all_notes
+        )
+
+        # 调整图层右键
+        api.add_context_menu(
+            "adjust_layer",
+            "🎨 查看图层信息",
+            self.ctx_show_adjust_layer_info
+        )
+
+        # ========== 2.7 侧边栏选项卡 - 上组 + 下组各一个 ==========
+        # 下组（参考媒体 / 字幕 / 便签 / 全局命令那一排）
+        api.add_sidebar_tab(
+            "音符工具面板",
+            self._build_sidebar_panel,
+            group="bottom"
+        )
+
+        # 上组（显示器 / 历史 / 窗口类名 / 窗口编组那一排）
+        api.add_sidebar_tab(
+            "音符工具工具",
+            self._build_sidebar_top_panel,
+            group="top"
+        )
+
+    # --------------------------------------------------------
+    # 3. 侧边栏面板构建函数
+    # --------------------------------------------------------
+    def _build_sidebar_panel(self, parent):
+        """下组侧边栏选项卡：音符工具面板
+
+        parent 是插件拿到的空 Frame，往里面 pack 控件即可。
+        """
+        ttk.Label(
+            parent,
+            text="🎵 音符工具面板",
+            font=("Microsoft YaHei", 11, "bold")
+        ).pack(pady=(10, 4))
+
+        # 实时状态
+        self.sidebar_status_var = tk.StringVar(value="当前选中：0 个音符")
+        ttk.Label(
+            parent,
+            textvariable=self.sidebar_status_var,
+            font=("Microsoft YaHei", 9),
+            foreground="#0066CC"
+        ).pack(pady=(0, 8))
+
+        ttk.Separator(parent, orient="horizontal").pack(fill="x", padx=8, pady=4)
+
+        # 常用按钮
+        ttk.Button(
+            parent, text="＋ 音高 +1", width=14,
+            command=lambda: self.shift_pitch(1)
+        ).pack(pady=3, padx=8, fill="x")
+        ttk.Button(
+            parent, text="－ 音高 -1", width=14,
+            command=lambda: self.shift_pitch(-1)
+        ).pack(pady=3, padx=8, fill="x")
+        ttk.Button(
+            parent, text="🔄 镜像音高", width=14,
+            command=self.mirror_pitch
+        ).pack(pady=3, padx=8, fill="x")
+        ttk.Button(
+            parent, text="🎯 全选所有音符", width=14,
+            command=self.select_all_notes
+        ).pack(pady=3, padx=8, fill="x")
+        ttk.Button(
+            parent, text="📋 查看选中列表", width=14,
+            command=self.show_selected_notes
+        ).pack(pady=3, padx=8, fill="x")
+
+        ttk.Separator(parent, orient="horizontal").pack(fill="x", padx=8, pady=6)
+
+        ttk.Label(
+            parent,
+            text="提示：面板会实时显示当前\n选中音符数量。",
+            font=("Microsoft YaHei", 8),
+            foreground="#888888",
+            justify="center"
+        ).pack(pady=(0, 8))
+
+        # 立即刷新一次
+        self._refresh_sidebar_panel_status()
+
+    def _build_sidebar_top_panel(self, parent):
+        """上组侧边栏选项卡：音符工具工具"""
+        ttk.Label(
+            parent,
+            text="🔧 音符工具工具",
+            font=("Microsoft YaHei", 11, "bold")
+        ).pack(pady=(10, 4))
+
+        self.sidebar_top_status_var = tk.StringVar(value="等待操作...")
+        ttk.Label(
+            parent,
+            textvariable=self.sidebar_top_status_var,
+            font=("Microsoft YaHei", 9),
+            foreground="#CC6600",
+            wraplength=240,
+            justify="center"
+        ).pack(pady=(0, 8))
+
+        ttk.Separator(parent, orient="horizontal").pack(fill="x", padx=8, pady=4)
+
+        ttk.Button(
+            parent, text="📊 统计工程信息", width=16,
+            command=self._show_project_stats
+        ).pack(pady=3, padx=8, fill="x")
+        ttk.Button(
+            parent, text="📤 导出选中为 JSON", width=16,
+            command=self.export_selected_json
+        ).pack(pady=3, padx=8, fill="x")
+        ttk.Button(
+            parent, text="🖼️ 打开控制台", width=16,
+            command=self._open_sidebar_console
+        ).pack(pady=3, padx=8, fill="x")
+
+        ttk.Separator(parent, orient="horizontal").pack(fill="x", padx=8, pady=6)
+
+        ttk.Label(
+            parent,
+            text="这个选项卡演示：\n"
+                 "插件也能把 UI 挂到上组，\n"
+                 "和「显示器 / 历史」并列。",
+            font=("Microsoft YaHei", 8),
+            foreground="#888888",
+            justify="center"
+        ).pack(pady=(0, 8))
+
+    def _refresh_sidebar_panel_status(self):
+        """刷新下组侧边栏面板的选中数量显示"""
+        try:
+            if self.sidebar_status_var is not None:
+                count = len(self.api.get_selected_notes())
+                self.sidebar_status_var.set(f"当前选中：{count} 个音符")
+        except Exception as e:
+            print(f"[音符批量工具] 刷新侧边栏状态失败: {e}")
+
+    def _show_project_stats(self):
+        """上组面板按钮：显示工程统计信息"""
+        try:
+            info = self.api.get_project_info()
+            all_notes = self.api.get_all_notes()
+            text = (
+                f"工程路径：{info.get('path') or '（未保存）'}\n"
+                f"目标 BPM：{info.get('target_bpm')}\n"
+                f"原始 BPM：{info.get('original_bpm')}\n"
+                f"总节拍：{info.get('total_beats')}\n"
+                f"音符总数：{len(all_notes)}\n"
+                f"当前节拍：{info.get('current_beat'):.2f}\n"
+                f"有 MIDI：{'是' if info.get('has_midi') else '否'}\n"
+                f"有音频：{'是' if info.get('has_audio') else '否'}"
+            )
+            if self.sidebar_top_status_var is not None:
+                self.sidebar_top_status_var.set(
+                    f"统计完成，共 {len(all_notes)} 个音符"
+                )
+            self.api.show_info("工程统计", text)
+        except Exception as e:
+            print(f"[音符批量工具] 统计工程信息失败: {e}")
+            self.api.show_error("出错", f"统计失败：{e}")
+
+    def _open_sidebar_console(self):
+        """上组面板按钮：打开一个简单的控制台窗口"""
+        try:
+            win = tk.Toplevel(self.app.root)
+            win.title("音符批量工具 - 控制台")
+            win.geometry("480x320")
+            win.transient(self.app.root)
+
+            txt = tk.Text(win, wrap="word",
+                          font=("Consolas", 10),
+                          bg="#1E1E1E", fg="#D4D4D4")
+            txt.pack(fill="both", expand=True, padx=8, pady=8)
+
+            # 写点欢迎信息
+            all_notes = self.api.get_all_notes()
+            sel_notes = self.api.get_selected_notes()
+            info = self.api.get_project_info()
+            txt.insert("end", "=== 音符批量工具 控制台 ===\n")
+            txt.insert("end", f"时间：{datetime.now().isoformat()}\n")
+            txt.insert("end", f"工程路径：{info.get('path') or '（未保存）'}\n")
+            txt.insert("end", f"目标 BPM：{info.get('target_bpm')}\n")
+            txt.insert("end", f"总节拍：{info.get('total_beats')}\n")
+            txt.insert("end", f"音符总数：{len(all_notes)}\n")
+            txt.insert("end", f"当前选中：{len(sel_notes)}\n")
+            txt.insert("end", "\n")
+            txt.insert("end", "前 20 个音符预览：\n")
+            for i, n in enumerate(all_notes[:20], 1):
+                txt.insert(
+                    "end",
+                    f"  #{i}  轨道{n['track_idx']+1}  "
+                    f"节拍{n['start_beat']:.2f}  "
+                    f"时长{n['duration']:.2f}  "
+                    f"音高{n['note_value']}\n"
+                )
+            txt.config(state="disabled")
+
+            ttk.Button(win, text="关闭", command=win.destroy).pack(pady=(0, 8))
+
+            if self.sidebar_top_status_var is not None:
+                self.sidebar_top_status_var.set("控制台已打开")
+        except Exception as e:
+            print(f"[音符批量工具] 打开控制台失败: {e}")
+            self.api.show_error("出错", f"打开控制台失败：{e}")
+
+    # --------------------------------------------------------
+    # 4. 事件回调
+    # --------------------------------------------------------
+    def _on_selection_changed(self, event_data):
+        """选中音符变化时被主程序调用"""
+        self.refresh_status()
+        # 同时刷新侧边栏面板上的计数
+        self._refresh_sidebar_panel_status()
+
+    def refresh_status(self):
+        """刷新底部页面上显示的选中数量"""
+        try:
+            count = len(self.api.get_selected_notes())
+            if self.status_var is not None:
+                self.status_var.set(f"当前选中：{count} 个音符")
+        except Exception as e:
+            print(f"[音符批量工具] 刷新状态失败: {e}")
+
+    # --------------------------------------------------------
+    # 5. 核心功能
+    # --------------------------------------------------------
+    def shift_pitch(self, delta):
+        """把所有选中音符的音高加 delta 个半音。"""
+        selected = self.api.get_selected_notes()
+        if not selected:
+            self.api.show_info("音符工具", "请先在主界面选中一些音符。")
+            return
+
+        selected_ids = {n["note_id"] for n in selected}
+        app = self.api.app
+
+        if hasattr(app, "save_undo_snapshot_before_modify"):
+            app.save_undo_snapshot_before_modify(f"音符工具：音高{delta:+d}")
+
+        changed = 0
+        for i, nd in enumerate(app.all_notes):
+            if len(nd) >= 5 and nd[4] in selected_ids:
+                new_val = max(0, min(127, nd[3] + delta))
+                if new_val != nd[3]:
+                    app.all_notes[i] = (nd[0], nd[1], nd[2], new_val, nd[4]) + nd[5:]
+                    changed += 1
+
+        if hasattr(app, "mark_project_modified"):
+            app.mark_project_modified()
+        if hasattr(app, "draw_all_notes_from_data"):
+            app.draw_all_notes_from_data()
+
+        self.api.notify(f"已把 {changed} 个音符的音高调整了 {delta:+d}")
+        self.refresh_status()
+        self._refresh_sidebar_panel_status()
+
+    def mirror_pitch(self):
+        """把选中音符的音高镜像：新音高 = 127 - 原音高。"""
+        selected = self.api.get_selected_notes()
+        if not selected:
+            self.api.show_info("音符工具", "请先在主界面选中一些音符。")
+            return
+
+        selected_ids = {n["note_id"] for n in selected}
+        app = self.api.app
+
+        if hasattr(app, "save_undo_snapshot_before_modify"):
+            app.save_undo_snapshot_before_modify("音符工具：镜像音高")
+
+        changed = 0
+        for i, nd in enumerate(app.all_notes):
+            if len(nd) >= 5 and nd[4] in selected_ids:
+                new_val = 127 - nd[3]
+                if new_val != nd[3]:
+                    app.all_notes[i] = (nd[0], nd[1], nd[2], new_val, nd[4]) + nd[5:]
+                    changed += 1
+
+        if hasattr(app, "mark_project_modified"):
+            app.mark_project_modified()
+        if hasattr(app, "draw_all_notes_from_data"):
+            app.draw_all_notes_from_data()
+
+        self.api.notify(f"已镜像 {changed} 个音符的音高")
+
+    def select_all_notes(self):
+        """选中所有音符"""
+        all_notes = self.api.get_all_notes()
+        if not all_notes:
+            self.api.show_info("音符工具", "工程里没有任何音符。")
+            return
+        ids = [n["note_id"] for n in all_notes]
+        self.api.select_notes(ids)
+        self.api.notify(f"已选中全部 {len(ids)} 个音符")
+        self._refresh_sidebar_panel_status()
+
+    def show_selected_notes(self):
+        """弹窗展示选中音符的完整列表。"""
+        notes = self.api.get_selected_notes()
+        if not notes:
+            self.api.show_info("音符工具", "当前没有选中的音符。")
+            return
+
+        win = tk.Toplevel(self.app.root)
+        win.title(f"选中音符列表 - 共 {len(notes)} 个")
+        win.geometry("720x420")
+        win.transient(self.app.root)
+
+        try:
+            icon_path = "img/icon.ico"
+            if os.path.exists(icon_path):
+                win.iconbitmap(icon_path)
+        except Exception:
+            pass
+
+        frame = ttk.Frame(win, padding=8)
+        frame.pack(fill="both", expand=True)
+
+        columns = ("idx", "track", "note_id", "start", "dur", "pitch")
+        tree = ttk.Treeview(frame, columns=columns, show="headings", height=14)
+        tree.heading("idx", text="序号")
+        tree.heading("track", text="轨道")
+        tree.heading("note_id", text="内部ID")
+        tree.heading("start", text="起始节拍")
+        tree.heading("dur", text="时长")
+        tree.heading("pitch", text="音高")
+        tree.column("idx", width=50, anchor="center")
+        tree.column("track", width=60, anchor="center")
+        tree.column("note_id", width=90, anchor="center")
+        tree.column("start", width=100, anchor="center")
+        tree.column("dur", width=80, anchor="center")
+        tree.column("pitch", width=80, anchor="center")
+
+        vsb = ttk.Scrollbar(frame, orient="vertical", command=tree.yview)
+        tree.configure(yscrollcommand=vsb.set)
+        tree.pack(side="left", fill="both", expand=True)
+        vsb.pack(side="right", fill="y")
+
+        notes_sorted = sorted(notes, key=lambda n: (n["track_idx"], n["start_beat"]))
+        for i, n in enumerate(notes_sorted, 1):
+            tree.insert("", "end", values=(
+                i,
+                n["track_idx"] + 1,
+                n["note_id"],
+                f"{n['start_beat']:.2f}",
+                f"{n['duration']:.2f}",
+                n["note_value"],
+            ))
+
+        btn_row = ttk.Frame(win)
+        btn_row.pack(fill="x", padx=8, pady=8)
+        ttk.Button(btn_row, text="关闭", command=win.destroy, width=10).pack(side="right")
+
+    def export_selected_json(self):
+        """把选中音符导出成 JSON 文件。"""
+        notes = self.api.get_selected_notes()
+        if not notes:
+            self.api.show_info("音符工具", "当前没有选中的音符。")
+            return
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        default_name = f"selected_notes_{timestamp}.json"
+
+        file_path = filedialog.asksaveasfilename(
+            title="导出选中音符",
+            defaultextension=".json",
+            initialfile=default_name,
+            filetypes=[("JSON 文件", "*.json"), ("所有文件", "*.*")],
+            parent=self.app.root,
+        )
+        if not file_path:
+            return
+
+        export_data = {
+            "exported_at": datetime.now().isoformat(),
+            "count": len(notes),
+            "project_path": self.api.get_project_info().get("path", ""),
+            "notes": notes,
+        }
+
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(export_data, f, ensure_ascii=False, indent=2)
+            self.api.notify(f"已导出 {len(notes)} 个音符到 {os.path.basename(file_path)}")
+        except Exception as e:
+            self.api.show_error("导出失败", f"写入文件失败：\n{e}")
+
+    # --------------------------------------------------------
+    # 6. 右键菜单回调（都是无参数的）
+    # --------------------------------------------------------
+    def ctx_show_note_octave(self):
+        """音符右键：显示选中音符的音高和八度。"""
+        notes = self.api.get_selected_notes()
+        if not notes:
+            self.api.show_info("音符工具", "请先在音符上右键。")
+            return
+
+        # 只取第一个显示（右键一般点一个）
+        n = notes[0]
+        note_val = n["note_value"]
+        octave = (note_val // 12) - 1
+        # 音名表
+        names = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+        note_name = names[note_val % 12]
+
+        self.api.show_info(
+            "音符信息",
+            f"音高值（MIDI）：{note_val}\n"
+            f"音名：{note_name}{octave}\n"
+            f"八度：第 {octave} 八度\n"
+            f"轨道：{n['track_idx'] + 1}\n"
+            f"起始节拍：{n['start_beat']:.2f}\n"
+            f"时长：{n['duration']:.2f}"
+        )
+
+    def ctx_shift_track_up(self):
+        """轨道右键：把选中音符（这一轨）全部升 2 音。"""
+        # 右键轨道时，主程序通常会把该轨道的音符选中；
+        # 为保险起见，直接用当前选中音符
+        selected = self.api.get_selected_notes()
+        if not selected:
+            self.api.show_info("音符工具", "请先选中这条轨道上的音符。")
+            return
+
+        app = self.api.app
+        if hasattr(app, "save_undo_snapshot_before_modify"):
+            app.save_undo_snapshot_before_modify("音符工具：整轨升2音")
+
+        changed = 0
+        for i, nd in enumerate(app.all_notes):
+            if len(nd) >= 5 and nd[4] in {n["note_id"] for n in selected}:
+                new_val = min(127, nd[3] + 2)
+                if new_val != nd[3]:
+                    app.all_notes[i] = (nd[0], nd[1], nd[2], new_val, nd[4]) + nd[5:]
+                    changed += 1
+
+        if hasattr(app, "mark_project_modified"):
+            app.mark_project_modified()
+        if hasattr(app, "draw_all_notes_from_data"):
+            app.draw_all_notes_from_data()
+
+        self.api.notify(f"已把这条轨道的 {changed} 个音符升高了 2 个半音")
+
+    def ctx_show_adjust_layer_info(self):
+        """调整图层右键：显示调整图层信息。"""
+        # 调整图层数据存在 app.adjust_layers 里
+        app = self.api.app
+        layers = getattr(app, "adjust_layers", []) or []
+        if not layers:
+            self.api.show_info("音符工具", "当前工程没有调整图层。")
+            return
+
+        # 显示第一个（右键一般就点一个）
+        line = "调整图层信息：\n\n"
+        for i, ly in enumerate(layers[:10], 1):
+            line += (f"#{i}  ID={ly.get('id', '?')}\n"
+                     f"   轨道：{ly.get('track_idx', 0) + 1}\n"
+                     f"   起始节拍：{ly.get('start_beat', 0):.2f}\n"
+                     f"   时长：{ly.get('duration', 0):.2f}\n"
+                     f"   颜色：{ly.get('color', '?')}\n\n")
+        if len(layers) > 10:
+            line += f"... 还有 {len(layers) - 10} 个图层\n"
+
+        self.api.show_info("调整图层", line)
+
+
+# ============================================================
+# 插件入口（主程序会调用这些函数）
+# ============================================================
+
+_instance = None
+
+
+def initialize_mod(app, tab_frame, app_data, api):
+    """初始化插件。
+
+    参数：
+        app:       主程序实例
+        tab_frame: 分配给插件的选项卡 Frame
+        app_data:  数据传递对象（老接口，保留兼容）
+        api:       新版 API 对象（推荐用这个）
+    """
+    global _instance
+    _instance = NoteBatchTool(app, tab_frame, app_data, api)
+
+
+def activate_mod(app):
+    """插件选项卡被切到时调用。"""
+    if _instance is not None:
+        _instance.refresh_status()
+        _instance._refresh_sidebar_panel_status()
+
+
+def deactivate_mod(app):
+    """插件选项卡被切走时调用。"""
+    pass
+
+
+def cleanup_mod(app):
+    """插件被卸载 / 程序退出时调用。"""
+    global _instance
+    if _instance is not None:
+        print("[音符批量工具] 正在清理...")
+        _instance = None
+</code></pre>
+
+<h2>七、Attribute.txt 示例</h2>
+
+<p>跟上面的 ItocMod.py 配套的 Attribute.txt：</p>
+
+<pre><code>name: 音符批量工具
+version: 1.0.0
+author: 小小电子xxdz
+website: https://xxdz-official.github.io/x
+description: 音符批量工具示例插件。演示新版插件 API 的所有能力，包括自定义菜单、挂到已有菜单、工具栏按钮多位置挂载、快捷键、事件订阅、右键菜单、侧边栏选项卡、数据读写、通知弹窗。
+</code></pre>
+
+<h2>八、开发流程</h2>
+
+<ol>
+    <li>在 <code>mod/</code> 下新建一个文件夹，比如 <code>mod/我的插件/</code>。</li>
+    <li>在里面写 <code>ItocMod.py</code> 和 <code>Attribute.txt</code>。</li>
+    <li>重启 Itoc，打开「插件管理器」，看看插件有没有出现在列表里。</li>
+    <li>启用插件，再重启 Itoc，检查菜单 / 工具栏 / 右键菜单 / 侧边栏是否生效。</li>
+    <li>调试：插件里的 <code>print()</code> 会输出到 Itoc 的控制台 / 终端。</li>
+</ol>
+
+<div class="tip">
+    <strong>💡 调试技巧：</strong><br>
+    · 开发阶段可以在 <code>initialize_mod</code> 里多 <code>print</code>，看加载到哪一步。<br>
+    · 如果插件加载失败，插件管理器里状态会显示「(错误)」，去控制台看报错。<br>
+    · 改完 <code>ItocMod.py</code> 后要重启 Itoc 才会重新加载。
+</div>
+
+<h2>九、最佳实践</h2>
+
+<ul>
+    <li><strong>用 api 而不是直接操作 app：</strong>更稳定，主程序升级不容易挂。</li>
+    <li><strong>改工程前先保存撤销快照：</strong>调用 <code>app.save_undo_snapshot_before_modify("描述")</code>，让用户能 Ctrl+Z 撤回。</li>
+    <li><strong>改完调 mark_project_modified：</strong>让标题栏出现 <code>*</code>，提醒用户保存。</li>
+    <li><strong>改完调 draw_all_notes_from_data：</strong>刷新画布显示。</li>
+    <li><strong>UI 用 ttk 而不是 tk：</strong>风格和主程序一致。</li>
+    <li><strong>回调里做好异常保护：</strong>别让插件崩溃拖垮整个 Itoc。</li>
+    <li><strong>不要在主线程里做耗时操作：</strong>会卡住界面，用 <code>threading</code>。</li>
+</ul>
+
+<h2>十、常见问题</h2>
+
+<h3>Q1：插件加载了但菜单没出现？</h3>
+
+<p>检查 <code>initialize_mod</code> 里有没有调用 <code>api.add_custom_menu_items()</code> 或 <code>api.add_menu_item()</code>。另外确认插件是"已启用"状态，并且重启过 Itoc。</p>
+
+<h3>Q2：工具栏按钮没显示？</h3>
+
+<p>检查 <code>slot</code> 参数是不是四个合法值之一（<code>"left"</code> / <code>"left2"</code> / <code>"file"</code> / <code>"play"</code>）。</p>
+
+<h3>Q3：右键菜单没生效？</h3>
+
+<p>检查 <code>target</code> 参数是不是四个合法值之一（<code>"note"</code> / <code>"track"</code> / <code>"canvas_blank"</code> / <code>"adjust_layer"</code>）。</p>
+
+<h3>Q4：侧边栏选项卡没出现？</h3>
+
+<p>检查 <code>group</code> 参数是 <code>"top"</code> 还是 <code>"bottom"</code>，然后去对应那一排找。选项卡标题就是你传的 <code>title</code>。</p>
+
+<h3>Q5：插件里的 print 输出到哪里？</h3>
+
+<p>输出到 Itoc 的终端（底部选项卡「终端」）。如果终端没打开，会输出到控制台（如果你是用 python main.py 启动的）。</p>
+
+<h3>Q6：怎么让插件支持多语言？</h3>
+
+<p>可以在插件里自己维护一个 <code>lang_map</code>，根据 <code>app.current_language</code> 切换。目前插件系统没有内置语言包机制。</p>
+
+<h3>Q7：插件能访问网络吗？</h3>
+
+<p>能。插件就是普通 Python 代码，可以用 <code>requests</code>、<code>urllib</code> 等库。但注意：网络操作最好放到子线程，别卡界面。</p>
+
+<h3>Q8：插件能读写文件吗？</h3>
+
+<p>能。但建议只读写插件自己目录下的文件，或者用户明确选择的文件。不要偷偷改工程文件或系统文件。</p>
+
+<h3>Q9：怎么分享插件？</h3>
+
+<p>把整个插件文件夹打包（zip 或 7z），发给别人。对方用「📥 导入插件」导入即可。</p>
+
+<h3>Q10：插件 API 会变吗？</h3>
+
+<p>我尽量保持向后兼容。旧的 <code>app_data</code> 接口会保留，但新插件建议只用 <code>api</code>。如果 API 有变动，会在更新日志里说明。</p>
+
+<h2>十一、小结</h2>
+
+<p>Itoc 插件系统的关键点：</p>
+
+<ul>
+    <li><strong>目录结构</strong>：<code>mod/插件名/ItocMod.py</code> + <code>Attribute.txt</code>。</li>
+    <li><strong>四个生命周期函数</strong>：<code>initialize_mod</code> / <code>activate_mod</code> / <code>deactivate_mod</code> / <code>cleanup_mod</code>。</li>
+    <li><strong>十大 API 能力</strong>：自定义菜单、挂载已有菜单、工具栏按钮、快捷键、事件订阅、右键菜单、侧边栏选项卡、数据读写、通知弹窗、直接访问 app。</li>
+    <li><strong>四个工具栏位置</strong>：<code>left</code> / <code>left2</code> / <code>file</code> / <code>play</code>。</li>
+    <li><strong>四种右键菜单</strong>：<code>note</code> / <code>track</code> / <code>canvas_blank</code> / <code>adjust_layer</code>。</li>
+    <li><strong>两个侧边栏组</strong>：<code>top</code> / <code>bottom</code>。</li>
+</ul>
+
+<p>写插件其实不难——照着示例改改就能做出自己的工具。玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'plugin_dev.html'
+    });
+</script>
+</body>
+</html>

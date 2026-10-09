@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 轮播图 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 主界面轮播图组件，讲解轮播图操作、右键功能、通知显示、更新检测、赞赏窗口">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,轮播图,轮播,通知,赞赏,更新检查">
+<meta property="og:title" content="轮播图 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 轮播图 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 主界面轮播图组件">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>轮播图 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🖼️ 轮播图：右上角那个老爱动的小玩意儿</h1>
+
+<p>主界面右上角有一小块地方，图片会自己切来切去，跟走马灯似的——没错，那就是轮播图。平时它就搁那儿安静地轮播几张宣传图，偶尔也客串一下“通知栏”，告诉你“工程保存好啦”“导入完事儿啦”之类的。</p>
+
+<div class="note">
+    <strong>📌 这篇唠的是啥：</strong><br>
+    就讲右上角那个轮播图——怎么戳它、右键能干啥、通知咋蹦出来的、更新检测和赞赏窗口咋打开。<br>
+</div>
+
+<h2>一、它搁哪儿？长啥样？</h2>
+
+<p>轮播图就在主界面<strong>右上角</strong>，尺寸大概 <code>336×83</code> 像素，下面紧挨着 X/Y 轴缩放滑块。</p>
+
+<p>默认随机从几张图里挑一张开始放，然后每 20 秒自己换下一张。换图动画是<strong>四向随机滑动</strong>——从左、从右、从上、从下都有可能，还带点缓动，看着挺丝滑，不突兀。</p>
+
+<p>图都是作者亲自画的宣传图，内容大概分这么几类：</p>
+
+<ul>
+    <li><strong>求赞助主题</strong>：写着“此乃一个用爱发电的项目”“求赞助”啥的，意思就是“有钱捧个钱场，没钱捧个人场”。</li>
+    <li><strong>B站主题</strong>：像素风头像配“B站 小小电子xxdz”“如果有问题或建议可以咨询开发者”，一看就是让你去B站找他玩。</li>
+    <li><strong>普通宣传图</strong>：比如“我是由屎山代码构成的”“香香软软甜甜糯糯见人就咬 小蛋糕”这种，图一乐呵。</li>
+    <li><strong>更新提示图</strong>：平时不出现，一有新版本它就蹦出来，写着“有新版本可用!!”。</li>
+</ul>
+
+<h2>二、咋戳它？</h2>
+
+<table>
+    <thead>
+        <tr><th>你干啥</th><th>它咋反应</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>鼠标搁上去</td><td>轮播立马暂停，还蹦出一行小字“如果想看看可以点击鼠标右键嗷”</td></tr>
+        <tr><td>鼠标挪开</td><td>得，它又自己动起来了</td></tr>
+        <tr><td>左键戳一下</td><td>手动切到下一张</td></tr>
+        <tr><td>右键戳一下</td><td>看人下菜碟——不同图有不同反应（往下看）</td></tr>
+    </tbody>
+</table>
+
+<h2>三、右键能整出啥活儿？</h2>
+
+<p>右键点不同主题的图，它反应不一样，跟开盲盒似的：</p>
+
+<table>
+    <thead>
+        <tr><th>当前是啥图</th><th>右键一戳</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>求赞助主题</td><td>直接给你弹<strong>赞赏窗口</strong>，扫码打赏走起</td></tr>
+        <tr><td>B站主题</td><td>嗖一下打开作者的B站主页</td></tr>
+        <tr><td>更新提示主题</td><td>弹<strong>更新窗口</strong>，里面写明了更新内容和网盘下载线路</td></tr>
+        <tr><td>其它普通宣传图</td><td>给你切到上一张（跟左键反着来）</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 小提醒：</strong><br>
+    要是你瞅见轮播图里冒出一张写着“有新版本可用!!”的图，别犹豫，右键戳它！里面就是更新说明和下载地址，夸克、123、111网盘都有。
+</div>
+
+<h2>四、它还能当通知栏使</h2>
+
+<p>轮播图还兼职做“通知栏”。程序有啥事儿要告诉你（比如“工程已保存”“导入完成”），就直接在轮播图上头<strong>盖一层通知</strong>，闪几秒自动消失。</p>
+
+<p>通知出场还挺有仪式感：背景从上往下滑，文字从下往上滑，有点小视差，看着不赖。退场反过来。</p>
+
+<h2>五、防篡改和版本检测</h2>
+
+<h3>5.1 图片指纹验证</h3>
+
+<p>轮播图里每张图都自带一个 MD5 指纹。每次启动，程序会算一遍实际指纹，跟内置的对一下：</p>
+
+<ul>
+    <li>对上了：正常显示。</li>
+    <li>对不上：直接跳过这张图，控制台里嘟囔一句警告...</li>
+</ul>
+
+<p>这么干就是防止有人偷偷换图。赞赏窗口里的收款码也一样有指纹，要是被人动了手脚，窗口里就会把码藏起来，给你个备用链接。</p>
+
+<h3>5.2 版本检测</h3>
+
+<p>启动时会从远程拉一下最新版本号。要是发现远程版本不是 <code>1</code>，就说明有新版本，程序自动把“更新提示图”塞进轮播列表。右键点它就能打开更新窗口，里面有更新说明和三个网盘按钮。</p>
+
+<h2>六、赞赏窗口：作者就指着这个吃口饭了</h2>
+
+<p>右键点求赞助主题的图，赞赏窗口就弹出来了。左边是收款码，右边能填昵称、备注、选择是否加入友情链接，完事点提交，数据就传到服务器上去了。</p>
+
+<p>要是收款码被篡改，窗口会直接把码藏起来，甩你一个备用链接，复制到浏览器打开就行。</p>
+
+<div class="tip">
+    <strong>💡 说句实在话：</strong><br>
+    这项目是作者一个人用爱发电搞出来的，没广告没内购，就靠大家随缘打赏撑着。<br>
+    你要是觉得 Itoc 用得顺手，手头也方便的话，不妨扫个码意思意思；不方便也没事，多用用、多提提建议、去论坛捧个人场，一样是支持。<br>
+    作者原话是“求点零花钱”，咱就帮他喊一嗓子：<strong>求打赏喵！</strong> ( ⓛ ω ⓛ *)
+</div>
+
+<h2>七、一句话总结</h2>
+
+<p>轮播图这玩意儿虽小，活儿还挺全：</p>
+
+<ul>
+    <li>自动轮播宣传图，四向随机滑动动画，看着不腻。</li>
+    <li>左键下一张，右键看情况：求赞助图→赞赏，B站图→B站主页，更新图→更新窗口，其它图→上一张。</li>
+    <li>鼠标悬停暂停，还带工具提示。</li>
+    <li>兼职当通知栏，程序有啥反馈它都帮你喊一嗓子。</li>
+    <li>有指纹验证，图被篡改就跳过，不惯着。</li>
+    <li>检测到新版本就蹦出更新图，右键一点直达下载。</li>
+</ul>
+
+<p>得嘞，就唠这么多。玩得开心！有啥问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'carousel.html'
+    });
+</script>
+</body>
+</html>

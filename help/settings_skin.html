@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 皮肤设置 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 首选项功能，讲解皮肤图片、皮肤透明度、时间轴背景色、ttk 控件主题、Windows 原生窗口标题栏的设置方法">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,皮肤设置,首选项,皮肤图片,皮肤透明度,时间轴背景色,ttk主题,Windows原生窗口标题栏,vista主题">
+<meta property="og:title" content="皮肤设置 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 皮肤设置 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 首选项功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>皮肤设置 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🎨 皮肤设置</h1>
+
+<p>Itoc 默认是淡紫色调的主题。虽然这个配色已经挺耐看了，但总有那么一些时候——比如你换了新壁纸，觉得淡紫色不太搭；或者你看腻了老配色，想换换心情；再或者你想让整个界面偏向系统原生风格……这些需求，<strong>皮肤设置</strong>都能满足你。</p>
+
+<div class="note">
+    <strong>📌 本篇的范围：</strong><br>
+    讲的是首选项里「皮肤设置」分类下的所有选项：皮肤图片、皮肤透明度、时间轴背景色、ttk 控件主题、Windows 原生窗口标题栏。<br>
+    关于其它首选项分类（窗口设置、音频设置、回滚设置等），请参考对应的分项文档。
+</div>
+
+<h2>一、这个功能是干嘛的？</h2>
+
+<p>皮肤设置用来调整 Itoc 界面的<strong>视觉外观</strong>。它管的是这几件事：</p>
+
+<ol>
+    <li><strong>给画布铺一张背景图片</strong>——让编辑区看起来更有个性。</li>
+    <li><strong>调节背景图的透明度</strong>——图片太抢眼会影响看音符，透明度可以淡一点。</li>
+    <li><strong>换个时间轴底色</strong>——不铺图片时，可以让底色偏别的颜色。</li>
+    <li><strong>换 ttk 控件的主题</strong>——按钮、下拉框、滚动条这些看起来是什么风格。</li>
+    <li><strong>让标题栏跟随系统</strong>——Windows 10/11 的浅色卡片风格，和系统更搭。</li>
+</ol>
+
+<div class="tip">
+    <strong>💡 皮肤设置只影响"外观"，不影响功能：</strong><br>
+    不管你怎么换皮肤、换主题，Itoc 的功能、工程数据、快捷键都不会变。放心折腾，不会有副作用。
+</div>
+
+<h2>二、从哪里打开？</h2>
+
+<p>打开方式：<strong>「文件(F)」→「首选项」→ 左侧分类里的「皮肤设置」</strong>。</p>
+
+<p>也可以按快捷键（如果设置了的话）或从其它入口进入首选项。首选项窗口打开后，左边是分类导航，右边是内容区，点一下左边的「皮肤设置」就会切到这一分类。</p>
+
+<h2>三、界面布局</h2>
+
+<p>皮肤设置面板从上到下分成四块：</p>
+
+<table>
+    <thead>
+        <tr><th>区块</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>皮肤图片</td><td>当前皮肤显示、浏览图片、清除皮肤</td></tr>
+        <tr><td>皮肤透明度</td><td>一个 0%~100% 的滑块 + 百分比数字</td></tr>
+        <tr><td>时间轴背景色</td><td>颜色输入框 + 取色器 + 预览色块 + 恢复默认按钮</td></tr>
+        <tr><td>ttk 控件主题</td><td>主题下拉框 + 说明文字</td></tr>
+        <tr><td>Windows 原生窗口标题栏</td><td>一个勾选框 + 说明文字</td></tr>
+    </tbody>
+</table>
+
+<h2>四、皮肤图片</h2>
+
+<p>这是皮肤设置里最"直观"的部分——挑一张图片，让它成为画布的背景。</p>
+
+<h3>4.1 当前皮肤显示</h3>
+
+<p>最上面有一行「当前皮肤:」，后面跟着当前皮肤的文件名（比如 <code>my_wallpaper.png</code>）。如果没设置过皮肤，就显示「无」。</p>
+
+<h3>4.2 选择皮肤</h3>
+
+<p>点「浏览图片...」按钮，弹出文件选择框，支持这些格式：</p>
+
+<ul>
+    <li><code>.png</code></li>
+    <li><code>.jpg</code> / <code>.jpeg</code></li>
+    <li><code>.gif</code></li>
+    <li><code>.bmp</code></li>
+</ul>
+
+<p>选完之后，图片会立刻生效：画布底层会把它铺上去，并按当前的透明度混合到时间轴底色上。不需要点"应用"或"确定"。</p>
+
+<h3>4.3 图片是怎么铺的？</h3>
+
+<p>图片的铺法用的是 <strong>cover（填满）模式</strong>：</p>
+
+<ol>
+    <li>先按画布视口的宽高比例，把图片<strong>等比放大</strong>到刚好能铺满整个视口。</li>
+    <li>如果放大后某一方向超出了视口，就<strong>从中心裁剪</strong>掉多余的部分。</li>
+    <li>最后把裁剪后的图片铺上去。</li>
+</ol>
+
+<p>这样不管你原图是宽的、高的、方的，都能铺满整个画布，不会留白，也不会变形。</p>
+
+<div class="tip">
+    <strong>💡 背景图会跟随视口：</strong><br>
+    你水平 / 垂直滚动画布时，背景图不会跟着滚走——它始终钉在视口左上角，就像画布本身的一个"底纹"一样。<br>
+    这样无论你滚到哪里，背景都是满的，不会看到"图片外的空白"。
+</div>
+
+<h3>4.4 清除皮肤</h3>
+
+<p>点「清除皮肤」按钮，皮肤会被移除，画布回到纯底色（淡紫色或你设置的时间轴背景色）。</p>
+
+<p>清除后，<code>skin_path</code> 配置会被清空，下次打开程序也不会再加载图片。</p>
+
+<div class="note">
+    <strong>📌 皮肤路径会保存在配置里：</strong><br>
+    皮肤路径存在 <code>shezhi.txt</code> 的 <code>skin_path</code> 字段里。重启 Itoc 时会自动加载上次用的皮肤。<br>
+    如果图片被移动到别处或删除了，程序会静默忽略（不报错，画布就显示纯底色）。
+</div>
+
+<h2>五、皮肤透明度</h2>
+
+<p>背景图铺上去之后，如果直接 100% 显示，可能会显得太抢眼，看音符的时候容易被干扰。所以 Itoc 给了一个<strong>透明度滑块</strong>。</p>
+
+<h3>5.1 滑块的范围和含义</h3>
+
+<table>
+    <thead>
+        <tr><th>滑块值</th><th>效果</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>0%</td><td>完全透明，只显示时间轴底色，图片完全看不见</td></tr>
+        <tr><td>50%（默认）</td><td>图片和底色各占一半，既有纹理又不太抢眼</td></tr>
+        <tr><td>100%</td><td>图片完全不透明，底色被完全盖住</td></tr>
+    </tbody>
+</table>
+
+<p>拖动滑块时，右边的百分比数字会实时更新。</p>
+
+<div class="tip">
+    <strong>💡 拖拽松手才会重绘：</strong><br>
+    拖滑块的过程中，程序不会每帧都重绘背景图（那样会卡）。松手时才会真正混合一次并铺到画布上。<br>
+    所以拖的时候画布看着没变是正常的，松手后就生效了。
+</div>
+
+<h3>5.2 混合原理</h3>
+
+<p>背景不是"图片盖在底色上"，而是"<strong>图片和底色按透明度混合</strong>"。具体来说：</p>
+
+<pre><code>最终像素 = 底色像素 × (1 - alpha) + 图片像素 × alpha</code></pre>
+
+<p>其中 <code>alpha</code> 就是透明度的值（0.0~1.0）。所以：</p>
+
+<ul>
+    <li><code>alpha = 0</code>：最终像素 = 底色像素（图片看不见）</li>
+    <li><code>alpha = 1</code>：最终像素 = 图片像素（底色看不见）</li>
+    <li><code>alpha = 0.5</code>：各占一半</li>
+</ul>
+
+<h2>六、时间轴背景色</h2>
+
+<p>这是"没有皮肤时"画布的底色，也是"有皮肤时"参与混合的那个底色。<strong>它并不只影响时间轴，而是整个画布的底层颜色</strong>。</p>
+
+<h3>6.1 默认值</h3>
+
+<p>默认是淡紫 <code>#E8DBFF</code>。这是 Itoc 的基础色调。</p>
+
+<h3>6.2 怎么改？</h3>
+
+<p>有三种方式：</p>
+
+<ol>
+    <li><strong>直接在输入框里打字</strong>：输入一个十六进制颜色，比如 <code>#FFEEDD</code>。</li>
+    <li><strong>用取色器</strong>：点「取色器」按钮，弹出系统调色板，选一个颜色。</li>
+    <li><strong>恢复默认</strong>：点「恢复默认」按钮，立刻回到 <code>#E8DBFF</code>。</li>
+</ol>
+
+<p>输入框右边有一个小色块，显示当前颜色的预览。你打字的瞬间它就会跟着变。</p>
+
+<h3>6.3 改完之后会发生什么？</h3>
+
+<p>改颜色是<strong>立即生效</strong>的，不需要点"确定"。具体来说：</p>
+
+<ul>
+    <li>画布底图会被重新生成（以新颜色为底）。</li>
+    <li>所有轨道的背景、轨道标签背景会按新底色重新混合（因为它们原本是 60% 自色 + 40% 底色的混合色）。</li>
+    <li>音符块、时间轴、判定线这些不受影响。</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 打错颜色怎么办？</strong><br>
+    如果输入框里的颜色格式不对（比如少于 7 位、不是以 <code>#</code> 开头），程序不会崩，只是暂时不应用。改成正确的格式就正常了。<br>
+    实在不行就点「恢复默认」。
+</div>
+
+<h3>6.4 轨道背景为什么会跟着变？</h3>
+
+<p>因为轨道背景用的是"混合色"——不是硬编码的固定色，而是<strong>60% 的轨道自色 + 40% 的时间轴背景色</strong>混合出来的。这样无论你把底色改成什么，轨道背景都会自动"融进"整体色调里，不会突兀。</p>
+
+<p>改了底色之后，程序会遍历所有轨道背景元素，重新计算一次填充色，所以你会看到它们一起变了。</p>
+
+<h2>七、ttk 控件主题</h2>
+
+<p>ttk 是 Tkinter 提供的一套"现代化"控件库。它有个特性：<strong>换一个主题，所有 ttk 控件的外观都会一起变</strong>。按钮、下拉框、滚动条、复选框、选项卡……都会跟着换风格。</p>
+
+<h3>7.1 有哪些主题可选？</h3>
+
+<p>Itoc 会自动检测你系统上可用的 ttk 主题，把它们列在下拉框里。常见的主题包括：</p>
+
+<table>
+    <thead>
+        <tr><th>主题名</th><th>风格</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>vista</code></td><td>Windows Vista/7/10/11 的浅色卡片风格（Itoc 默认）</td></tr>
+        <tr><td><code>winnative</code></td><td>Windows 原生经典风格</td></tr>
+        <tr><td><code>xpnative</code></td><td>Windows XP 风格</td></tr>
+        <tr><td><code>clam</code></td><td>跨平台扁平风格，配色偏灰</td></tr>
+        <tr><td><code>alt</code></td><td>另一种跨平台风格，和 clam 类似</td></tr>
+        <tr><td><code>default</code></td><td>Tkinter 默认风格</td></tr>
+        <tr><td><code>classic</code></td><td>最老式的 Tk 风格</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 推荐用 vista：</strong><br>
+    <code>vista</code> 是 Windows 原生的浅色卡片风格，和 Itoc 默认的淡紫配色最搭。如果你在 Windows 上，建议就用这个。
+</div>
+
+<h3>7.2 换主题会发生什么？</h3>
+
+<p>从下拉框里选一个主题，会<strong>立即应用</strong>。所有 ttk 控件的外观马上改变——包括首选项窗口自身的控件。</p>
+
+<p>主题选择会被保存到 <code>shezhi.txt</code> 的 <code>ttk_theme</code> 字段。下次打开程序时自动恢复。</p>
+
+<div class="warning">
+    <strong>⚠️ 换主题可能会让某些控件显示异常：</strong><br>
+    极少数情况下，某个主题可能和某些控件的尺寸 / 内边距不兼容，导致看起来怪怪的。<br>
+    如果遇到这种情况，换回 <code>vista</code> 就能恢复。
+</div>
+
+<h3>7.3 它和皮肤图片是两回事</h3>
+
+<p>注意区分：</p>
+
+<ul>
+    <li><strong>皮肤图片 / 背景色</strong>：管的是<strong>画布</strong>的视觉。</li>
+    <li><strong>ttk 主题</strong>：管的是<strong>按钮、下拉框、滚动条等控件</strong>的视觉。</li>
+</ul>
+
+<p>两者互不影响，可以任意组合。</p>
+
+<h2>八、Windows 原生窗口标题栏</h2>
+
+<p>这是皮肤设置里最"精致"的一个开关，专门给 Windows 10/11 用户准备的。</p>
+
+<h3>8.1 它是干嘛的？</h3>
+
+<p>Itoc 主窗口的标题栏（就是右上角有关闭 / 最小化按钮的那一条），默认是 Tkinter 绘制的经典样式。开启这个选项后，程序会调用 Windows 的 DWM API，让<strong>系统原生的标题栏渲染</strong>接管：</p>
+
+<ul>
+    <li>标题栏会跟随系统主题（浅色 / 深色）。</li>
+    <li>在 Windows 11 上，还会应用系统圆角。</li>
+    <li>整体观感就是"这是一个 Windows 原生应用"。</li>
+</ul>
+
+<h3>8.2 怎么开关？</h3>
+
+<p>面板里有一个勾选框「启用 Windows 原生窗口标题栏（跟随系统浅色/深色主题）」。勾上就开启，取消就关闭。</p>
+
+<p>勾选 / 取消时会<strong>立即预览</strong>，不用点"确定"。</p>
+
+<h3>8.3 系统要求</h3>
+
+<table>
+    <thead>
+        <tr><th>系统</th><th>支持情况</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>Windows 11</td><td>完全支持，标题栏跟系统主题，有圆角</td></tr>
+        <tr><td>Windows 10 1809 及以上</td><td>支持标题栏跟随主题</td></tr>
+        <tr><td>Windows 10 1809 以下</td><td>静默忽略（无效果，不报错）</td></tr>
+        <tr><td>Windows 7 / 8</td><td>静默忽略</td></tr>
+        <tr><td>macOS / Linux</td><td>静默忽略</td></tr>
+    </tbody>
+</table>
+
+<div class="note">
+    <strong>📌 状态保存：</strong><br>
+    开 / 关状态保存在 <code>shezhi.txt</code> 的 <code>native_window_frame</code> 字段，下次打开程序会自动恢复。
+</div>
+
+<h3>8.4 推荐搭配</h3>
+
+<p>原生窗口标题栏 + <code>vista</code> 主题，是 Itoc 在 Windows 上的"最佳观感组合"：标题栏是原生卡片风，控件也是原生卡片风，整体特别协调。</p>
+
+<h2>九、常见问题</h2>
+
+<h3>Q1：换了皮肤图片，但画布没变化？</h3>
+
+<p>可能是以下原因：</p>
+
+<ul>
+    <li>透明度设成了 0%（完全透明，图片被"混合没了"）。把透明度调高试试。</li>
+    <li>图片本身是纯色的，和背景色接近，看不出来。换张对比明显的试试。</li>
+    <li>图片太大或太小，cover 之后被裁到看不见主体。建议用和屏幕比例接近的图。</li>
+</ul>
+
+<h3>Q2：透明度的拖拽为什么看不到实时效果？</h3>
+
+<p>这是设计如此。拖动过程中程序不重绘背景图（避免每帧都做一次图片处理，会卡），<strong>松手时</strong>才会真正混合并生效。拖的时候只要看数字就行。</p>
+
+<h3>Q3：改了时间轴背景色，为什么轨道也变色了？</h3>
+
+<p>因为轨道背景是"混合色"——60% 的轨道自色 + 40% 的时间轴底色。改了底色，混合结果自然跟着变。这是有意为之的，让整体色调保持一致。</p>
+
+<h3>Q4：ttk 主题换了之后，按钮看着怪怪的？</h3>
+
+<p>某些主题可能和控件布局不兼容，导致内边距、尺寸看起来不对。换回 <code>vista</code> 就能恢复。</p>
+
+<h3>Q5：Windows 原生窗口标题栏开了之后没效果？</h3>
+
+<p>检查一下系统版本：</p>
+
+<ul>
+    <li>Windows 10 必须是 1809 或更高版本。</li>
+    <li>Windows 11 完全支持。</li>
+    <li>更老的系统（Win7/8、Win10 早期版本）不支持，会静默忽略。</li>
+</ul>
+
+<p>另外，如果你关了再开，可能需要等 1~2 秒才能看到效果（Windows 需要重绘标题栏）。</p>
+
+<h3>Q6：皮肤设置里的修改会自动保存吗？</h3>
+
+<p>会。当你点首选项窗口底部的「保存」按钮时，皮肤路径、透明度、时间轴背景色、ttk 主题、原生窗口标题栏状态都会一起写进 <code>shezhi.txt</code>。</p>
+
+<p>如果你点了「取消」，那这些改动不会保存，下次打开程序还是用之前的值。</p>
+
+<div class="tip">
+    <strong>💡 想临时试试效果，又怕弄乱？</strong><br>
+    皮肤设置的所有改动都是<strong>即时预览</strong>的。你可以随便改、随便试，觉得不合适再改回来。<br>
+    只要最后不点"保存"，原设置就一点没变。
+</div>
+
+<h3>Q7：皮肤图片会随工程一起保存吗？</h3>
+
+<p>当然不会。皮肤是<strong>软件级别的配置</strong>，保存在 <code>shezhi.txt</code> 里，和工程文件（<code>.czemidi</code>）无关。</p>
+
+<p>所以你换了一个工程，皮肤还是同一个（跟软件走的，不跟工程走）。工程发给别人，别人打开时用的是<strong>他自己的</strong>皮肤设置，不会看到你的皮肤。</p>
+
+<h3>Q8：清除皮肤后，之前那张图片会被删掉吗？</h3>
+
+<p>不会。清除皮肤只是把配置里的 <code>skin_path</code> 清空，不会去动你磁盘上的图片文件。你的图片还在原来的地方。</p>
+
+<h3>Q9：时间轴背景色能设成纯黑吗？</h3>
+
+<p>废话当然可以（输入 <code>#000000</code>），但不太推荐——深色背景下音符块的蓝色会显得黯淡，时间轴上的白色文字也会和黑底对比过强，看着比较刺眼。<br>
+如果你想做深色主题，建议搭配皮肤图片和较低透明度，效果会更柔和。</p>
+
+<h3>Q10：换主题、换皮肤会影响渲染出来的视频吗？</h3>
+
+<p>不会。渲染视频时，程序是<strong>按固定的渲染规则</strong>出图的，和你在编辑器里看到的皮肤、主题、背景色都无关。<br>
+换皮肤只影响你<strong>编辑时</strong>看到的界面，不影响<strong>渲染输出</strong>的内容。</p>
+
+<h2>十、小结</h2>
+
+<p>皮肤设置管的是 Itoc 的"面子"，一共五个设置项，彼此独立：</p>
+
+<ul>
+    <li><strong>皮肤图片</strong>：挑一张图片铺到画布底层，cover 模式铺满，跟随视口。</li>
+    <li><strong>皮肤透明度</strong>：0%~100% 混入底色，默认 50%，拖拽松手才生效。</li>
+    <li><strong>时间轴背景色</strong>：画布底色（默认淡紫 <code>#E8DBFF</code>），会带动轨道背景一起变。</li>
+    <li><strong>ttk 控件主题</strong>：按钮、下拉框等控件的风格，推荐 <code>vista</code>。</li>
+    <li><strong>Windows 原生窗口标题栏</strong>：让标题栏跟随系统主题，Win10 1809+ / Win11 支持。</li>
+</ul>
+
+<p>所有设置都是<strong>即时预览</strong>的，随便折腾，最后点「保存」才会写进配置。皮肤只影响编辑时的观感，不影响工程数据和渲染输出。</p>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'settings_skin.html'
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 媒体浏览器 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解媒体浏览器面板的缩略图与列表视图、分类筛选、搜索、右键菜单、引用表与替换脱机重命名">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,媒体浏览器,媒体管理,缩略图视图,列表视图,引用表,脱机媒体,替换媒体">
+<meta property="og:title" content="媒体浏览器 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 媒体浏览器 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>媒体浏览器 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🗂️ 媒体浏览器</h1>
+
+<p>做工程的时候，你可能会往工程目录里塞各种素材：图片、视频、音频、字幕、备份的工程文件……时间一久，目录就乱了。想找某个素材，得打开资源管理器一顿翻。</p>
+
+<p>媒体浏览器就是解决这件事的。它把工程目录下的所有媒体文件汇总到一个面板里，用<strong>缩略图</strong>或<strong>列表</strong>的方式展示，让你一眼看清有哪些素材，还能直接操作它们。</p>
+
+<div class="note">
+    <strong>📌 本篇的范围：</strong><br>
+    讲的是媒体浏览器面板的双视图模式、分类筛选、搜索、右键菜单（替换 / 脱机 / 引用表 / 重命名）、缩略图预览。关于工程文件的整体结构，请参考《工程文件》相关文档；关于参考媒体（在侧边栏里播放外部素材），请参考《参考媒体》文档。
+</div>
+
+<h2>一、这个功能是干嘛的？</h2>
+
+<p>媒体浏览器本质上是一个<strong>"工程素材箱"</strong>。它做的事：</p>
+
+<ol>
+    <li><strong>扫描</strong>：递归扫描工程目录，把所有媒体文件找出来。</li>
+    <li><strong>展示</strong>：用缩略图或列表两种方式显示，带文件名、类型、大小、修改日期。</li>
+    <li><strong>操作</strong>：右键可以对文件做替换、脱机、重命名、查看引用表等操作。</li>
+</ol>
+
+<p>它和"参考媒体"是两个不同的东西：</p>
+
+<table>
+    <thead>
+        <tr><th></th><th>媒体浏览器</th><th>参考媒体</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>用途</strong></td>
+            <td>管理工程目录下的素材</td>
+            <td>播放外部素材，边做工程边对照</td>
+        </tr>
+        <tr>
+            <td><strong>展示方式</strong></td>
+            <td>缩略图网格 / 列表表格</td>
+            <td>内嵌播放器</td>
+        </tr>
+        <tr>
+            <td><strong>数据来源</strong></td>
+            <td>工程目录的磁盘扫描</td>
+            <td>用户手动打开的文件</td>
+        </tr>
+        <tr>
+            <td><strong>主要操作</strong></td>
+            <td>替换 / 脱机 / 重命名 / 查看引用</td>
+            <td>播放 / 暂停 / 音量 / 全屏</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 一句话理解：</strong><br>
+    媒体浏览器是"素材库"，参考媒体是"播放器"。<br>
+    素材库负责管理，播放器负责看和听。
+</div>
+
+<h2>二、从哪里打开？</h2>
+
+<p>媒体浏览器不是独立窗口，它就在<strong>底部选项卡栏</strong>里，选项卡标题是「媒体浏览器」。它和「CZEmakers」「过渡配置」「调整图层」「音频音谱」「字幕」「终端」这些选项卡并排在一起。</p>
+
+<p>如果底部选项卡栏当前没有显示，先通过菜单「视图(V)」→「显示底部选项卡」把它显示出来，然后点「媒体浏览器」选项卡即可。</p>
+
+<p>如果当前没有打开工程，面板会显示"未打开工程"，什么都不列。打开工程后，它会自动扫描工程目录并展示素材。</p>
+
+<div class="note">
+    <strong>📌 自动刷新：</strong><br>
+    只要你保存工程、修改工程、或者做了任何会标记"工程已修改"的操作，媒体浏览器都会自动重新扫描一遍。所以不需要手动刷新也能看到最新的素材。
+</div>
+
+<h2>三、界面布局</h2>
+
+<p>从上到下分成四部分：</p>
+
+<table>
+    <thead>
+        <tr><th>区域</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>顶部工具栏</td><td>分类下拉框、视图切换按钮、搜索框、刷新按钮</td></tr>
+        <tr><td>列标题行</td><td>列表视图时显示，缩略图视图时隐藏</td></tr>
+        <tr><td>内容区</td><td>缩略图网格或列表表格</td></tr>
+        <tr><td>状态栏</td><td>显示当前筛选出的文件数和总数</td></tr>
+    </tbody>
+</table>
+
+<h3>3.1 顶部工具栏</h3>
+
+<table>
+    <thead>
+        <tr><th>控件</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>分类下拉框</td><td>筛选文件类型：全部 / 音频 / 图片 / 视频 / 字幕 / 工程</td></tr>
+        <tr><td>▦ 缩略图按钮</td><td>切换到缩略图视图</td></tr>
+        <tr><td>☰ 列表按钮</td><td>切换到列表视图</td></tr>
+        <tr><td>搜索框</td><td>按文件名搜索（不区分大小写）</td></tr>
+        <tr><td>刷新按钮</td><td>手动重新扫描工程目录</td></tr>
+    </tbody>
+</table>
+
+<h3>3.2 状态栏</h3>
+
+<p>底部状态栏显示当前筛选结果，例如：</p>
+
+<pre><code>显示 8 个媒体文件 (共 42 个)
+</code></pre>
+
+<p>前面是筛选后的数量，后面是总数。</p>
+
+<h2>四、两种视图模式</h2>
+
+<p>媒体浏览器提供两种查看方式，随时可以切换。</p>
+
+<h3>4.1 缩略图视图</h3>
+
+<p>这是默认视图。文件以网格排列，每个文件显示为一张卡片：</p>
+
+<ul>
+    <li><strong>上方是缩略图</strong>：
+        <ul>
+            <li><strong>图片</strong>：直接显示图片本身（等比缩放到 120 像素以内）。</li>
+            <li><strong>视频</strong>：尝试读取视频第 10 帧作为缩略图（需要 OpenCV 支持）。</li>
+            <li><strong>其他类型</strong>：显示对应的 Emoji 图标（🎵 音频、📝 字幕、📁 工程等）。</li>
+        </ul>
+    </li>
+    <li><strong>下方是文件名</strong>：超长会截断成"前14个字 + …"。</li>
+</ul>
+
+<p>缩略图会随着面板宽度自动调整列数，面板越宽一行能显示越多。</p>
+
+<div class="tip">
+    <strong>💡 缩略图有缓存：</strong><br>
+    已经生成过的缩略图会缓存起来，再次显示同一文件时不会重新读取，所以翻列表很快。
+</div>
+
+<h3>4.2 列表视图</h3>
+
+<p>切换后，文件以表格方式显示，四列：</p>
+
+<table>
+    <thead>
+        <tr><th>列</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>名称</td><td>文件图标 + 文件名</td></tr>
+        <tr><td>类型</td><td>音频 / 图片 / 视频 / 字幕 / 工程 / 其他</td></tr>
+        <tr><td>大小</td><td>自动格式化为 B / KB / MB / GB</td></tr>
+        <tr><td>修改日期</td><td>格式为 <code>年-月-日 时:分</code></td></tr>
+    </tbody>
+</table>
+
+<p>列表视图更适合快速定位某个具体文件，按名称排序或者对比修改时间。</p>
+
+<h3>4.3 视图切换</h3>
+
+<p>点顶部工具栏的「▦ 缩略图」/「☰ 列表」按钮就可以切换。</p>
+
+<p>当前处于哪个视图，对应的按钮会变灰（禁用状态），另一个按钮亮起。</p>
+
+<h2>五、分类筛选</h2>
+
+<p>顶部的下拉框可以按文件类型筛选，选项有六个：</p>
+
+<table>
+    <thead>
+        <tr><th>选项</th><th>显示的文件类型</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>全部</td><td>不筛选，显示所有扫描到的文件</td></tr>
+        <tr><td>音频</td><td><code>.mp3</code> <code>.wav</code> <code>.flac</code> <code>.m4a</code></td></tr>
+        <tr><td>图片</td><td><code>.png</code> <code>.jpg</code> <code>.jpeg</code> <code>.gif</code> <code>.bmp</code> <code>.ico</code> <code>.webp</code></td></tr>
+        <tr><td>视频</td><td><code>.mp4</code> <code>.wmv</code> <code>.avi</code> <code>.mov</code> <code>.mkv</code> <code>.flv</code> <code>.webm</code></td></tr>
+        <tr><td>字幕</td><td><code>.srt</code></td></tr>
+        <tr><td>工程</td><td><code>.czemidi</code></td></tr>
+    </tbody>
+</table>
+
+<p>选一个类型，只会显示对应的文件。选「全部」恢复完整列表。</p>
+
+<div class="note">
+    <strong>📌 不支持的类型会归到"其他"：</strong><br>
+    "其他"类型不会出现在下拉框里，但如果你选「全部」，它们会一起显示出来。它们只带一个通用文件图标。
+</div>
+
+<h2>六、搜索</h2>
+
+<p>搜索框在工具栏中间，输入关键字后会实时过滤列表。</p>
+
+<ul>
+    <li><strong>匹配方式</strong>：文件名包含关键字（不区分大小写）。</li>
+    <li><strong>范围</strong>：只搜文件名，不搜路径。</li>
+    <li><strong>防抖</strong>：输入后等 300 毫秒才触发过滤，避免每打一个字就刷一遍。</li>
+</ul>
+
+<p>比如输入 <code>bgm</code>，会匹配 <code>bgm.mp3</code>、<code>bgm_loop.wav</code>、<code>theme_bgm_01.flac</code> 等。</p>
+
+<p>搜索和分类筛选可以<strong>叠加</strong>使用：先选"图片"，再输入关键字，只会在图片类型里搜。</p>
+
+<h2>七、双击打开</h2>
+
+<p>不管在哪种视图，双击某个文件，都会在资源管理器中定位到它。</p>
+
+<ul>
+    <li><strong>缩略图视图</strong>：双击卡片。</li>
+    <li><strong>列表视图</strong>：双击表格行。</li>
+</ul>
+
+<p>Windows 上会用资源管理器打开它所在的文件夹，并选中这个文件。</p>
+
+<h2>八、右键菜单</h2>
+
+<p>在任意文件上点右键，会弹出一套操作菜单。这是媒体浏览器最有用的部分。</p>
+
+<h3>8.1 菜单项一览</h3>
+
+<table>
+    <thead>
+        <tr><th>菜单项</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>替换媒体</td><td>用新文件替换当前文件，保持文件名不变</td></tr>
+        <tr><td>脱机媒体</td><td>把文件移走或删除，让工程"脱机"</td></tr>
+        <tr><td>查看引用表</td><td>列出所有引用此文件的音符块和全局命令</td></tr>
+        <tr><td>重命名</td><td>改名，并自动更新工程里所有引用</td></tr>
+        <tr><td>在资源管理器打开</td><td>定位到文件所在的文件夹</td></tr>
+        <tr><td>用默认打开方式打开</td><td>用系统默认程序打开文件</td></tr>
+    </tbody>
+</table>
+
+<h3>8.2 替换媒体</h3>
+
+<p>"替换"是这套菜单里最有用的功能之一。</p>
+
+<p>使用场景：你原本用 A 图片做了弹窗，后来画师给了新版本 B，文件名和格式都一样。这时候不需要改工程里的任何引用，直接替换磁盘上的文件就行。</p>
+
+<p>操作步骤：</p>
+
+<ol>
+    <li>右键要替换的文件，选「替换媒体」。</li>
+    <li>文件选择框会弹出，并且<strong>已经按原文件类型过滤好了</strong>（替换图片只显示图片类型，替换视频只显示视频类型）。</li>
+    <li>选好新文件，点确定。</li>
+    <li>如果扩展名不同，程序会提示你确认（因为可能影响引用），确认后才会继续。</li>
+</ol>
+
+<p>替换时，程序会：</p>
+
+<ul>
+    <li>把原文件备份成 <code>原文件名.backup</code>。</li>
+    <li>把新文件复制到原文件位置，保持原文件名。</li>
+    <li>更新文件大小、修改日期等信息。</li>
+    <li>清除这个文件的缩略图缓存。</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 引用完全不用改：</strong><br>
+    因为文件名没变，工程里所有引用这个文件的地方都自动指向新内容。所以替换是"零侵入"的。
+</div>
+
+<h3>8.3 脱机媒体</h3>
+
+<p>"脱机"是指：把文件从工程里"挪走"，但保留引用位置，让工程进入一种"素材暂时不在"的状态。</p>
+
+<p>右键选「脱机媒体」后，会弹出一个询问框：</p>
+
+<pre><code>是否同时删除磁盘文件？
+
+文件: demo.png
+
+选择"是"：直接删除文件
+选择"否"：移动到脱机文件夹
+</code></pre>
+
+<table>
+    <thead>
+        <tr><th>选项</th><th>行为</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>是</strong></td>
+            <td>直接从磁盘删除文件，同时从媒体浏览器列表里移除</td>
+        </tr>
+        <tr>
+            <td><strong>否</strong></td>
+            <td>把文件移动到工程目录下的 <code>OfflineMedia/</code> 文件夹里，文件本身保留</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>脱机后，文件在媒体浏览器里仍会显示（在 <code>OfflineMedia/</code> 下），但标记为脱机状态。</p>
+
+<div class="note">
+    <strong>📌 什么时候用脱机？</strong><br>
+    当你想临时"断开"某个素材，但又不想真的删掉文件时。<br>
+    比如：A 素材暂时不用了，先脱机；过一段时间想用回来，直接从 <code>OfflineMedia/</code> 挪回工程目录，重新引用即可。
+</div>
+
+<h3>8.4 查看引用表</h3>
+
+<p>"查看引用表"会打开一个新窗口，列出<strong>所有引用了这个文件</strong>的音符块和全局命令。</p>
+
+<p>窗口里是一张表格，六列：</p>
+
+<table>
+    <thead>
+        <tr><th>列</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>来源</td><td>"音符块" 或 "全局命令"</td></tr>
+        <tr><td>轨道</td><td>音符块所在轨道号（全局命令显示 <code>-</code>）</td></tr>
+        <tr><td>节拍</td><td>音符块或命令的起始节拍</td></tr>
+        <tr><td>时长</td><td>音符块的长度（全局命令显示 <code>-</code>）</td></tr>
+        <tr><td>音高/描述</td><td>音符块的音高，或者全局命令的描述</td></tr>
+        <tr><td>资源类型</td><td>图片 / 视频 / 音频</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 双击某一行可以直接跳过去：</strong><br>
+    双击引用表里的"音符块"行，主程序会跳到那个音符块并选中它。<br>
+    双击"全局命令"行，会滚动到那条命令并让它在画布上闪烁几次，方便你找到。<br>
+    这个功能在"我想看看这个素材到底被哪里用了"的时候特别好用。
+</div>
+
+<h3>8.5 重命名</h3>
+
+<p>"重命名"不只是改个名字那么简单——它会<strong>同步更新工程里所有引用</strong>。</p>
+
+<p>操作步骤：</p>
+
+<ol>
+    <li>右键选「重命名」。</li>
+    <li>弹出一个输入框，显示当前文件名，你改一下。</li>
+    <li>点确定。</li>
+    <li>程序会：
+        <ul>
+            <li>检查新文件名是否包含非法字符（<code>&lt;&gt;:"/\|?*</code>）。</li>
+            <li>如果有目标文件同名，询问是否覆盖。</li>
+            <li>重命名磁盘文件。</li>
+            <li>遍历所有音符块，把引用旧文件名的字段改成新文件名。</li>
+            <li>更新媒体浏览器的显示。</li>
+        </ul>
+    </li>
+    <li>状态栏会显示更新了几个引用。</li>
+</ol>
+
+<div class="warning">
+    <strong>⚠️ 重命名是"批量修改"：</strong><br>
+    如果这个文件被很多音符块引用，重命名后那些音符块全都会指向新名字。这个操作是有撤销的，但为了保险起见，建议大改动前先手动保存一下工程。
+</div>
+
+<h3>8.6 在资源管理器打开</h3>
+
+<p>和双击文件效果一样，在资源管理器中定位到这个文件。</p>
+
+<h3>8.7 用默认打开方式打开</h3>
+
+<p>用系统默认的程序打开文件。图片用默认看图软件打开，视频用默认播放器打开，音频用默认播放器打开。</p>
+
+<p>这个和"在资源管理器打开"的区别是：前者是"用软件打开内容"，后者是"打开文件夹定位位置"。</p>
+
+<h2>九、扫描规则</h2>
+
+<p>媒体浏览器扫描工程目录时，有一些规则，了解一下能避免"为什么这个文件没显示"。</p>
+
+<h3>9.1 会扫哪些</h3>
+
+<ul>
+    <li>工程目录本身。</li>
+    <li>工程目录下的所有子目录（递归）。</li>
+    <li>常见媒体文件（前面分类筛选表里列的扩展名）。</li>
+    <li>工程文件本身（<code>.czemidi</code>）。</li>
+</ul>
+
+<h3>9.2 不扫哪些</h3>
+
+<p>下面这些目录会被跳过，避免干扰：</p>
+
+<ul>
+    <li><code>__pycache__</code>（Python 缓存）</li>
+    <li><code>temp</code> / <code>TempSave</code>（临时文件）</li>
+    <li><code>CTRL_Z</code> / <code>CTRL_shift_Z</code>（撤销栈）</li>
+    <li><code>OfflineMedia</code>（脱机文件夹里的文件仍然会被扫描到，但标记为脱机）</li>
+    <li>以 <code>.</code> 开头的隐藏文件或文件夹</li>
+</ul>
+
+<h3>9.3 排序规则</h3>
+
+<p>默认按修改时间<strong>降序</strong>排序，最近改过的排在前面。</p>
+
+<p>所以如果你刚把某个素材换过新版本，它会出现在列表顶部，方便你找到。</p>
+
+<h2>十、常见问题</h2>
+
+<h3>Q1：媒体浏览器里显示的文件数比工程目录里的少？</h3>
+
+<p>可能原因：</p>
+<ul>
+    <li>分类下拉框不是「全部」。</li>
+    <li>搜索框里有残留的关键字。</li>
+    <li>有些不常见扩展名被归到"其他"类型，选「全部」能看到，但选其他分类看不到。</li>
+</ul>
+
+<h3>Q2：缩略图显示不出来？</h3>
+
+<p>缩略图能显示需要满足条件：</p>
+<ul>
+    <li><strong>图片</strong>：需要安装 PIL（Pillow），一般 Itoc 会自带。</li>
+    <li><strong>视频</strong>：需要安装 OpenCV，且视频格式能被 OpenCV 读取。</li>
+    <li>其他类型（音频、字幕、工程等）：只显示 Emoji 图标，这是正常的。</li>
+</ul>
+
+<p>如果图片缩略图都显示不出来，可能是 PIL 安装有问题，请检查环境。</p>
+
+<h3>Q3：替换媒体后工程里的引用会怎样？</h3>
+
+<p>不受影响。替换时程序保持原文件名，工程引用的是文件名，所以引用照旧，只是指向的内容变了。</p>
+
+<h3>Q4：脱机媒体后，工程还能正常编译吗？</h3>
+
+<p>取决于脱机后文件的状态：</p>
+<ul>
+    <li>如果选的是"删除"，文件真的没了，编译时会报"找不到素材"。</li>
+    <li>如果选的是"移动到 OfflineMedia"，文件还在工程目录里，只是换了个位置。这时要看编译脚本是否会在 <code>OfflineMedia/</code> 里找素材。一般不会，所以要慎用。</li>
+</ul>
+
+<h3>Q5：重命名后，之前用这个名字的地方都更新了吗？</h3>
+
+<p>是的。程序会遍历所有音符块，把匹配旧文件名的 <code>image_path</code>、<code>video_path</code>、<code>sound_path</code> 等字段改成新文件名。状态栏会显示"更新了 N 个引用"。</p>
+
+<p>但<strong>全局命令</strong>里的字符串路径目前不会被自动更新。如果你有全局命令（比如"设置桌面背景"）引用了这个文件，需要手动改一下。</p>
+
+<h3>Q6：右键菜单里的"查看引用表"是空的？</h3>
+
+<p>说明这个文件没有被任何音符块或全局命令引用。可能是你手动放进工程目录、但还没被使用的素材。</p>
+
+<h3>Q7：媒体浏览器会占用很多内存吗？</h3>
+
+<p>不会。缩略图都是缩放后的小图，单个大概几十 KB。扫描是异步的，不会卡界面。</p>
+
+<p>如果工程目录文件特别多（上千个），首次扫描可能稍慢，之后就快了（有缓存）。</p>
+
+<h3>Q8：为什么"工程"分类里显示的文件名是 .czemidi，但我看到的是 .CzeData？</h3>
+
+<p>这是两个概念：</p>
+<ul>
+    <li><strong>工程文件</strong>：扩展名 <code>.czemidi</code>，是你保存工程时的文件。</li>
+    <li><strong>CzeData</strong>：编译/测试运行时的中间数据文件，扩展名 <code>.CzeData</code>，在 <code>runCZE/</code> 目录下。</li>
+</ul>
+
+<p>媒体浏览器扫描的是工程目录，所以只显示 <code>.czemidi</code>。CzeData 在 <code>runCZE/</code> 里，不在扫描范围内。</p>
+
+<h3>Q9：我在资源管理器里手动改了文件名，媒体浏览器能同步吗？</h3>
+
+<p>能。点一下"刷新"，或者随便做点会触发"工程已修改"的操作，媒体浏览器会重新扫描，看到新文件名。</p>
+
+<p>但<strong>工程里的引用不会自动更新</strong>——因为是你在系统里直接改的名，Itoc 不知道。这种情况建议用媒体浏览器的"重命名"功能，让它帮你同步。</p>
+
+<h3>Q10：媒体浏览器支持哪些视频格式的缩略图？</h3>
+
+<p>支持 OpenCV 能读的所有格式，常见的有 mp4、avi、mov、mkv、wmv、flv、webm。</p>
+
+<p>如果某个视频的编码比较特殊（比如 H.265 的某些变体），OpenCV 可能读不出来，缩略图会显示成 🎬 图标。</p>
+
+<h2>十一、小结</h2>
+
+<p>「媒体浏览器」是 Itoc 里的"素材箱"，把工程目录下的所有素材汇总展示，方便管理和操作。</p>
+
+<ul>
+    <li>两种视图模式：<strong>缩略图网格</strong>（默认）和 <strong>列表表格</strong>，随时切换。</li>
+    <li>分类筛选：全部 / 音频 / 图片 / 视频 / 字幕 / 工程。</li>
+    <li>搜索：按文件名包含匹配，不区分大小写。</li>
+    <li>双击文件在资源管理器中定位。</li>
+    <li>右键菜单六项：<strong>替换媒体</strong> / <strong>脱机媒体</strong> / <strong>查看引用表</strong> / <strong>重命名</strong> / 在资源管理器打开 / 用默认打开方式打开。</li>
+    <li>替换媒体是"零侵入"的：保持文件名，工程引用不用改。</li>
+    <li>脱机媒体分两种：直接删除，或移到 <code>OfflineMedia/</code>。</li>
+    <li>查看引用表能列出所有使用此文件的音符块和全局命令，双击可以跳过去。</li>
+    <li>重命名会自动更新工程里所有引用，避免路径失效。</li>
+    <li>扫描时会跳过 <code>__pycache__</code>、<code>temp</code>、<code>CTRL_Z</code> 等临时目录。</li>
+    <li>默认按修改时间降序排序，最近改过的排在前面。</li>
+    <li>保存工程或做修改后会<strong>自动刷新</strong>，不需要手动刷新。</li>
+</ul>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'media_browser.html'
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 文件关联 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 打开方式功能，讲解 .czemidi / .UIclass / .CzeData 三种文件扩展名的绑定、解绑、状态检测与 Windows 默认应用保护">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,文件关联,打开方式,czemidi,UIclass,CzeData,注册表绑定,默认应用,启动器">
+<meta property="og:title" content="文件关联（打开方式） - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 文件关联 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 打开方式功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>文件关联（打开方式） - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🔗 文件关联（打开方式）</h1>
+
+<p>你有没有过这种体验：下载了一个 <code>.czemidi</code> 工程文件，双击它，结果系统弹出来一个"选择打开方式"的窗口，或者干脆用记事本把一堆 JSON 文本给你铺满屏幕……</p>
+
+<p>这就是"没做文件关联"的表现。文件关联做好了，双击 <code>.czemidi</code> 就能直接用 Itoc 打开，双击 <code>.UIclass</code> 就能直接进模类设计器，双击 <code>.CzeData</code> 就能直接用解释器跑——省心省事。</p>
+
+<div class="note">
+    <strong>📌 这篇唠的是啥：</strong><br>
+    首选项里「打开方式」这一块的完整说明：三种扩展名分别关联到什么、怎么绑定、怎么解绑、状态怎么看、以及 Windows 默认应用保护的坑怎么绕。<br>
+    关于首选项窗口的其它分类，请参考《首选项（设置）》文档。
+</div>
+
+<h2>一、从哪儿打开？</h2>
+
+<p>菜单 <strong>「文件(F)」→「首选项」→ 左侧「打开方式」分类</strong>。</p>
+
+<h2>二、三种文件类型</h2>
+
+<p>Itoc 支持三种自定义文件扩展名，每种都有自己的启动器：</p>
+
+<table>
+    <thead>
+        <tr><th>扩展名</th><th>文件类型</th><th>双击后打开什么</th><th>对应启动器</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>.czemidi</code></td>
+            <td>Itoc 工程文件</td>
+            <td>用 Itoc 打开这个工程</td>
+            <td><code>launcher/OpenCZEmidiFile.exe</code></td>
+        </tr>
+        <tr>
+            <td><code>.UIclass</code></td>
+            <td>Itoc 模类文件</td>
+            <td>用模类设计器打开</td>
+            <td><code>launcher/OpenUIclassFile.exe</code></td>
+        </tr>
+        <tr>
+            <td><code>.CzeData</code></td>
+            <td>解释器数据中转文件</td>
+            <td>用配置好的解释器打开</td>
+            <td><code>launcher/OpenCzeDataFile.exe</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 为什么用启动器而不是直接关联主程序？</strong><br>
+    因为 Itoc 主程序（main.py 或 Itoc.exe）是"编辑器"，而双击文件需要的是"打开文件"这个动作。<br>
+    启动器就是专门干这个的：接收一个文件路径，然后把 Itoc 拉起来，告诉它"打开这个文件"。<br>
+    这样主程序的启动逻辑和"打开文件"的逻辑就解耦了，更干净。
+</div>
+
+<h3>2.1 启动器是用 C++ 写的</h3>
+
+<p>三个启动器都是独立的 C++ 小程序，各自对应一个 <code>.cpp</code> 源文件，编译出来就是 <code>launcher/</code> 文件夹里的 exe。</p>
+
+<table>
+    <thead>
+        <tr><th>启动器 exe</th><th>对应源码</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>OpenCZEmidiFile.exe</code></td>
+            <td><code>main主程序启动器.cpp</code></td>
+            <td>接收 <code>.czemidi</code> 路径，拉起 Itoc 主程序</td>
+        </tr>
+        <tr>
+            <td><code>OpenUIclassFile.exe</code></td>
+            <td><code>main模类启动器.cpp</code></td>
+            <td>接收 <code>.UIclass</code> 路径，拉起模类设计器</td>
+        </tr>
+        <tr>
+            <td><code>OpenCzeDataFile.exe</code></td>
+            <td><code>OpenCzeDataFile.cpp</code></td>
+            <td>接收 <code>.CzeData</code> 路径，拉起配置好的解释器</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>为什么用 C++ 写？因为这个启动器要做的事很简单——拿到文件路径、写个小 JSON、拉起主程序，用 C++ 编译出来体积小、启动快、不依赖 Python 环境。你用 <code>.czemidi</code> 双击打开的时候，是 <code>.exe</code> 在干活，不需要本机装 Python。</p>
+
+<h3>2.2 启动器的通用工作流程</h3>
+
+<p>三个启动器的行为大同小异，都是这三步：</p>
+
+<ol>
+    <li><strong>读取命令行参数</strong>：双击文件时，Windows 会把文件路径作为 <code>argv[1]</code> 传给启动器。</li>
+    <li><strong>写一个 JSON 信号文件</strong>：把文件路径写到一个约定的 JSON 里，告诉主程序"我要打开这个文件"。因为路径里可能有中文，启动器会先把 ANSI 转成 UTF-8 再写。</li>
+    <li><strong>按优先级启动主程序</strong>：优先找编译好的 <code>.exe</code>，找不到再回退到 <code>.py</code>，用 <code>pythonw.exe</code> 或 <code>python.exe</code> 拉起来。</li>
+</ol>
+
+<p>主程序启动后会去读那个 JSON，发现有文件路径就自动打开——这就是"双击文件直接进 Itoc"的完整链路。</p>
+
+<h3>2.3 三种启动器的区别</h3>
+
+<h4>① <code>OpenCZEmidiFile.exe</code>（工程启动器）</h4>
+
+<ul>
+    <li>写信号文件到：<code>launcher/RunData/launch_info.json</code></li>
+    <li>启动目标优先级：<code>Itoc.exe</code> → <code>main.py</code>（用 pythonw.exe / python.exe）</li>
+    <li>用 <code>CreateProcessA</code> 启动 exe，用 <code>ShellExecuteA</code> 启动 py</li>
+</ul>
+
+<h4>② <code>OpenUIclassFile.exe</code>（模类启动器）</h4>
+
+<ul>
+    <li>写信号文件到：<code>launcher/RunData/open_uiclass_info.json</code></li>
+    <li>启动目标优先级：<code>UI_Class.exe</code> → <code>UI_Class.py</code>（用 pythonw.exe / python.exe）</li>
+</ul>
+
+<h4>③ <code>OpenCzeDataFile.exe</code>（解释器启动器）</h4>
+
+<ul>
+    <li>写信号文件到：<code>runCZE/temp/launch_info.json</code></li>
+    <li>启动目标优先级：
+        <ol>
+            <li><code>shezhi.txt</code> 里配置的 <code>test_interpreter_path</code></li>
+            <li><code>runCZE/runCZEx64.exe</code>（固定默认解释器）</li>
+            <li><code>runCZE/runCZE.py</code>（用 pythonw.exe / python.exe）</li>
+        </ol>
+    </li>
+    <li>注意：这个启动器<strong>不读</strong> <code>interpreter_*</code> 和 <code>current_interpreter_mode</code> 字段，避免用户误把主解释器指向别的 exe 时被 <code>.CzeData</code> 误触发</li>
+</ul>
+
+<div class="note">
+    <strong>📌 启动器出问题怎么办？</strong><br>
+    每个启动器都会在自己所在的目录下生成一份日志：<br>
+    · <code>launcher/launcher_log.txt</code>（工程和模类启动器）<br>
+    · <code>launcher/interpreter_launcher_log.txt</code>（解释器启动器）<br>
+    日志里记录了参数、文件路径、启动目标、错误码等等。双击没反应的时候，先去看日志。
+</div>
+
+<h2>三、界面长啥样？</h2>
+
+<p>「打开方式」面板从上到下分成四块：</p>
+
+<pre><code>┌──────────────────────────────────────────────────┐
+│  .czemidi 工程文件                                │
+│  ─────────────────────                           │
+│  说明文字...                                      │
+│  启动器路径: [launcher\OpenCZEmidiFile.exe]       │
+│  [绑定 .czemidi]  [解绑 .czemidi]                 │
+├──────────────────────────────────────────────────┤
+│  .UIclass 模类文件                                │
+│  ─────────────────────                           │
+│  说明文字...                                      │
+│  启动器路径: [launcher\OpenUIclassFile.exe]       │
+│  [绑定 .UIclass]  [解绑 .UIclass]                 │
+├──────────────────────────────────────────────────┤
+│  .CzeData 解释器数据中转文件                       │
+│  ─────────────────────                           │
+│  说明文字...                                      │
+│  启动器路径: [launcher\OpenCzeDataFile.exe]       │
+│  [绑定 .CzeData]  [解绑 .CzeData]                 │
+├──────────────────────────────────────────────────┤
+│  状态提示（三行，显示当前关联状态）                  │
+│  [刷新状态]                                       │
+└──────────────────────────────────────────────────┘
+</code></pre>
+
+<h3>3.1 启动器路径</h3>
+
+<p>每个文件类型下面都会显示对应的启动器完整路径。路径是<strong>只读</strong>的，不能改，因为它固定指向 <code>launcher/</code> 文件夹下的某个 exe。</p>
+
+<p>如果某个启动器不存在，点绑定时会提示"找不到启动器文件"。</p>
+
+<h3>3.2 绑定 / 解绑按钮</h3>
+
+<table>
+    <thead>
+        <tr><th>按钮</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>绑定</strong></td>
+            <td>把对应扩展名关联到启动器。写注册表，<strong>只影响当前用户</strong>，不影响系统全局</td>
+        </tr>
+        <tr>
+            <td><strong>解绑</strong></td>
+            <td>删除注册表里所有相关的关联项，恢复"未关联"状态</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>3.3 状态提示</h3>
+
+<p>窗口最下方有一块状态区，会同时显示三种扩展名的关联状态。颜色代表状态：</p>
+
+<table>
+    <thead>
+        <tr><th>图标</th><th>颜色</th><th>含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>✅</td><td>绿色</td><td>已关联到正确的启动器（就是 Itoc 的）</td></tr>
+        <tr><td>⚠️</td><td>橙色</td><td>已关联到<strong>其它程序</strong>（比如被别的软件抢走了）</td></tr>
+        <tr><td>❌</td><td>红色</td><td>未关联</td></tr>
+    </tbody>
+</table>
+
+<p>点「刷新状态」会重新检测一遍。</p>
+
+<h2>四、怎么绑定？</h2>
+
+<p>以 <code>.czemidi</code> 为例：</p>
+
+<ol>
+    <li>确认 <code>launcher/OpenCZEmidiFile.exe</code> 文件存在（启动器路径那行会显示）</li>
+    <li>点 <strong>「绑定 .czemidi 到 OpenCZEmidiFile.exe」</strong></li>
+    <li>如果启动器不存在，会弹错误框；存在则写入注册表</li>
+    <li>写完后自动刷新状态，会看到状态变成 ✅</li>
+</ol>
+
+<h3>4.1 注册表里写了什么？</h3>
+
+<p>绑定会在当前用户注册表（<code>HKEY_CURRENT_USER</code>）里创建这些项：</p>
+
+<pre><code>HKCU\Software\Classes\Itoc.CzeMidi\
+    (默认值) = "Itoc 工程文件"
+
+HKCU\Software\Classes\Itoc.CzeMidi\DefaultIcon\
+    (默认值) = "启动器完整路径,0"
+
+HKCU\Software\Classes\Itoc.CzeMidi\shell\open\command\
+    (默认值) = "启动器完整路径" "%1"
+
+HKCU\Software\Classes\.czemidi\
+    (默认值) = "Itoc.CzeMidi"
+    Content Type = "application/x-itoc-czemidi"
+</code></pre>
+
+<p>简单说就是三件事：</p>
+
+<ol>
+    <li>注册一个"程序 ID"（ProgID），告诉系统这个类型叫什么、用什么图标、用什么命令打开</li>
+    <li>把扩展名 <code>.czemidi</code> 指向这个 ProgID</li>
+    <li>通知系统刷新（<code>SHChangeNotify</code>）</li>
+</ol>
+
+<div class="tip">
+    <strong>💡 为什么用 HKCU 而不是 HKLM？</strong><br>
+    HKCU 是"当前用户"，写它不需要管理员权限；HKLM 是"系统全局"，写它需要管理员权限。<br>
+    Itoc 的文件关联只影响你自己，所以用 HKCU 就够了，也不用弹 UAC。<br>
+    好处是你怎么折腾都不会影响别人的账号。
+</div>
+
+<h2>五、怎么解绑？</h2>
+
+<p>点对应类型的 <strong>「解绑」</strong>按钮，会删掉这些注册表项：</p>
+
+<pre><code>HKCU\Software\Classes\.czemidi\
+HKCU\Software\Classes\Itoc.CzeMidi\
+HKCU\Software\Classes\Applications\OpenCZEmidiFile.exe\
+HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.czemidi\
+</code></pre>
+
+<p>删完之后，<code>.czemidi</code> 就恢复到"未关联"状态了，双击会弹 Windows 的"选择打开方式"。</p>
+
+<h3>5.1 为什么解绑有时"不彻底"？</h3>
+
+<p>因为最后一项 <code>FileExts\.czemidi</code> 里的 <strong>UserChoice</strong> 子项受 Windows 保护，脚本删不掉。</p>
+
+<p>UserChoice 记录的是"用户最后一次手动选择的默认程序"。比如你曾经手动把 <code>.czemidi</code> 设成用记事本打开，这个选择就记在 UserChoice 里。系统会优先认 UserChoice，注册表里的其它关联都要让位。</p>
+
+<div class="warning">
+    <strong>⚠️ 想彻底解绑，需要手动操作：</strong><br>
+    1. 按 <kbd>Win</kbd>+<kbd>I</kbd> 打开「设置」<br>
+    2. 进入「应用」→「默认应用」<br>
+    3. 滑到最下面，点「按文件类型选择默认应用」<br>
+    4. 找到 <code>.czemidi</code>，把它改成别的程序（比如记事本）<br>
+    5. 或者直接在列表里找到 <code>.czemidi</code>，右键 →「删除」<br>
+    这样 UserChoice 就被清掉了，解绑才算彻底完成。
+</div>
+
+<h2>六、Windows 默认应用保护的坑</h2>
+
+<p>这是很多人会遇到、而且容易踩的坑：<strong>绑定了，但双击文件还是不用 Itoc 打开</strong>。</p>
+
+<h3>6.1 为什么会这样？</h3>
+
+<p>Windows 8 之后，微软为了"防止流氓软件劫持文件关联"，给默认应用加了一层保护。具体规则：</p>
+
+<ul>
+    <li>注册表里的 <code>HKCU\Software\Classes\.xxx</code> 只是"候选关联"</li>
+    <li>系统实际用的是 <code>UserChoice</code> 里的记录</li>
+    <li>UserChoice 只有用户<strong>手动确认</strong>才能被写，脚本改不了</li>
+</ul>
+
+<p>所以光写注册表没用，还得让用户手动确认一次"就用这个程序"。这本质上是微软的"防劫持"设计，是好事。</p>
+
+<h3>6.2 怎么绕过？</h3>
+
+<p>不能绕过（这是好事）。但你可以手动确认一次，之后系统就认了。步骤：</p>
+
+<ol>
+    <li>找到任意一个 <code>.czemidi</code> 文件</li>
+    <li><strong>右键</strong>它 →「打开方式」→「选择其他应用」</li>
+    <li>在弹出窗口里点「更多应用」→「在这台电脑上查找其他应用」</li>
+    <li>浏览到 <code>launcher\OpenCZEmidiFile.exe</code>，选中它</li>
+    <li>勾上底部的「<strong>始终使用此应用打开 .czemidi 文件</strong>」</li>
+    <li>点确定</li>
+</ol>
+
+<p>这一步做完，UserChoice 就被写进去了。之后双击 <code>.czemidi</code> 就会用 Itoc 打开。</p>
+
+<div class="tip">
+    <strong>💡 那"绑定"按钮还有什么用？</strong><br>
+    有用。绑定按钮做了两件事：<br>
+    1. 写好 ProgID 和图标，让"选择打开方式"窗口里能看到 Itoc 的图标和名字<br>
+    2. 写好 <code>HKCU\Software\Classes\.czemidi</code>，作为"候选关联"<br>
+    这样你在"选择其他应用"列表里就能一眼找到 Itoc，不用手动去文件系统里翻 exe。<br>
+    <strong>绑定 + 手动确认一次 = 完整流程</strong>。
+</div>
+
+<h2>七、状态检测原理</h2>
+
+<p>状态提示是怎么判断的？其实就是读注册表：</p>
+
+<ol>
+    <li>打开 <code>HKCU\Software\Classes\.czemidi</code>，读出它的默认值（ProgID）</li>
+    <li>打开 <code>HKCU\Software\Classes\{ProgID}\shell\open\command</code>，读出命令行</li>
+    <li>看看命令行里有没有包含 Itoc 的启动器路径</li>
+</ol>
+
+<p>结果分三种：</p>
+
+<table>
+    <thead>
+        <tr><th>情况</th><th>显示</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>命令行里包含 Itoc 启动器路径</td><td>✅ 已关联到: 启动器路径</td></tr>
+        <tr><td>命令行存在但不包含 Itoc 路径</td><td>⚠️ 已关联到其他程序: 具体命令行</td></tr>
+        <tr><td>注册表项不存在</td><td>❌ 未关联</td></tr>
+    </tbody>
+</table>
+
+<p>注意：状态检测<strong>不看 UserChoice</strong>，只看 <code>HKCU\Software\Classes</code>。所以可能出现"状态显示 ✅，但双击还是用别的程序打开"这种情况——这时候就是 UserChoice 在起作用，按 6.2 节手动确认一次就好。</p>
+
+<h2>八、常见问题</h2>
+
+<h3>Q1：绑定的时候提示"找不到启动器文件"？</h3>
+
+<p>说明 <code>launcher/OpenCZEmidiFile.exe</code> 不存在。检查一下：</p>
+
+<ul>
+    <li>Itoc 安装目录下有没有 <code>launcher/</code> 文件夹</li>
+    <li>文件夹里有没有对应的 exe 文件</li>
+    <li>文件名有没有被改过</li>
+</ul>
+
+<p>如果文件确实丢了，重新下载完整版的 Itoc。</p>
+
+<h3>Q2：绑定了，双击还是弹"选择打开方式"？</h3>
+
+<p>说明 UserChoice 还没建立。按 6.2 节手动确认一次即可。</p>
+
+<h3>Q3：绑定了，双击结果用记事本打开？</h3>
+
+<p>说明 UserChoice 里记录的是"用记事本打开"。按 6.2 节手动改成 Itoc 启动器。</p>
+
+<h3>Q4：解绑之后还是双击用 Itoc 打开？</h3>
+
+<p>也是 UserChoice 的锅。解绑删的是注册表关联项，但 UserChoice 删不掉。按 5.1 节手动去设置里改。</p>
+
+<h3>Q5：改了默认程序之后，Itoc 的图标没了？</h3>
+
+<p>图标是绑定时写到 <code>DefaultIcon</code> 里的。如果被别的程序覆盖了，重新点一下「绑定」，图标就回来了。</p>
+
+<h3>Q6：三种文件类型要不要都绑？</h3>
+
+<p>看你需求：</p>
+
+<ul>
+    <li><strong>.czemidi</strong>：做工程的肯定要绑，天天用</li>
+    <li><strong>.UIclass</strong>：如果你经常做模类，绑上方便</li>
+    <li><strong>.CzeData</strong>：如果你经常直接跑 CzeData 文件，绑上方便</li>
+</ul>
+
+<p>反正绑了不碍事，全绑上也行。</p>
+
+<h3>Q7：绑定会不会影响别的软件？</h3>
+
+<p>不会。<code>HKCU</code> 是当前用户的注册表，只影响你自己的账号。其它用户、系统级别的关联都不受影响。</p>
+
+<p>而且 <code>.czemidi</code> / <code>.UIclass</code> / <code>.CzeData</code> 这三个扩展名本来就是 Itoc 自定义的，一般不会有别的软件来抢。</p>
+
+<h3>Q8：绑定的信息存在哪？</h3>
+
+<p>存在 Windows 注册表的 <code>HKEY_CURRENT_USER\Software\Classes\</code> 下面。这是 Windows 标准做法，所有软件的文件关联都写在这。</p>
+
+<p>卸载 Itoc 的时候，如果安装程序没自动清，可以手动用「解绑」按钮清掉，不留垃圾。</p>
+
+<h3>Q9：能用命令行绑定吗？</h3>
+
+<p>当前版本没提供命令行绑定入口，只能通过首选项的按钮。如果你有批处理需求，可以自己写 reg 文件导入。</p>
+
+<h3>Q10：为什么绑定需要"手动确认"这一步？烦不烦啊？</h3>
+
+<p>烦是烦，但这是微软为了"防止恶意软件偷偷改默认程序"的设计。</p>
+
+<p>想象一下，如果任何软件都能随便改默认浏览器、默认看图工具、默认音乐播放器——那就乱套了。所以微软在 Windows 8 之后加了 UserChoice 保护，必须用户手动点头才认。</p>
+
+<p>对用户来说是"多一步确认"，但对系统安全来说是"多一层保险"。Itoc 尊重这个设计，所以只做"绑定到候选关联"，不尝试绕过它。</p>
+
+<h3>Q11：启动器日志在哪？双击没反应怎么排查？</h3>
+
+<p>每个启动器都会在同目录下写日志：</p>
+
+<table>
+    <thead>
+        <tr><th>启动器</th><th>日志文件</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>OpenCZEmidiFile.exe</code></td><td><code>launcher/launcher_log.txt</code></td></tr>
+        <tr><td><code>OpenUIclassFile.exe</code></td><td><code>launcher/launcher_log.txt</code></td></tr>
+        <tr><td><code>OpenCzeDataFile.exe</code></td><td><code>launcher/interpreter_launcher_log.txt</code></td></tr>
+    </tbody>
+</table>
+
+<p>日志是 UTF-8 编码（带 BOM），用记事本直接打开就能看。里面记录了：</p>
+
+<ul>
+    <li>启动器启动时间</li>
+    <li>收到的命令行参数（也就是文件路径）</li>
+    <li>写信号文件的路径和结果</li>
+    <li>尝试启动的目标 exe / py 路径</li>
+    <li>启动成功或失败的状态、错误码</li>
+</ul>
+
+<p>双击没反应时，第一件事就是去看日志，通常一眼就能看出问题在哪。</p>
+
+<h3>Q12：启动器是用什么写的？能不能自己改？</h3>
+
+<p>三个启动器都是用 <strong>C++</strong> 写的（Windows API，不依赖任何第三方库）：</p>
+
+<ul>
+    <li><code>main主程序启动器.cpp</code> → 编译出 <code>OpenCZEmidiFile.exe</code></li>
+    <li><code>main模类启动器.cpp</code> → 编译出 <code>OpenUIclassFile.exe</code></li>
+    <li><code>OpenCzeDataFile.cpp</code> → 编译出 <code>OpenCzeDataFile.exe</code></li>
+</ul>
+
+<h2>九、小结</h2>
+
+<p>「文件关联（打开方式）」管的是"双击某类文件时用哪个程序打开"。关键记住这几条：</p>
+
+<ul>
+    <li><strong>位置</strong>：文件(F) → 首选项 → 打开方式</li>
+    <li><strong>三种类型</strong>：.czemidi（工程）、.UIclass（模类）、.CzeData（解释器数据）</li>
+    <li><strong>启动器是 C++ 写的</strong>：体积小、启动快、不依赖 Python 环境</li>
+    <li><strong>绑定</strong>：写 HKCU 注册表，把扩展名关联到启动器</li>
+    <li><strong>解绑</strong>：删注册表项，恢复"未关联"</li>
+    <li><strong>状态检测</strong>：读注册表看命令行里有没有 Itoc 启动器路径</li>
+    <li><strong>Windows 保护</strong>：注册表写完还要手动确认一次，双击才生效</li>
+    <li><strong>排查问题</strong>：先看 <code>launcher/</code> 下的日志文件</li>
+    <li><strong>不影响别人</strong>：只用 HKCU，不用管理员权限，不碰系统全局</li>
+</ul>
+
+<p>绑一次，省一辈子事。绑完之后双击 <code>.czemidi</code> 就能直接进 Itoc，比"打开软件 → 文件 → 打开工程"快多了。</p>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'file_association.html'
+    });
+</script>
+</body>
+</html>

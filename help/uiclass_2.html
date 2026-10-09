@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 模类设计器详解 - 10 种控件的完整属性说明，JSON 语法规范，链接系统，图片 Base64 嵌入，字体系统，由小小电子xxdz开发的 xxdz Itoc 核心功能">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,模类设计器,UIclass,控件属性,JSON语法,链接系统,Base64图片">
+<meta property="og:title" content="模类设计器详解 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 模类设计器详解 - 10 种控件的完整属性说明，JSON 语法规范，链接系统，图片 Base64 嵌入，字体系统">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<title>模类设计器详解 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🔧 模类设计器详解</h1>
+
+<p>上一篇我们认识了模类，搭了一个最简单的"你好，Itoc！"窗口，还搞懂了怎么保存、怎么用模类管理器、怎么在工程里用。但那时候我们只用了"标签"一个控件——模类设计器真正的威力，在于它支持 10 种控件、几十个属性、链接系统、Base64 图片嵌入、字体定制等等。这一篇我们就来把这些全部讲透。</p>
+
+<p>内容比较多，建议边看边打开模类设计器实操。准备好了吗？走起！</p>
+
+<h2>一、模类文件的顶层结构</h2>
+
+<p>每个 <code>.UIclass</code> 文件的最外层都是一个 JSON 对象，我们叫它<strong>顶层对象</strong>。它描述了窗口本身的各种属性：</p>
+
+<pre><code>{
+    "name": "登录对话框",
+    "width": 800,
+    "height": 600,
+    "bg_color": "#F0F0F0",
+    "minimize_btn": true,
+    "maximize_btn": true,
+    "close_btn": true,
+    "help_btn": false,
+    "esc_close": true,
+    "close_btn_close": true,
+    "taskbar_show": true,
+    "resizable": true,
+    "components": [ ... ],
+    "icon_data_base64": "...",
+    "icon_filename": "app.ico"
+}</code></pre>
+
+<h3>1.1 顶层字段详解</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>字段名</th>
+            <th>类型</th>
+            <th>必填</th>
+            <th>默认值</th>
+            <th>说明</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td><code>name</code></td><td>字符串</td><td>是</td><td>-</td><td>模类名称，显示在窗口标题栏</td></tr>
+        <tr><td><code>width</code></td><td>整数</td><td>否</td><td>800</td><td>窗口内容区宽度（像素）</td></tr>
+        <tr><td><code>height</code></td><td>整数</td><td>否</td><td>600</td><td>窗口内容区高度（像素）</td></tr>
+        <tr><td><code>bg_color</code></td><td>字符串</td><td>否</td><td><code>#FFFFFF</code></td><td>窗口背景颜色（Hex RGB）</td></tr>
+        <tr><td><code>minimize_btn</code></td><td>布尔值</td><td>否</td><td><code>true</code></td><td>是否显示最小化按钮</td></tr>
+        <tr><td><code>maximize_btn</code></td><td>布尔值</td><td>否</td><td><code>true</code></td><td>是否显示最大化按钮</td></tr>
+        <tr><td><code>close_btn</code></td><td>布尔值</td><td>否</td><td><code>true</code></td><td>是否显示关闭按钮（控制钮）</td></tr>
+        <tr><td><code>help_btn</code></td><td>布尔值</td><td>否</td><td><code>false</code></td><td>是否显示帮助按钮（启用后自动禁用最大化）</td></tr>
+        <tr><td><code>esc_close</code></td><td>布尔值</td><td>否</td><td><code>true</code></td><td>是否允许 ESC 键关闭窗口</td></tr>
+        <tr><td><code>close_btn_close</code></td><td>布尔值</td><td>否</td><td><code>true</code></td><td>是否允许点击关闭按钮关闭窗口</td></tr>
+        <tr><td><code>taskbar_show</code></td><td>布尔值</td><td>否</td><td><code>true</code></td><td>是否在任务栏显示</td></tr>
+        <tr><td><code>resizable</code></td><td>布尔值</td><td>否</td><td><code>true</code></td><td>窗口是否可调整大小</td></tr>
+        <tr><td><code>components</code></td><td>数组</td><td>否</td><td><code>[]</code></td><td>控件列表</td></tr>
+        <tr><td><code>icon_data_base64</code></td><td>字符串</td><td>否</td><td><code>""</code></td><td>窗口图标 Base64 编码数据</td></tr>
+        <tr><td><code>icon_filename</code></td><td>字符串</td><td>否</td><td><code>""</code></td><td>图标原始文件名（仅用于显示）</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 控制钮的联动关系：</strong><br>
+    在模类设计器里，如果 <code>close_btn</code> 被设为 <code>false</code>，<code>minimize_btn</code> 和 <code>maximize_btn</code> 会自动也被设为 <code>false</code>。因为"控制钮"（关闭按钮）是标题栏上所有按钮的"总开关"，关掉它就没有按钮区了。
+</div>
+
+<div class="warning">
+    <strong>⚠️ 顶层不要包含 <code>id</code> 和 <code>_saved</code>：</strong><br>
+    这两个字段是运行时内部使用的标记，<code>id</code> 用于模类管理器里的临时标识，<code>_saved</code> 用于判断模类是否已保存。保存到文件时模类设计器会自动移除它们。
+</div>
+
+<h2>二、通用控件字段</h2>
+
+<p>不管是哪种控件，都共享下面这些基础字段：</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>字段名</th>
+            <th>类型</th>
+            <th>必填</th>
+            <th>默认值</th>
+            <th>说明</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td><code>id</code></td><td>整数</td><td>是</td><td>-</td><td>控件唯一标识符（正整数，不可重复）</td></tr>
+        <tr><td><code>type</code></td><td>字符串</td><td>是</td><td>-</td><td>控件类型（见下表）</td></tr>
+        <tr><td><code>name</code></td><td>字符串</td><td>是</td><td>-</td><td>控件显示名称（需在同类中唯一）</td></tr>
+        <tr><td><code>x</code></td><td>整数</td><td>是</td><td>50</td><td>左上角 X 坐标（相对于父容器）</td></tr>
+        <tr><td><code>y</code></td><td>整数</td><td>是</td><td>50</td><td>左上角 Y 坐标（相对于父容器）</td></tr>
+        <tr><td><code>width</code></td><td>整数</td><td>是</td><td>100</td><td>控件宽度（像素）</td></tr>
+        <tr><td><code>height</code></td><td>整数</td><td>是</td><td>30</td><td>控件高度（像素）</td></tr>
+        <tr><td><code>text</code></td><td>字符串</td><td>否</td><td><code>""</code></td><td>显示文本内容</td></tr>
+        <tr><td><code>default_focus</code></td><td>布尔值</td><td>否</td><td><code>false</code></td><td>是否为默认焦点控件</td></tr>
+    </tbody>
+</table>
+
+<div class="note">
+    <strong>📌 坐标始终相对于父容器：</strong><br>
+    如果控件直接放在顶层窗口里，<code>x</code>/<code>y</code> 就是相对于窗口左上角。如果控件链接到了选项卡页面或编组框里，<code>x</code>/<code>y</code> 就是相对于那个容器的左上角。这一点在设计器里拖动控件时是自动处理的，你不用担心。
+</div>
+
+<h2>三、10 种控件全解</h2>
+
+<h3>3.1 标签（<code>type: "label"</code>）</h3>
+
+<p><strong>描述：</strong>用于显示静态文本，可以链接到进度条显示百分比值。</p>
+
+<p><strong>专用字段：</strong></p>
+
+<table>
+    <thead>
+        <tr>
+            <th>字段名</th>
+            <th>类型</th>
+            <th>默认值</th>
+            <th>说明</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td><code>font</code></td><td>对象</td><td><code>{"family":"宋体","size":11,"color":"#000000"}</code></td><td>字体设置</td></tr>
+        <tr><td><code>linked_progress_id</code></td><td>整数 / null</td><td><code>null</code></td><td>链接的进度条 ID（非空时显示进度百分比）</td></tr>
+        <tr><td><code>hover_text</code></td><td>字符串</td><td><code>""</code></td><td>鼠标悬浮时显示的文本（预览时生效）</td></tr>
+        <tr><td><code>pressed_text</code></td><td>字符串</td><td><code>""</code></td><td>鼠标按下时显示的文本（预览时生效）</td></tr>
+    </tbody>
+</table>
+
+<p><strong>font 对象结构：</strong></p>
+
+<table>
+    <thead>
+        <tr><th>字段名</th><th>类型</th><th>默认值</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>family</code></td><td>字符串</td><td><code>"宋体"</code></td><td>字体名称（如 宋体、微软雅黑、Arial）</td></tr>
+        <tr><td><code>size</code></td><td>整数</td><td><code>11</code></td><td>字号（6-72）</td></tr>
+        <tr><td><code>color</code></td><td>字符串</td><td><code>"#000000"</code></td><td>文本颜色（Hex RGB）</td></tr>
+    </tbody>
+</table>
+
+<p><strong>示例：</strong></p>
+
+<pre><code>{
+    "id": 1,
+    "type": "label",
+    "name": "状态标签",
+    "x": 20,
+    "y": 20,
+    "width": 120,
+    "height": 30,
+    "text": "当前状态: 就绪",
+    "font": {"family": "微软雅黑", "size": 12, "color": "#0066CC"},
+    "linked_progress_id": 7,
+    "hover_text": "点击更新状态",
+    "pressed_text": "更新中...",
+    "default_focus": false
+}</code></pre>
+
+<div class="tip">
+    <strong>💡 标签链接进度条的妙用：</strong><br>
+    把 <code>linked_progress_id</code> 设成某个进度条的 <code>id</code>，标签就会每 100ms 自动更新为进度条的当前值（显示成 "50%" 这样的格式）。这在做"文件复制进度框"的时候特别有用——一个进度条 + 一个百分比标签，完美还原 Windows 文件复制界面。
+</div>
+
+<h3>3.2 编辑框（<code>type: "entry"</code>）</h3>
+
+<p><strong>描述：</strong>单行文本输入框（在预览和设计器中均为只读状态）。</p>
+
+<p><strong>专用字段：</strong></p>
+
+<table>
+    <thead>
+        <tr><th>字段名</th><th>类型</th><th>默认值</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>font</code></td><td>对象</td><td>同上</td><td>字体设置</td></tr>
+        <tr><td><code>use_placeholder</code></td><td>布尔值</td><td><code>true</code></td><td>是否将 <code>text</code> 用作虚占位符（输入框为空时显示）</td></tr>
+    </tbody>
+</table>
+
+<p><strong>示例：</strong></p>
+
+<pre><code>{
+    "id": 2,
+    "type": "entry",
+    "name": "用户名输入框",
+    "x": 100,
+    "y": 60,
+    "width": 200,
+    "height": 32,
+    "text": "请输入用户名",
+    "font": {"family": "宋体", "size": 11, "color": "#333333"},
+    "use_placeholder": true,
+    "default_focus": true
+}</code></pre>
+
+<div class="note">
+    <strong>📌 虚占位符是什么意思？</strong><br>
+    当 <code>use_placeholder</code> 为 <code>true</code> 时，<code>text</code> 字段的内容会作为灰色占位文字显示（输入框为空时可见），输入框本身是空的。当它为 <code>false</code> 时，<code>text</code> 会作为实际内容填进输入框。
+</div>
+
+<h3>3.3 图片框（<code>type: "image"</code>）</h3>
+
+<p><strong>描述：</strong>显示图片的控件，支持 Base64 嵌入式图片数据。</p>
+
+<p><strong>专用字段：</strong></p>
+
+<table>
+    <thead>
+        <tr><th>字段名</th><th>类型</th><th>默认值</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>image_data_base64</code></td><td>字符串</td><td><code>""</code></td><td>图片的 Base64 编码数据</td></tr>
+        <tr><td><code>image_filename</code></td><td>字符串</td><td><code>""</code></td><td>原始图片文件名（仅显示用）</td></tr>
+        <tr><td><code>display_mode</code></td><td>字符串</td><td><code>"填充"</code></td><td>显示模式：<code>填充</code> | <code>适应</code> | <code>拉伸</code> | <code>平铺</code> | <code>居中</code></td></tr>
+        <tr><td><code>show_border</code></td><td>布尔值</td><td><code>false</code></td><td>是否显示边框</td></tr>
+        <tr><td><code>transparent</code></td><td>布尔值</td><td><code>true</code></td><td>是否透明背景</td></tr>
+    </tbody>
+</table>
+
+<p><strong>display_mode 说明：</strong></p>
+
+<table>
+    <thead>
+        <tr><th>模式</th><th>行为</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>填充</code></td><td>填满控件区域，保持比例，可能裁剪</td></tr>
+        <tr><td><code>适应</code></td><td>完整显示图片，保持比例，可能有留白</td></tr>
+        <tr><td><code>拉伸</code></td><td>拉伸图片填满控件，不保持比例</td></tr>
+        <tr><td><code>平铺</code></td><td>重复平铺图片</td></tr>
+        <tr><td><code>居中</code></td><td>居中显示，不缩放</td></tr>
+    </tbody>
+</table>
+
+<p><strong>示例：</strong></p>
+
+<pre><code>{
+    "id": 3,
+    "type": "image",
+    "name": "LOGO图片",
+    "x": 50,
+    "y": 50,
+    "width": 300,
+    "height": 285,
+    "text": "",
+    "image_data_base64": "iVBORw0KGgoAAAANS...",
+    "image_filename": "logo.png",
+    "display_mode": "适应",
+    "show_border": true,
+    "transparent": false
+}</code></pre>
+
+<div class="tip">
+    <strong>💡 图片是"嵌"进文件里的：</strong><br>
+    图片控件的图片数据直接以 Base64 编码存在 JSON 里，不需要外部文件依赖。这意味着你把 <code>.UIclass</code> 文件发给朋友，图片会一起带过去，不会出现"图片找不到"的情况。代价是文件会变大——大图片的 Base64 数据可能有好几 MB，所以建议压缩后再导入。
+</div>
+
+<h3>3.4 按钮（<code>type: "button"</code>）</h3>
+
+<p><strong>描述：</strong>标准命令按钮，使用系统原生样式。</p>
+
+<p><strong>专用字段：</strong></p>
+
+<table>
+    <thead>
+        <tr><th>字段名</th><th>类型</th><th>默认值</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>font</code></td><td>对象</td><td>同上</td><td>字体设置</td></tr>
+    </tbody>
+</table>
+
+<p><strong>示例：</strong></p>
+
+<pre><code>{
+    "id": 4,
+    "type": "button",
+    "name": "确定按钮",
+    "x": 200,
+    "y": 300,
+    "width": 100,
+    "height": 35,
+    "text": "确定",
+    "font": {"family": "微软雅黑", "size": 11, "color": "#000000"},
+    "default_focus": true
+}</code></pre>
+
+<div class="note">
+    <strong>📌 按钮在模类里是"只读"的：</strong><br>
+    模类没有代码逻辑，所以按钮点击后不会执行任何操作。按钮主要是用来"还原视觉"——比如做假 UAC 窗口时，放两个按钮让窗口看起来更像真的。真正的"点击行为"由 Itoc 全局命令的"鼠标移动 + 点击"来模拟。
+</div>
+
+<h3>3.5 单选框（<code>type: "radio"</code>）</h3>
+
+<p><strong>描述：</strong>单选按钮，通常成组使用。</p>
+
+<p><strong>专用字段：</strong></p>
+
+<table>
+    <thead>
+        <tr><th>字段名</th><th>类型</th><th>默认值</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>font</code></td><td>对象</td><td>同上</td><td>字体设置</td></tr>
+    </tbody>
+</table>
+
+<p><strong>示例：</strong></p>
+
+<pre><code>{
+    "id": 5,
+    "type": "radio",
+    "name": "选项A",
+    "x": 50,
+    "y": 150,
+    "width": 125,
+    "height": 30,
+    "text": "选项 A",
+    "font": {"family": "宋体", "size": 11, "color": "#000000"},
+    "default_focus": false
+}</code></pre>
+
+<h3>3.6 复选框（<code>type: "checkbox"</code>）</h3>
+
+<p><strong>描述：</strong>复选框，可独立或成组使用。</p>
+
+<p><strong>专用字段：</strong></p>
+
+<table>
+    <thead>
+        <tr><th>字段名</th><th>类型</th><th>默认值</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>font</code></td><td>对象</td><td>同上</td><td>字体设置</td></tr>
+    </tbody>
+</table>
+
+<p><strong>示例：</strong></p>
+
+<pre><code>{
+    "id": 6,
+    "type": "checkbox",
+    "name": "记住我",
+    "x": 50,
+    "y": 200,
+    "width": 125,
+    "height": 30,
+    "text": "记住我",
+    "font": {"family": "宋体", "size": 11, "color": "#000000"},
+    "default_focus": false
+}</code></pre>
+
+<h3>3.7 进度条（<code>type: "progress"</code>）</h3>
+
+<p><strong>描述：</strong>进度指示控件，支持动画效果。</p>
+
+<p><strong>专用字段：</strong></p>
+
+<table>
+    <thead>
+        <tr><th>字段名</th><th>类型</th><th>默认值</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>initial_value</code></td><td>整数</td><td><code>50</code></td><td>初始进度值（0-100）</td></tr>
+        <tr><td><code>end_value</code></td><td>整数</td><td><code>100</code></td><td>结束进度值（0-100）</td></tr>
+        <tr><td><code>duration</code></td><td>整数</td><td><code>5</code></td><td>动画持续时间（秒）</td></tr>
+    </tbody>
+</table>
+
+<p><strong>示例：</strong></p>
+
+<pre><code>{
+    "id": 7,
+    "type": "progress",
+    "name": "加载进度条",
+    "x": 50,
+    "y": 250,
+    "width": 300,
+    "height": 25,
+    "text": "",
+    "initial_value": 0,
+    "end_value": 100,
+    "duration": 10
+}</code></pre>
+
+<div class="tip">
+    <strong>💡 进度条是"会自动跑"的：</strong><br>
+    运行时，每个进度条都会独立按 <code>duration</code> 秒从 <code>initial_value</code> 平滑过渡到 <code>end_value</code>。所以你不需要写任何代码，进度条自己就会动起来。
+</div>
+
+<h3>3.8 编组框（<code>type: "groupbox"</code>）</h3>
+
+<p><strong>描述：</strong>容器控件，用于逻辑分组其他控件。它有一个标题栏，看起来像一个带边框的卡片。</p>
+
+<p><strong>专用字段：</strong>无额外字段（继承通用字段）。</p>
+
+<div class="warning">
+    <strong>⚠️ 编组框的高度至少 80 像素：</strong><br>
+    否则标题栏会挤掉内容区域，子控件可能显示不全。
+</div>
+
+<p><strong>示例：</strong></p>
+
+<pre><code>{
+    "id": 8,
+    "type": "groupbox",
+    "name": "用户信息组",
+    "x": 30,
+    "y": 30,
+    "width": 350,
+    "height": 200,
+    "text": "用户信息",
+    "default_focus": false
+}</code></pre>
+
+<h3>3.9 选项卡（<code>type: "tabwidget"</code>）</h3>
+
+<p><strong>描述：</strong>多页选项卡容器，每个页面可容纳其他控件。</p>
+
+<p><strong>专用字段：</strong></p>
+
+<table>
+    <thead>
+        <tr><th>字段名</th><th>类型</th><th>默认值</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>tab_titles</code></td><td>数组</td><td><code>["页面1","页面2"]</code></td><td>选项卡标题列表（字符串数组）</td></tr>
+    </tbody>
+</table>
+
+<p><strong>示例：</strong></p>
+
+<pre><code>{
+    "id": 9,
+    "type": "tabwidget",
+    "name": "设置选项卡",
+    "x": 40,
+    "y": 40,
+    "width": 500,
+    "height": 350,
+    "text": "",
+    "tab_titles": ["基本设置", "高级设置", "关于"]
+}</code></pre>
+
+<div class="tip">
+    <strong>💡 选项卡标题可以在设计器里快速编辑：</strong><br>
+    选中选项卡控件后，属性面板里会有一项「选项卡标题」，双击它会打开一个多行文本编辑器，每行一个标题，改完点确定就行。
+</div>
+
+<h3>3.10 矩形（<code>type: "rectangle"</code>）</h3>
+
+<p><strong>描述：</strong>纯图形矩形，用于装饰或作为视觉分隔。</p>
+
+<p><strong>专用字段：</strong></p>
+
+<table>
+    <thead>
+        <tr><th>字段名</th><th>类型</th><th>默认值</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>fill_color</code></td><td>字符串</td><td><code>"#F0F0F0"</code></td><td>填充颜色（Hex RGB）</td></tr>
+        <tr><td><code>border_color</code></td><td>字符串</td><td><code>"#DFDFDF"</code></td><td>边框颜色（Hex RGB）</td></tr>
+        <tr><td><code>border_width</code></td><td>整数</td><td><code>1</code></td><td>边框宽度（像素）</td></tr>
+        <tr><td><code>show_border</code></td><td>布尔值</td><td><code>true</code></td><td>是否显示边框</td></tr>
+        <tr><td><code>hover_color</code></td><td>字符串</td><td><code>""</code></td><td>鼠标悬浮时的填充颜色（预览时生效）</td></tr>
+        <tr><td><code>pressed_color</code></td><td>字符串</td><td><code>""</code></td><td>鼠标按下时的填充颜色（预览时生效）</td></tr>
+    </tbody>
+</table>
+
+<p><strong>示例：</strong></p>
+
+<pre><code>{
+    "id": 10,
+    "type": "rectangle",
+    "name": "分割矩形",
+    "x": 20,
+    "y": 20,
+    "width": 400,
+    "height": 250,
+    "text": "标题区域",
+    "fill_color": "#E8F0FE",
+    "border_color": "#0066CC",
+    "border_width": 2,
+    "show_border": true,
+    "hover_color": "#D4E4FF",
+    "pressed_color": "#B8D0FF"
+}</code></pre>
+
+<h2>四、链接系统</h2>
+
+<p>链接系统是模类设计器的一个高级功能，允许你把控件"塞进"选项卡页面或编组框内部。听起来很简单，但用起来有一些坑，我们一个一个说。</p>
+
+<h3>4.1 链接到选项卡</h3>
+
+<table>
+    <thead>
+        <tr><th>字段名</th><th>类型</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>linked_tab_id</code></td><td>整数</td><td>目标选项卡控件的 <code>id</code></td></tr>
+        <tr><td><code>linked_tab_page</code></td><td>整数</td><td>目标页面索引（从 0 开始）</td></tr>
+        <tr><td><code>linked_tab_info</code></td><td>字符串</td><td>显示用信息（格式：<code>"选项卡名 → 页面名"</code>）</td></tr>
+    </tbody>
+</table>
+
+<h3>4.2 链接到编组框</h3>
+
+<table>
+    <thead>
+        <tr><th>字段名</th><th>类型</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>linked_groupbox_id</code></td><td>整数</td><td>目标编组框控件的 <code>id</code></td></tr>
+        <tr><td><code>linked_groupbox_info</code></td><td>字符串</td><td>显示用信息（格式：<code>"编组框名"</code>）</td></tr>
+    </tbody>
+</table>
+
+<h3>4.3 链接示例</h3>
+
+<pre><code>{
+    "components": [
+        {
+            "id": 100,
+            "type": "tabwidget",
+            "name": "主选项卡",
+            "x": 20, "y": 20, "width": 600, "height": 400,
+            "tab_titles": ["页面一", "页面二"]
+        },
+        {
+            "id": 101,
+            "type": "label",
+            "name": "页面一标签",
+            "x": 50, "y": 60, "width": 150, "height": 30,
+            "text": "这是页面一的内容",
+            "linked_tab_id": 100,
+            "linked_tab_page": 0,
+            "linked_tab_info": "主选项卡 → 页面一"
+        },
+        {
+            "id": 102,
+            "type": "groupbox",
+            "name": "内嵌编组框",
+            "x": 30, "y": 120, "width": 250, "height": 150,
+            "text": "编组框标题",
+            "linked_tab_id": 100,
+            "linked_tab_page": 1,
+            "linked_tab_info": "主选项卡 → 页面二"
+        },
+        {
+            "id": 103,
+            "type": "button",
+            "name": "编组框内按钮",
+            "x": 40, "y": 50, "width": 100, "height": 35,
+            "text": "点击我",
+            "linked_groupbox_id": 102,
+            "linked_groupbox_info": "内嵌编组框"
+        }
+    ]
+}</code></pre>
+
+<h3>4.4 链接坐标规则</h3>
+
+<p>当控件链接到容器（选项卡页面或编组框）时，<code>x</code> 和 <code>y</code> 坐标是<strong>相对于容器左上角的偏移量</strong>，而非相对于顶层窗口。这一点在设计器里拖拽时是自动处理的，你只需要关注最终视觉效果。</p>
+
+<div class="warning">
+    <strong>⚠️ 链接系统可靠性警告（来自文档）：</strong><br>
+    不建议使用与编组框、选项卡的链接功能……在某些情况下，链接到编组框或选项卡的控件可能会出现以下问题：<br><br>
+    1. <strong>坐标偏移</strong>：链接后控件位置可能与设计器中的显示位置不一致<br>
+    2. <strong>链接丢失</strong>：在编辑过程中，链接关系可能意外丢失<br>
+    3. <strong>预览异常</strong>：预览时嵌套控件可能无法正确显示<br>
+    4. <strong>保存损坏</strong>：链接信息在保存/加载循环中可能被错误修改<br><br>
+    <strong>建议：</strong><br>
+    · 对于编组框，尽量把子控件直接放在编组框的坐标范围内（靠调整坐标的方式简单粗暴地实现，不依赖链接字段）<br>
+    · 对于选项卡，尽量把控件放在选项卡页面的坐标范围内<br>
+    · 如必须使用链接功能，请在保存后重新打开验证效果。有时在编辑器窗口可能看着控件错位，但是点击"运行"按钮后实际效果是正确的
+</div>
+
+<h2>五、字体系统</h2>
+
+<p>支持字体定制的控件类型有 5 种：<code>label</code>、<code>entry</code>、<code>button</code>、<code>radio</code>、<code>checkbox</code>。</p>
+
+<p>字体通过 <code>font</code> 对象定制：</p>
+
+<pre><code>"font": {
+    "family": "微软雅黑",
+    "size": 14,
+    "color": "#FF0000"
+}</code></pre>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>类型</th><th>可选值</th><th>默认值</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>family</code></td><td>字符串</td><td>系统字体名称</td><td><code>"宋体"</code></td></tr>
+        <tr><td><code>size</code></td><td>整数</td><td>6 ~ 72</td><td><code>11</code></td></tr>
+        <tr><td><code>color</code></td><td>字符串</td><td>Hex RGB（<code>#RRGGBB</code>）</td><td><code>"#000000"</code></td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 设计器内置了字体快捷菜单：</strong><br>
+    在属性面板里点击「字体」那一行的 ▼ 按钮，会弹出预设字体列表（宋体、黑体、微软雅黑、Arial、Times New Roman、Consolas、DengXian Light、华文楷体）。点击「字号」会弹出预设字号（8、9、10、11、12、14、16、18、20、24、28、32、36、48、72），也可以选「自定义...」输入任意值。点击「颜色」会打开系统颜色选择器。
+</div>
+
+<h2>六、图片资源系统</h2>
+
+<p>模类里的图片和图标都使用 <strong>Base64 嵌入式数据</strong>，不需要外部文件依赖。</p>
+
+<h3>6.1 图片数据规格</h3>
+
+<table>
+    <thead>
+        <tr><th>项目</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>编码格式</td><td>Base64</td></tr>
+        <tr><td>支持的图片格式</td><td>PNG、JPG、JPEG、GIF、BMP</td></tr>
+        <tr><td>数据字段</td><td><code>image_data_base64</code></td></tr>
+        <tr><td>文件名字段</td><td><code>image_filename</code>（仅用于 UI 显示）</td></tr>
+    </tbody>
+</table>
+
+<h3>6.2 图标资源规格</h3>
+
+<table>
+    <thead>
+        <tr><th>项目</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>编码格式</td><td>Base64</td></tr>
+        <tr><td>支持的图标格式</td><td>ICO</td></tr>
+        <tr><td>数据字段</td><td><code>icon_data_base64</code></td></tr>
+        <tr><td>文件名字段</td><td><code>icon_filename</code>（仅用于 UI 显示）</td></tr>
+    </tbody>
+</table>
+
+<div class="note">
+    <strong>📌 怎么导入图片？</strong><br>
+    选中图片控件后，属性面板里有一项「图片资源」，点击右侧的 ⇗ 按钮，会打开文件选择框。选择图片后，设计器会自动读取文件内容并转成 Base64 存进 JSON 里，同时把文件名记到 <code>image_filename</code> 字段用于显示。
+</div>
+
+<h2>七、图层面板与控件顺序</h2>
+
+<p>在模类设计器里，<code>components</code> 数组的顺序决定了控件的<strong>渲染层级（Z-order）</strong>：<strong>数组末尾的元素在最上层</strong>。</p>
+
+<p>选中控件后，可以通过右键菜单或工具栏进行四种图层操作：</p>
+
+<table>
+    <thead>
+        <tr><th>操作</th><th>效果</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>置于顶层</td><td>把控件移到数组末尾，渲染在最上层</td></tr>
+        <tr><td>置于底层</td><td>把控件移到数组开头，渲染在最下层</td></tr>
+        <tr><td>上移一层</td><td>与后一个元素交换位置</td></tr>
+        <tr><td>下移一层</td><td>与前一个元素交换位置</td></tr>
+    </tbody>
+</table>
+
+<h2>八、多选与批量编辑</h2>
+
+<p>按住 <kbd>Ctrl</kbd> 或 <kbd>Shift</kbd> 点击多个控件，可以进入<strong>多选模式</strong>。在多选模式下：</p>
+
+<ul>
+    <li>拖动任意一个选中的控件，整个选区一起移动</li>
+    <li>属性面板只显示"X 坐标、Y 坐标、宽度、高度"四项</li>
+    <li>修改其中任意一项时，会对所有选中控件应用<strong>偏移量</strong>（而不是强制统一值）</li>
+    <li>右键菜单可以批量复制、删除、上移下移</li>
+    <li>多选时"置于顶层/置于底层"不可用（只有单选时才能用）</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 多选偏移的原理：</strong><br>
+    假设你选中了 3 个控件，它们的 X 坐标分别是 50、100、150。你把属性面板里的 X 改成 80（比第一个控件的 50 多了 30），那么三个控件会分别变成 80、130、180——每个都偏移了 +30，相对位置保持不变。这就是"偏移编辑"。
+</div>
+
+<h2>九、撤销 / 重做</h2>
+
+<p>模类设计器的撤销/重做采用 <strong>JSON 全文本快照</strong>方式：每次修改都会把当前模类的 JSON 序列化成字符串，压入撤销栈。最多保留 200 步。</p>
+
+<table>
+    <thead>
+        <tr><th>操作</th><th>快捷键</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>撤销</td><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td></tr>
+        <tr><td>重做</td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd></td></tr>
+    </tbody>
+</table>
+
+<p>撤销/重做是<strong>整个模类级别</strong>的——也就是说，它会恢复模类的完整状态，包括所有控件、窗口属性、JSON 数据。所以在模类设计器里你可以放心大胆地改，改坏了按 Ctrl+Z 就行。</p>
+
+<h2>十、点阵与自动对齐</h2>
+
+<h3>10.1 显示点阵</h3>
+
+<p>在<strong>「视图」菜单</strong>里勾选「显示点阵」，设计区背景会显示等距的网格点。点阵间距默认 10 像素，可以在「视图」→「点阵规模...」里改成 2~50 之间的任意值。</p>
+
+<h3>10.2 自动对齐</h3>
+
+<p>勾选<strong>「视图」→「自动对齐」</strong>后，拖动控件和缩放控件时会自动吸附到网格上。缩放时，位置和尺寸都会吸附到网格，保证控件永远对齐。</p>
+
+<div class="tip">
+    <strong>💡 点阵和自动对齐可以独立使用：</strong><br>
+    你可以只显示点阵但不开启自动对齐（作为视觉参考），也可以只开启自动对齐但不显示点阵（视野更干净）。当然两个都开也完全没问题。
+</div>
+
+<h2>十一、JSON 源数据视图</h2>
+
+<p>JSON 视图是模类设计器最强大的功能之一。它位于窗口底部，实时显示当前模类的 JSON 数据。</p>
+
+<h3>11.1 查看与编辑</h3>
+
+<p>JSON 视图是<strong>可编辑的</strong>。你可以直接在里面修改 JSON，然后按 <kbd>Insert</kbd> 键或点「应用」按钮，修改会立刻反映到设计区。这对于批量修改、精确调整非常方便。</p>
+
+<h3>11.2 语法高亮</h3>
+
+<p>JSON 视图带语法高亮：</p>
+
+<table>
+    <thead>
+        <tr><th>元素</th><th>颜色</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>关键字（true / false / null）</td><td>蓝色</td></tr>
+        <tr><td>字符串</td><td>绿色</td></tr>
+        <tr><td>数字</td><td>橙色</td></tr>
+        <tr><td>键名</td><td>紫色</td></tr>
+        <tr><td>注释</td><td>灰色</td></tr>
+    </tbody>
+</table>
+
+<h3>11.3 三个按钮</h3>
+
+<table>
+    <thead>
+        <tr><th>按钮</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>应用 (Insert + Space)</td><td>把 JSON 内容应用到设计区</td></tr>
+        <tr><td>格式化</td><td>自动美化 JSON（缩进对齐），如果 JSON 有语法错误会弹出带复制按钮的错误提示</td></tr>
+        <tr><td>了解模类语法</td><td>打开内置的帮助文档（Markdown 阅读器）</td></tr>
+    </tbody>
+</table>
+
+<h2>十二、运行预览</h2>
+
+<p>点工具栏<strong>「▶ 运行」</strong>按钮，会弹出一个真正的窗口来展示模类效果。预览窗口会：</p>
+
+<ul>
+    <li>根据顶层字段设置窗口标题、尺寸、背景色、控制钮、透明度、任务栏显示等</li>
+    <li>根据 <code>components</code> 数组创建所有控件</li>
+    <li>处理编组框、选项卡的嵌套关系</li>
+    <li>启动进度条动画</li>
+    <li>启动链接进度标签的定时更新</li>
+    <li>处理 ESC 键关闭、关闭按钮关闭</li>
+    <li>应用模类图标（如果设置了的话）</li>
+</ul>
+
+<p>预览窗口的效果和运行时创建出来的窗口几乎完全一致，所以你可以放心地用预览来调试外观。</p>
+
+<h2>十三、常见问题</h2>
+
+<h3>Q1：模类里的控件能响应点击吗？</h3>
+
+<p>不能。模类没有代码逻辑，按钮、单选框、复选框在模类里都是"只读"的。它们的作用是<strong>还原视觉</strong>，而不是真的接受用户交互。如果你想模拟点击，需要用 Itoc 全局命令的"鼠标移动 + 点击"命令。</p>
+
+<h3>Q2：图片能贴外链吗？</h3>
+
+<p>不能。模类的图片是 Base64 嵌入的，必须把图片数据写进 JSON 里。设计器会自动帮你做转换，你只需要在文件选择框里选图片就行。</p>
+
+<h3>Q3：模类能嵌套模类吗？</h3>
+
+<p>不能。模类里只能放 10 种基础控件，不能放另一个模类。如果你需要复杂的分层结构，可以用选项卡 + 编组框来组织。</p>
+
+<h3>Q4：链接系统为什么老是出问题？</h3>
+
+<p>这是链接系统本身的设计限制，文档也明确给出了警告。最稳妥的做法是：<strong>不用链接字段，直接把子控件放在容器的坐标范围内</strong>。比如你想把一个标签放进编组框，就把标签的 X/Y 设成编组框内部的坐标（相对于顶层窗口），让它的位置正好落在编组框区域内。这样看起来就像"塞进编组框"了，而且不会遇到链接系统的各种坑。</p>
+
+<h3>Q5：模类文件太大了怎么办？</h3>
+
+<p>如果图片数据太大，可以：</p>
+
+<ul>
+    <li>用图片压缩工具压缩后再导入</li>
+    <li>降低图片分辨率（模类窗口一般不需要 4K 图）</li>
+    <li>尽量用 PNG 而不是 BMP（BMP 体积大）</li>
+    <li>建议单文件不超过 10MB</li>
+</ul>
+
+<h3>Q6：模类支持 GIF 动图吗？</h3>
+
+<p>支持。图片控件的 <code>image_data_base64</code> 里可以存 GIF 数据，运行时会自动播放 GIF 动画。不过要注意 GIF 的 Base64 数据通常比较大。</p>
+
+<h2>十四、小结</h2>
+
+<p>这一篇我们把模类设计器的核心功能全部讲了一遍：</p>
+
+<ul>
+    <li>顶层结构：窗口名称、尺寸、背景色、控制钮、任务栏、可调整大小等</li>
+    <li>通用字段：id、type、name、x、y、width、height、text、default_focus</li>
+    <li>10 种控件：label、entry、image、button、radio、checkbox、progress、groupbox、tabwidget、rectangle</li>
+    <li>每种控件的专用字段：font、linked_progress_id、hover_text、pressed_text、use_placeholder、image_data_base64、display_mode、show_border、transparent、initial_value、end_value、duration、tab_titles、fill_color、border_color、border_width、hover_color、pressed_color</li>
+    <li>链接系统：linked_tab_id、linked_tab_page、linked_tab_info、linked_groupbox_id、linked_groupbox_info</li>
+    <li>字体系统、图片 Base64 嵌入、图层顺序、多选偏移编辑、撤销重做、点阵、自动对齐</li>
+    <li>JSON 源数据视图：查看、编辑、格式化、语法高亮、应用</li>
+    <li>运行预览</li>
+</ul>
+
+<p>下一篇 <a href="uiclass_3.html">《模类进阶与生态》</a>，我们会讲模类的深层存储机制（工程内置 vs Itoc 全局的哈希去重、同名冲突处理）、模类管理器的进阶操作、模类在解释器里是怎么跑起来的、模类与全局命令的联动、以及各种注意事项和性能建议。我们下篇见！ (๑•̀ㅂ•́)و✧</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'uiclass_2.html'
+    });
+</script>
+</body>
+</html>

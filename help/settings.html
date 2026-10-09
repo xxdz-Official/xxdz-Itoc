@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 首选项 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 设置功能，讲解窗口设置、音频设置、波形显示、皮肤设置、界面缩放、默认音量、面板设置、解释器、自动保存、回滚设置、打开方式、语言切换">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,首选项,设置,窗口设置,音频设置,波形显示,皮肤设置,界面缩放,默认音量,面板设置,解释器,自动保存,回滚设置,打开方式,语言切换">
+<meta property="og:title" content="首选项（设置） - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 首选项 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 设置功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>首选项（设置） - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>⚙️ 首选项（设置）</h1>
+
+<p>Itoc 里有很多可以调的东西——音量、波形、皮肤、解释器、自动保存、文件关联……全都塞在同一个地方，就是<strong>首选项</strong>。你可以把它理解成"软件的控制面板"：想调啥，来这儿翻就行。</p>
+
+<div class="note">
+    <strong>📌 这篇唠的是啥：</strong><br>
+    首选项窗口里的全部 12 个分类，一个不落：窗口设置、音频设置、波形显示、皮肤设置、界面缩放、默认音量、面板设置、解释器、自动保存、回滚设置、打开方式、语言。<br>
+    其中<strong>皮肤设置</strong>因为内容比较多，已经单独写了一篇，这里只做简要说明并指向那篇文档。
+</div>
+
+<h2>一、从哪儿打开？</h2>
+
+<p>菜单 <strong>「文件(F)」→「首选项」</strong>，点一下窗口就弹出来了。</p>
+
+<h2>二、窗口长啥样？</h2>
+
+<p>首选项窗口是<strong>左右分栏</strong>的结构：</p>
+
+<pre><code>┌──────────────────────────────────────────────────┐
+│  设置分类              │   具体设置内容            │
+│  ┌──────────┐         │                          │
+│  │ 窗口设置  │         │  （每个分类各自的面板）    │
+│  │ 音频设置  │         │                          │
+│  │ 波形显示  │         │                          │
+│  │ 皮肤设置  │         │                          │
+│  │ 界面缩放  │         │                          │
+│  │ 默认音量  │         │                          │
+│  │ 面板设置  │         │                          │
+│  │ 解释器    │         │                          │
+│  │ 自动保存  │         │                          │
+│  │ 回滚设置  │         │                          │
+│  │ 打开方式  │         │                          │
+│  │ 语言      │         │                          │
+│  └──────────┘         │                          │
+├──────────────────────────────────────────────────┤
+│  [恢复默认]              [取消] [保存]              │
+└──────────────────────────────────────────────────┘
+</code></pre>
+
+<ul>
+    <li><strong>左侧</strong>：12 个分类按钮，点一下切换右侧内容</li>
+    <li><strong>右侧</strong>：当前分类的具体设置项（内容多的可以滚动）</li>
+    <li><strong>底部</strong>：恢复默认 / 取消 / 保存 三个按钮</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 保存才生效：</strong><br>
+    大部分设置都是"改完点保存"才写进 <code>shezhi.txt</code>。点取消不会保存。<br>
+    但有几个是"即时预览"的（比如 ttk 主题、原生窗口标题栏、皮肤透明度），改的时候就能看到效果。<br>
+    具体哪些即时、哪些要点保存，下面每个分类里都会说清楚。
+</div>
+
+<h2>三、窗口设置</h2>
+
+<p>管的是"窗口和面板"相关的行为。</p>
+
+<table>
+    <thead>
+        <tr><th>设置项</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>小屏幕模式</strong></td>
+            <td>勾上后界面缩放变成 0.75 倍，所有控件都缩小一圈，适合 1366×768 这类小屏幕。<br><strong>需要重启程序生效。</strong></td>
+        </tr>
+        <tr>
+            <td><strong>启动时自动继续上次关闭时的工作</strong></td>
+            <td>勾上后，下次打开 Itoc 会自动打开最近文件列表里最新那个。<br>不勾选则每次都从"空工程"开始。</td>
+        </tr>
+        <tr>
+            <td><strong>CZEmaker面板高度</strong></td>
+            <td>底部 CZEmakers 面板的高度，范围 <code>150 ~ 600</code> 像素，默认 350。<br>拖滑块就能调，松手后立即生效。</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>四、音频设置</h2>
+
+<p>管的是"播放音符的时候用什么音色"。</p>
+
+<h3>4.1 预览乐器</h3>
+
+<p>四选一，决定试听音符时用哪种音色：</p>
+
+<table>
+    <thead>
+        <tr><th>选项</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>Windows Ding</td><td>系统提示音，就是 Windows 那个"叮"</td></tr>
+        <tr><td>默认波形</td><td>用正弦波合成，音调绝对准确</td></tr>
+        <tr><td>钢琴(88键采样)</td><td>用 88 键真实钢琴采样，听感最真实</td></tr>
+        <tr><td>自定义</td><td>用你自己导入的 wav 文件当音色</td></tr>
+    </tbody>
+</table>
+
+<h3>4.2 自定义音效文件</h3>
+
+<p>如果上面选了"自定义"，这里点「浏览...」选一个 wav 文件。选完后会被复制到 <code>wav/textwav.wav</code>。</p>
+
+<h3>4.3 音频起始时间</h3>
+
+<p>单位毫秒。让音频从指定的毫秒数开始播放，相当于给音频加一个"起点偏移"。</p>
+
+<p>填 <code>0</code> 就是从音频开头播；填 <code>1500</code> 就是跳过前 1.5 秒，从 1.5 秒处开始。</p>
+
+<p>旁边有个「重置」按钮，点一下归零。</p>
+
+<h2>五、波形显示</h2>
+
+<p>管的是"音频轨道上那条波形图长啥样"。</p>
+
+<table>
+    <thead>
+        <tr><th>设置项</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>启用音频波形显示</strong></td>
+            <td>勾上就显示波形，不勾就不显示（省资源）</td>
+        </tr>
+        <tr>
+            <td><strong>波形采样点数</strong></td>
+            <td>范围 <code>1000 ~ 50000</code>，默认 5000。<br>数值越大波形越精细，但吃内存。普通工程 5000 就够。</td>
+        </tr>
+        <tr>
+            <td><strong>波形颜色</strong></td>
+            <td>默认是亮绿色 <code>#00FF00</code>。可以直接在输入框里打字，也可以点「取色器」调色板选。<br>旁边的色块会实时显示当前颜色。</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 波形颜色改完是即时的：</strong><br>
+    改颜色之后，波形会立刻用新颜色重绘。如果没看到变化，看看是不是没加载音频文件。
+</div>
+
+<h2>六、皮肤设置</h2>
+
+<p>管的是"界面长啥样"：皮肤图片、透明度、时间轴背景色、ttk 主题、Windows 原生窗口标题栏。</p>
+
+<table>
+    <thead>
+        <tr><th>设置项</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><strong>当前皮肤 / 选择皮肤 / 清除皮肤</strong></td><td>挑一张图片铺到画布底层，支持 png/jpg/gif/bmp</td></tr>
+        <tr><td><strong>皮肤透明度</strong></td><td>0% ~ 100%，默认 50%。<strong>拖拽松手才重绘</strong>（拖的时候不卡）</td></tr>
+        <tr><td><strong>时间轴背景色</strong></td><td>画布底色，默认淡紫 <code>#E8DBFF</code>。有取色器和恢复默认按钮</td></tr>
+        <tr><td><strong>ttk 控件主题</strong></td><td>按钮、下拉框、滚动条这些的风格，推荐 <code>vista</code></td></tr>
+        <tr><td><strong>Windows 原生窗口标题栏</strong></td><td>让标题栏跟随系统主题，Win10 1809+ / Win11 支持</td></tr>
+    </tbody>
+</table>
+
+<div class="note">
+    <strong>📌 皮肤设置的详细说明：</strong><br>
+    每一项的具体行为、即时预览的规则、常见问题，都写在《皮肤设置》专项文档里了，这里就不重复了。<br>
+    简单记一句话：<strong>皮肤设置管"面子"，改完大多能立刻看到效果，点保存才写进配置文件。</strong>
+</div>
+
+<h2>七、界面缩放</h2>
+
+<p>管的是"画布里各个元素的大小"，分两组。</p>
+
+<h3>7.1 时间轴缩放</h3>
+
+<table>
+    <thead>
+        <tr><th>设置项</th><th>范围</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>X轴缩放</td><td><code>0.2 ~ 10.0</code></td><td>横向缩放，越大越能看清细节</td></tr>
+        <tr><td>Y轴缩放</td><td><code>0.5 ~ 3.0</code></td><td>纵向缩放，越大轨道越高</td></tr>
+    </tbody>
+</table>
+
+<p>这两个跟主界面右上角的缩放滑块是同一个东西，在哪儿调都行。</p>
+
+<h3>7.2 事件块缩放</h3>
+
+<table>
+    <thead>
+        <tr><th>设置项</th><th>范围</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>音符块字号</td><td><code>0.5 ~ 2.0</code></td><td>音符块里显示音高/歌词的字号</td></tr>
+        <tr><td>调整图层字号</td><td><code>0.5 ~ 2.0</code></td><td>调整图层块里文字的字号</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 缩放是软件配置，不算工程修改：</strong><br>
+    调完缩放不会在标题栏出现 <code>*</code>，因为它属于"你怎么看这个工程"，不是"工程本身变了"。<br>
+    但缩放值会存进工程文件，下次打开工程时恢复。
+</div>
+
+<h2>八、默认音量</h2>
+
+<p>三个滑块，都是 <code>0 ~ 100</code>：</p>
+
+<table>
+    <thead>
+        <tr><th>设置项</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>总音量</td><td>所有声音的总开关，最终音量 = 总音量 × 分音量</td></tr>
+        <tr><td>MIDI音量</td><td>只影响音符播放的声音</td></tr>
+        <tr><td>音频音量</td><td>只影响音频文件播放的声音</td></tr>
+    </tbody>
+</table>
+
+<p>这三个也是主界面右上方音量滑块的同一份数据，在哪儿调都一样。</p>
+
+<h2>九、面板设置</h2>
+
+<p>管的是"主界面哪些面板显示、哪些隐藏"。</p>
+
+<table>
+    <thead>
+        <tr><th>设置项</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><strong>统计信息面板</strong></td><td>显示 / 隐藏切换。<br>对应主界面工具栏下方那条统计栏</td></tr>
+        <tr><td><strong>CZEmaker预览区</strong></td><td>展开 / 折叠切换。<br>对应 CZEmakers 面板左侧的预览小窗</td></tr>
+        <tr><td><strong>CZEmarker窗口</strong></td><td>勾上后 CZEmakers 面板从底部选项卡里"搬"出来，变成一个独立窗口</td></tr>
+        <tr><td><strong>参考媒体</strong></td><td>勾上后程序启动时就自动启动 mpv 进程。<br>不勾选则需要手动点播放才会启动</td></tr>
+    </tbody>
+</table>
+
+<div class="warning">
+    <strong>⚠️ 参考媒体的"启动就启动 mpv"：</strong><br>
+    勾上之后，程序一打开就会把 mpv 进程拉起来（即使你还没加载参考媒体）。<br>
+    好处是加载媒体时不用等；坏处是开机就多占一点资源。<br>
+    如果你的机器比较吃紧，就别勾。
+</div>
+
+<h2>十、解释器</h2>
+
+<p>管的是"编译和测试运行时用哪个 Python 解释器"。</p>
+
+<table>
+    <thead>
+        <tr><th>按钮</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><strong>打开Itoc解释器配置</strong></td><td>配置主解释器。编译为 exe、渲染为 Python 代码、渲染 CzeData 时都用这个</td></tr>
+        <tr><td><strong>打开测试运行解释器配置</strong></td><td>配置测试运行专用的解释器（按 F5 测试运行的时候用）</td></tr>
+    </tbody>
+</table>
+
+<p>测试运行解释器是独立的，留空的话会自动回退到主解释器配置。所以你可以主解释器用一个 Python 版本，测试运行用另一个，互不影响。</p>
+
+<p>点这两个按钮会打开对应的解释器配置窗口，里面有更详细的设置（64位/32位、窗口/控制台等）。具体用法请参考《解释器配置》文档。</p>
+
+<h2>十一、自动保存</h2>
+
+<p>管的是"定时自动保存工程"。</p>
+
+<table>
+    <thead>
+        <tr><th>设置项</th><th>范围</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>启用自动保存</td><td>勾选框</td><td>不勾选的话，下面几项都白搭</td></tr>
+        <tr><td>保存间隔(分钟)</td><td><code>1 ~ 60</code></td><td>默认 5 分钟。间隔越短，越安全但也越占磁盘</td></tr>
+        <tr><td>最大保存数量</td><td><code>1 ~ 50</code></td><td>默认 10 个。超过会自动删掉最旧的</td></tr>
+        <tr><td>保存路径</td><td>文件夹路径</td><td>默认 <code>TempSave</code>（运行目录下）。点「浏览...」可以改成别的地方</td></tr>
+    </tbody>
+</table>
+
+<p>自动保存产生的文件名格式是：</p>
+
+<pre><code>工程名_autosave_20261008_143052.czemidi</code></pre>
+
+<div class="tip">
+    <strong>💡 自动保存和手动保存是两回事：</strong><br>
+    自动保存不会覆盖你手动保存的主工程文件，而是单独存到 <code>TempSave</code> 文件夹里。<br>
+    所以自动保存是"兜底用的"，真正要用的还是手动 Ctrl+S。
+</div>
+
+<h2>十二、回滚设置</h2>
+
+<p>管的是"撤销重做保留多少步"和"退出时清不清临时文件"。详细原理请参考《撤销与重做》文档，这里只讲设置项。</p>
+
+<table>
+    <thead>
+        <tr><th>设置项</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>最大回滚步数</strong></td>
+            <td>范围 <code>1 ~ 100</code>，默认 30。<br>限制两个栈里最多保留多少份快照。超出后自动删最旧的。</td>
+        </tr>
+        <tr>
+            <td><strong>启用可休眠的回滚</strong></td>
+            <td>勾上后程序退出时<strong>保留</strong> <code>CTRL_Z/</code> 和 <code>CTRL_shift_Z/</code> 两个文件夹，下次启动还能接着用。<br>不勾则退出时自动清掉，省磁盘。</td>
+        </tr>
+        <tr>
+            <td><strong>立即清理所有回滚文件</strong></td>
+            <td>点一下会把两个文件夹里的所有内容删掉，相当于手动执行一次"清空历史"。<br>会弹确认框，确认后无法恢复。</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="warning">
+    <strong>⚠️ 立即清理是不可撤销的：</strong><br>
+    点了确认之后，所有历史快照就没了，撤销栈和重做栈都会变空。<br>
+    用它之前想清楚，确认真的不需要任何历史了再点。
+</div>
+
+<h2>十三、打开方式（文件关联）</h2>
+
+<p>管的是"双击某类文件时用哪个程序打开"。</p>
+
+<p>支持的三种文件类型：</p>
+
+<table>
+    <thead>
+        <tr><th>扩展名</th><th>说明</th><th>对应启动器</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>.czemidi</code></td><td>Itoc 工程文件</td><td><code>launcher/OpenCZEmidiFile.exe</code></td></tr>
+        <tr><td><code>.UIclass</code></td><td>Itoc 模类文件</td><td><code>launcher/OpenUIclassFile.exe</code></td></tr>
+        <tr><td><code>.CzeData</code></td><td>解释器数据中转文件</td><td><code>launcher/OpenCzeDataFile.exe</code></td></tr>
+    </tbody>
+</table>
+
+<h3>13.1 怎么绑定？</h3>
+
+<p>每种类型都有「绑定」和「解绑」两个按钮，点绑定就写注册表，点解绑就删注册表。</p>
+
+<p>绑定成功后，双击对应文件就会用 Itoc 打开了。</p>
+
+<h3>13.2 状态提示</h3>
+
+<p>窗口下方有一块状态区域，会显示当前三种扩展名的关联状态：</p>
+
+<ul>
+    <li>✅ 已关联到：xxx（绿色）</li>
+    <li>⚠️ 已关联到其他程序：xxx（橙色）</li>
+    <li>❌ 未关联（红色）</li>
+</ul>
+
+<p>点「刷新状态」会重新检测一遍。</p>
+
+<div class="warning">
+    <strong>⚠️ Windows 对默认应用有保护：</strong><br>
+    注册表写入成功后，Windows 可能还不会立刻把默认程序改过来。<br>
+    如果双击文件后没有用 Itoc 打开，<strong>右键文件 → 打开方式 → 选择其他应用 → 选择对应的 exe → 勾选"始终使用此应用"</strong>。<br>
+    这一步是 Windows 的强制保护，脚本没法绕过。
+</div>
+
+<div class="note">
+    <strong>📌 解绑也可能不彻底：</strong><br>
+    解绑会删掉扩展名、ProgID、Applications 等注册表项，但 Windows 的"用户选择"（UserChoice）记录受系统保护，脚本删不掉。<br>
+    想彻底解绑，请去 <strong>设置 → 应用 → 默认应用 → 按文件类型选择默认应用</strong>，找到对应扩展名改成别的程序。
+</div>
+
+<h2>十四、语言 Language</h2>
+
+<p>管的是"界面用哪种语言"。</p>
+
+<h3>14.1 当前语言</h3>
+
+<p>最上面一行显示当前用的是哪种语言。默认是"中文 简体"。</p>
+
+<h3>14.2 导入语言包</h3>
+
+<p>点「导入 .mui 文件...」，选一个语言包文件，会把它复制到 <code>Language/</code> 文件夹里。</p>
+
+<h3>14.3 语言列表</h3>
+
+<p>中间是一个列表框，列出了 <code>Language/</code> 文件夹里所有的 <code>.mui</code> 语言包。第一项永远是"中文 简体 (默认)"。</p>
+
+<h3>14.4 应用语言</h3>
+
+<p>从列表里选一项，点「应用所选语言包（重启生效）」，程序会：</p>
+
+<ol>
+    <li>把选中的语言包加载到内存</li>
+    <li>把语言文件名写进 <code>shezhi.txt</code></li>
+    <li>提示你重启程序</li>
+</ol>
+
+<div class="warning">
+    <strong>⚠️ 语言切换需要重启：</strong><br>
+    选完语言后，当前窗口不会立刻全部变语言（有些菜单项要重建才能翻译）。<br>
+    <strong>重启 Itoc 之后</strong>，整个界面才会完全按新语言显示。
+</div>
+
+<p>点「刷新列表」会重新扫描 <code>Language/</code> 文件夹。如果你手动往里面放了语言包，点一下就能看到。</p>
+
+<h2>十五、常见问题</h2>
+
+<h3>Q1：改完设置点了"取消"，为什么有些效果还在？</h3>
+
+<p>因为有些设置是"即时预览"的（比如 ttk 主题、原生窗口标题栏、皮肤透明度）。</p>
+
+<p>这些设置在你改的时候就已经写进内存了，点取消只是不写进 <code>shezhi.txt</code>。所以当前会话还是新效果，下次启动才会恢复旧值。</p>
+
+<p>想完全回退，改完之后手动改回来再点保存。</p>
+
+<h3>Q2：小屏幕模式调完没变化？</h3>
+
+<p>需要重启程序。因为 DPI 缩放是进程级别的，程序运行期间改了也不会立即生效。</p>
+
+<h3>Q3：语言切换完没变化？</h3>
+
+<p>也是需要重启。语言包是在程序启动时加载的，运行期间只改内存里的映射表，很多已经创建好的控件不会自动重新翻译。</p>
+
+<h3>Q4：绑定 .czemidi 之后双击还是用别的程序打开？</h3>
+
+<p>这是 Windows 的默认应用保护机制。请右键文件 → 打开方式 → 选择其他应用 → 找到 <code>OpenCZEmidiFile.exe</code> → 勾选"始终使用此应用"。</p>
+
+<p>详细说明见 13.2 节。</p>
+
+<h3>Q5：自动保存的文件在哪？</h3>
+
+<p>在「自动保存」分类里配置的"保存路径"下，默认是运行目录的 <code>TempSave</code> 文件夹。</p>
+
+<h3>Q6：回滚设置里的"立即清理"会删掉当前工程吗？</h3>
+
+<p>不会。它只删 <code>CTRL_Z/</code> 和 <code>CTRL_shift_Z/</code> 两个快照文件夹，不碰你手动保存的 <code>.czemidi</code> 工程文件。</p>
+
+<h3>Q7：恢复默认会重置哪些设置？</h3>
+
+<p>点「恢复默认」按钮会把大部分设置恢复成出厂值：小屏幕模式关闭、CZEmaker面板高度 350、预览乐器 Windows Ding、波形采样 5000、缩放 1.0x、音量 100%、自动保存关闭、回滚 30 步、ttk 主题 vista、原生窗口标题栏开启、皮肤透明度 50%、时间轴背景色 #E8DBFF。</p>
+
+<p>但它不会立刻应用，只是把界面上的值改了。你还需要点「保存」才会真正生效。</p>
+
+<h3>Q8：设置会存在哪里？</h3>
+
+<p>存在程序运行目录下的 <code>shezhi.txt</code> 里。这是一个纯文本文件，你可以直接用记事本打开看看，虽然格式不太好看。</p>
+
+<h3>Q9：能手动改 shezhi.txt 吗？</h3>
+
+<p>可以，但不太推荐。因为格式是 <code>key=value</code>，改错一个字符程序可能就读不出来了。</p>
+
+<p>建议还是在首选项窗口里改。</p>
+
+<h2>十六、小结</h2>
+
+<p>首选项窗口一共 12 个分类，覆盖了 Itoc 的方方面面：</p>
+
+<ul>
+    <li><strong>窗口设置</strong>：小屏幕模式、自动继续上次工作、CZEmaker面板高度</li>
+    <li><strong>音频设置</strong>：预览乐器、自定义音效、音频起始时间</li>
+    <li><strong>波形显示</strong>：启用波形、采样点数、波形颜色</li>
+    <li><strong>皮肤设置</strong>：皮肤图片、透明度、背景色、ttk主题、原生标题栏</li>
+    <li><strong>界面缩放</strong>：X/Y轴缩放、音符字号、调整图层字号</li>
+    <li><strong>默认音量</strong>：总音量、MIDI音量、音频音量</li>
+    <li><strong>面板设置</strong>：统计信息面板、CZEmaker预览区、独立窗口、参考媒体</li>
+    <li><strong>解释器</strong>：主解释器配置、测试运行解释器配置</li>
+    <li><strong>自动保存</strong>：启用、间隔、数量、路径</li>
+    <li><strong>回滚设置</strong>：最大步数、可休眠回滚、立即清理</li>
+    <li><strong>打开方式</strong>：.czemidi / .UIclass / .CzeData 的文件关联</li>
+    <li><strong>语言</strong>：导入语言包、切换语言（重启生效）</li>
+</ul>
+
+<p>大部分设置改完点「保存」才写进 <code>shezhi.txt</code>，少数即时预览的（ttk主题、原生标题栏、皮肤透明度）在改的时候就能看到效果。小屏幕模式和语言切换需要重启才完全生效。</p>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'settings.html'
+    });
+</script>
+</body>
+</html>

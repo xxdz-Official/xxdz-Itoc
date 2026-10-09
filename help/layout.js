@@ -71,6 +71,10 @@
         const currentFile = opts.currentFile || '';
         const pageTitle = opts.pageTitle || '';
 
+        // ==================== 注入 favicon ====================
+        // 动态给 <head> 加 favicon，所有页面自动生效
+        injectFavicon();
+
         // 渲染顶栏
         const headerHolder = document.getElementById('header-placeholder');
         if (headerHolder) {
@@ -504,6 +508,39 @@
         } catch (e) {
             return false;
         }
+    }
+
+    // ==================== 注入 favicon ====================
+    function injectFavicon() {
+        // 防止重复注入
+        if (document.querySelector('link[rel="icon"][data-injected]')) return;
+
+        // 帮助文档目录下的页面，图标在上一级目录（itoc维护网站/icon.ico）
+        // 路径用相对路径：../icon.ico
+        const iconHref = '../icon.ico';
+
+        // 主 favicon（现代浏览器）
+        const linkIcon = document.createElement('link');
+        linkIcon.rel = 'icon';
+        linkIcon.type = 'image/x-icon';
+        linkIcon.href = iconHref;
+        linkIcon.setAttribute('data-injected', '1');
+        document.head.appendChild(linkIcon);
+
+        // 兼容：shortcut icon（老浏览器 / 某些场景）
+        const linkShortcut = document.createElement('link');
+        linkShortcut.rel = 'shortcut icon';
+        linkShortcut.type = 'image/x-icon';
+        linkShortcut.href = iconHref;
+        linkShortcut.setAttribute('data-injected', '1');
+        document.head.appendChild(linkShortcut);
+
+        // apple-touch-icon（iOS 添加到主屏幕时的图标）
+        const linkApple = document.createElement('link');
+        linkApple.rel = 'apple-touch-icon';
+        linkApple.href = iconHref;
+        linkApple.setAttribute('data-injected', '1');
+        document.head.appendChild(linkApple);
     }
 
     // 暴露到全局

@@ -11,6 +11,7 @@
 (function (global) {
 
     // ==================== 顶栏 HTML ====================
+
     function buildHeader(pageTitle) {
         return `
         <div class="header-row">
@@ -19,11 +20,11 @@
                 <h1>Itoc 帮助文档${pageTitle ? ' - ' + pageTitle : ''}</h1>
             </a>
             <div class="top-bar">
+                <a href="https://xxdz-official.github.io/xxdz-Itoc/" target="_blank" rel="noopener"><span>项目主页</span></a>
                 <a href="https://message.bilibili.com/#/whisper/mid3461569935575626" target="_blank"><span>联系作者</span></a>
                 <a href="https://miku66ccff.freeflarum.com/t/itoc" target="_blank"><span>交流论坛</span></a>
                 <a href="https://github.com/xxdz-Official/xxdz-Itoc" target="_blank"><span>GitHub主页</span></a>
                 <a href="../Mode.html"><span>插件市场</span></a>
-                <a href="../FriendURL.html"><span>友情链接</span></a>
                 <a href="help.html"><span>帮助文档</span></a>
             </div>
         </div>`;

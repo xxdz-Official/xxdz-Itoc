@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="description" content="Itoc 全局命令 · 窗口位移动画 - 动画行、目标类型、原点模式、集中目标、相对静止、屏幕边界限制、缓动曲线，由小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,窗口位移动画,动画行,集中目标,相对静止,屏幕边界限制,缓动">
+    <meta property="og:title" content="全局命令 · 窗口位移动画 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 窗口位移动画 - 动画行、原点模式、移动方式、缓动曲线">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <title>全局命令 · 窗口位移动画 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<div id="doc-content" style="display:none;">
+<h1>🎞️ 全局命令 · 窗口位移动画</h1>
+
+<p>全局命令里最强大的一个，没有之一。<strong>窗口位移动画</strong>能让编组、类名、甚至第三方窗口自己动起来——直线滑过去、斜着飞出去、聚到屏幕中心、被屏幕边界拦住、想怎么动怎么动。</p>
+
+<p>这一篇专门把它单拎出来讲清楚。前置知识请先看 <a href="global_1.html">《全局命令 · 基础篇》</a> 和 <a href="global_2.html">《全局命令 · 进阶篇》</a>。</p>
+
+<div class="note">
+    <strong>📌 一句话理解：</strong><br>
+    窗口位移动画 = 「让一批窗口，从 A 点走到 B 点」。<br>
+    A 点是窗口当前的位置；B 点由你填的 X/Y 坐标算出来；<br>
+    走的路径可以有缓动、可以被边界拦住、可以只走一半。<br>
+    就这么简单。剩下的都是细节。
+</div>
+
+<h2>一、动画行：一次动多个方向</h2>
+
+<p>一条「窗口位移动画」命令里可以包含<strong>多个动画行</strong>。每个动画行是一段独立的位移，<strong>多个动画行同时执行</strong>（不是先后！）。</p>
+
+<pre><code>  动画行1: 编组"你好"  →  向右滑 800px
+  动画行2: 编组"登录"  →  向下滑 400px
+  动画行3: 类名"Menu"  →  聚到屏幕中心
+
+  三条动画同时跑，谁也不等谁。
+</code></pre>
+
+<div class="tip">
+    <strong>💡 什么时候用多个动画行？</strong><br>
+    想让「几个编组分别去不同的位置」→ 一个动画行写一个编组。<br>
+    想让「同一个编组同时做两件事」→ 这个做不到，同一编组一个动画行就够，参数会叠加计算。
+</div>
+
+<h2>二、目标类型：动谁？</h2>
+
+<table>
+    <thead>
+        <tr><th>目标类型</th><th>字段名</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>窗口编组</td><td><code>target_code=group</code></td><td>动某个编组里的所有弹窗</td></tr>
+        <tr><td>窗口类名</td><td><code>target_code=class</code></td><td>动某个类名对应的所有弹窗</td></tr>
+        <tr><td>第三方窗口</td><td><code>target_code=external</code></td><td>动一个指定的外部窗口（记事本、浏览器等）</td></tr>
+    </tbody>
+</table>
+
+<div class="warning">
+    <strong>⚠️ 目标类型是「窗口类名」或「第三方窗口」时：</strong><br>
+    「移动方式」会被强制禁用（等于固定为「相对静止」），因为你没法给一堆不一样的窗口算统一中心点。
+</div>
+
+<h2>三、位置：去哪？</h2>
+
+<h3>3.1 计算方式：绝对 / 相对</h3>
+
+<table>
+    <thead>
+        <tr><th>方式</th><th>字段名</th><th>X/Y 含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>绝对位置</td><td><code>position_type=绝对位置</code></td><td>屏幕像素坐标，比如 <code>800,400</code></td></tr>
+        <tr><td>相对位置</td><td><code>position_type=相对位置</code></td><td>屏幕百分比，比如 <code>50,50</code> 表示屏幕正中</td></tr>
+    </tbody>
+</table>
+
+<pre><code>  绝对位置 (800, 400)：                  相对位置 (50, 50)：
+  ┌──────────────┐                    ┌──────────────┐
+  │              │                    │              │
+  │    ●─────────┼─▶ (800,400)       │    ●─────────┼─▶ 屏幕正中
+  │              │                    │              │
+  └──────────────┘                    └──────────────┘
+  以像素为单位                          以百分比为单位，跨屏幕自适应
+</code></pre>
+
+<h3>3.2 原点模式：以谁为参考？</h3>
+
+<p>位置下方有两个<strong>互斥</strong>的复选框：</p>
+
+<table>
+    <thead>
+        <tr><th>复选框</th><th>字段名</th><th>X/Y 变成什么</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>以当前窗口位置为原点</td><td><code>origin=self</code></td><td>相对窗口当前位置的<strong>偏移量</strong>，可正可负</td></tr>
+        <tr><td>移动到指定窗口</td><td><code>origin=target</code></td><td>相对<strong>另一个窗口左上角</strong>的偏移量，可正可负</td></tr>
+        <tr><td>都不勾</td><td><code>origin=screen</code></td><td>原来的逻辑，按屏幕坐标算</td></tr>
+    </tbody>
+</table>
+
+<pre><code>  ┌─────────────── 屏幕坐标系（默认）───────────────┐
+  │  (0,0)                                          │
+  │    ┌─────────┐                                  │
+  │    │  窗口   │ ─────▶ 直接移动到 (800,400)      │
+  │    └─────────┘                                  │
+  └─────────────────────────────────────────────────┘
+
+  ┌─────────────── self 模式 ───────────────────────┐
+  │                                                 │
+  │    ┌─────────┐                                  │
+  │    │  窗口   │ ─────▶ 相对自身偏移 (+100, -50)  │
+  │    └─────────┘                                  │
+  └─────────────────────────────────────────────────┘
+
+  ┌─────────────── target 模式 ─────────────────────┐
+  │    ┌─────────┐                                  │
+  │    │  目标   │ ← 对齐到这个窗口的左上角          │
+  │    └─────────┘                                  │
+  │    ┌─────────┐                                  │
+  │    │  窗口   │ ─────▶ 目标左上角 + 偏移          │
+  │    └─────────┘                                  │
+  └─────────────────────────────────────────────────┘
+</code></pre>
+
+<h3>3.3 target 模式的目标窗口配置</h3>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>类名</td><td>目标窗口的类名，例如 <code>Notepad</code></td></tr>
+        <tr><td>句柄</td><td>目标窗口的句柄，例如 <code>0x000811CE</code></td></tr>
+        <tr><td>标题</td><td>目标窗口的标题（可选，用于辅助匹配）</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 用「🔍 抓取器」一键抓：</strong><br>
+    点动画行里的「🔍 抓取器」按钮，打开窗口拾取器，鼠标悬停到任意窗口上按 <kbd>1</kbd>，类名/句柄/标题会自动回填。
+</div>
+
+<h2>四、移动方式：怎么动？</h2>
+
+<table>
+    <thead>
+        <tr><th>方式</th><th>字段名</th><th>行为</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>相对静止</td><td><code>move_mode=相对静止</code></td><td>所有弹窗保持相对位置，整体平移</td></tr>
+        <tr><td>集中目标</td><td><code>move_mode=集中目标</code></td><td>所有弹窗都往同一个目标点跑（可以只填 X 或只填 Y）</td></tr>
+    </tbody>
+</table>
+
+<pre><code>  ┌──────── 相对静止 ────────┐    ┌──────── 集中目标 ────────┐
+  │                          │    │                          │
+  │  ● ● ● ●  ────▶  ● ● ● ● │    │  ●  ●                  │
+  │                 （整体平移）│    │    ● ●  ────▶ ●●●●   │
+  │                          │    │    ●  ●        (全部聚拢)│
+  │                          │    │                          │
+  └──────────────────────────┘    └──────────────────────────┘
+     相对位置保持不变                  所有弹窗冲到同一点
+</code></pre>
+
+<div class="tip">
+    <strong>💡 集中目标为什么很酷？</strong><br>
+    做鬼畜视频时，经常用「集中目标」把一堆散乱的弹窗一下飞到屏幕中心，视觉冲击力很强。<br>
+    或者只填 X 不填 Y → 所有弹窗挤到一条竖直线上，做「对齐列」效果。
+</div>
+
+<h2>五、屏幕边界限制</h2>
+
+<p>勾选 <code>boundary_restrict=True</code> 之后，窗口在移动时<strong>触碰到屏幕边缘就会单独停下来</strong>。没碰到的继续跑。</p>
+
+<pre><code>  ┌──────────────────────────┐
+  │  ●  ●  ●  ●  ● ─────▶    │
+  │        ●      （撞墙了就停）│
+  │        │                 │
+  │  ●  ●  ▼  ●  ●            │
+  │   （这几个还在跑）         │
+  └──────────────────────────┘
+</code></pre>
+
+<div class="warning">
+    <strong>⚠️ 三个互斥规则：</strong><br>
+    ① 「集中目标」和「屏幕边界限制」不能同时选<br>
+    ② 目标类型是「窗口类名」或「第三方窗口」时，边界限制也不生效<br>
+    ③ 勾了「屏幕边界限制」，移动方式下拉框会被禁用
+</div>
+
+<h2>六、时间和缓动</h2>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>时间(ms)</td><td>位移动画持续多久，0 ~ 10000 毫秒</td></tr>
+        <tr><td>缓动</td><td>速度曲线，见下表</td></tr>
+    </tbody>
+</table>
+
+<table>
+    <thead>
+        <tr><th>缓动</th><th>行为</th><th>什么时候用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>线性</td><td>匀速，从头到尾一样快</td><td>机械、冷峻的场景</td></tr>
+        <tr><td>缓入</td><td>慢起步，快结束</td><td>「加速冲出去」</td></tr>
+        <tr><td>缓出</td><td>快起步，慢结束</td><td>「刹车停住」，最常用</td></tr>
+        <tr><td>缓入缓出</td><td>慢起步，快中间，慢结束</td><td>平滑自然，默认</td></tr>
+    </tbody>
+</table>
+
+<pre><code>  线性：       ────────────▶  匀速
+
+  缓入：       ───────▶▶▶▶▶  越来越快
+
+  缓出：       ▶▶▶▶▶──────  越来越慢
+
+  缓入缓出：   ──▶▶▶▶▶▶──   两头慢，中间快
+</code></pre>
+
+<h2>七、组合示例</h2>
+
+<h3>7.1 「弹窗全部飞到屏幕中心」</h3>
+
+<pre><code>  目标：编组"主弹窗"
+  移动方式：集中目标
+  位置：50,50（屏幕正中）
+  时间：800ms
+  缓动：缓入缓出
+</code></pre>
+
+<h3>7.2 「弹窗被屏幕边界拦住」</h3>
+
+<pre><code>  目标：编组"飞舞"
+  移动方式：相对静止
+  位置：-2000,0（往左飞很远）
+  屏幕边界限制：勾
+  时间：1500ms
+</code></pre>
+
+<p>结果：所有窗口往左飞，但触到屏幕左边缘就停下，不会被飞出屏幕。</p>
+
+<h3>7.3 「把记事本挪到右下角」</h3>
+
+<pre><code>  目标类型：第三方窗口
+  抓取：记事本
+  位置：1800,900
+  时间：600ms
+  缓动：缓出
+</code></pre>
+
+<h2>八、常见问题</h2>
+
+<h3>Q1：动画行能不能先后执行？</h3>
+<p>不能。多个动画行是<strong>同时执行</strong>的。要先后执行就写两条「窗口位移动画」命令，放在时间轴的不同位置。</p>
+
+<h3>Q2：为什么勾了「集中目标」，X 或 Y 只填一个也行？</h3>
+<p>因为集中目标是「只朝一个方向对齐」。比如只填 X=960，就是所有弹窗挤到屏幕上 960 像素这条竖线上，Y 保持各自原样。</p>
+
+<h3>Q3：第三方窗口的动画是不是也是同样效果？</h3>
+<p>是的。类名 / 句柄 / 标题抓到的是外部窗口，动画通过 <code>SetWindowPos</code> 逐帧移动，效果和自家弹窗一致。缓动曲线也完全一样。</p>
+
+<h3>Q4：动画跑起来之后我再点同一条命令会怎样？</h3>
+<p>新动画会打断同一个目标上正在跑的旧动画。窗口以「当前位置」为起点开始新动画，不会有闪烁。</p>
+
+<h3>Q5：怎么让窗口动完之后自动关掉？</h3>
+<p>窗口位移动画只负责移动。<strong>移动完自动关掉</strong>需要另写一条全局命令（比如「关闭编组内的弹窗」），时间点排在动画结束之后一点点。</p>
+
+<h3>Q6：多个动画行同时跑，会冲突吗？</h3>
+<p>如果两个动画行的目标<strong>有交集</strong>（比如同一个编组），它们会互相覆盖，以最后生效的那个为准。建议每个编组只在一个动画行里出现。</p>
+
+<h2>九、小结</h2>
+
+<ul>
+    <li>一条命令里可以放多个动画行，<strong>同时执行</strong></li>
+    <li>目标类型：窗口编组 / 窗口类名 / 第三方窗口</li>
+    <li>位置：绝对 / 相对（百分比）</li>
+    <li>原点模式：屏幕 / 自身（self） / 目标窗口（target），后两者用偏移量</li>
+    <li>移动方式：相对静止（整体平移） / 集中目标（聚拢）</li>
+    <li>屏幕边界限制：触边即停，和集中目标互斥</li>
+    <li>时间和缓动：线性 / 缓入 / 缓出 / 缓入缓出</li>
+</ul>
+
+<p>回到 <a href="global_2.html">《全局命令 · 进阶篇》</a> 继续看别的命令，或者直接看 <a href="cmd_mouse_move.html">鼠标移动</a> 喵 ( ⓛ ω ⓛ *)</p>
+</div>
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'cmd_window_animation.html'
+    });
+</script>
+
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="global_1.html" title="全局命令 · 基础篇" tabindex="-1" rel="noopener">全局命令 · 基础篇</a>
+    <a href="global_2.html" title="全局命令 · 进阶篇" tabindex="-1" rel="noopener">全局命令 · 进阶篇</a>
+    <a href="cmd_mouse_move.html" title="全局命令 · 鼠标移动" tabindex="-1" rel="noopener">鼠标移动</a>
+    <a href="cmd_mirror_clone.html" title="全局命令 · 镜像克隆编组" tabindex="-1" rel="noopener">镜像克隆编组</a>
+    <a href="cmd_wallpaper.html" title="全局命令 · 设置桌面背景" tabindex="-1" rel="noopener">设置桌面背景</a>
+    <a href="array.html" title="阵列设计器 · 总览" tabindex="-1" rel="noopener">阵列设计器 · 总览</a>
+</nav>
+
+</body>
+</html>

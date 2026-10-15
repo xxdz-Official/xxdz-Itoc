@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="description" content="Itoc 环形阵列 - 横向纵向直径、填充开关，让弹窗沿椭圆排列，由小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,环形阵列,椭圆阵列,填充">
+    <meta property="og:title" content="环形阵列 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 环形阵列 - 横向纵向直径、填充开关">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <title>环形阵列 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<div id="doc-content" style="display:none;">
+<h1>⭕ 环形阵列</h1>
+
+<p>环形阵列让弹窗沿着椭圆排列。横向直径和纵向直径可以不一样，做出各种扁圆、长圆效果。</p>
+
+<pre><code>  圆形（横=纵）        椭圆（横>纵）
+      ●                   ●───●───●
+    ╱   ╲                ╱         ╲
+   ●     ●              ●           ●
+    ╲   ╱                ╲         ╱
+      ●                   ●───●───●
+</code></pre>
+
+<h2>一、特有参数</h2>
+
+<table>
+    <thead>
+        <tr><th>参数</th><th>字段名</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>横向直径</td><td><code>radius_x</code></td><td>椭圆外框的横向大小</td></tr>
+        <tr><td>纵向直径</td><td><code>radius_y</code></td><td>椭圆外框的纵向大小</td></tr>
+        <tr><td>单位</td><td><code>unit</code></td><td>px 或 rpx</td></tr>
+        <tr><td>填充</td><td><code>fill</code></td><td>关闭：绿点沿外框绕圈；开启：从中心一圈一圈往外填充</td></tr>
+    </tbody>
+</table>
+
+<h2>二、填充模式对比</h2>
+
+<h3>2.1 关闭填充（默认）</h3>
+
+<pre><code>      ●
+    ╱   ╲
+   ●     ●
+    ╲   ╱
+      ●
+</code></pre>
+
+<h3>2.2 开启填充</h3>
+
+<pre><code>   · · · · ·
+   · ●─●─● ·
+   · │   │ ·
+   · ●─●─● ·
+   · · · · ·
+</code></pre>
+
+<h2>三、间距对大小的影响</h2>
+
+<p>环形阵列的「间距」不只是弹窗之间的距离，它还会整体缩放圆环的大小。间距越大，圆环越大。</p>
+
+<pre><code>  间距 = 50       间距 = 100
+    ●               ●
+   ╱ ╲             ╱   ╲
+  ●   ●           ●     ●
+   ╲ ╱             ╲   ╱
+    ●               ●
+</code></pre>
+
+<h2>四、适用场景</h2>
+
+<ul>
+    <li>弹窗绕一圈排列，做「时钟」效果</li>
+    <li>椭圆阵列，做「行星轨道」</li>
+    <li>开启填充，做「从中心向外扩散」的弹窗雨</li>
+</ul>
+
+<p>回到 <a href="array.html">阵列设计器 · 总览</a>，或者继续看 <a href="array_polar.html">极坐标阵列</a> 喵 ( ⓛ ω ⓛ *)</p>
+</div>
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'array_circle.html'
+    });
+</script>
+
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="array.html" title="阵列设计器 · 总览" tabindex="-1" rel="noopener">阵列设计器 · 总览</a>
+    <a href="array_linear.html" title="直线阵列" tabindex="-1" rel="noopener">直线阵列</a>
+    <a href="array_bezier.html" title="贝塞尔曲线阵列" tabindex="-1" rel="noopener">贝塞尔曲线阵列</a>
+    <a href="array_polygon.html" title="多边形阵列" tabindex="-1" rel="noopener">多边形阵列</a>
+    <a href="array_polar.html" title="极坐标阵列" tabindex="-1" rel="noopener">极坐标阵列</a>
+    <a href="array_svg.html" title="SVG阵列" tabindex="-1" rel="noopener">SVG阵列</a>
+</nav>
+
+</body>
+</html>

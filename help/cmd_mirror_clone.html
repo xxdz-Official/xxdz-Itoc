@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="description" content="Itoc 全局命令 · 镜像克隆编组 - 跟随模式、快照模式、重编排、位置选择器，让整个编组克隆出一份镜像副本，由小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,镜像克隆编组,跟随模式,快照模式,重编排,位置选择器">
+    <meta property="og:title" content="全局命令 · 镜像克隆编组 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 镜像克隆编组 - 跟随/快照模式、重编排、位置选择器">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <title>全局命令 · 镜像克隆编组 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<div id="doc-content" style="display:none;">
+<h1>🪞 全局命令 · 镜像克隆编组</h1>
+
+<p>镜像克隆编组是「把一个编组整个复制一份，放到别的位置」。听起来像复制粘贴，但它牛的地方在于：</p>
+
+<ul>
+    <li>不是一次性复制，而是<strong>跟随源编组一起出生</strong>的</li>
+    <li>克隆出来的编组可以<strong>整体镜像翻转</strong>（水平/垂直/全反）</li>
+    <li>克隆出来的弹窗的<strong>入场/出场动画</strong>也会跟着反转</li>
+</ul>
+
+<pre><code>  源编组"你好"                镜像克隆编组"你好_镜像克隆版"
+  ┌─────────┐                 ┌─────────┐
+  │ ① ② ③   │  ──克隆──▶     │ ③ ② ①   │
+  └─────────┘                 └─────────┘
+      左边                        右边（整体水平翻转）
+</code></pre>
+
+<h2>一、什么时候用？</h2>
+
+<table>
+    <thead>
+        <tr><th>场景</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>左右对称弹窗</td><td>左边一组弹窗往右飞，右边一组弹窗往左飞，形成对称冲击</td></tr>
+        <tr><td>上下镜像</td><td>上面一组往下，下面一组往上，做「夹击」效果</td></tr>
+        <tr><td>补一份备用</td><td>源编组弹窗比较多，直接镜像一份不用重新编排</td></tr>
+        <tr><td>鬼畜镜像</td><td>鬼畜视频里经常用「多份镜像」制造满屏弹窗的效果</td></tr>
+    </tbody>
+</table>
+
+<h2>二、核心配置</h2>
+
+<h3>2.1 源编组 → 目标编组</h3>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>源编组</td><td>要克隆的源编组，从当前工程所有编组里选</td></tr>
+        <tr><td>目标编组</td><td>克隆出来的新编组名，默认「源编组名 + _镜像克隆版」</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 目标编组名可以改：</strong><br>
+    默认会自动填「源编组名 + _镜像克隆版」，但你可以改成任何名字。<br>
+    一旦你手动改过，切换源编组时就不会再自动覆盖了（避免打断你的思路）。
+</div>
+
+<h3>2.2 从当前状态开始</h3>
+
+<table>
+    <thead>
+        <tr><th>值</th><th>行为</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>勾选（默认）</td><td>克隆「命令触发那一刻，源编组里还活着的弹窗」</td></tr>
+        <tr><td>不勾</td><td>把源编组从头到尾「重演」一遍——按原始相对节拍，一个个克隆出来</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 怎么选？</strong><br>
+    · 「我现在就想看右边也有一组」→ 勾「从当前状态开始」<br>
+    · 「我要完整复刻源编组的节奏，从头到尾同步」→ 不勾
+</div>
+
+<h2>三、两种工作模式</h2>
+
+<p>程序会根据「命令触发的时间点」和「源编组第一个弹窗出生的时间点」自动判断用哪种模式：</p>
+
+<h3>3.1 跟随模式（命令触发 ≤ 源编组开始）</h3>
+
+<pre><code>  时间轴：   │  命令触发      源编组第一个弹窗
+             ▼                 ▼
+             ────────────────────▶
+
+  效果：源编组每弹出一个弹窗，克隆编组立刻跟着弹一个。
+        完全同步，一个不多一个不少。
+</code></pre>
+
+<h3>3.2 快照模式（命令触发 &gt; 源编组开始）</h3>
+
+<pre><code>  时间轴：   │ 源编组第一个弹窗   命令触发
+             ▼                    ▼
+             ────────────────────▶
+
+  效果：命令触发的那一刻，源编组已经弹了一部分。
+        · 勾「从当前状态开始」：只克隆还活着的
+        · 不勾：按原始相对节拍，从头重演一遍
+</code></pre>
+
+<div class="note">
+    <strong>📌 你不用手动选模式。</strong><br>
+    程序会根据命令的时间点自动判断。你只要决定「从当前状态开始」这个复选框就行。
+</div>
+
+<h2>四、位置选择器</h2>
+
+<p>位置选择器决定「克隆出来的第一个弹窗出现在哪里」。四种模式：</p>
+
+<h3>4.1 屏幕坐标系</h3>
+
+<table>
+    <thead>
+        <tr><th>模式</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>绝对坐标</td><td>填像素值，例如 <code>800</code> / <code>400</code></td></tr>
+        <tr><td>相对坐标</td><td>填百分比，例如 <code>50</code> / <code>50</code> 表示屏幕正中</td></tr>
+    </tbody>
+</table>
+
+<h3>4.2 屏幕对齐</h3>
+
+<p>3×3 方向按钮矩阵 + 偏移量。比如点「↘」再填偏移 (30, 30)，克隆弹窗会出现在屏幕右下角，距离边缘 30 像素。</p>
+
+<pre><code>  ┌───────────────────────┐
+  │ ↖  ↑  ↗               │
+  │                       │
+  │ ←  •  →    ● ← 点这个 |
+  │                       │
+  │ ↙  ↓  ↘               │
+  └───────────────────────┘
+
+  • = 屏幕中心
+  ← = 左侧居中，偏移可调
+  其他方向同理
+</code></pre>
+
+<h3>4.3 与窗口链接</h3>
+
+<p>克隆弹窗会出现在<strong>源编组里某个带类名的窗口</strong>旁边。</p>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>链接目标</td><td>从源编组里所有带类名的窗口里选一个</td></tr>
+        <tr><td>系统 / 相加</td><td>系统：用默认偏移；相加：指定偏移量</td></tr>
+        <tr><td>单位</td><td>px / rpx</td></tr>
+    </tbody>
+</table>
+
+<h3>4.4 屏幕随机</h3>
+
+<p>在屏幕范围内随机选一个位置。无额外参数，直接执行。</p>
+
+<h2>五、重编排：翻一翻</h2>
+
+<p>重编排决定克隆出来的弹窗<strong>顺序和方向</strong>怎么变：</p>
+
+<table>
+    <thead>
+        <tr><th>模式</th><th>字段值</th><th>效果</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>原样</td><td><code>original</code></td><td>顺序不变，方向不变</td></tr>
+        <tr><td>全面反转</td><td><code>full_reverse</code></td><td>顺序和方向都反</td></tr>
+        <tr><td>水平反转</td><td><code>horizontal_reverse</code></td><td>左右镜像，上下不变</td></tr>
+        <tr><td>垂直反转</td><td><code>vertical_reverse</code></td><td>上下镜像，左右不变</td></tr>
+    </tbody>
+</table>
+
+<h3>5.1 位置偏移也会被翻转</h3>
+
+<pre><code>  源编组位置偏移： (100, 0)  ← 从基准往右 100px
+
+  水平反转后：     (-100, 0) ← 从基准往左 100px
+  垂直反转后：     (100, 0)  ← 不变
+  全面反转后：     (-100, 0) ← 往左 100px
+</code></pre>
+
+<h3>5.2 入场 / 出场动画也会被翻转</h3>
+
+<pre><code>  源动画：slide_left  （从左滑入）
+  水平反转 → slide_right（从右滑入）
+  垂直反转 → slide_left  （不变）
+  全面反转 → slide_right（从右滑入）
+
+  源动画：slide_topleft  （从左上滑入）
+  水平反转 → slide_topright （从右上滑入）
+  垂直反转 → slide_bottomleft（从左下滑入）
+  全面反转 → slide_bottomright（从右下滑入）
+</code></pre>
+
+<div class="note">
+    <strong>📌 缓动曲线不会被反转。</strong><br>
+    重编排只反转「方向」和「动画类型」，缓动（线性/缓入/缓出/缓入缓出）保持原样。
+</div>
+
+<h2>六、镜像克隆 + 窗口位移动画</h2>
+
+<p>如果源编组有一条窗口位移动画在跑，克隆编组<strong>也会自动应用同一条动画</strong>——除非克隆编组自己有一条专属动画。</p>
+
+<pre><code>  源编组"你好"：有一条动画，往右飞
+       ↓
+  镜像克隆"你好_镜像克隆版"：
+      · 没专属动画 → 自动应用源动画（如果开了重编排，动画方向会反转）
+      · 有专属动画 → 用自己的
+</code></pre>
+
+<div class="tip">
+    <strong>💡 做「左右对称飞」的标准做法：</strong><br>
+    ① 建一条镜像克隆编组，重编排选「水平反转」<br>
+    ② 给源编组写一条「窗口位移动画」，往右飞<br>
+    ③ 克隆编组会自动应用同一条动画，但因为水平反转，方向变成往左飞<br>
+    结果：一个往右飞，一个往左飞，完美对称，只需要写一条动画。
+</div>
+
+<h2>七、常见问题</h2>
+
+<h3>Q1：源编组和目标编组能一样吗？</h3>
+<p>不能。程序会拒绝，因为会无限递归克隆。目标编组名必须和源编组不同。</p>
+
+<h3>Q2：克隆编组能再被镜像克隆吗？</h3>
+<p>技术上可以（复制一个编组，把它的克隆目标指向另一个新编组），但实际用不到，容易乱。建议只做一层。</p>
+
+<h3>Q3：克隆出来的弹窗能单独编辑吗？</h3>
+<p>不能。克隆是在运行时动态生成的，不在工程文件里。要改就到源编组改，改完克隆自动跟着变。</p>
+
+<h3>Q4：为什么「与窗口链接」模式下目标下拉框是灰的？</h3>
+<p>因为源编组里没有带类名的窗口。链接需要一个「锚点窗口」，源编组至少得有一个窗口有类名。</p>
+
+<h3>Q5：克隆编组的弹窗，时间轴上看不到？</h3>
+<p>对的。克隆是运行时行为，不会在工程的时间轴上出现。它的弹窗出现时间点完全由源编组决定（跟随模式），或由命令触发时间 + 原始相对节拍决定（快照模式）。</p>
+
+<h3>Q6：怎么让克隆编组最后一起消失？</h3>
+<p>写一条「关闭编组内的弹窗」，编组选克隆的目标编组名，放在合适的时机就行。</p>
+
+<h2>八、小结</h2>
+
+<ul>
+    <li>镜像克隆编组 = 把源编组整个复制一份，放到别的位置</li>
+    <li>两种模式：跟随（源出生时同步克隆） / 快照（命令触发时立即克隆）</li>
+    <li>位置选择器：屏幕坐标系 / 屏幕对齐 / 与窗口链接 / 屏幕随机</li>
+    <li>重编排：原样 / 全面反转 / 水平反转 / 垂直反转</li>
+    <li>重编排会反转位置偏移、入场动画、出场动画，但不反转缓动</li>
+    <li>源编组有窗口位移动画时，克隆编组会自动应用（方向会被重编排修正）</li>
+    <li>克隆的弹窗不在工程文件里，改要到源编组改</li>
+</ul>
+
+<p>回到 <a href="cmd_window_animation.html">窗口位移动画</a>，或者看 <a href="cmd_wallpaper.html">设置桌面背景</a> 喵 ( ⓛ ω ⓛ *)</p>
+</div>
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'cmd_mirror_clone.html'
+    });
+</script>
+
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="global_1.html" title="全局命令 · 基础篇" tabindex="-1" rel="noopener">全局命令 · 基础篇</a>
+    <a href="global_2.html" title="全局命令 · 进阶篇" tabindex="-1" rel="noopener">全局命令 · 进阶篇</a>
+    <a href="cmd_window_animation.html" title="全局命令 · 窗口位移动画" tabindex="-1" rel="noopener">窗口位移动画</a>
+    <a href="cmd_mouse_move.html" title="全局命令 · 鼠标移动" tabindex="-1" rel="noopener">鼠标移动</a>
+    <a href="cmd_wallpaper.html" title="全局命令 · 设置桌面背景" tabindex="-1" rel="noopener">设置桌面背景</a>
+    <a href="transition.html" title="过渡动画" tabindex="-1" rel="noopener">过渡动画</a>
+</nav>
+
+</body>
+</html>

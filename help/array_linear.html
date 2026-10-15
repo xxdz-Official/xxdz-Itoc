@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="description" content="Itoc 直线阵列 - 锚点、偏移、角度、间距，让弹窗沿射线排列，由小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,直线阵列,射线阵列,锚点,偏移">
+    <meta property="og:title" content="直线阵列 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 直线阵列 - 锚点、偏移、角度、间距">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <title>直线阵列 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<div id="doc-content" style="display:none;">
+<h1>📏 直线阵列</h1>
+
+<p>直线阵列是最简单、最常用的阵列。它让弹窗沿着一条射线排列——可以水平、垂直、斜着，想怎么斜就怎么斜。</p>
+
+<pre><code>  锚点在左：   ●───●───●───●───●───▶
+  锚点在中：   ◀───●───●───●───●───▶
+  锚点在右：   ◀───●───●───●───●───●
+</code></pre>
+
+<h2>一、特有参数</h2>
+
+<table>
+    <thead>
+        <tr><th>参数</th><th>字段名</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>锚点</td><td><code>anchor</code></td><td>左 / 中 / 右。决定阵列从射线的哪一端开始排</td></tr>
+        <tr><td>偏移</td><td><code>offset</code></td><td>沿射线整体平移，正负均可</td></tr>
+    </tbody>
+</table>
+
+<h2>二、锚点的三种姿势</h2>
+
+<h3>2.1 锚点在左</h3>
+
+<p>弹窗从锚点开始，沿射线正方向依次排列。锚点是射线的起点。</p>
+
+<pre><code>  锚点
+   ●───●───●───●───●───▶
+</code></pre>
+
+<h3>2.2 锚点在中</h3>
+
+<p>锚点在中间，弹窗向两边均匀铺开。这是默认模式。</p>
+
+<pre><code>  锚点
+   ◀───●───●───●───●───▶
+        ↑
+      中间
+</code></pre>
+
+<h3>2.3 锚点在右</h3>
+
+<p>弹窗从锚点开始，沿射线反方向排列。锚点是射线的终点。</p>
+
+<pre><code>                  锚点
+   ◀───●───●───●───●───●
+</code></pre>
+
+<h2>三、角度和间距</h2>
+
+<p>角度决定射线的方向，间距决定弹窗之间的距离。</p>
+
+<pre><code>  角度 = 0°     ●───●───●───▶
+  角度 = 90°    ●
+                │
+                ●
+                │
+                ●
+  角度 = 45°    ●
+                 ╲
+                  ●
+                   ╲
+                    ●
+</code></pre>
+
+<h2>四、偏移</h2>
+
+<p>偏移会让整条射线上的弹窗沿着射线方向整体平移，但锚点不动。</p>
+
+<pre><code>  偏移 = 0：    ●───●───●───●───▶
+  偏移 = 100：      ●───●───●───●───▶
+</code></pre>
+
+<h2>五、适用场景</h2>
+
+<ul>
+    <li>歌词逐字弹出，沿水平线排列</li>
+    <li>菜单项从上到下依次出现</li>
+    <li>斜向飞入的弹窗序列</li>
+    <li>配合全局命令的「阵列变换」，让散乱弹窗瞬间排成一条线</li>
+</ul>
+
+<p>回到 <a href="array.html">阵列设计器 · 总览</a>，或者继续看 <a href="array_bezier.html">贝塞尔曲线阵列</a> 喵 ( ⓛ ω ⓛ *)</p>
+</div>
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'array_linear.html'
+    });
+</script>
+
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="array.html" title="阵列设计器 · 总览" tabindex="-1" rel="noopener">阵列设计器 · 总览</a>
+    <a href="array_bezier.html" title="贝塞尔曲线阵列" tabindex="-1" rel="noopener">贝塞尔曲线阵列</a>
+    <a href="array_polygon.html" title="多边形阵列" tabindex="-1" rel="noopener">多边形阵列</a>
+    <a href="array_circle.html" title="环形阵列" tabindex="-1" rel="noopener">环形阵列</a>
+    <a href="array_polar.html" title="极坐标阵列" tabindex="-1" rel="noopener">极坐标阵列</a>
+    <a href="array_svg.html" title="SVG阵列" tabindex="-1" rel="noopener">SVG阵列</a>
+</nav>
+
+</body>
+</html>

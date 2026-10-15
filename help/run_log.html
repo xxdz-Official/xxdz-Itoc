@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+    <meta name="description" content="Itoc 运行日志 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解测试运行日志面板、内嵌控制台模式、管道捕获、查找、复制、另存为与停止进程">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,运行日志,内嵌控制台模式,测试运行,控制台输出,管道捕获">
+    <meta property="og:title" content="运行日志 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 运行日志 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="">
+    <title>运行日志 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>📜 运行日志</h1>
+
+<p>「运行日志」是测试运行模块新增的独立面板。它用来显示解释器的控制台输出，尤其是当你使用<strong>控制台版解释器</strong>并开启<strong>内嵌控制台模式</strong>时，所有 stdout / stderr 都会被捕获到这里，方便排查弹窗、资源、命令执行等问题。</p>
+
+<div class="note">
+    <strong>📌 本篇的范围：</strong><br>
+    讲运行日志选项卡的界面、按钮、内嵌控制台模式、查找、右键菜单、快捷键和常见问题。测试运行整体流程请阅读 <a href="test_run.html">《测试运行》</a>；解释器路径配置请阅读 <a href="interpreter_config.html">《解释器自定义配置》</a>。
+</div>
+
+<h2>一、运行日志在哪里？</h2>
+
+<p>运行日志通常以<strong>主界面多标签区域中的一个选项卡</strong>出现，标题为「运行日志」。测试运行启动时，如果开启了内嵌控制台模式，程序会自动切换到该选项卡并开始写入输出。</p>
+
+<p>它主要服务于这些场景：</p>
+
+<ul>
+    <li>查看 runCZE 解释器的控制台打印、报错、调试信息</li>
+    <li>确认测试运行到底用了哪个解释器、工作目录是什么</li>
+    <li>观察资源复制、音频导出、阵列导出等过程的日志</li>
+    <li>解释器闪退时，第一时间看到错误原因</li>
+    <li>把日志复制或另存为 txt，发给别人排查</li>
+</ul>
+
+<h2>二、界面组成</h2>
+
+<h3>2.1 顶部工具栏</h3>
+
+<table>
+    <thead>
+        <tr><th>按钮 / 控件</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>清空日志</td><td>清空当前日志文本，不影响正在运行的进程</td></tr>
+        <tr><td>停止进程</td><td>结束当前由运行日志启动的进程，并尝试结束整个进程树</td></tr>
+        <tr><td>自动滚动</td><td>勾选后，新日志出现时自动滚动到底部</td></tr>
+        <tr><td>复制全部</td><td>把当前日志全文复制到剪贴板</td></tr>
+        <tr><td>另存为...</td><td>把当前日志保存为 <code>.txt</code> 文件，默认文件名类似 <code>Itoc_RunLog_日期_时间.txt</code></td></tr>
+        <tr><td>🔍 查找</td><td>打开右侧查找面板，支持高亮、上一个、下一个</td></tr>
+        <tr><td>内嵌控制台模式</td><td>勾选后，测试运行会用管道捕获控制台解释器输出到本选项卡；不勾选则使用解释器自带的独立控制台窗口</td></tr>
+        <tr><td>内嵌控制台模式设置...</td><td>打开「配置测试运行解释器」窗口，可同时设置解释器路径和内嵌控制台模式</td></tr>
+    </tbody>
+</table>
+
+<h3>2.2 状态栏</h3>
+
+<p>右上角会显示当前状态，例如：</p>
+
+<ul>
+    <li>状态：未运行</li>
+    <li>状态：启动中...</li>
+    <li>状态：运行中 PID=xxxx</li>
+    <li>状态：已结束 退出码=0</li>
+    <li>状态：已停止</li>
+    <li>状态：日志已复制</li>
+    <li>状态：已保存到 xxx.txt</li>
+</ul>
+
+<h3>2.3 日志区</h3>
+
+<p>日志区是一个深色只读文本区域，使用微软雅黑字体，自动换行。它会自动保留最近约 5000 行，超出后自动裁剪旧行，避免长时间运行占用过多内存。</p>
+
+<div class="tip">
+    <strong>💡 日志区是只读的：</strong><br>
+    你不能直接在日志区输入文字，但可以选中、复制、全选。右键菜单只保留“复制”和“全选”。
+</div>
+
+<h3>2.4 查找面板</h3>
+
+<p>点击「🔍 查找」或按 <kbd>Ctrl</kbd> + <kbd>F</kbd> 会从右侧打开查找面板。它和代码视图的查找类似，但只用于日志。</p>
+
+<table>
+    <thead>
+        <tr><th>功能</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>查找输入框</td><td>支持多行输入，输入后自动高亮所有匹配</td></tr>
+        <tr><td>上一个 / 下一个</td><td>在匹配项之间跳转</td></tr>
+        <tr><td>区分大小写</td><td>开启后大小写敏感</td></tr>
+        <tr><td>全字匹配</td><td>只匹配完整单词边界</td></tr>
+        <tr><td>正则表达式</td><td>把查找内容当作正则表达式</td></tr>
+        <tr><td>多行模式</td><td>允许查找内容跨行匹配</td></tr>
+        <tr><td>循环查找</td><td>到末尾后自动回到开头，到开头后自动跳到末尾</td></tr>
+        <tr><td>关闭 ✕</td><td>关闭查找面板并清除高亮</td></tr>
+    </tbody>
+</table>
+
+<p>快捷键：</p>
+
+<ul>
+    <li><kbd>Ctrl</kbd> + <kbd>F</kbd>：打开 / 关闭查找面板</li>
+    <li><kbd>F3</kbd>：查找下一个</li>
+    <li><kbd>Shift</kbd> + <kbd>F3</kbd>：查找上一个</li>
+    <li><kbd>Esc</kbd>：关闭查找面板</li>
+    <li><kbd>Enter</kbd>：在查找输入框中按，等于“下一个”</li>
+</ul>
+
+<h2>三、内嵌控制台模式</h2>
+
+<p>「内嵌控制台模式」决定测试运行时解释器的输出去哪里，以及你获得的是“IDE 式日志体验”还是“原生控制台实时体验”。</p>
+
+<table>
+    <thead>
+        <tr><th>状态</th><th>行为</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>关闭（默认）</td><td>测试运行使用解释器自带的独立控制台窗口。运行日志选项卡不会显示该解释器输出，只会写一些提示。</td></tr>
+        <tr><td>开启</td><td>如果解释器是控制台 exe，程序会用 <code>subprocess.Popen</code> 管道捕获 stdout / stderr，并逐行刷新到运行日志。</td></tr>
+        <tr><td>开启，但解释器是窗口模式</td><td>窗口 exe 没有控制台输出可抓取。运行日志会提示“窗口模式（无输出）”，实际效果看桌面窗口。</td></tr>
+    </tbody>
+</table>
+
+<h3>3.1 内嵌控制台模式的利与弊</h3>
+
+<p>内嵌控制台模式不是“纯升级”，它是一次<strong>取舍</strong>：用一点点实时性，换取完整的 IDE 式日志体验。</p>
+
+<table>
+    <thead>
+        <tr><th>方面</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>利：强化 IDE 体验</strong></td>
+            <td>解释器输出不再是一个孤立的黑色控制台窗口，而是进入主界面的「运行日志」选项卡。你不用在多个窗口之间 Alt+Tab，调试时视线不用离开编辑器。</td>
+        </tr>
+        <tr>
+            <td><strong>利：方便复制控制台</strong></td>
+            <td>原生控制台窗口复制文字往往很别扭：要右键、标记、拖选、回车。运行日志里可以直接鼠标拖选，右键“复制”，或者一键「复制全部」，把整段日志丢进论坛、聊天窗口或文本编辑器。</td>
+        </tr>
+        <tr>
+            <td><strong>利：方便查找控制台</strong></td>
+            <td>原生控制台基本没有像样的查找功能。运行日志自带查找面板：<kbd>Ctrl</kbd> + <kbd>F</kbd> 打开，支持上一个 / 下一个、区分大小写、全字匹配、正则表达式、多行模式、循环查找，还能把所有匹配高亮出来。</td>
+        </tr>
+        <tr>
+            <td><strong>利：日志可管理</strong></td>
+            <td>解释器崩掉日志不丢失！且支持清空日志、自动滚动、复制全部、另存为 <code>.txt</code>。排查完一个问题，可以直接把日志存档或发给别人。</td>
+        </tr>
+        <tr>
+            <td><strong>利：停止进程更方便</strong></td>
+            <td>运行日志自带「停止进程」按钮，会用 <code>taskkill /F /T /PID</code> 结束整个进程树，不用手动去任务管理器找或者关掉控制台窗口（其实差不多）。</td>
+        </tr>
+        <tr>
+            <td><strong>大弊：刷新不如原生控制台实时</strong></td>
+            <td>因为输出是经过<strong>管道</strong>捕获的：解释器写入 stdout / stderr → 管道 → 后台读线程 → 队列 → 主线程定时刷新到 Text 控件。这条链路比“解释器直接写自己的控制台窗口”多绕了几步，所以日志刷新会有轻微延迟，不是逐字节即时显示。对于打印量很大、刷新极快的程序，体感上会不如原生控制台窗口那么“跟手”。</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 怎么选？</strong><br>
+    · 需要<strong>实时盯输出</strong>、程序刷屏很快 → 关闭内嵌控制台模式，用解释器自带的独立控制台窗口。<br>
+    · 需要<strong>复制、查找、存档、IDE 内调试</strong> → 开启内嵌控制台模式，用「运行日志」选项卡。
+</div>
+
+<h3>3.2 如何判断控制台 exe？</h3>
+
+<p>程序会读取 PE 头，判断 Subsystem 是否为 <code>IMAGE_SUBSYSTEM_WINDOWS_CUI</code>（值为 3）。如果是，就按控制台程序处理。若 PE 解析失败，则根据文件名兜底：包含 <code>window</code> 视为窗口，包含 <code>console</code> 或 <code>runcze</code> 视为控制台。</p>
+
+<h3>3.3 设置保存在哪里？</h3>
+
+<p>内嵌控制台模式会保存到 <code>shezhi.txt</code> 的：</p>
+
+<pre><code>console_mode=True</code></pre>
+<p>或</p>
+<pre><code>console_mode=False</code></pre>
+
+<p>「运行日志」选项卡的复选框和「配置Itoc测试运行解释器」窗口里的复选框会互相同步。</p>
+
+<h3>3.4 管道捕获时做了什么？</h3>
+
+<ul>
+    <li>工作目录切换到 <code>runCZE</code></li>
+    <li>设置 <code>PYTHONIOENCODING=utf-8</code>、<code>PYTHONUTF8=1</code></li>
+    <li>Windows 下使用 <code>CREATE_NO_WINDOW | CREATE_NEW_PROCESS_GROUP</code></li>
+    <li>stdout 与 stderr 合并捕获</li>
+    <li>后台线程逐行读取，尝试 utf-8、gbk、cp936、utf-16、latin-1 解码，尽量解决中文乱码</li>
+    <li>主线程定时把队列内容刷新到日志区</li>
+    <li>进程退出后写入退出码，并触发回调恢复“测试运行”按钮</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 推荐：</strong><br>
+    排查问题时，使用 <code>runCZEx64.exe</code> 这类控制台解释器，并开启「内嵌控制台模式」。这样报错、堆栈、打印都会出现在运行日志里。
+</div>
+
+<h2>四、日志管理</h2>
+
+<h3>4.1 清空日志</h3>
+
+<p>点击「清空日志」会清空当前显示内容，但不会停止正在运行的进程。新输出仍会继续追加。</p>
+
+<h3>4.2 停止进程</h3>
+
+<p>点击「停止进程」会结束当前由运行日志启动的进程。Windows 下使用：</p>
+
+<pre><code>taskkill /F /T /PID &lt;pid&gt;</code></pre>
+
+<p><code>/T</code> 表示同时结束子进程树，适合解释器又启动了 mpv 等子进程的情况。</p>
+
+<h3>4.3 复制全部</h3>
+
+<p>把日志全文复制到剪贴板，方便粘贴到论坛、聊天窗口或文本编辑器。</p>
+
+<h3>4.4 另存为</h3>
+
+<p>把日志保存为 <code>.txt</code> 文件。默认文件名格式：</p>
+
+<pre><code>Itoc_RunLog_%Y%m%d_%H%M%S.txt</code></pre>
+
+<p>如果日志为空，会提示“日志内容为空，未保存”。</p>
+
+<h3>4.5 自动滚动</h3>
+
+<p>默认开启。新日志写入时自动滚动到底部。如果你想往上翻看旧日志，可以取消勾选，避免被新日志打断。</p>
+
+<h2>五、右键菜单与快捷键</h2>
+
+<h3>5.1 日志区右键菜单</h3>
+
+<p>日志区是只读的，右键菜单只保留：</p>
+
+<ul>
+    <li>复制</li>
+    <li>全选</li>
+</ul>
+
+<p>没有粘贴、剪切、删除等编辑项，因为日志区不允许直接修改。</p>
+
+<h3>5.2 查找框右键菜单</h3>
+
+<p>查找输入框是可编辑的，右键菜单包含：</p>
+
+<ul>
+    <li>撤销、重做</li>
+    <li>剪切、复制、粘贴、删除</li>
+    <li>全选</li>
+</ul>
+
+<h3>5.3 快捷键拦截</h3>
+
+<p>运行日志会拦截 <kbd>Ctrl</kbd> + <kbd>C</kbd>、<kbd>Ctrl</kbd> + <kbd>V</kbd>、<kbd>Ctrl</kbd> + <kbd>X</kbd>、<kbd>Ctrl</kbd> + <kbd>A</kbd>，避免这些快捷键穿透到主程序，造成“选中整个界面”之类的异常。撤销 / 重做等快捷键不会被拦截。</p>
+
+<h2>六、常见问题</h2>
+
+<h3>Q1：运行日志一直没有输出？</h3>
+
+<p>先确认是否勾选了「内嵌控制台模式」。如果没勾选，测试运行会使用解释器自带的独立控制台窗口，运行日志不捕获输出。</p>
+
+<h3>Q2：勾选了内嵌控制台模式，还是没有输出？</h3>
+
+<p>可能你用的解释器是窗口模式 exe，例如 <code>runCZEx64window.exe</code>。窗口程序没有控制台输出，运行日志只能提示“窗口模式（无输出）”。请改用 <code>runCZEx64.exe</code> 这类控制台解释器。</p>
+
+<h3>Q3：日志中文乱码怎么办？</h3>
+
+<p>程序已经尝试多种编码解码。如果仍然乱码，可能是解释器输出用了非常规编码。可以先把日志另存为 txt，再用其他工具查看。也可以在解释器侧统一输出 UTF-8。</p>
+
+<h3>Q4：为什么日志刷新感觉比原生控制台慢？</h3>
+
+<p>因为内嵌控制台模式走的是管道捕获：解释器写 stdout / stderr → 管道 → 后台线程读取 → 队列 → 主线程定时刷新。比原生控制台直接写自己的窗口多绕了几步，所以会有一点延迟。这是为复制、查找、存档等 IDE 式体验付出的代价。如果必须逐字实时，请关闭内嵌控制台模式。</p>
+
+<h3>Q5：为什么 Ctrl+A 不会选中整个主界面？</h3>
+
+<p>因为运行日志拦截了 <kbd>Ctrl</kbd> + <kbd>A</kbd>，只全选日志文本。这是为了避免快捷键穿透到主程序。</p>
+
+<h3>Q6：日志太长会卡吗？</h3>
+
+<p>不会。运行日志默认最多保留约 5000 行，超出会自动裁剪旧行。长时间运行也不会无限增长。</p>
+
+<h3>Q7：停止进程会杀掉 mpv 吗？</h3>
+
+<p>「停止进程」使用 <code>taskkill /F /T /PID</code>，会结束该进程树。测试运行启动前的旧进程清理还会额外扫描 runCZE 启动的 mpv。侧边栏参考媒体 / 显示器的 mpv 会被保护，不会被误杀。</p>
+
+<h3>Q8：运行日志和终端有什么区别？</h3>
+
+<p>「终端」更偏向通用命令行交互；「运行日志」专注显示测试运行解释器的控制台输出，并提供自动滚动、复制全部、另存为、查找、停止进程等专用按钮。</p>
+
+<h2>七、小结</h2>
+
+<ul>
+    <li>运行日志是测试运行的配套面板，用于查看解释器控制台输出</li>
+    <li>核心开关是「内嵌控制台模式」</li>
+    <li>不勾选：使用解释器自带独立控制台窗口，运行日志不捕获，但输出更实时</li>
+    <li>勾选 + 控制台解释器：管道捕获输出到运行日志，强化 IDE 体验，方便复制、查找、存档，但刷新不如原生控制台实时</li>
+    <li>勾选 + 窗口解释器：无控制台输出，只提示看桌面窗口</li>
+    <li>支持清空、停止、自动滚动、复制全部、另存为、查找</li>
+    <li>设置保存到 <code>shezhi.txt</code> 的 <code>console_mode</code></li>
+    <li>查找快捷键：<kbd>Ctrl</kbd> + <kbd>F</kbd>、<kbd>F3</kbd>、<kbd>Shift</kbd> + <kbd>F3</kbd></li>
+</ul>
+
+<p>配合 <a href="test_run.html">《测试运行》</a> 一起看，基本就能覆盖“跑工程”和“看输出”两件事。玩得开心喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'run_log.html'
+    });
+</script>
+
+<!-- ========== [SEO-内链开始] ========== -->
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="test_run.html" title="测试运行" tabindex="-1" rel="noopener">测试运行</a>
+    <a href="interpreter_config.html" title="解释器自定义配置" tabindex="-1" rel="noopener">解释器自定义配置</a>
+    <a href="compile_exe.html" title="编译为 exe" tabindex="-1" rel="noopener">编译为 exe</a>
+    <a href="assembly_package.html" title="组装打包模式" tabindex="-1" rel="noopener">组装打包模式</a>
+    <a href="python_libs.html" title="Python 运行库" tabindex="-1" rel="noopener">Python 运行库</a>
+    <a href="terminal.html" title="终端" tabindex="-1" rel="noopener">终端</a>
+    <a href="code_view.html" title="代码视图" tabindex="-1" rel="noopener">代码视图</a>
+</nav>
+<!-- ========== [SEO-内链结束] ========== -->
+
+</body>
+</html>

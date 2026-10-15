@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="description" content="Itoc 全局命令 · 鼠标移动 - 屏幕坐标系、以鼠标当前位置为原点、移动到目标窗口、事件触发点、缓动曲线，由小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,鼠标移动,平面直角坐标系,目标窗口,事件触发点,缓动">
+    <meta property="og:title" content="全局命令 · 鼠标移动 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 鼠标移动 - 三种坐标模式、事件触发点、缓动曲线">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <title>全局命令 · 鼠标移动 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<div id="doc-content" style="display:none;">
+<h1>🖱️ 全局命令 · 鼠标移动</h1>
+
+<p>鼠标移动是「让鼠标自己跑到某个地方去」。听起来简单，但它有三种坐标模式、两个事件触发点、四种缓动曲线，玩起来比你想的花。这一篇专门讲它。</p>
+
+<div class="note">
+    <strong>📌 一句话理解：</strong><br>
+    鼠标移动 = 「把鼠标从当前的位置，按某种路径，挪到另一个位置」。<br>
+    挪的过程中可以顺带按一下、松一下；挪到终点也可以再按一下。<br>
+    挪的方式可以匀速、可以缓入缓出。
+</div>
+
+<h2>一、三种坐标模式</h2>
+
+<table>
+    <thead>
+        <tr><th>模式</th><th>启用条件</th><th>X/Y 的含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>屏幕坐标系</td><td>默认（两个都不勾）</td><td>鼠标要移动到的绝对屏幕位置（都是正数）</td></tr>
+        <tr><td>以当前鼠标位置为原点</td><td>勾「以当前鼠标位置为原点」</td><td>相对当前位置的偏移量（可以为负数）</td></tr>
+        <tr><td>移动到指定窗口</td><td>勾「移动到类名/句柄窗口」</td><td>X/Y 变成「额外的偏移量」，通常留空</td></tr>
+    </tbody>
+</table>
+
+<h3>1.1 屏幕坐标系（默认）</h3>
+
+<pre><code>  ┌───────────────────────────┐
+  │  (0,0)                    │
+  │                           │
+  │              ● (800,400)  │
+  │                           │
+  │                           │
+  └───────────────────────────┘
+
+  X 越大越往右，Y 越大越往下。
+  X/Y 都是正数。
+</code></pre>
+
+<h3>1.2 以当前鼠标位置为原点</h3>
+
+<pre><code>      Y
+      ↑
+      │
+  ────●────▶ X
+  第二 │ 第一
+  象限 │ 象限
+  ─────┼─────
+  第三 │ 第四
+  象限 │ 象限
+      │
+
+  鼠标当前位置 = 原点 (0,0)
+  X > 0 向右，X < 0 向左
+  Y > 0 向下，Y < 0 向上
+</code></pre>
+
+<div class="tip">
+    <strong>💡 「以当前鼠标位置为原点」的妙用：</strong><br>
+    · 做「鼠标随机小抖动」：X 随机 -5 ~ +5，Y 随机 -5 ~ +5<br>
+    · 做「相对移动」：鼠标当前位置 + 偏移量<br>
+    · 做「以鼠标为锚点的拖动」：按住鼠标，然后在这个模式下移动到另一个位置
+</div>
+
+<h3>1.3 移动到目标窗口</h3>
+
+<p>勾上「移动到类名/句柄窗口」后，鼠标会自动移动到指定窗口的<strong>中心位置</strong>（或者窗口内某个指定位置）。X/Y 输入框变成「额外的偏移量」，一般在需要微调的时候才填。</p>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>类名</td><td>目标窗口的类名，例如 <code>Notepad</code>、<code>Chrome_WidgetWin_1</code></td></tr>
+        <tr><td>句柄</td><td>目标窗口的句柄（十六进制），例如 <code>0x000811CE</code></td></tr>
+        <tr><td>标题</td><td>目标窗口的标题（可选），用于辅助匹配</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 「🔍 打开窗口拾取器」一键抓：</strong><br>
+    点按钮打开窗口拾取器，鼠标悬停到任意窗口上按 <kbd>1</kbd>，类名/句柄/标题会自动回填到输入框。<br>
+    拾取器还能勾「深度命中」，抓到的就是最内层的控件（比如一个按钮、一个输入框）。
+</div>
+
+<pre><code>  ┌──────────────────────────────┐
+  │  ┌──────────────┐            │
+  │  │   目标窗口   │            │
+  │  │        ●  ←──┼── 鼠标挪到窗口中心
+  │  └──────────────┘            │
+  │                              │
+  └──────────────────────────────┘
+</code></pre>
+
+<h2>二、事件触发点：开始 / 结束</h2>
+
+<p>鼠标移动的过程分「开始」和「结束」两个时刻，可以在这两个时刻顺带执行一次鼠标事件：</p>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>可选值</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>start</code></td><td>无 / 单击 / 双击 / 鼠标按下 / 鼠标抬起</td><td>位移开始时执行</td></tr>
+        <tr><td><code>end</code></td><td>无 / 单击 / 双击 / 鼠标按下 / 鼠标抬起</td><td>位移结束后执行</td></tr>
+    </tbody>
+</table>
+
+<pre><code>  时间轴：  ─────┤开始├────────────位移────────────┤结束├─────▶
+
+  开始 = none    结束 = none     →  纯粹的移动
+  开始 = none    结束 = click    →  移过去自动点一下（最常用）
+  开始 = press   结束 = release  →  移过去的路上是"按住拖拽"
+</code></pre>
+
+<div class="tip">
+    <strong>💡 最常用组合：</strong><br>
+    「鼠标移动（位移结束后执行 → 单击）」= 一步完成「移动 + 点击」。<br>
+    不用再单独写一条「点击行为」命令。
+</div>
+
+<div class="tip">
+    <strong>💡 做「拖拽」效果：</strong><br>
+    开始 = 鼠标按下，结束 = 鼠标抬起，中间就是拖拽。<br>
+    runCZE 会检测到「按下」状态，用 <code>mouse_event</code> 增量移动鼠标，让系统识别为「按住拖动」，而不是简单地把鼠标挪过去。
+</div>
+
+<h2>三、缓动：速度曲线</h2>
+
+<table>
+    <thead>
+        <tr><th>缓动</th><th>行为</th><th>什么时候用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>线性</td><td>匀速，从头到尾一样快</td><td>机械感、程序感</td></tr>
+        <tr><td>缓入</td><td>慢起步，快结束</td><td>「加速冲过去」</td></tr>
+        <tr><td>缓出</td><td>快起步，慢结束</td><td>「刹车停在目标点」，最自然</td></tr>
+        <tr><td>缓入缓出</td><td>慢起步，快中间，慢结束</td><td>平滑自然，默认</td></tr>
+    </tbody>
+</table>
+
+<pre><code>  鼠标位置随时间变化：
+
+  线性：       │        ╱
+              │      ╱
+              │    ╱
+              │  ╱
+              └───────────▶ 时间
+
+  缓出：       │          ╱
+              │      ╱╱
+              │ ╱╱╱
+              │
+              └───────────▶ 时间
+
+  缓入缓出：   │        ╱
+              │      ╱
+              │    ╱
+              │╱╱
+              └───────────▶ 时间
+</code></pre>
+
+<h2>四、组合示例</h2>
+
+<h3>4.1 「移过去点一下」</h3>
+
+<pre><code>  坐标：800,400
+  位移结束后执行：单击
+  缓动：缓出
+</code></pre>
+
+<p>效果：鼠标平滑地跑到屏幕 (800, 400)，停稳后自动单击一次。</p>
+
+<h3>4.2 「移过去，按住不动，等下一步」</h3>
+
+<pre><code>  坐标：600,300
+  位移结束后执行：鼠标按下
+</code></pre>
+
+<p>效果：鼠标跑到 (600, 300)，按下左键保持不动。这条命令本身不松开，靠后续命令（比如另一条鼠标移动的「鼠标抬起」）松开。</p>
+
+<h3>4.3 「以当前位置为原点，抖一下」</h3>
+
+<pre><code>  勾选：以当前鼠标位置为原点
+  X：0
+  Y：-3
+  缓动：缓出
+  时间：80ms
+</code></pre>
+
+<p>效果：鼠标在原位置向上抖 3 像素。配合循环/多次触发，可以做出「鼠标在轻微呼吸」的效果。</p>
+
+<h3>4.4 「拖拽窗口标题栏」</h3>
+
+<pre><code>  坐标：目标标题栏的起始位置
+  位移结束后执行：鼠标按下
+
+  第二条鼠标移动：
+  坐标：目标标题栏的结束位置
+  位移结束后执行：鼠标抬起
+</code></pre>
+
+<p>效果：模拟「按住标题栏拖动窗口」。两条命令前后配合，就完成了拖拽动作。</p>
+
+<h2>五、常见问题</h2>
+
+<h3>Q1：为什么「移动到目标窗口」勾了之后 X/Y 输入框是灰的？</h3>
+<p>因为目标窗口模式本来就不需要填 X/Y（它会自动定位到窗口中心）。只有当同时勾上「以当前鼠标位置为原点」时，X/Y 才会变成可填的「额外偏移量」。</p>
+
+<h3>Q2：「移动到目标窗口」和「以当前鼠标位置为原点」能同时勾吗？</h3>
+<p>可以。两个都勾的情况下，鼠标会先移动到目标窗口位置，再叠加一个偏移量。X/Y 变成额外偏移。</p>
+
+<h3>Q3：起始事件和结束事件都用「单击」会怎样？</h3>
+<p>移动开始会点一下，移动结束会再点一下，总共两次单击。一般不会这么用，但技术上是可以的。</p>
+
+<h3>Q4：怎么让鼠标「瞬移」到目标点？</h3>
+<p>把「时间」设得非常小（比如 1ms），或者直接用系统原生速度。<strong>不过 runCZE 的鼠标移动是按帧插值的</strong>，时间再小也会走几帧，肉眼几乎看不出，但确实不是瞬移。</p>
+
+<h3>Q5：为什么鼠标有时候会跑偏？</h3>
+<p>检查一下是不是在「以当前鼠标位置为原点」模式下，勾了「位移结束后执行 → 鼠标按下」。按住状态下 runCZE 用 <code>mouse_event</code> 增量移动，会和 SetCursorPos 有细微差别。如果不是拖拽场景，建议取消按住状态。</p>
+
+<h3>Q6：能移动到自己吗？</h3>
+<p>能，但没意义。鼠标移动是「把鼠标挪到某个位置」，如果目标就是当前位置，那什么都不会发生。</p>
+
+<h2>六、小结</h2>
+
+<ul>
+    <li>三种坐标模式：屏幕坐标系 / 以当前鼠标位置为原点 / 移动到目标窗口</li>
+    <li>两个事件触发点：位移开始（start） / 位移结束（end）</li>
+    <li>事件选项：无 / 单击 / 双击 / 鼠标按下 / 鼠标抬起</li>
+    <li>四种缓动：线性 / 缓入 / 缓出 / 缓入缓出</li>
+    <li>「移动 + 结束时单击」可以一步完成「移过去点一下」</li>
+    <li>「按下 + 移动 + 抬起」可以模拟拖拽</li>
+    <li>第三方窗口用「🔍 打开窗口拾取器」一键抓</li>
+</ul>
+
+<p>回到 <a href="cmd_window_animation.html">窗口位移动画</a>，或者看 <a href="cmd_wallpaper.html">设置桌面背景</a> 喵 ( ⓛ ω ⓛ *)</p>
+</div>
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'cmd_mouse_move.html'
+    });
+</script>
+
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="global_1.html" title="全局命令 · 基础篇" tabindex="-1" rel="noopener">全局命令 · 基础篇</a>
+    <a href="global_2.html" title="全局命令 · 进阶篇" tabindex="-1" rel="noopener">全局命令 · 进阶篇</a>
+    <a href="cmd_window_animation.html" title="全局命令 · 窗口位移动画" tabindex="-1" rel="noopener">窗口位移动画</a>
+    <a href="cmd_mirror_clone.html" title="全局命令 · 镜像克隆编组" tabindex="-1" rel="noopener">镜像克隆编组</a>
+    <a href="cmd_wallpaper.html" title="全局命令 · 设置桌面背景" tabindex="-1" rel="noopener">设置桌面背景</a>
+    <a href="GetWindowClassName.html" title="窗口拾取器" tabindex="-1" rel="noopener">窗口拾取器</a>
+</nav>
+
+</body>
+</html>

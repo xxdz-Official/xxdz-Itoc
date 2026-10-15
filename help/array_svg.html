@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="description" content="Itoc SVG阵列 - 导入SVG，弹窗自动沿路径均匀分布，由小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,SVG阵列,SVG路径,自动采样">
+    <meta property="og:title" content="SVG阵列 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc SVG阵列 - 导入SVG，弹窗自动沿路径分布">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <title>SVG阵列 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<div id="doc-content" style="display:none;">
+<h1>🖼️ SVG 阵列</h1>
+
+<p>SVG 阵列是「懒人福音」。你只要丢一个 SVG 文件进去，程序会自动解析里面的路径，然后把弹窗<strong>沿着路径均匀分布</strong>。你不需要手动摆点，缩放一下就行。</p>
+
+<pre><code>  SVG 文件          弹窗沿路径分布
+   ╭───╮            ●───●───●
+  ╱     ╲          ╱         ╲
+ │       │        ●           ●
+  ╲     ╱          ╲         ╱
+   ╰───╯            ●───●───●
+</code></pre>
+
+<h2>一、操作方式</h2>
+
+<table>
+    <thead>
+        <tr><th>操作</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>选择SVG文件</td><td>从磁盘选一个 <code>.svg</code> 文件</td></tr>
+        <tr><td>清空</td><td>清空当前 SVG，保留缩放参数</td></tr>
+        <tr><td>缩放滑块</td><td>整体缩放 SVG 背景和弹窗位置</td></tr>
+    </tbody>
+</table>
+
+<h2>二、采样规则</h2>
+
+<p>SVG 里可能有多条路径。程序会：</p>
+
+<ol>
+    <li>按路径的<strong>文件定义顺序</strong>依次分配弹窗</li>
+    <li>每条路径内部<strong>独立均匀采样</strong></li>
+    <li>弹窗总数 N 会按路径数量尽量平均分配，余数分给前面的路径</li>
+</ol>
+
+<pre><code>  N = 10，3 条路径
+  路径1：4 个弹窗
+  路径2：3 个弹窗
+  路径3：3 个弹窗
+</code></pre>
+
+<h2>三、支持的 SVG 元素</h2>
+
+<table>
+    <thead>
+        <tr><th>元素</th><th>支持</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>&lt;path&gt;</code></td><td>✅ 完整支持（M/L/H/V/C/S/Q/T/A/Z）</td></tr>
+        <tr><td><code>&lt;circle&gt;</code></td><td>✅ 转为路径</td></tr>
+        <tr><td><code>&lt;ellipse&gt;</code></td><td>✅ 转为路径</td></tr>
+        <tr><td><code>&lt;rect&gt;</code></td><td>✅ 转为矩形路径</td></tr>
+        <tr><td><code>&lt;line&gt;</code></td><td>✅ 转为直线</td></tr>
+        <tr><td><code>&lt;polyline&gt;</code></td><td>✅ 转为折线</td></tr>
+        <tr><td><code>&lt;polygon&gt;</code></td><td>✅ 转为闭合折线</td></tr>
+    </tbody>
+</table>
+
+<h2>四、背景显示</h2>
+
+<p>SVG 会被光栅化成一张半透明背景图，保留原色，alpha 为 0.5。你可以一边看背景，一边看绿点分布。</p>
+
+<div class="tip">
+    <strong>💡 中心点就是锚点：</strong><br>
+    SVG 的几何中心（优先 viewBox 中心）就是阵列的锚点。所有弹窗位置都是相对于这个中心计算的。
+</div>
+
+<h2>五、适用场景</h2>
+
+<ul>
+    <li>把公司的 Logo 变成弹窗阵</li>
+    <li>用文字路径做弹窗排列</li>
+    <li>复杂图形一键映射成弹窗位置</li>
+</ul>
+
+<p>回到 <a href="array.html">阵列设计器 · 总览</a>，玩得开心喵 ( ⓛ ω ⓛ *)</p>
+</div>
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'array_svg.html'
+    });
+</script>
+
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="array.html" title="阵列设计器 · 总览" tabindex="-1" rel="noopener">阵列设计器 · 总览</a>
+    <a href="array_linear.html" title="直线阵列" tabindex="-1" rel="noopener">直线阵列</a>
+    <a href="array_bezier.html" title="贝塞尔曲线阵列" tabindex="-1" rel="noopener">贝塞尔曲线阵列</a>
+    <a href="array_polygon.html" title="多边形阵列" tabindex="-1" rel="noopener">多边形阵列</a>
+    <a href="array_circle.html" title="环形阵列" tabindex="-1" rel="noopener">环形阵列</a>
+    <a href="array_polar.html" title="极坐标阵列" tabindex="-1" rel="noopener">极坐标阵列</a>
+</nav>
+
+</body>
+</html>

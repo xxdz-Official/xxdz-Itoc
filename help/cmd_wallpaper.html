@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="description" content="Itoc 全局命令 · 设置桌面背景 - mpv原理、传统原理、图片/视频壁纸、音量、循环、壁纸寿命、播完销毁，由小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,设置桌面背景,桌面壁纸,mpv原理,传统原理,视频壁纸,壁纸寿命">
+    <meta property="og:title" content="全局命令 · 设置桌面背景 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 设置桌面背景 - mpv原理 / 传统原理、视频壁纸、壁纸寿命">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <title>全局命令 · 设置桌面背景 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<div id="doc-content" style="display:none;">
+<h1>🖼️ 全局命令 · 设置桌面背景</h1>
+
+<p>设置桌面背景就是「把桌面换成你指定的图片或视频」。听起来简单，但因为是全局命令，所以你可以做到「歌曲放到某一拍的时候，桌面突然变成一张奇怪的照片」这种事——很适合做鬼畜。</p>
+
+<pre><code>  时间轴：     │           │                │
+               ▼           ▼                ▼
+          开始播放      播放到3秒        播放到10秒
+                       换壁纸           换回壁纸
+</code></pre>
+
+<h2>一、两种原理：mpv vs 传统</h2>
+
+<table>
+    <thead>
+        <tr><th>原理</th><th>字段值</th><th>能设什么</th><th>底层做什么</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>mpv原理</td><td><code>principle=mpv原理</code></td><td>图片 + 视频</td><td>用 mpv 把内容渲染成桌面壁纸</td></tr>
+        <tr><td>传统原理</td><td><code>principle=传统原理</code></td><td>只有图片</td><td>调用 Windows 系统 API 设置壁纸</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 怎么选？</strong><br>
+    · 只是换张静态图 → <strong>传统原理</strong>，最稳，兼容性最好。<br>
+    · 想让桌面放视频 → 必须用 <strong>mpv原理</strong>，传统原理不支持视频。<br>
+    · 用的是 GIF 图 → 两种都行，但 mpv原理 播 GIF 更流畅。
+</div>
+
+<h2>二、文件选择</h2>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>文件路径</td><td>图片或视频的文件路径</td></tr>
+    </tbody>
+</table>
+
+<p>点「浏览...」按钮选择文件，程序会<strong>自动根据扩展名</strong>分类：</p>
+
+<pre><code>  图片扩展名：            视频扩展名：
+  .jpg .jpeg .png         .mp4 .avi .mov
+  .bmp .gif .tiff         .mkv .wmv .flv
+                          .webm .m4v
+
+  选图片 → 复制到工程的 img/ 目录
+  选视频 → 复制到工程的 video/ 目录
+  路径存为相对路径（如 "img/星空.jpg"）
+</code></pre>
+
+<div class="tip">
+    <strong>💡 相对路径自动处理：</strong><br>
+    如果你用「浏览...」选的文件不在工程目录，程序会自动把它复制到工程的 <code>img/</code> 或 <code>video/</code> 目录，并把路径写成相对路径。<br>
+    这样工程拷给别人也能跑。
+</div>
+
+<h2>三、视频参数（仅 mpv原理 + 视频）</h2>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>字段名</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>音量</td><td><code>volume</code></td><td>0 ~ 100，默认 0（静音）</td></tr>
+        <tr><td>循环播放</td><td><code>loop</code></td><td>视频循环播放，默认勾选</td></tr>
+        <tr><td>壁纸寿命(ms)</td><td><code>lifetime</code></td><td>多少毫秒后自动恢复原壁纸，留空 = 永久</td></tr>
+        <tr><td>视频播放完成就销毁壁纸</td><td><code>destroy_on_finish</code></td><td>非循环下，播完自动恢复</td></tr>
+    </tbody>
+</table>
+
+<h3>3.1 循环播放 vs 播完销毁</h3>
+
+<pre><code>  循环播放：        ▶️────▶️────▶️────▶️────▶️ ... （永远在放）
+
+  播完销毁：        ▶️────▶️──── 停 → 恢复原壁纸
+
+  壁纸寿命：        ▶️────▶️── 3秒后 ── 恢复原壁纸
+                  （还没播完就被掐了）
+</code></pre>
+
+<div class="warning">
+    <strong>⚠️ 三个互斥规则：</strong><br>
+    ① 「循环播放」勾上时，「视频播放完成就销毁壁纸」会被禁用并自动取消勾选<br>
+    ② 「壁纸寿命」填了之后，「视频播放完成就销毁壁纸」会被取消勾选<br>
+    ③ 勾了「视频播放完成就销毁壁纸」，「壁纸寿命」会被自动清空
+</div>
+
+<div class="tip">
+    <strong>💡 三者的关系：</strong><br>
+    · 想让视频一直循环 → 勾「循环播放」，其他都不填<br>
+    · 想让视频放一遍就恢复 → 取消「循环播放」+ 勾「播完就销毁」<br>
+    · 想让视频放一会儿就恢复 → 取消「循环播放」+ 填「壁纸寿命」（比如 5000 = 5 秒）
+</div>
+
+<h2>四、图片壁纸的参数变化</h2>
+
+<p>如果文件是图片（不管原理是 mpv原理 还是 传统原理），视频参数区域会自动禁用并清空：</p>
+
+<pre><code>  ┌──────────────────────────────────┐
+  │ 视频参数（图片壁纸不需要）        │
+  │  ┌──────────────┐                │
+  │  │ 音量：[灰]     │                │
+  │  │ 循环：[灰]     │                │
+  │  │ 寿命：[灰]     │                │
+  │  │ 销毁：[灰]     │                │
+  │  └──────────────┘                │
+  └──────────────────────────────────┘
+</code></pre>
+
+<h2>五、完整参数结构</h2>
+
+<pre><code>  principle=mpv原理
+  path=img/星空.jpg
+  volume=0
+  loop=True
+  lifetime=0
+  destroy_on_finish=False
+</code></pre>
+
+<table>
+    <thead>
+        <tr><th>参数</th><th>值</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>principle</code></td><td><code>mpv原理</code> / <code>传统原理</code></td><td>壁纸原理</td></tr>
+        <tr><td><code>path</code></td><td>文件路径</td><td>相对路径（img/... 或 video/...）或绝对路径</td></tr>
+        <tr><td><code>volume</code></td><td>0 ~ 100</td><td>仅 mpv原理 + 视频有效</td></tr>
+        <tr><td><code>loop</code></td><td><code>True</code> / <code>False</code></td><td>仅 mpv原理 + 视频有效</td></tr>
+        <tr><td><code>lifetime</code></td><td>毫秒数，0 = 永久</td><td>壁纸显示多久后自动恢复</td></tr>
+        <tr><td><code>destroy_on_finish</code></td><td><code>True</code> / <code>False</code></td><td>仅 mpv原理 + 非循环 + 视频有效</td></tr>
+    </tbody>
+</table>
+
+<h2>六、组合示例</h2>
+
+<h3>6.1 「播放到某一拍，桌面变成星空」</h3>
+
+<pre><code>  原理：传统原理
+  文件：img/星空.jpg
+</code></pre>
+
+<p>最基础的用法。传统原理 + 图片，兼容性最好。</p>
+
+<h3>6.2 「播放到某一拍，桌面变成一个 5 秒的视频」</h3>
+
+<pre><code>  原理：mpv原理
+  文件：video/鬼畜.mp4
+  循环播放：不勾
+  壁纸寿命：5000
+  音量：0
+</code></pre>
+
+<p>视频播 5 秒后自动恢复原壁纸。</p>
+
+<h3>6.3 「播放到某一拍，桌面循环放一个动态壁纸」</h3>
+
+<pre><code>  原理：mpv原理
+  文件：video/呼吸灯.mp4
+  循环播放：勾
+  音量：0
+</code></pre>
+
+<p>视频一直循环，直到程序退出或下一条设置壁纸命令替换它。</p>
+
+<h3>6.4 「播完视频后恢复原壁纸」</h3>
+
+<pre><code>  原理：mpv原理
+  文件：video/短片.mp4
+  循环播放：不勾
+  视频播放完成就销毁壁纸：勾
+</code></pre>
+
+<p>视频播完自动恢复原壁纸。适合「放一个小短片做转场」的场景。</p>
+
+<h3>6.5 「有声视频壁纸」</h3>
+
+<pre><code>  原理：mpv原理
+  文件：video/音乐mv.mp4
+  音量：50
+  循环播放：勾
+</code></pre>
+
+<p>视频播放时带声音。注意：整个程序只有一条音频流，如果同时有背景音乐在播放，会两个声音重叠。</p>
+
+<h2>七、常见问题</h2>
+
+<h3>Q1：为什么「传统原理」选了视频文件，什么都不发生？</h3>
+<p>因为传统原理不支持视频。程序会在后台提示「传统原理不支持视频壁纸，跳过」。想放视频必须切成 mpv原理。</p>
+
+<h3>Q2：为什么我选了视频，但视频参数区域是灰的？</h3>
+<p>检查两点：① 原理是不是 mpv原理；② 文件路径的扩展名是不是视频扩展名。<br>
+两者都满足时视频参数区域才会启用。</p>
+
+<h3>Q3：mpv原理需要额外装什么吗？</h3>
+<p>需要 mpv 可执行文件。mpv 一般放在 runCZE 目录下，程序会自动找到它。找不到的话控制台会打印提示。</p>
+
+<h3>Q4：壁纸设置后，怎么恢复？</h3>
+<p>三种方式：<br>
+① 再写一条「设置桌面背景」命令，把路径指回原壁纸；<br>
+② 用「壁纸寿命」让它自动恢复；<br>
+③ 程序退出时，runCZE 会尝试恢复原壁纸。</p>
+
+<h3>Q5：视频壁纸能不能只有画面没有声音？</h3>
+<p>可以。把「音量」设为 0（默认就是 0）就是静音播放。</p>
+
+<h3>Q6：视频壁纸和背景音乐能同时响吗？</h3>
+<p>技术上都能响，但会互相叠加，听感很乱。<strong>推荐做法：视频壁纸音量设为 0，只放背景音乐。</strong></p>
+
+<h3>Q7：为什么我的 GIF 壁纸不动？</h3>
+<p>传统原理设 GIF 是静态的（Windows 桌面壁纸不支持动态 GIF）。<br>
+要让 GIF 动起来必须用 mpv原理——mpv 会把 GIF 当视频播，画面就动起来了。</p>
+
+<h3>Q8：路径填相对路径还是绝对路径？</h3>
+<p>推荐相对路径（比如 <code>img/星空.jpg</code>）。<br>
+用「浏览...」选文件时，程序会自动复制到工程目录并写成相对路径，工程拷给别人也能跑。</p>
+
+<h2>八、小结</h2>
+
+<ul>
+    <li>两种原理：mpv原理（图片 + 视频） / 传统原理（只有图片）</li>
+    <li>图片：两种原理都能设，但传统原理兼容性最好</li>
+    <li>视频：必须用 mpv原理</li>
+    <li>视频参数：音量 / 循环 / 壁纸寿命 / 播完销毁</li>
+    <li>三个互斥规则：循环、寿命、播完销毁 三者只能选其一（或都不选）</li>
+    <li>用「浏览...」选文件时，程序自动复制到工程目录并写成相对路径</li>
+    <li>推荐：视频壁纸音量设为 0，避免和背景音乐打架</li>
+</ul>
+
+<p>回到 <a href="cmd_mirror_clone.html">镜像克隆编组</a>，或者看 <a href="global_1.html">全局命令 · 基础篇</a> 喵 ( ⓛ ω ⓛ *)</p>
+</div>
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'cmd_wallpaper.html'
+    });
+</script>
+
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="global_1.html" title="全局命令 · 基础篇" tabindex="-1" rel="noopener">全局命令 · 基础篇</a>
+    <a href="global_2.html" title="全局命令 · 进阶篇" tabindex="-1" rel="noopener">全局命令 · 进阶篇</a>
+    <a href="cmd_window_animation.html" title="全局命令 · 窗口位移动画" tabindex="-1" rel="noopener">窗口位移动画</a>
+    <a href="cmd_mouse_move.html" title="全局命令 · 鼠标移动" tabindex="-1" rel="noopener">鼠标移动</a>
+    <a href="cmd_mirror_clone.html" title="全局命令 · 镜像克隆编组" tabindex="-1" rel="noopener">镜像克隆编组</a>
+</nav>
+
+</body>
+</html>

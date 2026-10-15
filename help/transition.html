@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <!-- ========== SEO 优化 ========== -->
-<meta name="description" content="Itoc 过渡动画帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解入场/出场动画类型、设置方法、过渡配置选项卡、参数说明与工程字段">
-<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,过渡动画,入场动画,出场动画,滑动,弹跳,弹性,展开,收缩,淡入淡出,闪烁,硬闪,透明度">
-<meta property="og:title" content="过渡动画 - xxdz Itoc 帮助文档">
-<meta property="og:description" content="Itoc 过渡动画帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
-<meta property="og:type" content="article">
-<meta name="twitter:card" content="summary">
-<link rel="canonical" href="">
-<title>过渡动画 - xxdz Itoc 帮助文档</title>
-<link rel="stylesheet" href="shared.css">
+    <meta name="description" content="Itoc 过渡动画帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解入场/出场动画类型、设置方法、过渡配置选项卡、参数说明与工程字段">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,过渡动画,入场动画,出场动画,滑动,微滑,弹跳,弹性,展开,收缩,淡入淡出,闪烁,硬闪,透明度">
+    <meta property="og:title" content="过渡动画 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 过渡动画帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="">
+    <title>过渡动画 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
 </head>
 <body>
 <div id="header-placeholder"></div>
@@ -65,10 +65,10 @@
 <ul>
     <li><strong>── 入场动画 ──</strong> 分组标题</li>
     <li><strong>无：</strong> 清除入场动画</li>
-    <li>各种入场动画分组（淡入淡出、滑动、弹跳、弹性、展开、闪烁）</li>
+    <li>各种入场动画分组（淡入淡出、滑动、微滑、弹跳、弹性、展开、闪烁）</li>
     <li><strong>── 出场动画 ──</strong> 分组标题</li>
     <li><strong>无：</strong> 清除出场动画</li>
-    <li>各种出场动画分组（淡出淡入、滑动、弹跳、弹性、收缩、闪烁）</li>
+    <li>各种出场动画分组（淡出淡入、滑动、微滑、弹跳、弹性、收缩、闪烁）</li>
 </ul>
 
 <p>选中一个或多个音符/调整图层，然后从菜单里点一个动画，就会立即应用（使用默认时长 500ms）。</p>
@@ -82,6 +82,7 @@
 <ul>
     <li><strong>动画选择按钮：</strong> 点击后弹出一个分组菜单，选择动画类型。按钮上会显示当前选中的动画名称。</li>
     <li><strong>时长输入框：</strong> 设置动画时长（单位毫秒，默认 500）。</li>
+    <li><strong>微滑距离输入框：</strong> 只有当前选中「微滑」类动画时才亮起。单位像素，默认 50，范围 0~300。</li>
 </ul>
 
 <p>设置好之后，点右下角的 <strong>「应用 (Insert)」</strong> 按钮，就会把配置应用到选中的音符/调整图层上。</p>
@@ -101,10 +102,22 @@
     </thead>
     <tbody>
         <tr><td rowspan="1">淡入淡出</td><td>淡入淡出</td><td>透明度从 0 到 1，平滑出现</td></tr>
-        <tr><td rowspan="4">滑动</td><td>← 从左滑入</td><td>从屏幕左边滑入到目标位置</td></tr>
+        <tr><td rowspan="8">滑动</td><td>← 从左滑入</td><td>从屏幕左边滑入到目标位置</td></tr>
         <tr><td>→ 从右滑入</td><td>从屏幕右边滑入到目标位置</td></tr>
         <tr><td>↑ 从上滑入</td><td>从屏幕上方滑入到目标位置</td></tr>
         <tr><td>↓ 从下滑入</td><td>从屏幕下方滑入到目标位置</td></tr>
+        <tr><td>↖ 从左上滑入</td><td>从屏幕左上角滑入到目标位置</td></tr>
+        <tr><td>↗ 从右上滑入</td><td>从屏幕右上角滑入到目标位置</td></tr>
+        <tr><td>↙ 从左下滑入</td><td>从屏幕左下角滑入到目标位置</td></tr>
+        <tr><td>↘ 从右下滑入</td><td>从屏幕右下角滑入到目标位置</td></tr>
+        <tr><td rowspan="8">微滑</td><td>← 左侧微滑入</td><td>从目标位置左边偏移一小段，缓出滑入到目标位置</td></tr>
+        <tr><td>→ 右侧微滑入</td><td>从目标位置右边偏移一小段，缓出滑入到目标位置</td></tr>
+        <tr><td>↑ 上方微滑入</td><td>从目标位置上方偏移一小段，缓出滑入到目标位置</td></tr>
+        <tr><td>↓ 下方微滑入</td><td>从目标位置下方偏移一小段，缓出滑入到目标位置</td></tr>
+        <tr><td>↖ 左上微滑入</td><td>从目标位置左上偏移一小段，缓出滑入到目标位置</td></tr>
+        <tr><td>↗ 右上微滑入</td><td>从目标位置右上偏移一小段，缓出滑入到目标位置</td></tr>
+        <tr><td>↙ 左下微滑入</td><td>从目标位置左下偏移一小段，缓出滑入到目标位置</td></tr>
+        <tr><td>↘ 右下微滑入</td><td>从目标位置右下偏移一小段，缓出滑入到目标位置</td></tr>
         <tr><td rowspan="4">弹跳</td><td>← 左弹跳</td><td>从左边弹跳着出现（带反弹效果）</td></tr>
         <tr><td>→ 右弹跳</td><td>从右边弹跳着出现</td></tr>
         <tr><td>↑ 上弹跳</td><td>从上边弹跳着出现</td></tr>
@@ -138,10 +151,22 @@
     </thead>
     <tbody>
         <tr><td rowspan="1">淡出淡入</td><td>淡出淡入</td><td>透明度从 1 到 0，平滑消失</td></tr>
-        <tr><td rowspan="4">滑动</td><td>← 向左滑出</td><td>向屏幕左边滑出</td></tr>
+        <tr><td rowspan="8">滑动</td><td>← 向左滑出</td><td>向屏幕左边滑出</td></tr>
         <tr><td>→ 向右滑出</td><td>向屏幕右边滑出</td></tr>
         <tr><td>↑ 向上滑出</td><td>向屏幕上方滑出</td></tr>
         <tr><td>↓ 向下滑出</td><td>向屏幕下方滑出</td></tr>
+        <tr><td>↖ 向左上滑出</td><td>向屏幕左上角滑出</td></tr>
+        <tr><td>↗ 向右上滑出</td><td>向屏幕右上角滑出</td></tr>
+        <tr><td>↙ 向左下滑出</td><td>向屏幕左下角滑出</td></tr>
+        <tr><td>↘ 向右下滑出</td><td>向屏幕右下角滑出</td></tr>
+        <tr><td rowspan="8">微滑</td><td>← 向左微滑出</td><td>从目标位置向左偏移一小段，缓入滑出后消失</td></tr>
+        <tr><td>→ 向右微滑出</td><td>从目标位置向右偏移一小段，缓入滑出后消失</td></tr>
+        <tr><td>↑ 向上微滑出</td><td>从目标位置向上偏移一小段，缓入滑出后消失</td></tr>
+        <tr><td>↓ 向下微滑出</td><td>从目标位置向下偏移一小段，缓入滑出后消失</td></tr>
+        <tr><td>↖ 左上微滑出</td><td>从目标位置向左上偏移一小段，缓入滑出后消失</td></tr>
+        <tr><td>↗ 右上微滑出</td><td>从目标位置向右上偏移一小段，缓入滑出后消失</td></tr>
+        <tr><td>↙ 左下微滑出</td><td>从目标位置向左下偏移一小段，缓入滑出后消失</td></tr>
+        <tr><td>↘ 右下微滑出</td><td>从目标位置向右下偏移一小段，缓入滑出后消失</td></tr>
         <tr><td rowspan="4">弹跳</td><td>← 左弹跳退出</td><td>向左弹跳着消失</td></tr>
         <tr><td>→ 右弹跳退出</td><td>向右弹跳着消失</td></tr>
         <tr><td>↑ 上弹跳退出</td><td>向上弹跳着消失</td></tr>
@@ -173,6 +198,95 @@
     <strong>硬闪入 / 硬闪出</strong> 是<strong>物理隐藏</strong>闪烁——窗口会真的 hide() 掉再 show() 回来，看起来像被“啪、啪、啪”地打了三下。后者更有冲击力，但也更“糙”一些，按需选择。
 </div>
 
+<h3>3.3 方向示意（字符画）</h3>
+
+<p>所有带方向的动画（滑动、微滑、弹跳、弹性、展开/收缩）都遵循同一套方向语义：</p>
+
+<ul>
+    <li><strong>入场：</strong>表示“从哪边来”；</li>
+    <li><strong>出场：</strong>表示“往哪边去”。</li>
+</ul>
+
+<p>8 个方向对应的相对位置如下（<code>[目标]</code> 是窗口最终应停的位置）：</p>
+
+<pre><code>        ↖        ↑        ↗
+          ╲      │      ╱
+           ╲     │     ╱
+            ╲    │    ╱
+     ← ────── [目标] ────── →
+            ╱    │    ╲
+           ╱     │     ╲
+          ╱      │      ╲
+        ↙        ↓        ↘
+</code></pre>
+
+<h4>3.3.1 滑动 / 微滑 的方向差异</h4>
+
+<p>“滑动”和“微滑”共用同一套 8 方向语义，区别只在<strong>起点/终点距离</strong>和<strong>缓动曲线</strong>：</p>
+
+<table>
+    <thead>
+        <tr><th>动画</th><th>起点/终点</th><th>缓动</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>滑动</td><td>屏幕外 / 屏幕外（大距离，8 方向）</td><td>OutQuad（入场）、InQuad（出场）</td></tr>
+        <tr><td>微滑</td><td>目标位置附近（小距离，可配置，默认 50px，8 方向）</td><td>OutQuad（入场）、InQuad（出场）</td></tr>
+    </tbody>
+</table>
+
+<p><strong>微滑入场字符画示意：</strong></p>
+
+<pre><code>        ↖        ↑        ↗
+          ╲      │      ╱
+           ╲     │     ╱
+            ╲    │    ╱
+     ← ────── [目标] ────── →
+            ╱    │    ╲
+           ╱     │     ╲
+          ╱      │      ╲
+        ↙        ↓        ↘
+</code></pre>
+
+<p>以「左侧微滑入」为例：</p>
+
+<pre><code>起点：x = 目标x - distance
+终点：x = 目标x
+y 不变
+
+动画效果：
+  窗口先出现在目标位置左边 distance 像素处
+  然后缓出，滑到目标位置
+  最终停住
+</code></pre>
+
+<p><strong>微滑出场字符画示意：</strong></p>
+
+<pre><code>        ↖        ↑        ↗
+          ╲      │      ╱
+           ╲     │     ╱
+            ╲    │    ╱
+     ← ────── [目标] ────── →
+            ╱    │    ╲
+           ╱     │     ╲
+          ╱      │      ╲
+        ↙        ↓        ↘
+</code></pre>
+
+<p>以「向上微滑出」为例：</p>
+
+<pre><code>起点：当前x，当前y
+终点：当前x，当前y - distance
+动画完成后关闭
+</code></pre>
+
+<div class="tip">
+    <strong>💡 微滑的缓动为什么固定是缓入/缓出？</strong><br>
+    微滑的手感是“出现后向一个方向缓动一小段，然后最终停止”。<br>
+    <strong>入场</strong>需要“开始快、结束慢”，像减速停住，所以固定用 <code>OutQuad</code>（缓出）。<br>
+    <strong>出场</strong>需要“开始慢、结束快”，像加速离开，所以固定用 <code>InQuad</code>（缓入）。<br>
+    这两个曲线是微滑的“手感配方”，不受外部缓动设置影响。
+</div>
+
 <h2>四、透明度支持</h2>
 
 <p>所有弹窗都支持通过 <code>window_opacity</code> 字段设置<strong>目标透明度</strong>（0% - 100%）。过渡动画会完整尊重这个设置：</p>
@@ -183,7 +297,7 @@
     </thead>
     <tbody>
         <tr><td>淡入 / 淡出</td><td>从 0.0 渐变到用户设置的目标透明度（不再固定到 1.0）</td></tr>
-        <tr><td>滑动 / 弹跳 / 弹性 / 展开</td><td>整个动画过程保持用户设置的目标透明度，不会忽明忽暗</td></tr>
+        <tr><td>滑动 / 微滑 / 弹跳 / 弹性 / 展开</td><td>整个动画过程保持用户设置的目标透明度，不会忽明忽暗</td></tr>
         <tr><td>闪入 / 闪出</td><td>围绕用户设置的目标透明度做闪烁（0 ↔ 目标值），最终稳定在目标值</td></tr>
         <tr><td>硬闪入 / 硬闪出</td><td>每次 show 出来时立即恢复用户设置的目标透明度</td></tr>
     </tbody>
@@ -206,8 +320,8 @@
     </thead>
     <tbody>
         <tr><td>顶部</td><td>显示当前选中的是音符还是调整图层，以及数量</td></tr>
-        <tr><td>左侧栏</td><td>入场动画设置：动画选择按钮 + 时长输入框</td></tr>
-        <tr><td>右侧栏</td><td>出场动画设置：动画选择按钮 + 时长输入框</td></tr>
+        <tr><td>左侧栏</td><td>入场动画设置：动画选择按钮 + 时长输入框 + 微滑距离输入框</td></tr>
+        <tr><td>右侧栏</td><td>出场动画设置：动画选择按钮 + 时长输入框 + 微滑距离输入框</td></tr>
         <tr><td>底部按钮</td><td>重置 / 应用 (Insert) / 应用全部（多选时出现）</td></tr>
     </tbody>
 </table>
@@ -220,12 +334,28 @@
 
 <p>设置动画持续多少毫秒。默认 500ms（0.5 秒）。可以填 0 到 10000 之间的整数。填 0 表示瞬间完成（可能看不到动画效果）。</p>
 
+<h3>5.3 微滑距离输入框</h3>
+
+<p>只有当前选中「微滑」类动画时才亮起。设置微滑从目标位置偏移多少像素。默认 50，范围 0~300。</p>
+
+<ul>
+    <li><strong>0：</strong>不偏移，效果等于原地不动，只走时长。</li>
+    <li><strong>50（默认）：</strong>推荐值，明显但不夸张。</li>
+    <li><strong>100 以上：</strong>偏移较远，接近普通滑动，慎用。</li>
+</ul>
+
 <div class="tip">
     <strong>💡 关于缓动曲线：</strong><br>
-    当前的版本<strong>没有缓动曲线的选择</strong>，所有动画使用内置的缓动效果（滑动用平滑缓动、弹跳用 OutBounce、弹性用 OutElastic、展开用 InCubic，等等）。你只需要设置「时长」这一个参数即可。
+    当前的版本<strong>没有缓动曲线的选择</strong>，所有动画使用内置的缓动效果：<br>
+    · 滑动：入场 <code>OutQuad</code>、出场 <code>InQuad</code><br>
+    · 微滑：入场固定 <code>OutQuad</code>（缓出）、出场固定 <code>InQuad</code>（缓入）<br>
+    · 弹跳：<code>OutBounce</code><br>
+    · 弹性：<code>OutElastic</code> / <code>InElastic</code><br>
+    · 展开：<code>InCubic</code> 等<br>
+    你只需要设置「时长」和「微滑距离」两个参数即可。
 </div>
 
-<h3>5.3 应用按钮</h3>
+<h3>5.4 应用按钮</h3>
 
 <ul>
     <li><strong>应用 (Insert)：</strong> 把当前面板的入场/出场设置应用到选中的目标上。多选时，只更新你<strong>修改过</strong>的字段（比如只改了入场，出场就不动）。</li>
@@ -233,7 +363,7 @@
     <li><strong>应用全部：</strong> 多选时出现。把面板上<strong>所有</strong>设置强制覆盖到每个选中的目标上。会弹确认框。</li>
 </ul>
 
-<h3>5.4 修改保护</h3>
+<h3>5.5 修改保护</h3>
 
 <p>如果你改了面板上的设置但还没点“应用”，画布上会出现一层半透明拦截层，阻止你点击其他音符。点击拦截层会弹出对话框，让你选择：</p>
 
@@ -288,6 +418,23 @@
     }
 }</code></pre>
 
+<p>如果使用了「微滑」，会多一个 <code>distance</code> 字段：</p>
+
+<pre><code>{
+    "transition": {
+        "enter": {
+            "type": "micro_slide_topleft",
+            "duration": 300,
+            "distance": 50
+        },
+        "exit": {
+            "type": "micro_slide_bottomright",
+            "duration": 200,
+            "distance": 30
+        }
+    }
+}</code></pre>
+
 <table>
     <thead>
         <tr><th>字段</th><th>含义</th></tr>
@@ -295,8 +442,9 @@
     <tbody>
         <tr><td><code>enter</code></td><td>入场动画配置</td></tr>
         <tr><td><code>exit</code></td><td>出场动画配置</td></tr>
-        <tr><td><code>type</code></td><td>动画类型（英文键名，如 <code>slide_left</code>、<code>fade</code>、<code>flash</code>、<code>hard_flash</code>）</td></tr>
+        <tr><td><code>type</code></td><td>动画类型（英文键名，如 <code>slide_left</code>、<code>micro_slide_topleft</code>、<code>fade</code>、<code>flash</code>、<code>hard_flash</code>）</td></tr>
         <tr><td><code>duration</code></td><td>动画时长（毫秒）</td></tr>
+        <tr><td><code>distance</code></td><td>微滑距离（像素），仅对 <code>micro_slide_*</code> 有效，默认 50，范围 0~300</td></tr>
     </tbody>
 </table>
 
@@ -304,7 +452,7 @@
 
 <div class="note">
     <strong>📌 调整图层的 transition 是一样的结构：</strong><br>
-    调整图层的数据里也有 <code>transition</code> 字段，格式完全相同。
+    调整图层的数据里也有 <code>transition</code> 字段，格式完全相同，微滑的 <code>distance</code> 也一起生效。
 </div>
 
 <h3>7.1 全部动画类型键名速查</h3>
@@ -316,7 +464,9 @@
     <tbody>
         <tr><td>淡入淡出</td><td><code>fade</code></td><td>淡入淡出 / 淡出淡入</td></tr>
         <tr><td rowspan="2">滑动</td><td><code>slide_left</code> / <code>slide_right</code> / <code>slide_top</code> / <code>slide_bottom</code></td><td>← → ↑ ↓ 滑动</td></tr>
-        <tr><td colspan="2">（同一键名在入场/出场菜单里显示不同中文，效果方向相反）</td></tr>
+        <tr><td><code>slide_topleft</code> / <code>slide_topright</code> / <code>slide_bottomleft</code> / <code>slide_bottomright</code></td><td>四角滑动</td></tr>
+        <tr><td rowspan="2">微滑</td><td><code>micro_slide_left</code> / <code>micro_slide_right</code> / <code>micro_slide_top</code> / <code>micro_slide_bottom</code></td><td>← → ↑ ↓ 微滑</td></tr>
+        <tr><td><code>micro_slide_topleft</code> / <code>micro_slide_topright</code> / <code>micro_slide_bottomleft</code> / <code>micro_slide_bottomright</code></td><td>四角微滑</td></tr>
         <tr><td rowspan="2">弹跳</td><td><code>bounce_left</code> / <code>bounce_right</code> / <code>bounce_top</code> / <code>bounce_bottom</code></td><td>← → ↑ ↓ 弹跳</td></tr>
         <tr><td colspan="2"></td></tr>
         <tr><td rowspan="2">弹性</td><td><code>elastic_top_left</code> / <code>elastic_top_right</code> / <code>elastic_bottom_left</code> / <code>elastic_bottom_right</code></td><td>四角弹性</td></tr>
@@ -364,20 +514,48 @@
 
 <p>视频框由外部 mpv 播放器独立渲染，窗口的创建和销毁时机由 mpv 掌握，Qt 这边没有办法在它出现的瞬间插入帧动画。这是技术限制，不是 bug。视频框的<strong>透明度</strong>、<strong>位置</strong>、<strong>尺寸</strong>都可以正常设置，唯独过渡动画不支持。</p>
 
+<h3>Q8：微滑和普通滑动有什么区别？</h3>
+
+<p>三个区别：</p>
+<ul>
+    <li><strong>起点/终点距离：</strong>滑动从屏幕外来/往屏幕外去，距离很大；微滑只在目标位置附近偏移一小段（默认 50px，可调）。</li>
+    <li><strong>手感：</strong>滑动看起来是“从外面飞进来”；微滑看起来是“轻轻一推，稳住”。</li>
+    <li><strong>参数：</strong>微滑多一个「微滑距离」参数，滑动没有。</li>
+</ul>
+
+<h3>Q9：微滑距离设置多少比较合适？</h3>
+
+<p>推荐 30~80px 之间。50px 是默认值，效果比较自然。<br>
+0px 表示原地不动，只走时长；100px 以上会接近普通滑动的感觉；超过 200px 就已经不太像“微滑”了。</p>
+
+<h3>Q10：微滑的缓动曲线可以改吗？</h3>
+
+<p>当前版本不支持改。微滑入场固定用 <code>OutQuad</code>（缓出），出场固定用 <code>InQuad</code>（缓入）。这是为了让微滑始终保持“出现后减速停住、离开时加速消失”的手感。</p>
+
+<h3>Q11：镜像克隆组开启“反转编排”时，微滑方向会反吗？</h3>
+
+<p>会。镜像克隆的重编排逻辑里已经包含 <code>micro_slide_*</code> 的方向反转规则：<br>
+· 水平反转：左 ↔ 右，左上 ↔ 右上，左下 ↔ 右下<br>
+· 垂直反转：上 ↔ 下，左上 ↔ 左下，右上 ↔ 右下<br>
+· 全面反转：左上 ↔ 右下，右上 ↔ 左下，左 ↔ 右，上 ↔ 下
+</p>
+
 <h2>九、小结</h2>
 
 <p>过渡动画让弹窗和调整图层不再生硬地出现和消失，而是带上各种有趣的动画效果。</p>
 
 <ul>
     <li>入场动画和出场动画分别设置</li>
-    <li>支持淡入淡出、滑动、弹跳、弹性、展开/收缩、闪烁六大类</li>
-    <li>新增 <code>flash</code>（闪入/闪出）和 <code>hard_flash</code>（硬闪入/硬闪出）两种闪烁动画</li>
+    <li>支持淡入淡出、滑动、微滑、弹跳、弹性、展开/收缩、闪烁七大类</li>
+    <li>微滑有 8 个方向，支持单独设置“微滑距离”（默认 50px，范围 0~300）</li>
+    <li>微滑入场固定缓出 <code>OutQuad</code>，出场固定缓入 <code>InQuad</code></li>
+    <li><code>flash</code>（闪入/闪出）和 <code>hard_flash</code>（硬闪入/硬闪出）两种闪烁动画</li>
     <li>所有动画都<strong>尊重用户设置的窗口透明度</strong>，不会再强制动画到 100% 或从 100% 开始</li>
     <li>可以通过菜单快速设置，也可以在过渡配置选项卡里精细设置</li>
     <li>支持音符和调整图层</li>
     <li>执行代码、气泡/通知不支持过渡</li>
     <li><strong>视频框因技术原因暂不支持过渡动画</strong>（透明度仍可设置）</li>
-    <li>配置保存在 <code>transition</code> 字段里</li>
+    <li>配置保存在 <code>transition</code> 字段里，微滑会额外保存 <code>distance</code></li>
 </ul>
 
 <p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>

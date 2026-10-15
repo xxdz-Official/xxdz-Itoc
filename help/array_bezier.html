@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="description" content="Itoc 贝塞尔曲线阵列 - 用钢笔工具拖拽节点，让弹窗沿平滑曲线排列，由小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,贝塞尔曲线阵列,钢笔工具,节点,控制柄">
+    <meta property="og:title" content="贝塞尔曲线阵列 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 贝塞尔曲线阵列 - 钢笔工具、节点、控制柄">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <title>贝塞尔曲线阵列 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<div id="doc-content" style="display:none;">
+<h1>🖊️ 贝塞尔曲线阵列</h1>
+
+<p>贝塞尔曲线阵列就像 PS / AI 里的钢笔工具。你可以拖拽节点和控制柄，画出一条平滑曲线，弹窗会沿着这条曲线均匀排列。</p>
+
+<pre><code>  节点1          节点2          节点3
+   ●────────────●────────────●
+  ╱              ╲              ╲
+ ╱                ╲              ╲
+●                  ●              ●
+</code></pre>
+
+<h2>一、特有参数</h2>
+
+<table>
+    <thead>
+        <tr><th>参数</th><th>字段名</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>节点数量</td><td>—</td><td>3 ~ 20 个节点。增加节点时两边均匀新增，删除时优先从尾部删</td></tr>
+        <tr><td>锚点</td><td><code>anchor</code></td><td>左 / 中 / 右，决定弹窗从曲线的哪一端开始排</td></tr>
+        <tr><td>偏移</td><td><code>offset</code></td><td>沿曲线整体平移</td></tr>
+        <tr><td>贝塞尔节点</td><td><code>anchors</code></td><td>每个节点的坐标和控制柄，在画布上直接拖拽</td></tr>
+    </tbody>
+</table>
+
+<h2>二、拖拽操作</h2>
+
+<ul>
+    <li><strong>拖拽锚点</strong>：按住蓝色/红色圆圈拖动，改变节点位置</li>
+    <li><strong>拖拽控制柄</strong>：按住橙色小圆点拖动，改变曲线弯曲程度</li>
+    <li><strong>切换当前节点</strong>：点击某个节点，它变成蓝色高亮，控制柄显示出来</li>
+</ul>
+
+<pre><code>  控制柄左    锚点    控制柄右
+     ○────────●────────○
+              │
+              │ 曲线从这里穿过
+              ▼
+</code></pre>
+
+<h2>三、节点数量的增减</h2>
+
+<p>在「节点数量」输入框里改数字：</p>
+
+<ul>
+    <li>数字变大 → 两边均匀新增节点，已有节点坐标保留</li>
+    <li>数字变小 → 优先从尾部删除，保护开头节点</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 重置按钮：</strong><br>
+    点「重置」会把曲线恢复成默认的水平直线，节点数量不变。
+</div>
+
+<h2>四、适用场景</h2>
+
+<ul>
+    <li>弹窗沿波浪线出现</li>
+    <li>歌词沿弧线排列</li>
+    <li>做「飘带」效果的弹窗序列</li>
+    <li>配合全局命令「阵列变换」，让弹窗沿着自定义曲线重排</li>
+</ul>
+
+<p>回到 <a href="array.html">阵列设计器 · 总览</a>，或者继续看 <a href="array_polygon.html">多边形阵列</a> 喵 ( ⓛ ω ⓛ *)</p>
+</div>
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'array_bezier.html'
+    });
+</script>
+
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="array.html" title="阵列设计器 · 总览" tabindex="-1" rel="noopener">阵列设计器 · 总览</a>
+    <a href="array_linear.html" title="直线阵列" tabindex="-1" rel="noopener">直线阵列</a>
+    <a href="array_polygon.html" title="多边形阵列" tabindex="-1" rel="noopener">多边形阵列</a>
+    <a href="array_circle.html" title="环形阵列" tabindex="-1" rel="noopener">环形阵列</a>
+    <a href="array_polar.html" title="极坐标阵列" tabindex="-1" rel="noopener">极坐标阵列</a>
+    <a href="array_svg.html" title="SVG阵列" tabindex="-1" rel="noopener">SVG阵列</a>
+</nav>
+
+</body>
+</html>

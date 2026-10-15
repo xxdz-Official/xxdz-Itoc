@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="description" content="Itoc 阵列设计器总览 - 认识阵列系统、通用几何参数、阵列设计器界面、阵列管理器与绑定管理器，由小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,阵列设计器,阵列管理器,阵列绑定,直线阵列,环形阵列">
+    <meta property="og:title" content="阵列设计器 · 总览 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 阵列设计器总览 - 认识阵列系统、通用参数与管理器">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <title>阵列设计器 · 总览 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<div id="doc-content" style="display:none;">
+<h1>🧩 阵列设计器 · 总览</h1>
+
+<p>前面讲全局命令的时候，我们提到过「阵列变换」——它能让一堆弹窗瞬间排成直线、圆环、多边形、甚至一个 SVG 图案。但阵列本身是一个独立模块，它有自己的设计器、管理器、绑定管理器。这一篇就是阵列系统的总览，把整体框架讲清楚，然后每个阵列类型再单独开一页细讲。</p>
+
+<div class="note">
+    <strong>📌 本篇范围：</strong><br>
+    讲阵列是什么、阵列设计器的界面、通用几何参数、保存与编辑、阵列管理器、阵列绑定管理器。具体每种阵列类型的特有参数，请看对应的单独页面。
+</div>
+
+<h2>一、阵列是什么？</h2>
+
+<p>阵列就是「让一组弹窗按照某种几何形状排列」。你可以把它理解成一个「弹窗排列模板」：</p>
+
+<pre><code>  直线阵列         环形阵列         多边形阵列
+  ● ● ● ● ●        ●                 ●
+                  ●   ●             ●   ●
+                 ●     ●             ● ●
+                  ●   ●             ●   ●
+                   ●                 ●
+</code></pre>
+
+<p>每个「●」就是一个弹窗出现的位置。你只要把窗口编组绑定到阵列上，编组里的弹窗就会自动按照这个形状分布。</p>
+
+<div class="tip">
+    <strong>💡 阵列和全局命令的关系：</strong><br>
+    「阵列变换」是全局命令里的一种，它<strong>借用</strong>阵列的几何形状来驱动弹窗位移。但阵列本身的设计、保存、管理，都是在阵列模块里完成的。
+</div>
+
+<h2>二、阵列设计器界面</h2>
+
+<p>打开阵列设计器的方式：菜单 <strong>「阵列」→「新建阵列」</strong>，或者在阵列管理器里点「➕ 新建阵列」。</p>
+
+<p>设计器窗口分为几个区域：</p>
+
+<table>
+    <thead>
+        <tr><th>区域</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>左侧预览画布</td><td>实时显示阵列形状，绿色圆点表示弹窗位置，蓝色圆圈表示锚点</td></tr>
+        <tr><td>右侧配置栏</td><td>通用几何参数 + 特有几何参数，可滚动</td></tr>
+        <tr><td>底部左侧</td><td>锚点选择（左/中/右），只有直线和贝塞尔曲线有</td></tr>
+        <tr><td>底部中间</td><td>绑定窗口编组下拉框</td></tr>
+        <tr><td>底部右侧</td><td>保存按钮</td></tr>
+        <tr><td>标题行右侧</td><td>阵列效果预览缩放滑块</td></tr>
+    </tbody>
+</table>
+
+<h2>三、通用几何参数</h2>
+
+<p>所有阵列类型都有的参数：</p>
+
+<table>
+    <thead>
+        <tr><th>参数</th><th>字段名</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>角度</td><td><code>angle</code></td><td>阵列整体旋转角度，0° ~ 360°</td></tr>
+        <tr><td>间距</td><td><code>spacing</code></td><td>弹窗之间的排列距离，单位可选 px 或 rpx</td></tr>
+        <tr><td>偏移</td><td><code>offset</code></td><td>沿阵列路径整体平移，仅直线和贝塞尔有，正负均可</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 间距的妙用：</strong><br>
+    间距不只是「距离」，在环形、多边形、极坐标阵列里，它还会影响整体缩放。比如环形阵列，间距越大，圆环越大。
+</div>
+
+<h2>四、特有几何参数（概览）</h2>
+
+<table>
+    <thead>
+        <tr><th>阵列类型</th><th>特有参数</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>直线阵列</td><td>锚点（左/中/右）、偏移</td></tr>
+        <tr><td>贝塞尔曲线阵列</td><td>节点数量（3~20）、锚点、偏移、可拖拽控制点</td></tr>
+        <tr><td>多边形阵列</td><td>边数、横向直径、纵向直径、单位、填充开关</td></tr>
+        <tr><td>环形阵列</td><td>横向直径、纵向直径、单位、填充开关</td></tr>
+        <tr><td>极坐标阵列</td><td>手动挂载点、间距可负、右键删除</td></tr>
+        <tr><td>SVG阵列</td><td>选择 SVG 文件、缩放、自动沿路径采样</td></tr>
+    </tbody>
+</table>
+
+<h2>五、保存与编辑</h2>
+
+<h3>5.1 保存到工程内置</h3>
+
+<p>阵列可以保存在当前 <code>.czemidi</code> 工程里，跟着工程走。保存后会分配一个 ID，例如 <code>array_001</code>。</p>
+
+<h3>5.2 保存到 Itoc 全局</h3>
+
+<p>也可以保存到 <code>Array_Files</code> 文件夹，作为全局阵列，所有工程都能用。</p>
+
+<h3>5.3 编辑已有阵列</h3>
+
+<p>在阵列管理器里勾选一个阵列，点「✏️ 打开编辑」，就会重新打开设计器，并回填所有参数。</p>
+
+<h3>5.4 克隆到全局</h3>
+
+<p>在阵列管理器里，勾选工程内置阵列，点「克隆到Itoc全局」，就能快速复制一份到全局。</p>
+
+<h2>六、阵列管理器</h2>
+
+<p>菜单 <strong>「阵列」→「阵列管理器」</strong> 打开。分为「工程内置」和「Itoc全局」两个选项卡。</p>
+
+<table>
+    <thead>
+        <tr><th>功能</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>刷新</td><td>重新加载阵列列表</td></tr>
+        <tr><td>导入</td><td>从 <code>.CZArray</code> 文件导入到全局</td></tr>
+        <tr><td>导出选中</td><td>把选中的阵列导出为 <code>.CZArray</code></td></tr>
+        <tr><td>导出全部</td><td>把当前选项卡所有阵列导出</td></tr>
+        <tr><td>删除</td><td>删除选中的阵列</td></tr>
+        <tr><td>打开编辑</td><td>打开设计器编辑选中阵列</td></tr>
+        <tr><td>全选</td><td>勾选当前选项卡所有阵列</td></tr>
+        <tr><td>克隆到Itoc全局</td><td>把工程内置阵列复制到全局</td></tr>
+        <tr><td>重命名</td><td>修改阵列名称</td></tr>
+        <tr><td>新建阵列</td><td>打开类型选择对话框，新建阵列</td></tr>
+        <tr><td>搜索框</td><td>按名称、类型、ID 过滤</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 「调试线」列：</strong><br>
+    工程内置阵列有一列「调试线」，点一下可以切换 ☑/☐。开启后，runCZE 运行时会在屏幕上画出阵列的参考线，方便调试。
+</div>
+
+<h2>七、阵列绑定管理器</h2>
+
+<p>菜单 <strong>「阵列」→「阵列绑定管理器」</strong> 打开。用来编辑「阵列 ↔ 编组」的绑定关系。</p>
+
+<pre><code>  编组 A  ──绑定──▶  直线阵列
+  编组 B  ──绑定──▶  环形阵列
+  编组 C  ──绑定──▶  极坐标阵列
+</code></pre>
+
+<p>规则：<strong>一个编组最多只能绑到一个阵列</strong>。如果把编组 A 绑到新阵列，它会自动从旧阵列解绑。</p>
+
+<table>
+    <thead>
+        <tr><th>功能</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>刷新</td><td>重新加载绑定关系</td></tr>
+        <tr><td>保存绑定</td><td>标记工程已修改，保存时会写入 <code>.czemidi</code></td></tr>
+        <tr><td>全部解绑</td><td>清空当前选项卡所有阵列的绑定</td></tr>
+        <tr><td>批量绑定到...</td><td>把当前选项卡所有阵列绑到同一个编组</td></tr>
+        <tr><td>点击「绑定到编组」列</td><td>弹出多选对话框，勾选要绑定的编组</td></tr>
+        <tr><td>编辑位置</td><td>为编组设置初始阵列位置（屏幕坐标系、屏幕对齐、与窗口链接、屏幕随机）</td></tr>
+    </tbody>
+</table>
+
+<h2>八、总览小结</h2>
+
+<ul>
+    <li>阵列 = 弹窗排列模板，用绿色圆点表示弹窗位置</li>
+    <li>通用参数：角度、间距、偏移</li>
+    <li>6 种阵列类型：直线、贝塞尔、多边形、环形、极坐标、SVG</li>
+    <li>可以保存到工程内置或 Itoc 全局</li>
+    <li>阵列管理器负责增删改查、导入导出、克隆</li>
+    <li>阵列绑定管理器负责把编组绑到阵列，并设置初始位置</li>
+    <li>一个编组最多绑一个阵列，重复绑定会自动解绑</li>
+</ul>
+
+<p>接下来，每个阵列类型都有单独一页，从 <a href="array_linear.html">直线阵列</a> 开始，挨个看过去吧喵 ( ⓛ ω ⓛ *)</p>
+</div>
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'array.html'
+    });
+</script>
+
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="array_linear.html" title="直线阵列" tabindex="-1" rel="noopener">直线阵列</a>
+    <a href="array_bezier.html" title="贝塞尔曲线阵列" tabindex="-1" rel="noopener">贝塞尔曲线阵列</a>
+    <a href="array_polygon.html" title="多边形阵列" tabindex="-1" rel="noopener">多边形阵列</a>
+    <a href="array_circle.html" title="环形阵列" tabindex="-1" rel="noopener">环形阵列</a>
+    <a href="array_polar.html" title="极坐标阵列" tabindex="-1" rel="noopener">极坐标阵列</a>
+    <a href="array_svg.html" title="SVG阵列" tabindex="-1" rel="noopener">SVG阵列</a>
+    <a href="global_1.html" title="全局命令 · 基础篇" tabindex="-1" rel="noopener">全局命令 · 基础篇</a>
+    <a href="global_2.html" title="全局命令 · 进阶篇" tabindex="-1" rel="noopener">全局命令 · 进阶篇</a>
+</nav>
+
+</body>
+</html>

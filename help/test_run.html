@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <!-- ========== SEO 优化 ========== -->
-<meta name="description" content="Itoc 测试运行 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解 F5 一键测试运行的入口、流程、解释器选择与资源处理">
-<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,测试运行,一键运行,F5运行,预览运行">
-<meta property="og:title" content="测试运行 - xxdz Itoc 帮助文档">
-<meta property="og:description" content="Itoc 测试运行 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
-<meta property="og:type" content="article">
-<meta name="twitter:card" content="summary">
-<link rel="canonical" href="">
-<title>测试运行 - xxdz Itoc 帮助文档</title>
-<link rel="stylesheet" href="shared.css">
+    <meta name="description" content="Itoc 测试运行 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解 F5 一键测试运行的入口、流程、解释器选择、内嵌控制台模式与资源处理">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,测试运行,一键运行,F5运行,预览运行,运行日志,内嵌控制台模式">
+    <meta property="og:title" content="测试运行 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 测试运行 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="">
+    <title>测试运行 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
 </head>
 <body>
 <div id="header-placeholder"></div>
@@ -24,9 +24,11 @@
 
 <p>前面我们讲了 CZEmaker 弹窗、全局命令、音符块、调整图层、过渡动画、批量赋音效、渲染为音频文件、渲染视频文件、渲染为 Python 代码、渲染为 CZE 数据文件、编译为 exe、组装打包模式、解释器自定义配置。现在讲一个高频使用的功能——<strong>测试运行</strong>。它让你不用导出、不用编译，按一下 F5 就能立刻看到工程跑起来的样子。</p>
 
+<p>本次测试运行模块还新增了更完整的<strong>运行日志</strong>与<strong>内嵌控制台模式</strong>支持。关于日志面板的详细用法，请配合阅读：<a href="run_log.html">《运行日志》</a>。</p>
+
 <div class="note">
     <strong>📌 本篇的范围：</strong><br>
-    讲的是测试运行的入口、前置条件、完整流程、解释器选择、资源处理和常见问题。关于解释器配置本身，请参考《解释器自定义配置》文档；关于编译分发，请参考《编译为 exe》和《组装打包模式》文档。
+    讲的是测试运行的入口、前置条件、完整流程、解释器选择、资源处理、内嵌控制台模式和常见问题。关于解释器配置本身，请参考《解释器自定义配置》文档；关于编译分发，请参考《编译为 exe》和《组装打包模式》文档；关于日志面板，请参考《运行日志》。
 </div>
 
 <h2>一、这个功能是干嘛的？</h2>
@@ -37,8 +39,9 @@
     <li>把工程转换成 <code>runCZE.CzeData</code> 数据文件</li>
     <li>把工程用到的图片、视频、音频、文档等资源复制到 <code>runCZE</code> 目录</li>
     <li>把背景音频复制并重命名为 <code>runCZE/Audio.mp3</code></li>
-    <li>结束掉已经运行的旧解释器进程</li>
+    <li>结束掉已经运行的旧解释器进程，并额外清理 runCZE 启动的 mpv 残留进程</li>
     <li>启动解释器，播放弹窗</li>
+    <li>如果开启「内嵌控制台模式」，还会把解释器控制台输出捕获到「运行日志」选项卡</li>
 </ol>
 
 <p>整个过程一步到位，你只需要按一下 F5。适合在编辑过程中随时看效果。</p>
@@ -101,6 +104,11 @@
     <li>音频文件路径信息</li>
 </ul>
 
+<div class="note">
+    <strong>📌 另有“仅导出 CzeData 为 txt”：</strong><br>
+    部分界面中提供“导出 CzeData 为 txt”入口。它只生成 <code>runCZE/runCZE.CzeData.txt</code>，内容与 CzeData 一致，但<strong>不会复制资源，也不会启动解释器</strong>，适合只想查看数据文件的场景。
+</div>
+
 <h3>3.2 复制资源文件</h3>
 
 <p>程序会深度扫描工程数据里引用的所有文件路径，把存在的文件按类型复制到 <code>runCZE</code> 目录下的对应子目录：</p>
@@ -131,15 +139,44 @@
 
 <p>音频路径无论是相对路径还是绝对路径，都会被正确解析。如果工程里存的是相对路径 <code>audio/xxx.mp3</code>，程序会基于工程目录找到实际文件。</p>
 
-<h3>3.4 结束旧进程</h3>
+<h3>3.4 结束旧进程与清理 mpv</h3>
 
-<p>在启动新解释器之前，程序会先检查是否已经有一个同名解释器进程在运行（比如 <code>runCZEx64window.exe</code>）。如果有，会先用 <code>taskkill</code> 结束它，然后等 1 秒，再启动新的。</p>
+<p>在启动新解释器之前，程序会先检查是否已经有一个同名解释器进程在运行（比如 <code>runCZEx64window.exe</code> 或 <code>runCZEx64.exe</code>）。如果有，会先用 <code>taskkill</code> 结束它，然后等 1 秒，再启动新的。</p>
 
-<p>这样避免你连续按 F5 时弹出好几个解释器窗口，互相干扰。</p>
+<p>除此之外，测试运行还会额外扫描并清理由 runCZE 启动的 <code>mpv</code> 子进程，避免视频弹窗、音频弹窗、视频壁纸残留。</p>
+
+<table>
+    <thead>
+        <tr><th>清理对象</th><th>识别特征</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>runCZE 视频弹窗 mpv</td><td>命令行包含 <code>itoc_video_</code></td></tr>
+        <tr><td>runCZE 音频播放 mpv</td><td>命令行包含 <code>itoc_audio_</code></td></tr>
+        <tr><td>runCZE 视频壁纸 mpv</td><td>命令行包含 <code>--wid=0</code></td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 侧边栏的 mpv 不会被误杀：</strong><br>
+    如果 mpv 命令行包含 <code>ItocReferenceMedia</code>、<code>ItocDisplayVideo</code>、<code>itoc_mpv_</code>、<code>itoc_display_</code>，会被视为侧边栏“参考媒体”或“显示器”的 mpv，测试运行不会结束它们。
+</div>
 
 <h3>3.5 启动解释器</h3>
 
 <p>程序切换到 <code>runCZE</code> 目录，然后启动解释器。解释器会读取 <code>runCZE.CzeData</code>，按照时间轴播放弹窗、执行命令、显示动画。</p>
+
+<p>启动方式取决于是否开启「内嵌控制台模式」：</p>
+
+<table>
+    <thead>
+        <tr><th>模式</th><th>启动方式</th><th>输出位置</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>内嵌控制台模式：关闭</td><td>解释器使用自带的独立控制台窗口启动</td><td>独立控制台窗口，运行日志选项卡不显示输出</td></tr>
+        <tr><td>内嵌控制台模式：开启</td><td>如果解释器是控制台 exe，则用管道捕获 stdout/stderr</td><td>输出显示在「运行日志」选项卡</td></tr>
+        <tr><td>内嵌控制台模式：开启，但解释器是窗口模式</td><td>窗口程序没有控制台输出可抓取</td><td>运行日志只给提示，实际看桌面窗口</td></tr>
+    </tbody>
+</table>
 
 <h2>四、解释器怎么选？</h2>
 
@@ -152,18 +189,38 @@
     <tbody>
         <tr><td>1</td><td>测试运行专用解释器</td><td>在「配置Itoc测试运行解释器」里配置的路径</td></tr>
         <tr><td>2</td><td>主解释器配置</td><td>在「配置Itoc解释器」里当前选中模式的路径</td></tr>
-        <tr><td>3</td><td>默认窗口模式</td><td><code>runCZE/runCZEx64window.exe</code></td></tr>
-        <tr><td>4</td><td>默认控制台模式</td><td><code>runCZE/runCZEx64.exe</code></td></tr>
+        <tr><td>3</td><td>默认控制台模式</td><td><code>runCZE/runCZEx64.exe</code></td></tr>
+        <tr><td>4</td><td>默认窗口模式</td><td><code>runCZE/runCZEx64window.exe</code></td></tr>
     </tbody>
 </table>
 
 <div class="tip">
     <strong>💡 推荐配置：</strong><br>
-    · 平时测试想看日志 → 把测试运行解释器配成“64位 - 控制台”，这样能看到运行输出。<br>
-    · 平时测试想看效果 → 测试运行解释器留空，用主解释器的“64位 - 窗口”模式。
+    · 平时测试想看日志 → 把测试运行解释器配成“64位 - 控制台”，并开启「内嵌控制台模式」。<br>
+    · 平时测试想看效果 → 测试运行解释器留空，用主解释器的“64位 - 窗口”模式；内嵌控制台模式可关闭。
 </div>
 
-<h2>五、相关菜单项</h2>
+<h2>五、运行日志与内嵌控制台模式</h2>
+
+<p>测试运行模块现在和「运行日志」选项卡联动。你可以在「运行日志」选项卡里：</p>
+
+<ul>
+    <li>查看解释器控制台输出</li>
+    <li>清空日志、停止进程、自动滚动</li>
+    <li>复制全部、另存为 <code>.txt</code></li>
+    <li>用 <kbd>Ctrl</kbd> + <kbd>F</kbd> 打开查找面板，支持上一个/下一个、正则、全字匹配、多行模式等</li>
+    <li>勾选或取消「内嵌控制台模式」</li>
+    <li>点击「内嵌控制台模式设置...」打开测试运行解释器配置窗口</li>
+</ul>
+
+<p><strong>内嵌控制台模式</strong>的设置会保存到 <code>shezhi.txt</code> 的 <code>console_mode</code> 项，并且与「配置测试运行解释器」窗口里的复选框同步。</p>
+
+<div class="note">
+    <strong>📌 详细说明：</strong><br>
+    运行日志面板的按钮、查找、右键菜单、快捷键、停止进程、另存为等细节，请阅读 <a href="run_log.html">《运行日志》</a>。
+</div>
+
+<h2>六、相关菜单项</h2>
 
 <p>「编译(C)」菜单里除了“一键测试运行”，还有几个和测试相关的菜单项：</p>
 
@@ -173,27 +230,28 @@
     </thead>
     <tbody>
         <tr><td>一键测试运行</td><td>执行完整的测试运行流程（F5）</td></tr>
-        <tr><td>结束进程</td><td>手动结束正在运行的 <code>runCZEx64.exe</code> 等解释器进程</td></tr>
+        <tr><td>结束进程</td><td>手动结束正在运行的 <code>runCZEx64.exe</code> 等解释器进程，并清理 runCZE 启动的 mpv</td></tr>
         <tr><td>重启进程</td><td>先结束进程，再重新测试运行一次</td></tr>
         <tr><td>将 测试运行引用资源目录 打开于资源管理器</td><td>打开 <code>runCZE/img/</code> 目录，方便查看复制的资源</td></tr>
         <tr><td>删除测试运行引用资源文件</td><td>清空 <code>runCZE/img/</code> 目录里的所有文件</td></tr>
-        <tr><td>配置Itoc测试运行解释器</td><td>打开测试运行解释器配置窗口</td></tr>
+        <tr><td>配置Itoc测试运行解释器</td><td>打开测试运行解释器配置窗口，可同时设置内嵌控制台模式</td></tr>
+        <tr><td>导出 CzeData 为 txt（若界面提供）</td><td>只导出 <code>runCZE/runCZE.CzeData.txt</code>，不复制资源、不启动解释器</td></tr>
     </tbody>
 </table>
 
-<h3>5.1 结束进程</h3>
+<h3>6.1 结束进程</h3>
 
-<p>如果你测试时解释器卡住了，或者窗口关不掉，可以用“结束进程”强制结束。它会用 <code>taskkill /F /IM</code> 结束掉所有同名的解释器进程。</p>
+<p>如果你测试时解释器卡住了，或者窗口关不掉，可以用“结束进程”强制结束。它会用 <code>taskkill /F /IM</code> 结束掉所有同名的解释器进程，并额外清理 runCZE 启动的 mpv 子进程。</p>
 
-<h3>5.2 重启进程</h3>
+<h3>6.2 重启进程</h3>
 
 <p>相当于“结束进程 + 测试运行”的组合操作。适合测试过程中改了工程，想立刻重新跑一遍的场景。</p>
 
-<h3>5.3 打开资源目录</h3>
+<h3>6.3 打开资源目录</h3>
 
 <p>打开 <code>runCZE/img/</code> 文件夹。测试运行复制的图片都在这里，可以检查是否正确复制、文件名是否对得上。</p>
 
-<h3>5.4 删除测试资源</h3>
+<h3>6.4 删除测试资源</h3>
 
 <p>清空 <code>runCZE/img/</code> 目录里的所有文件。适合工程里图片改了很多，想从头重新复制一遍的场景。删完之后再按 F5，会重新复制所有资源。</p>
 
@@ -202,7 +260,7 @@
     因为所有图片都要重新复制一遍。之后的运行会走“跳过相同文件”的快速路径。
 </div>
 
-<h2>六、测试运行都生成了什么？</h2>
+<h2>七、测试运行都生成了什么？</h2>
 
 <p>测试运行会在 <code>runCZE</code> 目录下生成这些内容：</p>
 
@@ -212,6 +270,7 @@
     </thead>
     <tbody>
         <tr><td><code>runCZE.CzeData</code></td><td>工程数据文件（秒单位）</td></tr>
+        <tr><td><code>runCZE.CzeData.txt</code></td><td>仅“导出 CzeData 为 txt”时生成，不参与测试运行启动</td></tr>
         <tr><td><code>Audio.mp3</code></td><td>背景音频（如果工程关联了音频）</td></tr>
         <tr><td><code>img/</code></td><td>图片资源</td></tr>
         <tr><td><code>video/</code></td><td>视频资源</td></tr>
@@ -226,7 +285,7 @@
     测试运行生成的文件不会自动删除。下次测试运行时会检查并更新它们。如果你想让工程干净一点，可以用“删除测试运行引用资源文件”手动清理。
 </div>
 
-<h2>七、常见问题</h2>
+<h2>八、常见问题</h2>
 
 <h3>Q1：按 F5 没反应？</h3>
 
@@ -242,11 +301,11 @@
 
 <h3>Q4：连续按 F5 会弹好几个窗口？</h3>
 
-<p>不会。测试运行会先结束旧的解释器进程，再启动新的。所以你连续按 F5，始终只有一个解释器窗口。</p>
+<p>不会。测试运行会先结束旧的解释器进程，再启动新的。所以你连续按 F5，始终只有一个解释器窗口。它还会额外清理 runCZE 启动的 mpv 残留。</p>
 
 <h3>Q5：解释器启动后立刻闪退？</h3>
 
-<p>可能是数据有问题，或者解释器本身出错了。试试把测试运行解释器配成“控制台模式”，这样能看到报错信息。也可以在工程里检查有没有异常的配置。</p>
+<p>可能是数据有问题，或者解释器本身出错了。试试把测试运行解释器配成“控制台模式”，并开启「内嵌控制台模式」，这样能在「运行日志」选项卡看到报错信息。</p>
 
 <h3>Q6：测试运行很慢？</h3>
 
@@ -256,38 +315,58 @@
 
 <p>看日志里 <code>[测试运行解释器]</code> 开头的行，会明确写出当前使用的是自定义测试解释器、主解释器配置，还是默认解释器。</p>
 
-<h3>Q8：测试运行和编译 exe 有什么区别？</h3>
+<h3>Q8：为什么「运行日志」没有输出？</h3>
+
+<p>通常是三个原因：</p>
+<ol>
+    <li>没有勾选「内嵌控制台模式」；</li>
+    <li>解释器是窗口模式 exe，本身没有控制台输出；</li>
+    <li>进程还没真正启动，或者启动失败后回退到了 <code>os.startfile</code>。</li>
+</ol>
+<p>想看输出，请使用控制台解释器，并在「运行日志」选项卡勾选「内嵌控制台模式」。</p>
+
+<h3>Q9：内嵌控制台模式在哪里设置？</h3>
+
+<p>两个地方都可以：</p>
+<ul>
+    <li>「运行日志」选项卡上的「内嵌控制台模式」复选框；</li>
+    <li>「配置Itoc测试运行解释器」窗口里的「内嵌控制台模式」复选框。</li>
+</ul>
+<p>两处会同步，并写入 <code>shezhi.txt</code> 的 <code>console_mode</code>。</p>
+
+<h3>Q10：测试运行和编译 exe 有什么区别？</h3>
 
 <p>测试运行是“直接跑”，用现成的解释器读取 CzeData，速度快，不需要编译。编译 exe 是“打包成独立程序”，用 PyInstaller 把 Python 代码和依赖一起打包，速度慢，但可以分发给没有 Python 环境的人。</p>
 
-<h3>Q9：测试运行会修改我的工程文件吗？</h3>
+<h3>Q11：测试运行会修改我的工程文件吗？</h3>
 
 <p>不会。测试运行只读取工程文件，在 <code>runCZE</code> 目录下生成新文件，不会改动 <code>.czemidi</code> 工程文件本身。如果选了“是”保存，那保存的是你之前的编辑修改，不是测试运行造成的。</p>
 
-<h3>Q10：可以只测试运行一部分吗？</h3>
+<h3>Q12：可以只测试运行一部分吗？</h3>
 
 <p>不支持。测试运行会处理整个工程。如果你想只看某一段，可以先用时间选区圈出范围，然后导出工程片段，再对片段测试运行。</p>
 
-<h3>Q11：测试运行后，窗口关不掉怎么办？</h3>
+<h3>Q13：测试运行后，窗口关不掉怎么办？</h3>
 
-<p>用「编译(C)」→「结束进程」强制结束。如果还不行，打开任务管理器，找到 <code>runCZEx64window.exe</code> 或 <code>runCZEx64.exe</code>，手动结束任务。</p>
+<p>用「编译(C)」→「结束进程」强制结束。如果还不行，打开任务管理器，找到 <code>runCZEx64window.exe</code> 或 <code>runCZEx64.exe</code>，手动结束任务。测试运行的结束进程也会清理 runCZE 启动的 mpv。</p>
 
-<h3>Q12：测试运行时，主程序会卡住吗？</h3>
+<h3>Q14：测试运行时，主程序会卡住吗？</h3>
 
 <p>不会。测试运行是在后台线程里执行的，主程序界面仍然可以操作。不过启动解释器的瞬间可能会有一点点延迟，属于正常现象。</p>
 
-<h2>八、小结</h2>
+<h2>九、小结</h2>
 
 <p>「测试运行」是编辑过程中最常用的功能，让你随时看到工程跑起来的样子。</p>
 
 <ul>
     <li>入口：<strong>菜单「编译(C)」→「一键测试运行」</strong>，或 <kbd>F5</kbd></li>
     <li>前置条件：有打开的工程 + 有音符数据</li>
-    <li>自动完成：导出 CzeData → 复制资源 → 复制音频 → 结束旧进程 → 启动解释器</li>
-    <li>解释器优先级：测试专用 > 主解释器 > 默认窗口 > 默认控制台</li>
+    <li>自动完成：导出 CzeData → 复制资源 → 复制音频 → 结束旧进程/清理 mpv → 启动解释器</li>
+    <li>解释器优先级：测试专用 &gt; 主解释器 &gt; 默认控制台 &gt; 默认窗口</li>
     <li>资源按类型分类复制到 <code>runCZE/</code> 下的子目录</li>
-    <li>相关菜单：结束进程、重启进程、打开资源目录、删除测试资源</li>
+    <li>相关菜单：结束进程、重启进程、打开资源目录、删除测试资源、配置测试运行解释器</li>
     <li>不会修改工程文件，只读取数据生成临时文件</li>
+    <li>要查看控制台输出，请配合 <a href="run_log.html">《运行日志》</a> 与「内嵌控制台模式」</li>
 </ul>
 
 <p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
@@ -302,7 +381,6 @@
         currentFile: 'test_run.html'
     });
 </script>
-
 
 <!-- ========== [SEO-内链开始] ========== -->
 <nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
@@ -348,6 +426,8 @@
     <a href="compile_exe.html" title="编译为 exe" tabindex="-1" rel="noopener">编译为 exe</a>
     <a href="assembly_package.html" title="组装打包模式" tabindex="-1" rel="noopener">组装打包模式</a>
     <a href="interpreter_config.html" title="解释器自定义配置" tabindex="-1" rel="noopener">解释器自定义配置</a>
+    <a href="test_run.html" title="测试运行" tabindex="-1" rel="noopener">测试运行</a>
+    <a href="run_log.html" title="运行日志" tabindex="-1" rel="noopener">运行日志</a>
     <a href="python_libs.html" title="Python 运行库" tabindex="-1" rel="noopener">Python 运行库</a>
     <a href="settings.html" title="首选项（设置）" tabindex="-1" rel="noopener">首选项（设置）</a>
     <a href="settings_skin.html" title="皮肤设置" tabindex="-1" rel="noopener">皮肤设置</a>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="description" content="Itoc 多边形阵列 - 边数、直径、填充开关，让弹窗沿多边形排列，由小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,多边形阵列,边数,填充">
+    <meta property="og:title" content="多边形阵列 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 多边形阵列 - 边数、直径、填充开关">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <title>多边形阵列 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<div id="doc-content" style="display:none;">
+<h1>🔷 多边形阵列</h1>
+
+<p>多边形阵列让弹窗沿着正多边形的边排列。边数随便改，三角形、六边形、十边形都行。</p>
+
+<pre><code>  三角形          六边形          八边形
+     ●              ●              ●
+    ╱ ╲            ╱ ╲            ╱ ╲
+   ●───●          ●   ●          ●   ●
+                  │   │          │   │
+                  ●   ●          ●   ●
+                   ╲ ╱            ╲ ╱
+                    ●              ●
+</code></pre>
+
+<h2>一、特有参数</h2>
+
+<table>
+    <thead>
+        <tr><th>参数</th><th>字段名</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>边数</td><td><code>sides</code></td><td>最少 3 条边，最多 30 条边</td></tr>
+        <tr><td>横向直径</td><td><code>radius_x</code></td><td>多边形外框的横向大小</td></tr>
+        <tr><td>纵向直径</td><td><code>radius_y</code></td><td>多边形外框的纵向大小</td></tr>
+        <tr><td>单位</td><td><code>unit</code></td><td>px 或 rpx</td></tr>
+        <tr><td>填充</td><td><code>fill</code></td><td>关闭：绿点沿外框绕圈；开启：从中心一圈一圈往外填充</td></tr>
+    </tbody>
+</table>
+
+<h2>二、填充模式对比</h2>
+
+<h3>2.1 关闭填充（默认）</h3>
+
+<p>绿点沿着多边形的边均匀分布，像一串珠子穿在框上。</p>
+
+<pre><code>   ●───●───●
+  ╱         ╲
+ ●           ●
+ │           │
+ ●           ●
+  ╲         ╱
+   ●───●───●
+</code></pre>
+
+<h3>2.2 开启填充</h3>
+
+<p>绿点从中心点开始，一圈一圈往外铺。外框变成浅灰虚线，仅作参考。</p>
+
+<pre><code>   · · · · ·
+   · ●─●─● ·
+   · │   │ ·
+   · ●─●─● ·
+   · · · · ·
+</code></pre>
+
+<h2>三、直径和单位</h2>
+
+<p>横向直径和纵向直径可以不一样，做出「扁多边形」的效果。</p>
+
+<pre><code>  横 200 纵 200      横 300 纵 150
+      ●                  ●───●───●
+     ╱ ╲                ╱         ╲
+    ●   ●              ●           ●
+     ╲ ╱                ╲         ╱
+      ●                  ●───●───●
+</code></pre>
+
+<h2>四、适用场景</h2>
+
+<ul>
+    <li>弹窗沿六边形排列，做「蜂巢」效果</li>
+    <li>三角形阵列，做「金字塔」弹窗</li>
+    <li>开启填充，做「从中心扩散」的动画</li>
+</ul>
+
+<p>回到 <a href="array.html">阵列设计器 · 总览</a>，或者继续看 <a href="array_circle.html">环形阵列</a> 喵 ( ⓛ ω ⓛ *)</p>
+</div>
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'array_polygon.html'
+    });
+</script>
+
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="array.html" title="阵列设计器 · 总览" tabindex="-1" rel="noopener">阵列设计器 · 总览</a>
+    <a href="array_linear.html" title="直线阵列" tabindex="-1" rel="noopener">直线阵列</a>
+    <a href="array_bezier.html" title="贝塞尔曲线阵列" tabindex="-1" rel="noopener">贝塞尔曲线阵列</a>
+    <a href="array_circle.html" title="环形阵列" tabindex="-1" rel="noopener">环形阵列</a>
+    <a href="array_polar.html" title="极坐标阵列" tabindex="-1" rel="noopener">极坐标阵列</a>
+    <a href="array_svg.html" title="SVG阵列" tabindex="-1" rel="noopener">SVG阵列</a>
+</nav>
+
+</body>
+</html>

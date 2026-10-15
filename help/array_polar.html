@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="description" content="Itoc 极坐标阵列 - 手动点击挂载点，自由拖拽，间距可负，由小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,极坐标阵列,挂载点,自由拖拽">
+    <meta property="og:title" content="极坐标阵列 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 极坐标阵列 - 手动挂载点、自由拖拽、间距可负">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <title>极坐标阵列 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<div id="doc-content" style="display:none;">
+<h1>🧭 极坐标阵列</h1>
+
+<p>极坐标阵列是最自由的一种阵列。没有固定的几何公式，你直接<strong>在画布上点</strong>，点到哪里，哪里就出现一个挂载点。</p>
+
+<pre><code>        挂载点
+          ●
+         ╱
+        ╱
+       ╱
+锚点 ●────────● 挂载点
+       ╲
+        ╲
+         ╲
+          ●
+        挂载点
+</code></pre>
+
+<h2>一、操作方式</h2>
+
+<table>
+    <thead>
+        <tr><th>操作</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>左键点击空白处</td><td>新增一个挂载点</td></tr>
+        <tr><td>左键按住挂载点拖动</td><td>改变挂载点的方向</td></tr>
+        <tr><td>右键点击挂载点</td><td>删除该挂载点</td></tr>
+        <tr><td>「清空全部」按钮</td><td>清空所有挂载点</td></tr>
+    </tbody>
+</table>
+
+<h2>二、间距的作用</h2>
+
+<p>极坐标阵列的间距非常特殊，它可以是<strong>负数</strong>：</p>
+
+<pre><code>  间距 > 0：挂载点向外扩
+  间距 = 0：挂载点收缩到锚点
+  间距 < 0：挂载点穿过锚点，翻到对面继续扩
+</code></pre>
+
+<p>数学上，间距就是挂载点的整体缩放因子。负数就是「翻转 180° + 继续缩放」。</p>
+
+<h2>三、绑定规则</h2>
+
+<p>极坐标阵列的挂载点数量不一定等于编组里的弹窗数量。规则如下：</p>
+
+<ul>
+    <li><strong>挂载点不够</strong>：多出来的弹窗全部甩在锚点</li>
+    <li><strong>挂载点多余</strong>：多出来的挂载点显示为<strong>黄小点</strong>，表示它是空的</li>
+</ul>
+
+<pre><code>  绿点 = 已挂载弹窗
+  黄点 = 空挂载点
+  锚点 = 多出来的弹窗都堆在这里
+</code></pre>
+
+<h2>四、适用场景</h2>
+
+<ul>
+    <li>手动摆出任意形状的弹窗阵</li>
+    <li>做「散点分布」</li>
+    <li>配合间距负数，做「穿模翻转」效果</li>
+</ul>
+
+<p>回到 <a href="array.html">阵列设计器 · 总览</a>，或者继续看 <a href="array_svg.html">SVG阵列</a> 喵 ( ⓛ ω ⓛ *)</p>
+</div>
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'array_polar.html'
+    });
+</script>
+
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="array.html" title="阵列设计器 · 总览" tabindex="-1" rel="noopener">阵列设计器 · 总览</a>
+    <a href="array_linear.html" title="直线阵列" tabindex="-1" rel="noopener">直线阵列</a>
+    <a href="array_bezier.html" title="贝塞尔曲线阵列" tabindex="-1" rel="noopener">贝塞尔曲线阵列</a>
+    <a href="array_polygon.html" title="多边形阵列" tabindex="-1" rel="noopener">多边形阵列</a>
+    <a href="array_circle.html" title="环形阵列" tabindex="-1" rel="noopener">环形阵列</a>
+    <a href="array_svg.html" title="SVG阵列" tabindex="-1" rel="noopener">SVG阵列</a>
+</nav>
+
+</body>
+</html>

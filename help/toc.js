@@ -35,6 +35,20 @@ const TOC_DATA = [
     { group: '全局命令' },
     { title: '全局命令 · 基础篇', file: 'global_1.html' },
     { title: '全局命令 · 进阶篇', file: 'global_2.html' },
+    { title: '全局命令 · 窗口位移动画', file: 'cmd_window_animation.html' },
+    { title: '全局命令 · 鼠标移动', file: 'cmd_mouse_move.html' },
+    { title: '全局命令 · 镜像克隆编组', file: 'cmd_mirror_clone.html' },
+    { title: '全局命令 · 设置桌面背景', file: 'cmd_wallpaper.html' },
+
+    // ==================== 阵列系统 ====================
+    { group: '阵列系统' },
+    { title: '阵列设计器 · 总览', file: 'array.html' },
+    { title: '直线阵列', file: 'array_linear.html' },
+    { title: '贝塞尔曲线阵列', file: 'array_bezier.html' },
+    { title: '多边形阵列', file: 'array_polygon.html' },
+    { title: '环形阵列', file: 'array_circle.html' },
+    { title: '极坐标阵列', file: 'array_polar.html' },
+    { title: 'SVG阵列', file: 'array_svg.html' },
 
     // ==================== 窗口类名与编组 ====================
     { group: '窗口类名与编组' },
@@ -79,6 +93,7 @@ const TOC_DATA = [
     { title: '组装打包模式', file: 'assembly_package.html' },
     { title: '解释器自定义配置', file: 'interpreter_config.html' },
     { title: '测试运行', file: 'test_run.html' },
+    { title: '运行日志', file: 'run_log.html' },
     { title: 'Python 运行库', file: 'python_libs.html' },
 
     // ==================== 设置与个性化 ====================

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 電籽 AI 助手帮助文档 - 小小电子xxdz开发的 xxdz Itoc 功能，讲解气泡聊天、引用工程/事件块/时间选区、Markdown 渲染、打字机、思考气泡与模型切换">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,電籽AI助手,AI助手,气泡聊天,引用工程,引用事件块,引用时间选区,Markdown">
+<meta property="og:title" content="電籽 AI 助手 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 電籽 AI 助手帮助文档 - 小小电子xxdz开发的 xxdz Itoc 功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>電籽 AI 助手 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🐺 電籽 AI 助手</h1>
+
+<p>「電籽 AI 助手」是 Itoc 里的<strong>气泡聊天式 AI 助手</strong>。它和「AI 协作」不一样：AI 协作是“改工程文件”，電籽助手是“陪你聊天、帮你看工程”。</p>
+
+<div class="tip">
+    <strong>💡 一句话理解：</strong><br>
+    它是一个独立的聊天窗口，你可以问它 Itoc 的问题，也可以把<strong>当前工程、选中的事件块、时间选区</strong>作为上下文引用给它。<br>
+    它是<strong>非独占</strong>的——打开后主窗口还能继续操作，随时切回来聊。
+</div>
+
+<h2>一、这个功能能干嘛？</h2>
+
+<p>它主要做这些事：</p>
+
+<ul>
+    <li><strong>聊天</strong>：用自然语言问 Itoc 相关问题。</li>
+    <li><strong>看工程</strong>：引用当前工程概览，让 AI 基于工程内容回答。</li>
+    <li><strong>看事件块</strong>：引用选中的音符块/调整图层，让 AI 分析这些块。</li>
+    <li><strong>看时间选区</strong>：引用 F4 选区范围内的事件，让 AI 分析这一段。</li>
+    <li><strong>Markdown 显示</strong>：AI 回复支持粗体、斜体、代码、标题、列表、表格、链接。</li>
+</ul>
+
+<p>它<strong>不会</strong>像 AI 协作那样直接改工程文件。它只是“对话 + 上下文引用”，改工程还是你自己来。</p>
+
+<h2>二、从哪里打开？</h2>
+
+<p>入口由主程序调用，通常位于<strong>「协作(B)」菜单</strong>或相关工具栏附近（具体菜单项名称以你的版本为准）。</p>
+
+<p>打开后是一个独立的「与電籽聊天」窗口。它是<strong>单例</strong>的：如果已经打开，再点入口不会新建第二个，而是把已有窗口提到最前面。</p>
+
+<div class="note">
+    <strong>📌 非独占窗口：</strong><br>
+    它不会锁住主窗口。你可以一边在主界面选中音符、画时间选区，一边切回電籽窗口点「引用事件块」「引用时间选区」。
+</div>
+
+<h2>三、界面布局</h2>
+
+<table>
+    <thead>
+        <tr><th>区域</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>标题栏</td><td>「与電籽聊天」+ 右侧 📌 置顶按钮</td></tr>
+        <tr><td>模型栏</td><td>「模型：」下拉框，切换当前 AI 模型</td></tr>
+        <tr><td>对话区</td><td>气泡聊天记录，支持鼠标滚轮上下滚动</td></tr>
+        <tr><td>引用按钮行</td><td>📄 引用工程 / 🎵 引用事件块 / ⏱ 引用时间选区</td></tr>
+        <tr><td>待发送引用区</td><td>引用卡片列表，可点击预览、点 × 移除</td></tr>
+        <tr><td>输入区</td><td>多行输入框（3~8 行自动调整）+「发送」按钮</td></tr>
+        <tr><td>状态栏</td><td>就绪 / 電籽正在思考... / 已引用 N 条上下文</td></tr>
+    </tbody>
+</table>
+
+<h2>四、模型选择</h2>
+
+<p>模型栏的下拉框列出 <code>orcarouterAI.json</code> 里的模型，默认通常有：</p>
+
+<ul>
+    <li>免费模型 Deepseek (OrcaRouter)</li>
+    <li>自动路由 (OrcaRouter)</li>
+</ul>
+
+<p>切换模型会立刻写回配置文件，下次打开沿用。模型配置和「AI 协作」共用同一份 <code>orcarouterAI.json</code>。想添加更强的模型，看 <a href="advanced_ai_model.html">《如何调用高级 AI 模型》</a>。</p>
+
+<h2>五、聊天与 Markdown 渲染</h2>
+
+<h3>5.1 发送消息</h3>
+
+<ul>
+    <li>在输入框里打字，按 <kbd>Enter</kbd> 发送。</li>
+    <li>按 <kbd>Shift</kbd>+<kbd>Enter</kbd> 换行。</li>
+    <li>输入框会根据内容自动在 3~8 行之间调整高度。</li>
+</ul>
+
+<h3>5.2 气泡样式</h3>
+
+<ul>
+    <li><strong>用户消息</strong>：靠右，浅蓝气泡 <code>#E8F4FD</code>，头像优先用 <code>noface.png</code>，没有就用“你”字。</li>
+    <li><strong>電籽消息</strong>：靠左，白色气泡 <code>#FFFFFF</code>，头像优先用 <code>img/DianZilogo.png</code>，没有就用“電”字。</li>
+    <li>气泡本身是只读 <code>tk.Text</code>，支持选中复制，但内部滚轮被禁用，滚动交给外层 Canvas。</li>
+</ul>
+
+<h3>5.3 Markdown 支持</h3>
+
+<p>電籽的回复会按 Markdown 渲染，支持：</p>
+
+<table>
+    <thead>
+        <tr><th>语法</th><th>效果</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>**粗体**</code></td><td>粗体</td></tr>
+        <tr><td><code>*斜体*</code></td><td>斜体</td></tr>
+        <tr><td><code>***粗斜体***</code></td><td>粗斜体</td></tr>
+        <tr><td><code>`行内代码`</code></td><td>代码样式（<code>Consolas</code> 字体，浅灰底）</td></tr>
+        <tr><td><code>```代码块```</code></td><td>代码块样式</td></tr>
+        <tr><td><code># 标题</code></td><td>一级/二级/三级标题</td></tr>
+        <tr><td><code>- 列表</code> / <code>1. 列表</code></td><td>无序/有序列表</td></tr>
+        <tr><td><code>---</code></td><td>分割线</td></tr>
+        <tr><td><code>| 表格 |</code></td><td>表格（用等宽字符画边框）</td></tr>
+        <tr><td><code>[文本](url)</code></td><td>可点击链接，点击用浏览器打开</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 表格是“画”出来的：</strong><br>
+    因为 Tkinter 的 Text 控件没有原生表格，電籽用等宽字符 + <code>┌┬┐├┼┤└┴┘</code> 等边框线把表格画出来。所以表格在视觉上是对齐的，但复制出来会是纯文本。<br>
+    如果表格列很多、中文很宽，可能会有点挤，这是 Tkinter 的限制。
+</div>
+
+<h2>六、引用功能</h2>
+
+<p>这是電籽助手最有用的部分。你可以把主界面里的内容“引用”进来，作为这次提问的上下文。</p>
+
+<h3>6.1 引用工程</h3>
+
+<p>点「📄 引用工程」按钮，会先弹一个<strong>引用预览窗口</strong>，显示当前工程的摘要：</p>
+
+<ul>
+    <li>工程名、当前 BPM、原速 BPM、总节拍</li>
+    <li>音符块数量、轨道数、调整图层数量</li>
+    <li>标记数量、全局命令数量、阵列数量</li>
+    <li>时间选区范围（如果有）</li>
+    <li>当前选中数量</li>
+</ul>
+
+<p>预览窗口底部有一个复选框：</p>
+
+<ul>
+    <li><strong>同时包含完整工程 JSON</strong>：勾上后会把整个 <code>.czemidi</code> 全文也塞进上下文。token 消耗很大，慎用。</li>
+</ul>
+
+<p>点「确认引用」后，摘要会变成一张引用卡片，挂在待发送区。</p>
+
+<h3>6.2 引用事件块</h3>
+
+<p>点「🎵 引用事件块」按钮，会引用<strong>主界面当前选中的音符块和调整图层</strong>。</p>
+
+<p>如果没选中任何东西，会提示“请先在主界面选中至少一个音符块或调整图层哦～”。</p>
+
+<p>引用内容会逐个列出：</p>
+
+<ul>
+    <li><strong>音符块</strong>：轨道、节拍范围、音高、颜色、自定义文本、配参、过渡、禁用状态</li>
+    <li><strong>调整图层</strong>：轨道、节拍范围、颜色、效果参数</li>
+</ul>
+
+<h3>6.3 引用时间选区</h3>
+
+<p>点「⏱ 引用时间选区」按钮，会引用<strong>主界面 F4 时间选区</strong>范围内的事件。</p>
+
+<p>如果没画选区，会提示“请先在主界面按 F4 画一个时间选区哦～”。</p>
+
+<p>预览窗口里可以选两种模式：</p>
+
+<table>
+    <thead>
+        <tr><th>模式</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>简要列表（推荐）</td><td>每个事件一行，只列类型、轨道、节拍、音高/描述</td></tr>
+        <tr><td>详细展开</td><td>每个事件一段，列出配参、效果参数、全局命令、标记等完整信息</td></tr>
+    </tbody>
+</table>
+
+<p>时间选区的引用范围包括：</p>
+
+<ul>
+    <li>与选区有重叠的音符块</li>
+    <li>与选区有重叠的调整图层</li>
+    <li>落在选区内的全局命令（详细模式）</li>
+    <li>落在选区内的标记（详细模式）</li>
+</ul>
+
+<h3>6.4 引用卡片</h3>
+
+<p>确认引用后，待发送区会出现一张卡片：</p>
+
+<ul>
+    <li><strong>点击卡片</strong>：打开引用详情预览</li>
+    <li><strong>点 ×</strong>：移除这条引用</li>
+    <li>卡片会显示引用类型图标（📄 / 🎵 / ⏱）、标题、副标题</li>
+</ul>
+
+<p>同一类型只能有一张卡片。再引用一次同类型内容，会替换掉旧的。</p>
+
+<div class="tip">
+    <strong>💡 引用不是必须的：</strong><br>
+    你可以不引用任何东西，直接问電籽一般性问题。引用只是让 AI 有更多上下文，回答更具体。
+</div>
+
+<h2>七、发送流程</h2>
+
+<p>点「发送」后：</p>
+
+<ol>
+    <li>如果你没打字但有引用，会问“你想让電籽分析这些引用的内容吗？”，确认后发送默认提示“请分析以下我引用的内容。”</li>
+    <li>输入内容会和引用内容拼成一条消息：</li>
+</ol>
+
+<pre><code>【我的问题】
+（你输入的内容）
+
+【我引用的上下文】
+=== 当前工程摘要 ===
+...
+=== 选中的 N 个事件块 ===
+...
+=== 时间选区 节拍 x ~ y ===
+...</code></pre>
+
+<ol start="3">
+    <li>对话区显示你的气泡（含引用摘要），然后清空引用卡片。</li>
+    <li>出现一个“思考气泡”：三个小点循环跳动，表示電籽正在思考。</li>
+    <li>后台请求 AI。</li>
+    <li>收到回复后，移除思考气泡，用打字机效果输出回复。</li>
+</ol>
+
+<h2>八、打字机与思考气泡</h2>
+
+<h3>8.1 打字机</h3>
+
+<p>AI 回复不是一次性全部显示，而是<strong>逐字输出</strong>：</p>
+
+<ul>
+    <li>每次 tick 输出约 2 个字符，间隔约 8ms。</li>
+    <li>打字过程中，每 1 秒做一次<strong>局部 Markdown 渲染</strong>，把已打出的部分按 MD 重新渲染。</li>
+    <li>打字完成后，做一次<strong>最终 Markdown 渲染</strong>，替换成完整格式。</li>
+    <li>气泡高度会在多个时间点（0/30/80/200/500/1000ms）自动刷新，避免末尾文字被截断。</li>
+    <li>每打 3 个字刷新一次高度。</li>
+</ul>
+
+<h3>8.2 思考气泡</h3>
+
+<p>请求发出后，对话区会出现一个“思考气泡”：三个小点循环跳动，当前点变大变蓝，其他点变浅，每 300ms 切换一次。收到回复或报错后自动移除。</p>
+
+<div class="tip">
+    <strong>💡 思考气泡只是装饰：</strong><br>
+    它不代表真实进度。AI 请求是后台线程跑的，思考气泡只是告诉你“正在等”。如果网络慢，它会一直跳，直到回复或报错。
+</div>
+
+<h2>九、系统提示词与头像</h2>
+
+<h3>9.1 系统提示词</h3>
+
+<p>電籽的系统提示词优先从程序目录下的 <code>DianZiAI.md</code> 读取。如果文件不存在，会使用内置提示词：</p>
+
+<pre><code>你是 xxdz Itoc 中的 AI 助手，名叫「電籽」。你是萌系小狼，
+性格活泼可爱，回答简洁清晰，可以加些颜文字。</code></pre>
+
+<p>所以你看到的電籽语气（“尼好丫~”“喵”“(´▽`ʃ♡)ƪ”）来自这份提示词。想改人设，可以编辑 <code>DianZiAI.md</code>。</p>
+
+<h3>9.2 头像</h3>
+
+<table>
+    <thead>
+        <tr><th>角色</th><th>优先头像文件</th><th>没有时</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>電籽</td><td><code>img/DianZilogo.png</code>（也尝试 <code>img/DianZiLogo.png</code>、根目录 <code>DianZilogo.png</code>）</td><td>蓝底白字“電”</td></tr>
+        <tr><td>用户</td><td><code>noface.png</code> 或 <code>img/noface.png</code></td><td>蓝底黑字“你”</td></tr>
+    </tbody>
+</table>
+
+<p>头像会被缩放到 36×36 显示，使用的是 <code>PIL.Image.LANCZOS</code> 重采样。</p>
+
+<h2>十、常见问题</h2>
+
+<h3>Q1：点发送没反应？</h3>
+<p>A：检查是否在输入框里写了内容，或者是否至少有一个引用。两者都没有时不会发送。如果按钮变灰，说明正在等上一条回复。</p>
+
+<h3>Q2：提示“请先在主界面选中至少一个音符块或调整图层哦～”？</h3>
+<p>A：引用事件块需要主界面有选中。先在时间轴上选中音符/调整图层，再点引用按钮。</p>
+
+<h3>Q3：提示“请先在主界面按 F4 画一个时间选区哦～”？</h3>
+<p>A：引用时间选区需要 F4 选区。先在主界面按 F4 拖一个选区，再点引用按钮。</p>
+
+<h3>Q4：引用工程时勾了“完整 JSON”，发送后很慢/报错？</h3>
+<p>A：完整 JSON 可能很大，token 消耗高，免费模型容易超限。建议只在工程较小时勾选，或者改用摘要引用。</p>
+
+<h3>Q5：Markdown 表格显示很挤？</h3>
+<p>A：Tkinter Text 没有原生表格，電籽用等宽字符画表格。列多、中文宽时会挤，这是控件限制。可以让 AI 少用表格，或者改用列表。</p>
+
+<h3>Q6：头像不显示？</h3>
+<p>A：检查 <code>img/DianZilogo.png</code> 和 <code>noface.png</code> 是否存在。不存在时会退回文字头像，不影响聊天。</p>
+
+<h3>Q7：关闭窗口后再打开，聊天记录还在吗？</h3>
+<p>A：不在。关闭窗口会销毁对话内容，下次打开是新的会话。想保留内容，可以手动复制。</p>
+
+<h3>Q8：電籽会改我的工程吗？</h3>
+<p>A：不会。電籽助手只聊天和看引用内容，不直接修改工程文件。改工程请用「AI 协作」或手动编辑。</p>
+
+<h3>Q9：模型切换后没生效？</h3>
+<p>A：切换会写回 <code>orcarouterAI.json</code>，下一条消息会用新模型。如果当前正在等回复，等回复完成后再切换。</p>
+
+<h3>Q10：为什么叫“電籽”？</h3>
+<p>A：这是内置人设的名字，来自系统提示词。你可以通过编辑 <code>DianZiAI.md</code> 改成别的名字和性格。</p>
+
+<h2>十一、小结</h2>
+
+<p>電籽 AI 助手是一个“气泡聊天 + 上下文引用”的 AI 窗口：</p>
+
+<ul>
+    <li>非独占，主窗口可继续操作</li>
+    <li>单例，重复打开只会提到前面</li>
+    <li>支持引用工程、选中事件块、时间选区</li>
+    <li>引用前有预览，可确认/取消；引用后有卡片，可预览/移除</li>
+    <li>Markdown 渲染：粗体/斜体/代码/标题/列表/表格/链接</li>
+    <li>打字机输出 + 思考气泡</li>
+    <li>系统提示词优先读 <code>DianZiAI.md</code></li>
+    <li>头像优先用 <code>DianZilogo.png</code> / <code>noface.png</code></li>
+    <li>不会直接改工程文件</li>
+</ul>
+
+<p>想让它更懂你的工程，就多用引用；想让它换个性格，就改 <code>DianZiAI.md</code>；想用更强的模型，看 <a href="advanced_ai_model.html">《如何调用高级 AI 模型》</a>。玩得开心喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'dianzi_ai_assistant.html'
+    });
+</script>
+
+
+<!-- ========== [SEO-内链开始] ========== -->
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="start.html" title="初识 Itoc" tabindex="-1" rel="noopener">初识 Itoc</a>
+    <a href="install.html" title="安装与启动" tabindex="-1" rel="noopener">安装与启动</a>
+    <a href="interface.html" title="界面概览" tabindex="-1" rel="noopener">界面概览</a>
+    <a href="quickstart.html" title="快速上手：您的第一个项目" tabindex="-1" rel="noopener">快速上手：您的第一个项目</a>
+    <a href="how_to_get_midi.html" title="如何获取 MIDI 文件" tabindex="-1" rel="noopener">如何获取 MIDI 文件</a>
+    <a href="timeline.html" title="时间轴与音符编辑" tabindex="-1" rel="noopener">时间轴与音符编辑</a>
+    <a href="metadata.html" title="作品元数据" tabindex="-1" rel="noopener">作品元数据</a>
+    <a href="czemaker.html" title="CZEmaker 弹窗编排 · 基础篇" tabindex="-1" rel="noopener">CZEmaker 弹窗编排 · 基础篇</a>
+    <a href="czemaker_advanced.html" title="CZEmaker 弹窗编排 · 进阶篇" tabindex="-1" rel="noopener">CZEmaker 弹窗编排 · 进阶篇</a>
+    <a href="window_style.html" title="窗口样式钮" tabindex="-1" rel="noopener">窗口样式钮</a>
+    <a href="hollow_window.html" title="镂空窗口" tabindex="-1" rel="noopener">镂空窗口</a>
+    <a href="acrylic_mica.html" title="亚克力与云母" tabindex="-1" rel="noopener">亚克力与云母</a>
+    <a href="window_type_regular.html" title="普通弹窗（信息/警告/错误/询问）" tabindex="-1" rel="noopener">普通弹窗（信息/警告/错误/询问）</a>
+    <a href="window_type_image.html" title="图片框" tabindex="-1" rel="noopener">图片框</a>
+    <a href="window_type_video.html" title="视频框" tabindex="-1" rel="noopener">视频框</a>
+    <a href="window_type_notice.html" title="气泡 / 通知" tabindex="-1" rel="noopener">气泡 / 通知</a>
+    <a href="window_type_code.html" title="执行代码" tabindex="-1" rel="noopener">执行代码</a>
+    <a href="window_type_uiclass.html" title="模类框" tabindex="-1" rel="noopener">模类框</a>
+    <a href="midi_color.html" title="音符块自身属性" tabindex="-1" rel="noopener">音符块自身属性</a>
+    <a href="paint.html" title="绘制音符块" tabindex="-1" rel="noopener">绘制音符块</a>
+    <a href="adjust_layer.html" title="调整图层" tabindex="-1" rel="noopener">调整图层</a>
+    <a href="disabled_blocks.html" title="启用/禁用事件块或全局命令" tabindex="-1" rel="noopener">启用/禁用事件块或全局命令</a>
+    <a href="beat_event_point.html" title="新建节奏事件点" tabindex="-1" rel="noopener">新建节奏事件点</a>
+    <a href="concurrent_event_point.html" title="新建并发事件点" tabindex="-1" rel="noopener">新建并发事件点</a>
+    <a href="transition.html" title="过渡动画" tabindex="-1" rel="noopener">过渡动画</a>
+    <a href="assign_window_sound.html" title="根据窗口类型赋予自定义音效" tabindex="-1" rel="noopener">根据窗口类型赋予自定义音效</a>
+    <a href="yinpin_yinpu.html" title="音频音谱" tabindex="-1" rel="noopener">音频音谱</a>
+    <a href="audio_to_midi.html" title="音频转 MIDI (扒谱)" tabindex="-1" rel="noopener">音频转 MIDI (扒谱)</a>
+    <a href="project_to_midi.html" title="将工程导出为 MIDI" tabindex="-1" rel="noopener">将工程导出为 MIDI</a>
+    <a href="global_1.html" title="全局命令 · 基础篇" tabindex="-1" rel="noopener">全局命令 · 基础篇</a>
+    <a href="global_2.html" title="全局命令 · 进阶篇" tabindex="-1" rel="noopener">全局命令 · 进阶篇</a>
+    <a href="cmd_window_animation.html" title="全局命令 · 窗口位移动画" tabindex="-1" rel="noopener">全局命令 · 窗口位移动画</a>
+    <a href="cmd_mouse_move.html" title="全局命令 · 鼠标移动" tabindex="-1" rel="noopener">全局命令 · 鼠标移动</a>
+    <a href="cmd_mirror_clone.html" title="全局命令 · 镜像克隆编组" tabindex="-1" rel="noopener">全局命令 · 镜像克隆编组</a>
+    <a href="cmd_wallpaper.html" title="全局命令 · 设置桌面背景" tabindex="-1" rel="noopener">全局命令 · 设置桌面背景</a>
+    <a href="array.html" title="阵列设计器 · 总览" tabindex="-1" rel="noopener">阵列设计器 · 总览</a>
+    <a href="array_linear.html" title="直线阵列" tabindex="-1" rel="noopener">直线阵列</a>
+    <a href="array_bezier.html" title="贝塞尔曲线阵列" tabindex="-1" rel="noopener">贝塞尔曲线阵列</a>
+    <a href="array_polygon.html" title="多边形阵列" tabindex="-1" rel="noopener">多边形阵列</a>
+    <a href="array_circle.html" title="环形阵列" tabindex="-1" rel="noopener">环形阵列</a>
+    <a href="array_polar.html" title="极坐标阵列" tabindex="-1" rel="noopener">极坐标阵列</a>
+    <a href="array_svg.html" title="SVG阵列" tabindex="-1" rel="noopener">SVG阵列</a>
+    <a href="cze_window_class.html" title="窗口类名" tabindex="-1" rel="noopener">窗口类名</a>
+    <a href="cze_window_group.html" title="窗口编组" tabindex="-1" rel="noopener">窗口编组</a>
+    <a href="uiclass_1.html" title="初识模类" tabindex="-1" rel="noopener">初识模类</a>
+    <a href="uiclass_2.html" title="模类设计器详解" tabindex="-1" rel="noopener">模类设计器详解</a>
+    <a href="uiclass_3.html" title="模类进阶与生态" tabindex="-1" rel="noopener">模类进阶与生态</a>
+    <a href="sidebar.html" title="侧边栏" tabindex="-1" rel="noopener">侧边栏</a>
+    <a href="sidebar_display.html" title="显示器" tabindex="-1" rel="noopener">显示器</a>
+    <a href="sidebar_reference_media.html" title="参考媒体" tabindex="-1" rel="noopener">参考媒体</a>
+    <a href="str.html" title="字幕" tabindex="-1" rel="noopener">字幕</a>
+    <a href="marker_and_sticky_note.html" title="标记与轨道便利贴" tabindex="-1" rel="noopener">标记与轨道便利贴</a>
+    <a href="media_browser.html" title="媒体浏览器" tabindex="-1" rel="noopener">媒体浏览器</a>
+    <a href="high_energy_table.html" title="高能进度表" tabindex="-1" rel="noopener">高能进度表</a>
+    <a href="terminal.html" title="终端" tabindex="-1" rel="noopener">终端</a>
+    <a href="code_view.html" title="代码视图" tabindex="-1" rel="noopener">代码视图</a>
+    <a href="GetWindowClassName.html" title="窗口拾取器" tabindex="-1" rel="noopener">窗口拾取器</a>
+    <a href="insert_lyrics.html" title="插入歌词" tabindex="-1" rel="noopener">插入歌词</a>
+    <a href="cooperation.html" title="协作" tabindex="-1" rel="noopener">协作</a>
+    <a href="ctrl_z_undo_redo.html" title="撤销与重做" tabindex="-1" rel="noopener">撤销与重做</a>
+    <a href="cooperation_ai.html" title="AI 协作（小電AI）" tabindex="-1" rel="noopener">AI 协作（小電AI）</a>
+    <a href="advanced_ai_model.html" title="如何调用高级 AI 模型" tabindex="-1" rel="noopener">如何调用高级 AI 模型</a>
+    <a href="render_cze_data.html" title="渲染为 CZE 数据文件" tabindex="-1" rel="noopener">渲染为 CZE 数据文件</a>
+    <a href="render_python_code.html" title="渲染为 Python 代码" tabindex="-1" rel="noopener">渲染为 Python 代码</a>
+    <a href="render_cpp_code.html" title="渲染为 C++ 代码" tabindex="-1" rel="noopener">渲染为 C++ 代码</a>
+    <a href="export_audio.html" title="渲染为音频文件" tabindex="-1" rel="noopener">渲染为音频文件</a>
+    <a href="render_video.html" title="渲染视频文件" tabindex="-1" rel="noopener">渲染视频文件</a>
+    <a href="compile_exe.html" title="编译为 exe" tabindex="-1" rel="noopener">编译为 exe</a>
+    <a href="assembly_package.html" title="组装打包模式" tabindex="-1" rel="noopener">组装打包模式</a>
+    <a href="interpreter_config.html" title="解释器自定义配置" tabindex="-1" rel="noopener">解释器自定义配置</a>
+    <a href="test_run.html" title="测试运行" tabindex="-1" rel="noopener">测试运行</a>
+    <a href="run_log.html" title="运行日志" tabindex="-1" rel="noopener">运行日志</a>
+    <a href="python_libs.html" title="Python 运行库" tabindex="-1" rel="noopener">Python 运行库</a>
+    <a href="cpp_libs.html" title="C++ 运行库" tabindex="-1" rel="noopener">C++ 运行库</a>
+    <a href="settings.html" title="首选项（设置）" tabindex="-1" rel="noopener">首选项（设置）</a>
+    <a href="settings_skin.html" title="皮肤设置" tabindex="-1" rel="noopener">皮肤设置</a>
+    <a href="file_association.html" title="文件关联（打开方式）" tabindex="-1" rel="noopener">文件关联（打开方式）</a>
+    <a href="language_pack.html" title="语言包" tabindex="-1" rel="noopener">语言包</a>
+    <a href="plugin_user.html" title="插件使用指南" tabindex="-1" rel="noopener">插件使用指南</a>
+    <a href="plugin_dev.html" title="插件开发指南" tabindex="-1" rel="noopener">插件开发指南</a>
+    <a href="carousel.html" title="轮播图" tabindex="-1" rel="noopener">轮播图</a>
+</nav>
+<!-- ========== [SEO-内链结束] ========== -->
+
+</body>
+</html>

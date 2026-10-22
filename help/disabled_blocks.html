@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 启用/禁用事件块与全局命令帮助文档 - 小小电子xxdz开发的 xxdz Itoc 工具，讲解 CTRL+Q 禁用音符块、右键菜单禁用全局命令、禁用调整图层、渲染时的 disabled 字段处理与解释器行为">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,禁用音符,禁用全局命令,禁用调整图层,CTRL+Q,disabled字段,CzeData渲染,Windows Crazy Error">
+<meta property="og:title" content="启用/禁用事件块或全局命令 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 启用/禁用事件块与全局命令帮助文档 - 小小电子xxdz开发的 xxdz Itoc 工具">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>启用/禁用事件块或全局命令 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🚫 启用 / 禁用事件块或全局命令</h1>
+
+<p>写工程的时候，经常会出现这种情况：某一段弹窗我不想让它出现了，但又舍不得删——万一以后想改回来呢？直接删掉又得重新配，太亏了。</p>
+
+<p>Itoc 给你准备了一个「<strong>禁用</strong>」功能。被禁用的东西会留在工程里，画布上照样看得见，但是<strong>渲染出去后解释器不会执行它</strong>。就像代码里的注释——写在那儿给人看，机器不跑它。</p>
+
+<p>这篇讲三件事：</p>
+<ol>
+    <li><strong>怎么禁用</strong>：音符块、调整图层、全局命令，三种东西三种入口。</li>
+    <li><strong>禁用后长什么样</strong>：画布上的视觉反馈。</li>
+    <li><strong>渲染时怎么选</strong>：渲染 CzeData 窗口里的两个复选框，到底勾不勾？</li>
+</ol>
+
+<div class="tip">
+    <strong>💡 一句话记住：</strong><br>
+    禁用的东西留在工程里，画布上看得见，<strong>但解释器不会执行它</strong>。<br>
+    你可以在渲染的时候选择「把被禁用的也导出」，也可以选择「默认跳过」——两种都对，看你需求。
+</div>
+
+<h2>一、三种能禁用的东西</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>对象</th>
+            <th>怎么禁用</th>
+            <th>存在哪</th>
+            <th>画布上的样子</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>音符块</strong></td>
+            <td>选中音符 → 按 <kbd>Ctrl</kbd>+<kbd>Q</kbd>（或菜单）</td>
+            <td><code>all_notes</code> 元组第 8 个字段</td>
+            <td>灰色填充 + 变淡</td>
+        </tr>
+        <tr>
+            <td><strong>调整图层</strong></td>
+            <td>选中调整图层 → 按 <kbd>Ctrl</kbd>+<kbd>Q</kbd></td>
+            <td><code>layer["disabled"]</code></td>
+            <td>灰色填充 + 红色对角线</td>
+        </tr>
+        <tr>
+            <td><strong>全局命令</strong></td>
+            <td>右键菱形 → 「禁用该命令」</td>
+            <td><code>command["disabled"]</code></td>
+            <td>灰色菱形 + 红色斜线</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>三者的禁用效果是一样的——<strong>留在工程里，但解释器不执行</strong>。区别只在于入口不同、视觉反馈略有区别。</p>
+
+<h2>二、禁用音符块：Ctrl+Q</h2>
+
+<h3>2.1 怎么用</h3>
+
+<ol>
+    <li>在时间轴上<strong>框选或点选</strong>你想禁用的音符块。</li>
+    <li>按 <kbd>Ctrl</kbd>+<kbd>Q</kbd>。</li>
+    <li>音符块立刻变灰，完成。</li>
+</ol>
+
+<p>再按一次 <kbd>Ctrl</kbd>+<kbd>Q</kbd> 就能恢复——这是一个<strong>切换</strong>操作，禁用的变启用，启用的变禁用。</p>
+
+<div class="tip">
+    <strong>💡 智能切换逻辑：</strong><br>
+    如果你选中的一堆音符<strong>全部都是已禁用</strong>状态，按 <kbd>Ctrl</kbd>+<kbd>Q</kbd> 会把它们<strong>全部启用</strong>。<br>
+    如果选中的音符里有<strong>至少一个是启用</strong>状态（哪怕其他都禁用了），按 <kbd>Ctrl</kbd>+<kbd>Q</kbd> 会把它们<strong>全部禁用</strong>。
+</div>
+
+<h3>2.2 混选也能用</h3>
+
+<p>你同时选中了「音符块 + 调整图层」？没关系，<kbd>Ctrl</kbd>+<kbd>Q</kbd> 会同时处理两者：</p>
+<ul>
+    <li>音符块会被改 <code>all_notes</code> 里的禁用字段。</li>
+    <li>调整图层会被改 <code>layer["disabled"]</code>。</li>
+    <li>两者互不干扰，各自记录状态。</li>
+</ul>
+
+<p>切换完成后，控制台会打印类似这样的日志：</p>
+
+<pre><code>禁用了 5 个音符块、2 个调整图层</code></pre>
+
+<h3>2.3 背后的实现</h3>
+
+<p>音符块的禁用状态存在 <code>all_notes</code> 元组的<strong>第 8 个字段</strong>（索引 7）。来看一眼元组结构：</p>
+
+<pre><code>all_notes[i] = (
+    track_idx,          # 轨道索引 (0)
+    start_beat,         # 起始节拍 (1)
+    dur_beat,           # 持续节拍 (2)
+    note_val,           # 音高 (3)
+    note_id,            # 唯一 ID (4)
+    cze_makers,         # CZEmaker 配置 (5)
+    transition,         # 过渡动画配置 (6)
+    True                # ← 禁用标记 (7)，启用的音符没有这个字段
+)</code></pre>
+
+<p><strong>启用的音符</strong>只有 7 个字段（索引 0-6），<strong>禁用的音符</strong>会多一个 <code>True</code> 作为第 8 个字段。这是为了保持向后兼容——旧工程里的音符没有这个字段，读出来自动当作「启用」。</p>
+
+<div class="warning">
+    <strong>⚠️ 注意：</strong> 不要在外部脚本里手动去改 <code>all_notes</code> 元组的长度。长度不对会导致读取时索引越界。想禁用请用 <kbd>Ctrl</kbd>+<kbd>Q</kbd> 或右键菜单。
+</div>
+
+<h3>2.4 撤销和重做</h3>
+
+<p><kbd>Ctrl</kbd>+<kbd>Q</kbd> 的每一次切换都会<strong>保存撤销快照</strong>。所以你可以：</p>
+<ul>
+    <li>按错了 → 按 <kbd>Ctrl</kbd>+<kbd>Z</kbd> 撤销。</li>
+    <li>又后悔了 → 按 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> 重做。</li>
+</ul>
+
+<p>快照里存的是整个工程的状态，所以撤销会恢复所有的音符和调整图层的禁用状态。</p>
+
+<h2>三、禁用调整图层：Ctrl+Q</h2>
+
+<p>调整图层和音符块的禁用方式<strong>完全一样</strong>——选中，按 <kbd>Ctrl</kbd>+<kbd>Q</kbd>，搞定。</p>
+
+<p>区别在视觉上：</p>
+<ul>
+    <li><strong>启用的调整图层</strong>：淡紫色填充 + 主题色边框 + 上下装饰条 + "AL" 文字。</li>
+    <li><strong>禁用的调整图层</strong>：灰色填充 + 深灰边框 + 灰色装饰条 + <strong>红色对角线</strong>（删除线效果）。</li>
+</ul>
+
+<p>红色对角线是刻意加的视觉提示——一眼就能看出「这个图层不会生效」。</p>
+
+<h3>3.1 禁用状态存在哪</h3>
+
+<p>调整图层的禁用状态存在 <code>layer["disabled"]</code> 字段里。启用时会把这个字段<strong>完全删除</strong>（不是设为 False），避免冗余字段污染配置。</p>
+
+<pre><code># 启用状态
+{
+    "id": 12345,
+    "track_idx": 2,
+    "start_beat": 10,
+    "duration": 5,
+    "effect_params": {...}
+    # 注意：没有 disabled 字段
+}
+
+# 禁用状态
+{
+    "id": 12345,
+    "track_idx": 2,
+    "start_beat": 10,
+    "duration": 5,
+    "effect_params": {...},
+    "disabled": true
+}</code></pre>
+
+<h3>3.2 解释器的行为</h3>
+
+<p>解释器在<strong>每 100ms</strong> 检查一次调整图层的激活状态（<code>_check_adjust_layers</code>）。检查逻辑是：</p>
+
+<pre><code>for layer in self.adjust_layers:
+    # 被禁用的直接跳过，不激活
+    if layer.get('disabled', False) is True:
+        continue
+    # 时间到了就激活特效...
+</code></pre>
+
+<p>所以被禁用的调整图层<strong>永远不会产生特效</strong>，即使它正好落在当前时间范围内。</p>
+
+<h2>四、禁用全局命令：右键菜单</h2>
+
+<h3>4.1 怎么用</h3>
+
+<ol>
+    <li>在时间轴上找到你想禁用的全局命令（蓝色菱形）。</li>
+    <li><strong>右键</strong>点击菱形，弹出菜单。</li>
+    <li>点「<strong>禁用该命令</strong>」。</li>
+    <li>菱形变灰 + 红色斜线，完成。</li>
+</ol>
+
+<p>想恢复就再右键一次，菜单会变成「<strong>启用该命令</strong>」，点一下就恢复了。</p>
+
+<h3>4.2 视觉反馈</h3>
+
+<p>被禁用的全局命令在画布上长这样：</p>
+<ul>
+    <li>菱形填充色：从蓝色变成<strong>灰色</strong>（<code>#AAAAAA</code>）。</li>
+    <li>菱形边框：从蓝色变成<strong>深灰</strong>（<code>#666666</code>）。</li>
+    <li>文本颜色：从白色变成<strong>浅灰</strong>（<code>#DDDDDD</code>），但还能看清。</li>
+    <li>额外：一条<strong>红色斜线</strong>从菱形左上角划到右下角，视觉上「划掉」。</li>
+</ul>
+
+<p>一眼扫过去，启用的蓝色菱形和禁用的灰色菱形<strong>非常好区分</strong>。</p>
+
+<div class="tip">
+    <strong>💡 悬停预览也能区分：</strong><br>
+    鼠标悬停在禁用的全局命令上，悬浮提示卡片仍然会显示命令的完整详情（描述、节拍、具体参数）。所以你可以随时查看被禁用的命令原本是干什么的，不用恢复也能看。
+</div>
+
+<h3>4.3 背后的实现</h3>
+
+<p>全局命令的禁用状态存在 <code>command["disabled"]</code> 字段里，是布尔值。在 <code>GlobalCommandManager.toggle_command_disabled</code> 里处理：</p>
+
+<ol>
+    <li>找到命令。</li>
+    <li>保存撤销快照（<code>save_undo_snapshot_before_modify</code>）。</li>
+    <li>翻转 <code>disabled</code> 字段。</li>
+    <li>标记工程已修改。</li>
+    <li>用当前的绘制参数重绘所有命令（会走禁用状态的样式分支）。</li>
+</ol>
+
+<h3>4.4 导出时怎么处理</h3>
+
+<p>全局命令导出到 CzeData 时，默认会<strong>跳过被禁用的命令</strong>。转换函数 <code>convert_commands_to_seconds</code> 开头就有：</p>
+
+<pre><code>for command in commands_data:
+    # 被禁用的直接跳过
+    if command.get("disabled", False):
+        continue
+    ...</code></pre>
+
+<p>但渲染窗口里有个「<strong>禁用的全局命令</strong>」复选框，勾上之后就会把被禁用的也导出（带 <code>disabled: true</code> 字段）。详见第六节。</p>
+
+<h2>五、三个通用规则</h2>
+
+<h3>5.1 禁用不会删除数据</h3>
+
+<p>被禁用的东西<strong>所有配置都还在</strong>：CZEmaker 配参、过渡动画、窗口位置、类名、编组……一样不少。所以：</p>
+<ul>
+    <li>禁用之后随时可以恢复，配置不会丢。</li>
+    <li>禁用期间仍可以在 CZEmaker 面板里查看和编辑配置。</li>
+    <li>禁用不影响「另存为配参」之类的操作。</li>
+</ul>
+
+<h3>5.2 禁用会标记工程已修改</h3>
+
+<p>每次切换禁用状态，都会调 <code>mark_project_modified()</code>，标题栏的「已编辑*」会亮起来。这是正常的——因为禁用状态本身也是工程数据的一部分。</p>
+
+<h3>5.3 禁用状态可以保存和加载</h3>
+
+<p>工程文件（<code>.czemidi</code>）里会保留禁用状态：</p>
+<ul>
+    <li>音符的禁用字段会存在 <code>all_notes</code> 元组里。</li>
+    <li>调整图层的 <code>disabled</code> 会存在图层字典里。</li>
+    <li>全局命令的 <code>disabled</code> 会存在命令字典里。</li>
+</ul>
+
+<p>关掉工程再打开，禁用状态会<strong>原样恢复</strong>。</p>
+
+<h2>六、渲染时的选择：两个复选框</h2>
+
+<p>打开「渲染 CZE 数据文件」窗口，你能看到右侧选项区域有<strong>两个复选框</strong>：</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>复选框</th>
+            <th>默认</th>
+            <th>勾上之后</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>禁用的事件块</strong></td>
+            <td>不勾选</td>
+            <td>把被禁用的音符块和调整图层也导出到 CzeData</td>
+        </tr>
+        <tr>
+            <td><strong>禁用的全局命令</strong></td>
+            <td>不勾选</td>
+            <td>把被禁用的全局命令也导出到 CzeData</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>6.1 不勾选（默认）：跳过</h3>
+
+<p>不勾选时，渲染会<strong>完全跳过</strong>被禁用的东西。CzeData 文件里不会出现它们的身影。解释器拿到数据时，根本没看到被禁用的东西，自然也不会执行。</p>
+
+<p><strong>适合场景：</strong></p>
+<ul>
+    <li>最终成品，禁用的东西就是不想让它出现。</li>
+    <li>想减小 CzeData 体积（被禁用的数据不写进去）。</li>
+    <li>纯净导出，不想要 disabled 字段污染。</li>
+</ul>
+
+<h3>6.2 勾选：保留 + 带 disabled 字段</h3>
+
+<p>勾选时，渲染会<strong>保留</strong>被禁用的东西，并在 CzeData 里带上 <code>disabled: true</code> 字段。解释器读取时会识别这个字段，<strong>仍然跳过不执行</strong>。</p>
+
+<p>看一份示例 CzeData：</p>
+
+<pre><code>{
+  "notes": [
+    {
+      "note_value": 60,
+      "start_s": 1.0,
+      "duration_s": 0.5,
+      "end_s": 1.5,
+      "cze_makers": {...}
+    },
+    {
+      "note_value": 62,
+      "start_s": 2.0,
+      "duration_s": 0.5,
+      "end_s": 2.5,
+      "cze_makers": {...},
+      "disabled": true          ← 被禁用的音符带着这个字段
+    }
+  ],
+  "global_commands": [
+    {
+      "description": "关闭所有弹窗",
+      "command": "close_all_popups:sequential=True",
+      "time_s": 3.0
+    }
+  ],
+  "adjust_layers": [
+    {
+      "id": 12345,
+      "start_s": 4.0,
+      "duration_s": 2.0,
+      "effect_params": {...},
+      "disabled": true          ← 被禁用的调整图层
+    }
+  ]
+}</code></pre>
+
+<div class="tip">
+    <strong>💡 为什么解释器仍会跳过？</strong><br>
+    解释器（runCZE）在读取 CzeData 时，会主动过滤 <code>disabled=True</code> 的音符和全局命令：<br><br>
+    <code>if _n.get('disabled', False) is True: continue</code><br><br>
+    所以「勾选」只是<strong>保留数据</strong>，并不意味着「让它们生效」。它们仍然是注释，只是注释被带上了。
+</div>
+
+<h3>6.3 什么时候该勾选</h3>
+
+<ul>
+    <li><strong>调试</strong>：你想在 CzeData 里看到被禁用的东西长什么样、它们的位置和配参，方便对照检查。</li>
+    <li><strong>后处理</strong>：你有一个工具或脚本要读取 CzeData，需要拿到被禁用的数据（比如统计哪些位置被跳过了）。</li>
+    <li><strong>分享原始数据</strong>：你想把「完整工程」和「精简工程」都输出一份，勾选能得到完整版。</li>
+    <li><strong>存档</strong>：保留 disabled 字段，以后想恢复的话有完整信息可查。</li>
+</ul>
+
+<h3>6.4 反过来的场景</h3>
+
+<p>如果你确定禁用的东西以后再也不用，那<strong>不勾选</strong>是最干净的做法。CzeData 会小一圈，也不会有 disabled 字段混在里面。</p>
+
+<h2>七、在 CzeData 里长什么样</h2>
+
+<h3>7.1 音符的 disabled 字段</h3>
+
+<p>勾选「禁用的事件块」时，被禁用的音符会多一个 <code>disabled: true</code>：</p>
+
+<pre><code>{
+  "note_value": 62,
+  "start_s": 2.0,
+  "duration_s": 0.5,
+  "end_s": 2.5,
+  "cze_makers": {...},
+  "transition": {...},
+  "disabled": true
+}</code></pre>
+
+<p>启用的音符<strong>没有这个字段</strong>（不是 <code>disabled: false</code>，是压根没有）。这样能省点体积，也符合「默认值不写」的惯例。</p>
+
+<h3>7.2 调整图层的 disabled 字段</h3>
+
+<pre><code>{
+  "id": 12345,
+  "track_idx": 2,
+  "start_s": 4.0,
+  "duration_s": 2.0,
+  "effect_params": {...},
+  "disabled": true
+}</code></pre>
+
+<h3>7.3 全局命令的处理</h3>
+
+<p>全局命令有点特殊：即使勾选了「禁用的全局命令」，转换后的命令<strong>不会带 disabled 字段</strong>。因为 <code>convert_commands_to_seconds</code> 内部会先过滤 <code>disabled</code>，然后把清理后的命令重新转换。</p>
+
+<p>但注意——此时被禁用的全局命令的<strong>数据本身还是被保留了</strong>（在 CzeData 的 <code>global_commands</code> 里），只是没带 disabled 标识。如果你需要知道哪些是被禁用的，得回头查工程文件。</p>
+
+<div class="warning">
+    <strong>⚠️ 全局命令的 disabled 字段不会写进 CzeData。</strong><br>
+    这是当前的实现限制。如果你需要区分，建议在导出前手动检查工程文件里的 <code>global_commands</code> 数组。
+</div>
+
+<h2>八、解释器怎么处理</h2>
+
+<h3>8.1 音符</h3>
+
+<p>解释器的 <code>play()</code> 方法里，会先过滤一遍所有音符：</p>
+
+<pre><code>_enabled_notes = []
+for _n in self.notes:
+    if isinstance(_n, dict) and _n.get('disabled', False) is True:
+        continue
+    _enabled_notes.append(_n)</code></pre>
+
+<p>所以<strong>不管 CzeData 里有没有 disabled 字段</strong>，只要值是 True，就会被跳过。</p>
+
+<h3>8.2 全局命令</h3>
+
+<p>同样的逻辑：</p>
+
+<pre><code>for _c in self.global_commands:
+    if isinstance(_c, dict) and _c.get('disabled', False) is True:
+        continue
+    _enabled_commands.append(_c)</code></pre>
+
+<h3>8.3 调整图层</h3>
+
+<p>调整图层的检查在 <code>_check_adjust_layers</code> 里，每 100ms 跑一次：</p>
+
+<pre><code>for layer in self.adjust_layers:
+    if isinstance(layer, dict) and layer.get('disabled', False) is True:
+        continue  # 跳过，不激活
+    ...</code></pre>
+
+<h3>8.4 日志输出</h3>
+
+<p>如果 CzeData 里带有被禁用的东西，解释器启动时会打印：</p>
+
+<pre><code>[禁用过滤] 跳过 5 个被禁用的音符
+[禁用过滤] 跳过 2 个被禁用的全局命令</code></pre>
+
+<p>方便你确认「确实跳过了」。</p>
+
+<h2>九、配置文件字段一览</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>对象</th>
+            <th>文件</th>
+            <th>字段路径</th>
+            <th>类型</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>音符块</td>
+            <td><code>.czemidi</code></td>
+            <td><code>notes[i][7]</code>（元组第 8 位）</td>
+            <td>bool</td>
+        </tr>
+        <tr>
+            <td>调整图层</td>
+            <td><code>.czemidi</code></td>
+            <td><code>adjust_layers[i].disabled</code></td>
+            <td>bool</td>
+        </tr>
+        <tr>
+            <td>全局命令</td>
+            <td><code>.czemidi</code></td>
+            <td><code>global_commands[i].disabled</code></td>
+            <td>bool</td>
+        </tr>
+        <tr>
+            <td>音符（CzeData）</td>
+            <td><code>.CzeData</code></td>
+            <td><code>notes[i].disabled</code></td>
+            <td>bool（可选）</td>
+        </tr>
+        <tr>
+            <td>调整图层（CzeData）</td>
+            <td><code>.CzeData</code></td>
+            <td><code>adjust_layers[i].disabled</code></td>
+            <td>bool（可选）</td>
+        </tr>
+        <tr>
+            <td>全局命令（CzeData）</td>
+            <td><code>.CzeData</code></td>
+            <td>无（导出时会被过滤）</td>
+            <td>—</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>十、常见问题</h2>
+
+<h3>Q1：Ctrl+Q 按了没反应？</h3>
+<p>A：检查三件事：① 是否真的选中了音符/调整图层；② 焦点是否在时间轴上（不是在某个输入框里，输入框里的 <kbd>Ctrl</kbd>+<kbd>Q</kbd> 会被输入框自己处理）；③ 是不是刚好所有选中的东西都是已禁用状态，按了之后全部启用了，看起来像「没变化」。</p>
+
+<h3>Q2：禁用了音符，但 CZEmaker 面板还能编辑？</h3>
+<p>A：这是正常的。禁用<strong>只是不执行</strong>，配置数据和面板操作完全不受影响。你可以在禁用的音符上继续修改配参，改完启用立刻生效。</p>
+
+<h3>Q3：禁用的东西在画布上还能选中吗？</h3>
+<p>A：能。禁用的音符和调整图层仍然是完整的画布元素，可以点选、框选、拖动、右键菜单操作。只有「执行」被跳过，其他交互都正常。</p>
+
+<h3>Q4：禁用的全局命令还能拖动吗？</h3>
+<p>A：能。拖动逻辑不受禁用状态影响。你可以把禁用的菱形拖到任何位置，位置数据照常保存。</p>
+
+<h3>Q5：禁用了之后能撤销吗？</h3>
+<p>A：能。每次切换都会保存撤销快照。按 <kbd>Ctrl</kbd>+<kbd>Z</kbd> 可以撤销到切换前的状态。</p>
+
+<h3>Q6：禁用的音符会被导出到 CzeData 吗？</h3>
+<p>A：看你勾不勾「禁用的事件块」复选框。不勾选（默认）跳过，勾选则保留并带 <code>disabled: true</code>。</p>
+
+<h3>Q7：禁用的全局命令为什么在 CzeData 里看不到 disabled 字段？</h3>
+<p>A：当前实现里，<code>convert_commands_to_seconds</code> 会先过滤 disabled 的命令再转换，所以即使勾选了「禁用的全局命令」，CzeData 里的命令也不会带 disabled 标识。这是已知限制。</p>
+
+<h3>Q8：禁用状态会随工程一起保存吗？</h3>
+<p>A：会。禁用状态是工程数据的一部分，关掉工程再打开会原样恢复。</p>
+
+<h3>Q9：我禁用了音符，但忘了它本来长什么样怎么办？</h3>
+<p>A：三种方法：① 启用它看一眼，看完再禁用；② 打开 CzeMaker 面板（选中它就会加载配置）；③ 直接翻工程的 JSON 文件看 <code>notes</code> 数组。</p>
+
+<h3>Q10：能不能批量禁用一整个编组的音符？</h3>
+<p>A：当前没有「按编组批量禁用」的快捷键。你需要先框选整个编组的音符，然后按 <kbd>Ctrl</kbd>+<kbd>Q</kbd>。如果编组分布在多个轨道不同位置，框选会比较费劲。</p>
+
+<h3>Q11：禁用的东西会影响时间轴总长度吗？</h3>
+<p>A：不会。时间轴总长度由<strong>所有音符</strong>（含禁用）的最晚结束时间决定，因为禁用的音符仍然在画布上占位置。如果你想让时间轴缩短，需要真的删除它们。</p>
+
+<h3>Q12：为什么我禁用了音符，测试运行时还是在弹？</h3>
+<p>A：可能原因：① 那个音符没有被真正禁用（检查画布上它是不是灰色的）；② 同一个位置有另一个启用的音符在弹（检查是否有重叠）；③ 全局命令触发了弹窗（比如 <code>window_animation</code> 创建了新窗口）。禁用只影响「该音符本身的弹窗」，不影响其他命令。</p>
+
+<h2>十一、小结</h2>
+
+<p>启用/禁用的三件事：</p>
+<ol>
+    <li><strong>三种对象都能禁用</strong>：音符块、调整图层（Ctrl+Q）、全局命令（右键菜单）。</li>
+    <li><strong>禁用 = 注释</strong>：留在工程里，画布上看得见，解释器不执行。</li>
+    <li><strong>渲染时可选择</strong>：默认跳过，勾选「禁用的事件块 / 禁用的全局命令」则保留并带 <code>disabled: true</code>。</li>
+</ol>
+
+<p>记住几个关键点：禁用不会删数据，撤销随时可用，渲染窗口的两个复选框决定导不导出。搞清楚这几条，你就能放心大胆地「注释掉」不想要的东西了喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({ currentFile: 'disabled_blocks.html' });
+</script>
+
+
+<!-- ========== [SEO-内链开始] ========== -->
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="start.html" title="初识 Itoc" tabindex="-1" rel="noopener">初识 Itoc</a>
+    <a href="install.html" title="安装与启动" tabindex="-1" rel="noopener">安装与启动</a>
+    <a href="interface.html" title="界面概览" tabindex="-1" rel="noopener">界面概览</a>
+    <a href="quickstart.html" title="快速上手：您的第一个项目" tabindex="-1" rel="noopener">快速上手：您的第一个项目</a>
+    <a href="timeline.html" title="时间轴与音符编辑" tabindex="-1" rel="noopener">时间轴与音符编辑</a>
+    <a href="metadata.html" title="作品元数据" tabindex="-1" rel="noopener">作品元数据</a>
+    <a href="czemaker.html" title="CZEmaker 弹窗编排 · 基础篇" tabindex="-1" rel="noopener">CZEmaker 弹窗编排 · 基础篇</a>
+    <a href="czemaker_advanced.html" title="CZEmaker 弹窗编排 · 进阶篇" tabindex="-1" rel="noopener">CZEmaker 弹窗编排 · 进阶篇</a>
+    <a href="window_style.html" title="窗口样式钮" tabindex="-1" rel="noopener">窗口样式钮</a>
+    <a href="hollow_window.html" title="镂空窗口" tabindex="-1" rel="noopener">镂空窗口</a>
+    <a href="acrylic_mica.html" title="亚克力与云母" tabindex="-1" rel="noopener">亚克力与云母</a>
+    <a href="window_type_regular.html" title="普通弹窗（信息/警告/错误/询问）" tabindex="-1" rel="noopener">普通弹窗（信息/警告/错误/询问）</a>
+    <a href="window_type_image.html" title="图片框" tabindex="-1" rel="noopener">图片框</a>
+    <a href="window_type_video.html" title="视频框" tabindex="-1" rel="noopener">视频框</a>
+    <a href="window_type_notice.html" title="气泡 / 通知" tabindex="-1" rel="noopener">气泡 / 通知</a>
+    <a href="window_type_code.html" title="执行代码" tabindex="-1" rel="noopener">执行代码</a>
+    <a href="window_type_uiclass.html" title="模类框" tabindex="-1" rel="noopener">模类框</a>
+    <a href="midi_color.html" title="音符块自身属性" tabindex="-1" rel="noopener">音符块自身属性</a>
+    <a href="paint.html" title="绘制音符块" tabindex="-1" rel="noopener">绘制音符块</a>
+    <a href="adjust_layer.html" title="调整图层" tabindex="-1" rel="noopener">调整图层</a>
+    <a href="beat_event_point.html" title="新建节奏事件点" tabindex="-1" rel="noopener">新建节奏事件点</a>
+    <a href="concurrent_event_point.html" title="新建并发事件点" tabindex="-1" rel="noopener">新建并发事件点</a>
+    <a href="transition.html" title="过渡动画" tabindex="-1" rel="noopener">过渡动画</a>
+    <a href="assign_window_sound.html" title="根据窗口类型赋予自定义音效" tabindex="-1" rel="noopener">根据窗口类型赋予自定义音效</a>
+    <a href="yinpin_yinpu.html" title="音频音谱" tabindex="-1" rel="noopener">音频音谱</a>
+    <a href="global_1.html" title="全局命令 · 基础篇" tabindex="-1" rel="noopener">全局命令 · 基础篇</a>
+    <a href="global_2.html" title="全局命令 · 进阶篇" tabindex="-1" rel="noopener">全局命令 · 进阶篇</a>
+    <a href="cmd_window_animation.html" title="全局命令 · 窗口位移动画" tabindex="-1" rel="noopener">全局命令 · 窗口位移动画</a>
+    <a href="cmd_mouse_move.html" title="全局命令 · 鼠标移动" tabindex="-1" rel="noopener">全局命令 · 鼠标移动</a>
+    <a href="cmd_mirror_clone.html" title="全局命令 · 镜像克隆编组" tabindex="-1" rel="noopener">全局命令 · 镜像克隆编组</a>
+    <a href="cmd_wallpaper.html" title="全局命令 · 设置桌面背景" tabindex="-1" rel="noopener">全局命令 · 设置桌面背景</a>
+    <a href="array.html" title="阵列设计器 · 总览" tabindex="-1" rel="noopener">阵列设计器 · 总览</a>
+    <a href="array_linear.html" title="直线阵列" tabindex="-1" rel="noopener">直线阵列</a>
+    <a href="array_bezier.html" title="贝塞尔曲线阵列" tabindex="-1" rel="noopener">贝塞尔曲线阵列</a>
+    <a href="array_polygon.html" title="多边形阵列" tabindex="-1" rel="noopener">多边形阵列</a>
+    <a href="array_circle.html" title="环形阵列" tabindex="-1" rel="noopener">环形阵列</a>
+    <a href="array_polar.html" title="极坐标阵列" tabindex="-1" rel="noopener">极坐标阵列</a>
+    <a href="array_svg.html" title="SVG阵列" tabindex="-1" rel="noopener">SVG阵列</a>
+    <a href="cze_window_class.html" title="窗口类名" tabindex="-1" rel="noopener">窗口类名</a>
+    <a href="cze_window_group.html" title="窗口编组" tabindex="-1" rel="noopener">窗口编组</a>
+    <a href="uiclass_1.html" title="初识模类" tabindex="-1" rel="noopener">初识模类</a>
+    <a href="uiclass_2.html" title="模类设计器详解" tabindex="-1" rel="noopener">模类设计器详解</a>
+    <a href="uiclass_3.html" title="模类进阶与生态" tabindex="-1" rel="noopener">模类进阶与生态</a>
+    <a href="sidebar.html" title="侧边栏" tabindex="-1" rel="noopener">侧边栏</a>
+    <a href="sidebar_display.html" title="显示器" tabindex="-1" rel="noopener">显示器</a>
+    <a href="sidebar_reference_media.html" title="参考媒体" tabindex="-1" rel="noopener">参考媒体</a>
+    <a href="str.html" title="字幕" tabindex="-1" rel="noopener">字幕</a>
+    <a href="marker_and_sticky_note.html" title="标记与轨道便利贴" tabindex="-1" rel="noopener">标记与轨道便利贴</a>
+    <a href="media_browser.html" title="媒体浏览器" tabindex="-1" rel="noopener">媒体浏览器</a>
+    <a href="high_energy_table.html" title="高能进度表" tabindex="-1" rel="noopener">高能进度表</a>
+    <a href="terminal.html" title="终端" tabindex="-1" rel="noopener">终端</a>
+    <a href="code_view.html" title="代码视图" tabindex="-1" rel="noopener">代码视图</a>
+    <a href="GetWindowClassName.html" title="窗口拾取器" tabindex="-1" rel="noopener">窗口拾取器</a>
+    <a href="insert_lyrics.html" title="插入歌词" tabindex="-1" rel="noopener">插入歌词</a>
+    <a href="cooperation.html" title="协作" tabindex="-1" rel="noopener">协作</a>
+    <a href="ctrl_z_undo_redo.html" title="撤销与重做" tabindex="-1" rel="noopener">撤销与重做</a>
+    <a href="render_cze_data.html" title="渲染为 CZE 数据文件" tabindex="-1" rel="noopener">渲染为 CZE 数据文件</a>
+    <a href="render_python_code.html" title="渲染为 Python 代码" tabindex="-1" rel="noopener">渲染为 Python 代码</a>
+    <a href="export_audio.html" title="渲染为音频文件" tabindex="-1" rel="noopener">渲染为音频文件</a>
+    <a href="render_video.html" title="渲染视频文件" tabindex="-1" rel="noopener">渲染视频文件</a>
+    <a href="compile_exe.html" title="编译为 exe" tabindex="-1" rel="noopener">编译为 exe</a>
+    <a href="assembly_package.html" title="组装打包模式" tabindex="-1" rel="noopener">组装打包模式</a>
+    <a href="interpreter_config.html" title="解释器自定义配置" tabindex="-1" rel="noopener">解释器自定义配置</a>
+    <a href="test_run.html" title="测试运行" tabindex="-1" rel="noopener">测试运行</a>
+    <a href="run_log.html" title="运行日志" tabindex="-1" rel="noopener">运行日志</a>
+    <a href="python_libs.html" title="Python 运行库" tabindex="-1" rel="noopener">Python 运行库</a>
+    <a href="settings.html" title="首选项（设置）" tabindex="-1" rel="noopener">首选项（设置）</a>
+    <a href="settings_skin.html" title="皮肤设置" tabindex="-1" rel="noopener">皮肤设置</a>
+    <a href="file_association.html" title="文件关联（打开方式）" tabindex="-1" rel="noopener">文件关联（打开方式）</a>
+    <a href="language_pack.html" title="语言包" tabindex="-1" rel="noopener">语言包</a>
+    <a href="plugin_user.html" title="插件使用指南" tabindex="-1" rel="noopener">插件使用指南</a>
+    <a href="plugin_dev.html" title="插件开发指南" tabindex="-1" rel="noopener">插件开发指南</a>
+    <a href="carousel.html" title="轮播图" tabindex="-1" rel="noopener">轮播图</a>
+</nav>
+<!-- ========== [SEO-内链结束] ========== -->
+
+</body>
+</html>

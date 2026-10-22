@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 亚克力与云母帮助文档 - 小小电子xxdz开发的 xxdz Itoc 工具，讲解窗口磨砂玻璃效果（亚克力/云母）的启用方式、Win32 实现原理、系统版本支持、与窗口背景和镂空的联动规则">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,亚克力,云母,Acrylic,Mica,磨砂玻璃,毛玻璃,窗口材质,window_material,Win11,Windows Crazy Error">
+<meta property="og:title" content="亚克力与云母 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 亚克力与云母帮助文档 - 小小电子xxdz开发的 xxdz Itoc 工具">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>亚克力与云母 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>❄️ 亚克力与云母</h1>
+
+<p>亚克力（Acrylic）和云母（Mica）是 Windows 10/11 的两种「磨砂玻璃」窗口材质。开启之后，窗口背景会变成半透明的模糊效果，透出后面的桌面或窗口内容，看起来很有质感。</p>
+
+<p>Itoc 通过 Win32 API 给弹窗加上这个效果。这篇把怎么开、原理是什么、哪些系统支持、和窗口背景/镂空怎么联动，全部讲清楚。</p>
+
+<h2>入口</h2>
+
+<p>亚克力/云母的开关在「样式钮」的设置对话框里。打开方式：</p>
+<ol>
+    <li>在 CZEmaker 面板顶部右侧找到「样式钮」下拉框。</li>
+    <li>选择「设置」，打开「窗口控制按钮与窗口样式设置」对话框。</li>
+    <li>在「窗口样式」区域下方，找到「亚克力或云母 （如果系统支持的话）」复选框。</li>
+</ol>
+
+<p>勾选之后点确定，配置就保存了。下次弹窗出现时会应用这个效果。</p>
+
+<div class="tip">
+    <strong>💡 复选框的悬浮提示：</strong> 鼠标悬停在「亚克力或云母」复选框上，会显示一段提示：「勾选此框后，窗口将呈现半透明磨砂玻璃效果（亚克力/云母），需要运行时的系统支持。如果取消勾选『窗口背景』，此功能将失效喵」。
+</div>
+
+<h2>和「窗口背景」的联动</h2>
+
+<p>亚克力必须配合「窗口背景」使用。两条联动规则：</p>
+
+<ul>
+    <li><strong>勾选亚克力 → 自动勾选窗口背景。</strong> 因为亚克力需要窗口有实际的背景层来承载模糊效果，没背景就没处模糊。</li>
+    <li><strong>取消勾选窗口背景 → 自动取消勾选亚克力。</strong> 反过来，没有背景时亚克力会失效，程序干脆帮你取消掉，避免配置矛盾。</li>
+</ul>
+
+<p>这套联动是双向的、实时生效的。你在对话框里勾一个，另一个会自动跟着变，不需要手动同步。</p>
+
+<div class="warning">
+    <strong>⚠️ 注意：</strong> 如果你在配置文件里手动把 <code>window_material=true</code> 和 <code>window_background=false</code> 同时写进去，程序在创建窗口时会以「窗口背景」为准——不勾背景就不启用亚克力。所以别在配置里制造矛盾。
+</div>
+
+<h2>Win32 实现原理</h2>
+
+<p>Itoc 不是用 Qt 自带的毛玻璃（Qt 在 Windows 上对亚克力的支持不稳定），而是直接调 Win32 的 <code>SetWindowCompositionAttribute</code> 接口。核心流程在 <code>enable_acrylic(hwnd, color)</code> 函数里：</p>
+
+<ol>
+    <li>构造一个 <code>ACCENTPOLICY</code> 结构体，<code>AccentState</code> 设为 <code>ACCENT_ENABLE_ACRYLICBLURBEHIND</code>（值为 4），<code>GradientColor</code> 设为传入的颜色（默认 <code>0x33FFFFFF</code>，半透明白）。</li>
+    <li>构造一个 <code>WINDOWCOMPOSITIONATTRIBDATA</code> 结构体，<code>Attribute</code> 设为 <code>WCA_ACCENT_POLICY</code>（值为 19），<code>Data</code> 指向上面那个 ACCENTPOLICY。</li>
+    <li>调用 <code>user32.SetWindowCompositionAttribute(hwnd, &data)</code>。</li>
+</ol>
+
+<p>如果系统是 Windows 11，函数还会额外调两次 <code>DwmSetWindowAttribute</code>：</p>
+<ul>
+    <li><code>DWMWA_CAPTION_COLOR</code>（35）：把标题栏背景色强制设为白色（<code>0x00FFFFFF</code>），防止标题栏在亚克力下发黑或变透明。</li>
+    <li><code>DWMWA_TEXT_COLOR</code>（36）：把标题栏文字色强制设为黑色（<code>0x00000000</code>），保证白底黑字可读。</li>
+</ul>
+
+<p>这两步是 Windows 11 专属的修复。Windows 10 上没有这两个属性，调用会被忽略（不会报错）。</p>
+
+<div class="tip">
+    <strong>💡 为什么不用 Qt 自带效果：</strong> Qt 在 Windows 上没有稳定的「亚克力」封装，不同 Qt 版本、不同 Windows 版本表现不一致。直接调 Win32 接口最可靠，而且能精确控制 <code>AccentState</code> 和颜色。
+</div>
+
+<h2>系统版本支持</h2>
+
+<p>亚克力/云母对系统版本有要求：</p>
+
+<table>
+    <thead>
+        <tr><th>Windows 版本</th><th>亚克力（Acrylic）</th><th>云母（Mica）</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>Windows 11（22H2+）</td><td>✅ 支持</td><td>✅ 支持</td><td>完整支持，Itoc 会额外修复标题栏颜色</td></tr>
+        <tr><td>Windows 11（21H2）</td><td>✅ 支持</td><td>⚠️ 部分支持</td><td>云母效果不稳定，可能只显示模糊</td></tr>
+        <tr><td>Windows 10（1803+）</td><td>✅ 支持</td><td>❌ 不支持</td><td>只有亚克力，没有云母</td></tr>
+        <tr><td>Windows 10（早期版本）</td><td>⚠️ 部分支持</td><td>❌ 不支持</td><td>可能只显示简单的模糊，不是完整的亚克力</td></tr>
+        <tr><td>Windows 8.1 / 8 / 7</td><td>❌ 不支持</td><td>❌ 不支持</td><td>SetWindowCompositionAttribute 不存在或无效</td></tr>
+    </tbody>
+</table>
+
+<p>Itoc 不检测系统版本，直接调 API。如果 API 不存在（Windows 7 及以下），调用会失败，函数内部有 try/except 兜底，不会崩溃，只是没有效果。</p>
+
+<h2>应用范围</h2>
+
+<p>亚克力/云母支持哪些窗口类型？</p>
+
+<ul>
+    <li><strong>常规弹窗（信息框/警告框/错误框/询问框）</strong>：支持。窗口设置 <code>WA_TranslucentBackground</code>，内容区透明，然后调 <code>enable_acrylic</code>。</li>
+    <li><strong>图片框</strong>：支持（非镂空模式）。镂空图片框不支持，因为镂空窗口本身就是全透明的，亚克力无处附着。</li>
+    <li><strong>模类框</strong>：支持。模类框创建时如果 <code>window_material=true</code>，会在窗口 show 之后调 <code>enable_acrylic</code>。</li>
+    <li><strong>视频框</strong>：<strong>不支持</strong>。视频框是 mpv 进程的窗口，不受 Qt 控制，无法应用 Qt 的透明背景 + Win32 亚克力组合。</li>
+    <li><strong>气泡/通知</strong>：不支持。气泡是系统通知，不是 Itoc 创建的窗口。</li>
+</ul>
+
+<h2>与窗口透明度的关系</h2>
+
+<p>亚克力和「透明度」输入框（<code>window_opacity</code>）是两套独立的机制：</p>
+
+<ul>
+    <li><strong>透明度</strong>：用 Qt 的 <code>setWindowOpacity</code> 或 Win32 的 <code>SetLayeredWindowAttributes(LWA_ALPHA)</code> 控制整个窗口（包括内容）的不透明度。0% 完全透明，100% 完全不透明。</li>
+    <li><strong>亚克力</strong>：只影响窗口背景的模糊和半透明，不影响前景控件。前景文字、按钮仍然是清晰的。</li>
+</ul>
+
+<p>两者可以叠加使用。比如「透明度 80% + 亚克力」= 整体 80% 不透明，背景有模糊效果。但叠加太多可能会导致视觉混乱，建议二选一，或者透明度不要调太低。</p>
+
+<h2>与镂空的关系</h2>
+
+<p>镂空图片框和亚克力<strong>互斥</strong>。原因：</p>
+<ul>
+    <li>镂空窗口用 <code>WA_TranslucentBackground</code>，背景完全透明，没有可承载模糊的图层。</li>
+    <li>亚克力需要窗口有一个半透明的背景层，通过 <code>GradientColor</code> 控制模糊的色调。</li>
+    <li>两者同时开启时，程序以镂空为准，亚克力不生效（但配置里的 <code>window_material</code> 字段可能还是 true，不会自动改）。</li>
+</ul>
+
+<p>如果你想要「镂空 + 模糊」的效果，目前做不到。镂空窗口就是纯粹的透明，没有背景模糊。</p>
+
+<h2>与色键透明的关系</h2>
+
+<p>「窗口背景」不勾选时，程序用 <code>paintEvent</code> + <code>SetLayeredWindowAttributes(LWA_COLORKEY)</code> 做色键透明。这套机制和亚克力也是冲突的：</p>
+<ul>
+    <li>色键透明是「某个 RGB 颜色变透明」，没有背景层。</li>
+    <li>亚克力需要背景层。</li>
+    <li>所以不勾「窗口背景」时，亚克力被自动取消。</li>
+</ul>
+
+<h2>配置文件字段</h2>
+
+<p>亚克力配置保存在音符的 <code>cze_makers.window_control_detail</code> 里：</p>
+
+<ul>
+    <li><code>window_material</code>：布尔，是否启用亚克力/云母。默认 <code>false</code>。</li>
+    <li><code>window_background</code>：布尔，是否绘制窗口背景。默认 <code>true</code>。亚克力要求这个为 <code>true</code>。</li>
+</ul>
+
+<p>示例：</p>
+<pre><code>{
+  "window_control": "custom",
+  "window_control_detail": {
+    "close": true,
+    "maximize": false,
+    "minimize": false,
+    "topmost": true,
+    "window_style": "normal_fixed",
+    "window_background": true,
+    "window_material": true
+  }
+}</code></pre>
+
+<p>旧工程没有 <code>window_material</code> 字段时，默认为 <code>false</code>，不会自动开启亚克力。这是为了保持兼容，避免旧工程突然变样。</p>
+
+<h2>性能与视觉建议</h2>
+
+<p><strong>性能：</strong> 亚克力会让 DWM（桌面窗口管理器）多做一层模糊合成，对 GPU 有一定开销。单个弹窗无所谓，但如果同时弹出几十个亚克力窗口，低端机器可能会掉帧。批量弹窗的场景建议关掉亚克力。</p>
+
+<p><strong>视觉：</strong></p>
+<ul>
+    <li>亚克力适合「轻量、悬浮」的提示窗，比如通知、小工具、悬浮球。</li>
+    <li>不适合内容密集的弹窗（文字多的信息框），因为背景模糊会分散注意力。</li>
+    <li>深色壁纸 + 浅色亚克力效果最好；纯白壁纸 + 白色亚克力几乎看不出效果。</li>
+    <li>Windows 11 的云母比 Windows 10 的亚克力更「收敛」，只有标题栏和背景轻微着色，不会过度模糊。</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 调色：</strong> <code>enable_acrylic(hwnd, color)</code> 的 <code>color</code> 参数控制亚克力的渐变色调，默认 <code>0x33FFFFFF</code>（半透明白）。目前 Itoc 没有在界面上暴露这个参数，用的都是默认值。如果你想改，需要改代码里的默认参数。
+</div>
+
+<h2>常见问题</h2>
+
+<h3>Q：勾了亚克力但没效果？</h3>
+<p>A：按顺序检查：①「窗口背景」是否勾选（不勾背景亚克力会失效）；② 窗口类型是不是视频框/气泡（不支持）；③ 是不是镂空图片框（互斥）；④ 系统版本是否支持（Windows 7 及以下不支持）；⑤ 壁纸是不是纯白（白色亚克力看不出效果）。</p>
+
+<h3>Q：Windows 11 上标题栏变透明了？</h3>
+<p>A：这是 <code>enable_acrylic</code> 里的修复逻辑在起作用。函数会额外调 <code>DwmSetWindowAttribute(DWMWA_CAPTION_COLOR, 0x00FFFFFF)</code> 把标题栏强制设为白色，避免亚克力把标题栏也模糊掉。如果你的系统版本不支持这个属性，调用会被忽略，标题栏可能仍然是系统默认色。</p>
+
+<h3>Q：亚克力窗口能拖动吗？</h3>
+<p>A：能。亚克力不影响拖动逻辑。普通弹窗拖动标题栏，镂空图片框拖动任意位置（但镂空和亚克力互斥，所以镂空窗口没有亚克力）。</p>
+
+<h3>Q：亚克力 + 透明度 50% 是什么效果？</h3>
+<p>A：整体 50% 不透明，背景有模糊。但因为整体半透明，模糊效果会被削弱，看起来更像「半透明的磨砂玻璃」。建议透明度不要低于 70%，否则亚克力效果不明显。</p>
+
+<h3>Q：视频框为什么不能用亚克力？</h3>
+<p>A：视频框是 mpv 进程的窗口，不受 Qt 的 <code>WA_TranslucentBackground</code> 控制。mpv 自己的窗口透明机制（<code>--window-transparency</code>）在某些版本上被移除或不稳定，Itoc 没有对视频框应用亚克力。</p>
+
+<h3>Q：模类框的亚克力怎么生效的？</h3>
+<p>A：模类框创建时，如果 <code>window_material=true</code>，会在 <code>class_window.show()</code> 之后用 <code>QTimer.singleShot(0, lambda: enable_acrylic(int(class_window.winId())))</code> 延迟一帧调用，确保窗口句柄已经创建。</p>
+
+<h3>Q：亚克力窗口在任务栏显示正常吗？</h3>
+<p>A：取决于「在任务栏显示」复选框和「窗口样式」。亚克力本身不改变任务栏行为。工具窗样式下仍然不显示任务栏。</p>
+
+<h2>小结</h2>
+
+<p>亚克力与云母的三件事：</p>
+<ol>
+    <li><strong>开关</strong>：在样式钮设置对话框里勾「亚克力或云母」，必须配合「窗口背景」。</li>
+    <li><strong>原理</strong>：Win32 <code>SetWindowCompositionAttribute</code> + <code>ACCENT_ENABLE_ACRYLICBLURBEHIND</code>，Windows 11 额外修标题栏颜色。</li>
+    <li><strong>限制</strong>：视频框/气泡不支持，镂空互斥，Windows 7 及以下无效，深色壁纸效果最好。</li>
+</ol>
+
+<p>记住几个关键点：亚克力不是所有窗口都能用，不是所有系统都支持，和镂空/色键透明互斥。这些清楚了，磨砂玻璃效果就能稳稳用上了喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<!-- ========== 动态渲染脚本 ========== -->
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({
+        currentFile: 'acrylic_mica.html'
+    });
+</script>
+
+
+
+<!-- ========== [SEO-内链开始] ========== -->
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="start.html" title="初识 Itoc" tabindex="-1" rel="noopener">初识 Itoc</a>
+    <a href="install.html" title="安装与启动" tabindex="-1" rel="noopener">安装与启动</a>
+    <a href="interface.html" title="界面概览" tabindex="-1" rel="noopener">界面概览</a>
+    <a href="quickstart.html" title="快速上手：您的第一个项目" tabindex="-1" rel="noopener">快速上手：您的第一个项目</a>
+    <a href="timeline.html" title="时间轴与音符编辑" tabindex="-1" rel="noopener">时间轴与音符编辑</a>
+    <a href="metadata.html" title="作品元数据" tabindex="-1" rel="noopener">作品元数据</a>
+    <a href="czemaker.html" title="CZEmaker 弹窗编排 · 基础篇" tabindex="-1" rel="noopener">CZEmaker 弹窗编排 · 基础篇</a>
+    <a href="czemaker_advanced.html" title="CZEmaker 弹窗编排 · 进阶篇" tabindex="-1" rel="noopener">CZEmaker 弹窗编排 · 进阶篇</a>
+    <a href="window_style.html" title="窗口样式钮" tabindex="-1" rel="noopener">窗口样式钮</a>
+    <a href="hollow_window.html" title="镂空窗口" tabindex="-1" rel="noopener">镂空窗口</a>
+    <a href="window_type_regular.html" title="普通弹窗（信息/警告/错误/询问）" tabindex="-1" rel="noopener">普通弹窗（信息/警告/错误/询问）</a>
+    <a href="window_type_image.html" title="图片框" tabindex="-1" rel="noopener">图片框</a>
+    <a href="window_type_video.html" title="视频框" tabindex="-1" rel="noopener">视频框</a>
+    <a href="window_type_notice.html" title="气泡 / 通知" tabindex="-1" rel="noopener">气泡 / 通知</a>
+    <a href="window_type_code.html" title="执行代码" tabindex="-1" rel="noopener">执行代码</a>
+    <a href="window_type_uiclass.html" title="模类框" tabindex="-1" rel="noopener">模类框</a>
+    <a href="midi_color.html" title="音符块自身属性" tabindex="-1" rel="noopener">音符块自身属性</a>
+    <a href="paint.html" title="绘制音符块" tabindex="-1" rel="noopener">绘制音符块</a>
+    <a href="adjust_layer.html" title="调整图层" tabindex="-1" rel="noopener">调整图层</a>
+    <a href="disabled_blocks.html" title="启用/禁用事件块或全局命令" tabindex="-1" rel="noopener">启用/禁用事件块或全局命令</a>
+    <a href="beat_event_point.html" title="新建节奏事件点" tabindex="-1" rel="noopener">新建节奏事件点</a>
+    <a href="concurrent_event_point.html" title="新建并发事件点" tabindex="-1" rel="noopener">新建并发事件点</a>
+    <a href="transition.html" title="过渡动画" tabindex="-1" rel="noopener">过渡动画</a>
+    <a href="assign_window_sound.html" title="根据窗口类型赋予自定义音效" tabindex="-1" rel="noopener">根据窗口类型赋予自定义音效</a>
+    <a href="yinpin_yinpu.html" title="音频音谱" tabindex="-1" rel="noopener">音频音谱</a>
+    <a href="global_1.html" title="全局命令 · 基础篇" tabindex="-1" rel="noopener">全局命令 · 基础篇</a>
+    <a href="global_2.html" title="全局命令 · 进阶篇" tabindex="-1" rel="noopener">全局命令 · 进阶篇</a>
+    <a href="cmd_window_animation.html" title="全局命令 · 窗口位移动画" tabindex="-1" rel="noopener">全局命令 · 窗口位移动画</a>
+    <a href="cmd_mouse_move.html" title="全局命令 · 鼠标移动" tabindex="-1" rel="noopener">全局命令 · 鼠标移动</a>
+    <a href="cmd_mirror_clone.html" title="全局命令 · 镜像克隆编组" tabindex="-1" rel="noopener">全局命令 · 镜像克隆编组</a>
+    <a href="cmd_wallpaper.html" title="全局命令 · 设置桌面背景" tabindex="-1" rel="noopener">全局命令 · 设置桌面背景</a>
+    <a href="array.html" title="阵列设计器 · 总览" tabindex="-1" rel="noopener">阵列设计器 · 总览</a>
+    <a href="array_linear.html" title="直线阵列" tabindex="-1" rel="noopener">直线阵列</a>
+    <a href="array_bezier.html" title="贝塞尔曲线阵列" tabindex="-1" rel="noopener">贝塞尔曲线阵列</a>
+    <a href="array_polygon.html" title="多边形阵列" tabindex="-1" rel="noopener">多边形阵列</a>
+    <a href="array_circle.html" title="环形阵列" tabindex="-1" rel="noopener">环形阵列</a>
+    <a href="array_polar.html" title="极坐标阵列" tabindex="-1" rel="noopener">极坐标阵列</a>
+    <a href="array_svg.html" title="SVG阵列" tabindex="-1" rel="noopener">SVG阵列</a>
+    <a href="cze_window_class.html" title="窗口类名" tabindex="-1" rel="noopener">窗口类名</a>
+    <a href="cze_window_group.html" title="窗口编组" tabindex="-1" rel="noopener">窗口编组</a>
+    <a href="uiclass_1.html" title="初识模类" tabindex="-1" rel="noopener">初识模类</a>
+    <a href="uiclass_2.html" title="模类设计器详解" tabindex="-1" rel="noopener">模类设计器详解</a>
+    <a href="uiclass_3.html" title="模类进阶与生态" tabindex="-1" rel="noopener">模类进阶与生态</a>
+    <a href="sidebar.html" title="侧边栏" tabindex="-1" rel="noopener">侧边栏</a>
+    <a href="sidebar_display.html" title="显示器" tabindex="-1" rel="noopener">显示器</a>
+    <a href="sidebar_reference_media.html" title="参考媒体" tabindex="-1" rel="noopener">参考媒体</a>
+    <a href="str.html" title="字幕" tabindex="-1" rel="noopener">字幕</a>
+    <a href="marker_and_sticky_note.html" title="标记与轨道便利贴" tabindex="-1" rel="noopener">标记与轨道便利贴</a>
+    <a href="media_browser.html" title="媒体浏览器" tabindex="-1" rel="noopener">媒体浏览器</a>
+    <a href="high_energy_table.html" title="高能进度表" tabindex="-1" rel="noopener">高能进度表</a>
+    <a href="terminal.html" title="终端" tabindex="-1" rel="noopener">终端</a>
+    <a href="code_view.html" title="代码视图" tabindex="-1" rel="noopener">代码视图</a>
+    <a href="GetWindowClassName.html" title="窗口拾取器" tabindex="-1" rel="noopener">窗口拾取器</a>
+    <a href="insert_lyrics.html" title="插入歌词" tabindex="-1" rel="noopener">插入歌词</a>
+    <a href="cooperation.html" title="协作" tabindex="-1" rel="noopener">协作</a>
+    <a href="ctrl_z_undo_redo.html" title="撤销与重做" tabindex="-1" rel="noopener">撤销与重做</a>
+    <a href="render_cze_data.html" title="渲染为 CZE 数据文件" tabindex="-1" rel="noopener">渲染为 CZE 数据文件</a>
+    <a href="render_python_code.html" title="渲染为 Python 代码" tabindex="-1" rel="noopener">渲染为 Python 代码</a>
+    <a href="export_audio.html" title="渲染为音频文件" tabindex="-1" rel="noopener">渲染为音频文件</a>
+    <a href="render_video.html" title="渲染视频文件" tabindex="-1" rel="noopener">渲染视频文件</a>
+    <a href="compile_exe.html" title="编译为 exe" tabindex="-1" rel="noopener">编译为 exe</a>
+    <a href="assembly_package.html" title="组装打包模式" tabindex="-1" rel="noopener">组装打包模式</a>
+    <a href="interpreter_config.html" title="解释器自定义配置" tabindex="-1" rel="noopener">解释器自定义配置</a>
+    <a href="test_run.html" title="测试运行" tabindex="-1" rel="noopener">测试运行</a>
+    <a href="run_log.html" title="运行日志" tabindex="-1" rel="noopener">运行日志</a>
+    <a href="python_libs.html" title="Python 运行库" tabindex="-1" rel="noopener">Python 运行库</a>
+    <a href="settings.html" title="首选项（设置）" tabindex="-1" rel="noopener">首选项（设置）</a>
+    <a href="settings_skin.html" title="皮肤设置" tabindex="-1" rel="noopener">皮肤设置</a>
+    <a href="file_association.html" title="文件关联（打开方式）" tabindex="-1" rel="noopener">文件关联（打开方式）</a>
+    <a href="language_pack.html" title="语言包" tabindex="-1" rel="noopener">语言包</a>
+    <a href="plugin_user.html" title="插件使用指南" tabindex="-1" rel="noopener">插件使用指南</a>
+    <a href="plugin_dev.html" title="插件开发指南" tabindex="-1" rel="noopener">插件开发指南</a>
+    <a href="carousel.html" title="轮播图" tabindex="-1" rel="noopener">轮播图</a>
+</nav>
+<!-- ========== [SEO-内链结束] ========== -->
+
+</body>
+</html>

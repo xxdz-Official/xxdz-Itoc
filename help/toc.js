@@ -10,6 +10,7 @@ const TOC_DATA = [
     { title: '安装与启动', file: 'install.html' },
     { title: '界面概览', file: 'interface.html' },
     { title: '快速上手：您的第一个项目', file: 'quickstart.html' },
+    { title: '如何获取 MIDI 文件', file: 'how_to_get_midi.html' },
     { title: '时间轴与音符编辑', file: 'timeline.html' },
     { title: '作品元数据', file: 'metadata.html' },
     // ==================== 弹窗编排 ====================
@@ -40,7 +41,8 @@ const TOC_DATA = [
     { title: '过渡动画', file: 'transition.html' },
     { title: '根据窗口类型赋予自定义音效', file: 'assign_window_sound.html' },
     { title: '音频音谱', file: 'yinpin_yinpu.html' },
-
+    { title: '音频转 MIDI (扒谱)', file: 'audio_to_midi.html' },
+    { title: '将工程导出为 MIDI', file: 'project_to_midi.html' },
     // ==================== 全局命令 ====================
     { group: '全局命令' },
     { title: '全局命令 · 基础篇', file: 'global_1.html' },
@@ -89,11 +91,15 @@ const TOC_DATA = [
     { title: '插入歌词', file: 'insert_lyrics.html' },
     { title: '协作', file: 'cooperation.html' },
     { title: '撤销与重做', file: 'ctrl_z_undo_redo.html' },
+    { title: 'AI 协作（小電AI）', file: 'cooperation_ai.html' },
+    { title: '電籽 AI 助手', file: 'dianzi_ai_assistant.html' },
+    { title: '如何调用高级 AI 模型', file: 'advanced_ai_model.html' },
 
     // ==================== 渲染与输出 ====================
     { group: '渲染与输出' },
     { title: '渲染为 CZE 数据文件', file: 'render_cze_data.html' },
     { title: '渲染为 Python 代码', file: 'render_python_code.html' },
+    { title: '渲染为 C++ 代码', file: 'render_cpp_code.html' },
     { title: '渲染为音频文件', file: 'export_audio.html' },
     { title: '渲染视频文件', file: 'render_video.html' },
 
@@ -105,6 +111,7 @@ const TOC_DATA = [
     { title: '测试运行', file: 'test_run.html' },
     { title: '运行日志', file: 'run_log.html' },
     { title: 'Python 运行库', file: 'python_libs.html' },
+    { title: 'C++ 运行库', file: 'cpp_libs.html' },
 
     // ==================== 设置与个性化 ====================
     { group: '设置与个性化' },

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 执行代码帮助文档 - 小小电子xxdz开发的 xxdz Itoc 工具，讲解执行代码类型的 code_content、上下文变量、暗色编辑器、语法高亮、编译模式限制">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,执行代码,Python代码,code_content,语法高亮,PyCharm编辑器,Windows Crazy Error">
+<meta property="og:title" content="执行代码 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 执行代码帮助文档 - 小小电子xxdz开发的 xxdz Itoc 工具">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>执行代码 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>💻 执行代码</h1>
+
+<p>「执行代码」严格来说不是一种窗口类型——它是一个<strong>全局命令</strong>。在 CZEmaker 面板里它被归在窗口类型选择器里，因为从"绑在音符上执行一段东西"的角度看，它和其他窗口类型是平级的。但它的实际行为完全不同：它不弹窗，而是在后台跑一段 Python 代码。</p>
+
+<p>这篇讲清楚执行代码能干什么、怎么用、有哪些坑。</p>
+
+<h2>什么时候用执行代码</h2>
+
+<p>执行代码适合这些场景：</p>
+
+<ul>
+    <li><strong>批量操作</strong>：一次性关闭所有弹窗、把所有窗口移到某个位置。</li>
+    <li><strong>动态逻辑</strong>：根据当前状态决定下一步做什么（比如根据时间判断显示不同内容）。</li>
+    <li><strong>调用外部程序</strong>：打开浏览器、执行 shell 命令、启动别的 exe。</li>
+    <li><strong>测试调试</strong>：临时打印一些变量、检查某个对象的状态。</li>
+    <li><strong>高级玩法</strong>：直接操作 Qt 窗口、改窗口属性、创建自定义控件。</li>
+</ul>
+
+<p>如果你只是想弹个窗，用普通弹窗/图片框；只有「弹窗搞不定、需要写代码」的时候，才用执行代码。</p>
+
+<div class="warning">
+    <strong>⚠️ 重要限制：只有编译模式才会执行。</strong> 在 Itoc 里按 F5「测试运行」，执行代码不会跑。只有把工程编译成 exe 后，执行代码才会真正执行。所以别拿它做「预览阶段就需要看到效果」的逻辑。这是 Itoc 的设计决定，官方文档里也写了「预览和组装打包模式无法运用 Python 代码，只有编译模式可以」。
+</div>
+
+<h2>面板长什么样</h2>
+
+<p>切到「执行代码」之后，面板会发生这些变化：</p>
+
+<ul>
+    <li><strong>顶部右侧功能区</strong>：整个隐藏。</li>
+    <li><strong>位置配置区域</strong>：整个隐藏。</li>
+    <li><strong>窗口标题行 / 窗口内容行</strong>：隐藏。</li>
+    <li><strong>特殊功能区</strong>：出现一个「打开文本编辑窗口」按钮 + 一个暗色代码框。</li>
+</ul>
+
+<p>代码框用的是 PyCharm 暗色配色：</p>
+<ul>
+    <li>背景：<code>#2B2B2B</code></li>
+    <li>默认文字：<code>#A9B7C6</code></li>
+    <li>光标：<code>#A9B7C6</code></li>
+    <li>选中背景：<code>#214283</code></li>
+</ul>
+
+<p>下方还有一行提示文字：「代码将在编译模式下执行，支持 Python 标准库和用户自定义函数。」</p>
+
+<h2>语法高亮</h2>
+
+<p>代码框不是纯文本框，它带语法高亮。每次输入后会重新扫描整个文本，给不同 token 上色：</p>
+
+<table>
+    <thead>
+        <tr><th>类型</th><th>颜色</th><th>示例</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>关键字</td><td>橙红 <code>#FF6B35</code></td><td><code>if</code> / <code>for</code> / <code>def</code> / <code>class</code></td></tr>
+        <tr><td>字符串</td><td>绿 <code>#4CAF50</code></td><td><code>"hello"</code> / <code>'world'</code> / 三引号</td></tr>
+        <tr><td>注释</td><td>亮灰 <code>#B0BEC5</code></td><td><code># 这是注释</code></td></tr>
+        <tr><td>数字</td><td>蓝 <code>#42A5F5</code></td><td><code>123</code> / <code>3.14</code></td></tr>
+        <tr><td>函数名</td><td>黄 <code>#FFD54F</code></td><td><code>def my_func</code> 里的 <code>my_func</code></td></tr>
+        <tr><td>类名</td><td>青 <code>#26C6DA</code></td><td><code>class MyClass</code> 里的 <code>MyClass</code></td></tr>
+        <tr><td>内置函数/类型</td><td>亮蓝 <code>#29B6F6</code></td><td><code>print</code> / <code>len</code> / <code>int</code> / <code>list</code></td></tr>
+    </tbody>
+</table>
+
+<p>高亮是「文本变化时全量重扫」的实现方式，小段代码无所谓，几千行的代码会稍微慢一点（但平时没人会往这里塞几千行）。</p>
+
+<h2>大编辑器</h2>
+
+<p>点「打开文本编辑窗口」会弹出一个 800×900 的独立编辑器，功能更全：</p>
+
+<ul>
+    <li><strong>暗色主题</strong>：和面板里的代码框同款配色。</li>
+    <li><strong>语法高亮</strong>：输入时实时高亮。</li>
+    <li><strong>编辑菜单</strong>：查找...（Ctrl+F）、替换...（Ctrl+H）、全选（Ctrl+A）。</li>
+    <li><strong>查找对话框</strong>：支持「查找下一个」和「查找全部」，找到的文本会黄色高亮。</li>
+    <li><strong>替换对话框</strong>：支持「替换下一个」和「替换全部」，替换后的文本会绿色高亮。</li>
+    <li><strong>确定 / 取消</strong>：回车确认，ESC 取消。</li>
+    <li><strong>模态</strong>：打开时主窗口不能操作，必须确认或取消。</li>
+</ul>
+
+<p>大编辑器特别适合写长代码——比如一个完整的小脚本，在面板那个小框里编辑会很难受。</p>
+
+<div class="tip">
+    <strong>💡 面板代码框 vs 大编辑器：</strong> 两者编辑的是同一份代码。在大编辑器里确认后，内容会写回面板代码框，并重新应用语法高亮。所以你可以随时在大编辑器和面板之间切换。
+</div>
+
+<h2>代码里能拿到什么</h2>
+
+<p>执行代码时，程序会创建一个 <code>exec_globals</code> 字典，把常用对象塞进去，让你的代码能直接访问。能拿到的有：</p>
+
+<h3>Qt 相关</h3>
+<ul>
+    <li><code>QApplication</code>、<code>QWidget</code>、<code>QMainWindow</code></li>
+    <li><code>QLabel</code>、<code>QPushButton</code>、<code>QLineEdit</code>、<code>QVBoxLayout</code>、<code>QHBoxLayout</code></li>
+    <li><code>QTimer</code>、<code>QThread</code>、<code>QPropertyAnimation</code>、<code>QEasingCurve</code></li>
+    <li><code>Qt</code>、<code>QPoint</code>、<code>QColor</code>、<code>QFont</code>、<code>QPainter</code></li>
+    <li><code>QPixmap</code>、<code>QImage</code>、<code>QIcon</code>、<code>QMovie</code></li>
+    <li><code>QMessageBox</code>、<code>QSystemTrayIcon</code>、<code>QMenu</code>、<code>QAction</code></li>
+</ul>
+
+<h3>程序对象</h3>
+<ul>
+    <li><code>app</code>：<code>QApplication.instance()</code>。</li>
+    <li><code>player</code>：<code>CzePlayer</code> 实例，能访问 <code>current_windows</code>、<code>named_windows</code>、<code>command_executor</code> 等。</li>
+    <li><code>self</code>：<code>GlobalCommandExecutor</code> 实例，能访问 <code>execute_close_all_popups</code> 等方法。</li>
+</ul>
+
+<h3>标准库</h3>
+<ul>
+    <li><code>sys</code>、<code>os</code>、<code>time</code>、<code>math</code>、<code>random</code>、<code>json</code>、<code>re</code>。</li>
+</ul>
+
+<p>所以你可以在代码里直接写：</p>
+
+<pre><code># 关闭所有弹窗
+player.command_executor.execute_close_all_popups("sequential=True")
+
+# 打开浏览器
+import webbrowser
+webbrowser.open("https://xxdz-official.github.io/xxdz-Itoc/")
+
+# 打印当前窗口数量
+print(f"当前有 {len(player.current_windows)} 个窗口")
+
+# 用 QTimer 延迟执行
+QTimer.singleShot(3000, lambda: print("3 秒到了"))</code></pre>
+
+<h2>执行是同步还是异步</h2>
+
+<p>执行代码是<strong>异步</strong>的。程序会用 <code>QTimer.singleShot(0, ...)</code> 把执行任务扔到主线程的事件队列里，等当前事件处理完再执行。</p>
+
+<p>这意味着：</p>
+<ul>
+    <li>代码执行不会阻塞音符的调度。</li>
+    <li>如果代码里有 <code>time.sleep(10)</code>，它会阻塞主线程 10 秒，整个 UI 会卡住。所以别在执行代码里做长耗时的同步操作。</li>
+    <li>如果要做长耗时操作，自己开 <code>threading.Thread</code>。</li>
+</ul>
+
+<div class="warning">
+    <strong>⚠️ 主线程阻塞：</strong> 执行代码是在主线程跑的。如果你在里面写了死循环或者长时间 <code>time.sleep</code>，整个播放器会卡死。需要长耗时操作时，包一层 <code>threading.Thread(target=..., daemon=True).start()</code>。
+</div>
+
+<h2>异常处理</h2>
+
+<p>执行代码的异常会被捕获并打印，不会让程序崩溃：</p>
+
+<pre><code>try:
+    exec(code_content, exec_globals)
+except Exception as e:
+    print(f"  [执行代码] 执行失败: {e}")
+    import traceback
+    traceback.print_exc()</code></pre>
+
+<p>所以如果你的代码写错了，控制台会看到完整的报错堆栈，但弹窗播放会继续。</p>
+
+<div class="tip">
+    <strong>💡 调试技巧：</strong> 在执行代码里写 <code>print(...)</code>，编译后的 exe 会把输出打到控制台（如果编译时保留了控制台）。如果编译时没有控制台，可以把日志写到文件：<code>open("debug.log", "a").write("xxx\n")</code>。
+</div>
+
+<h2>配置文件字段</h2>
+
+<table>
+    <thead>
+        <tr><th>字段名</th><th>类型</th><th>含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>window_type</code></td><td>string</td><td>固定 <code>code</code></td></tr>
+        <tr><td><code>code_content</code></td><td>string</td><td>Python 代码内容</td></tr>
+    </tbody>
+</table>
+
+<p>执行代码不保存 <code>window_title</code>、<code>window_content</code>、<code>window_position</code>、<code>window_class</code>、<code>window_group</code> 这些字段——因为它压根不弹窗，这些字段没有意义。</p>
+
+<h2>常见问题</h2>
+
+<h3>Q：测试运行时执行代码没反应？</h3>
+<p>A：正常。执行代码只在编译模式下生效。测试运行（F5）时，程序会跳过 <code>code</code> 类型。想测试，编译成 exe 再跑。</p>
+
+<h3>Q：执行代码报「NameError: name 'xxx' is not defined」？</h3>
+<p>A：你用了 <code>exec_globals</code> 里没有的对象。检查一下：是不是拼写错了？是不是忘了 <code>import</code>？是不是想访问 <code>self</code> 但写成了别的名字？</p>
+
+<h3>Q：执行代码导致程序卡死？</h3>
+<p>A：大概率是写了死循环、长时间 sleep、或者在主线程做了大量计算。把耗时操作挪到子线程：<code>threading.Thread(target=my_func, daemon=True).start()</code>。</p>
+
+<h3>Q：执行代码能不能修改其他窗口？</h3>
+<p>A：能。通过 <code>player.current_windows</code> 拿到窗口列表，遍历修改 <code>windowOpacity</code>、<code>move</code>、<code>setGeometry</code> 等。但注意别在主线程里做太重的操作。</p>
+
+<h3>Q：执行代码能不能创建新窗口？</h3>
+<p>A：能。但要注意两点：① 新窗口要自己管理生命周期（什么时候显示、什么时候关闭）；② 新窗口不会被自动注册到 Itoc 的窗口管理系统里，除非你手动调 <code>player.command_executor.register_window_class</code> 等方法。</p>
+
+<h2>小结</h2>
+
+<p>执行代码的三件事：</p>
+<ol>
+    <li><strong>不是窗口</strong>：不弹窗，跑代码，位置/样式/按钮区都不生效。</li>
+    <li><strong>只在编译模式跑</strong>：测试运行时不会执行，这是设计决定。</li>
+    <li><strong>主线程执行</strong>：长时间操作要自己开线程，不然会卡死。</li>
+</ol>
+
+<p>执行代码是 Itoc 的「后门」——它能做弹窗做不到的事，但也要小心用。写之前先想清楚：这个需求真的需要写代码吗？还是用普通弹窗/图片框就能解决？想清楚了再动手喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({ currentFile: 'window_type_code.html' });
+</script>
+
+
+<!-- ========== [SEO-内链开始] ========== -->
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="start.html" title="初识 Itoc" tabindex="-1" rel="noopener">初识 Itoc</a>
+    <a href="install.html" title="安装与启动" tabindex="-1" rel="noopener">安装与启动</a>
+    <a href="interface.html" title="界面概览" tabindex="-1" rel="noopener">界面概览</a>
+    <a href="quickstart.html" title="快速上手：您的第一个项目" tabindex="-1" rel="noopener">快速上手：您的第一个项目</a>
+    <a href="timeline.html" title="时间轴与音符编辑" tabindex="-1" rel="noopener">时间轴与音符编辑</a>
+    <a href="metadata.html" title="作品元数据" tabindex="-1" rel="noopener">作品元数据</a>
+    <a href="czemaker.html" title="CZEmaker 弹窗编排 · 基础篇" tabindex="-1" rel="noopener">CZEmaker 弹窗编排 · 基础篇</a>
+    <a href="czemaker_advanced.html" title="CZEmaker 弹窗编排 · 进阶篇" tabindex="-1" rel="noopener">CZEmaker 弹窗编排 · 进阶篇</a>
+    <a href="window_style.html" title="窗口样式钮" tabindex="-1" rel="noopener">窗口样式钮</a>
+    <a href="hollow_window.html" title="镂空窗口" tabindex="-1" rel="noopener">镂空窗口</a>
+    <a href="acrylic_mica.html" title="亚克力与云母" tabindex="-1" rel="noopener">亚克力与云母</a>
+    <a href="window_type_regular.html" title="普通弹窗（信息/警告/错误/询问）" tabindex="-1" rel="noopener">普通弹窗（信息/警告/错误/询问）</a>
+    <a href="window_type_image.html" title="图片框" tabindex="-1" rel="noopener">图片框</a>
+    <a href="window_type_video.html" title="视频框" tabindex="-1" rel="noopener">视频框</a>
+    <a href="window_type_notice.html" title="气泡 / 通知" tabindex="-1" rel="noopener">气泡 / 通知</a>
+    <a href="window_type_uiclass.html" title="模类框" tabindex="-1" rel="noopener">模类框</a>
+    <a href="midi_color.html" title="音符块自身属性" tabindex="-1" rel="noopener">音符块自身属性</a>
+    <a href="paint.html" title="绘制音符块" tabindex="-1" rel="noopener">绘制音符块</a>
+    <a href="adjust_layer.html" title="调整图层" tabindex="-1" rel="noopener">调整图层</a>
+    <a href="disabled_blocks.html" title="启用/禁用事件块或全局命令" tabindex="-1" rel="noopener">启用/禁用事件块或全局命令</a>
+    <a href="beat_event_point.html" title="新建节奏事件点" tabindex="-1" rel="noopener">新建节奏事件点</a>
+    <a href="concurrent_event_point.html" title="新建并发事件点" tabindex="-1" rel="noopener">新建并发事件点</a>
+    <a href="transition.html" title="过渡动画" tabindex="-1" rel="noopener">过渡动画</a>
+    <a href="assign_window_sound.html" title="根据窗口类型赋予自定义音效" tabindex="-1" rel="noopener">根据窗口类型赋予自定义音效</a>
+    <a href="yinpin_yinpu.html" title="音频音谱" tabindex="-1" rel="noopener">音频音谱</a>
+    <a href="global_1.html" title="全局命令 · 基础篇" tabindex="-1" rel="noopener">全局命令 · 基础篇</a>
+    <a href="global_2.html" title="全局命令 · 进阶篇" tabindex="-1" rel="noopener">全局命令 · 进阶篇</a>
+    <a href="cmd_window_animation.html" title="全局命令 · 窗口位移动画" tabindex="-1" rel="noopener">全局命令 · 窗口位移动画</a>
+    <a href="cmd_mouse_move.html" title="全局命令 · 鼠标移动" tabindex="-1" rel="noopener">全局命令 · 鼠标移动</a>
+    <a href="cmd_mirror_clone.html" title="全局命令 · 镜像克隆编组" tabindex="-1" rel="noopener">全局命令 · 镜像克隆编组</a>
+    <a href="cmd_wallpaper.html" title="全局命令 · 设置桌面背景" tabindex="-1" rel="noopener">全局命令 · 设置桌面背景</a>
+    <a href="array.html" title="阵列设计器 · 总览" tabindex="-1" rel="noopener">阵列设计器 · 总览</a>
+    <a href="array_linear.html" title="直线阵列" tabindex="-1" rel="noopener">直线阵列</a>
+    <a href="array_bezier.html" title="贝塞尔曲线阵列" tabindex="-1" rel="noopener">贝塞尔曲线阵列</a>
+    <a href="array_polygon.html" title="多边形阵列" tabindex="-1" rel="noopener">多边形阵列</a>
+    <a href="array_circle.html" title="环形阵列" tabindex="-1" rel="noopener">环形阵列</a>
+    <a href="array_polar.html" title="极坐标阵列" tabindex="-1" rel="noopener">极坐标阵列</a>
+    <a href="array_svg.html" title="SVG阵列" tabindex="-1" rel="noopener">SVG阵列</a>
+    <a href="cze_window_class.html" title="窗口类名" tabindex="-1" rel="noopener">窗口类名</a>
+    <a href="cze_window_group.html" title="窗口编组" tabindex="-1" rel="noopener">窗口编组</a>
+    <a href="uiclass_1.html" title="初识模类" tabindex="-1" rel="noopener">初识模类</a>
+    <a href="uiclass_2.html" title="模类设计器详解" tabindex="-1" rel="noopener">模类设计器详解</a>
+    <a href="uiclass_3.html" title="模类进阶与生态" tabindex="-1" rel="noopener">模类进阶与生态</a>
+    <a href="sidebar.html" title="侧边栏" tabindex="-1" rel="noopener">侧边栏</a>
+    <a href="sidebar_display.html" title="显示器" tabindex="-1" rel="noopener">显示器</a>
+    <a href="sidebar_reference_media.html" title="参考媒体" tabindex="-1" rel="noopener">参考媒体</a>
+    <a href="str.html" title="字幕" tabindex="-1" rel="noopener">字幕</a>
+    <a href="marker_and_sticky_note.html" title="标记与轨道便利贴" tabindex="-1" rel="noopener">标记与轨道便利贴</a>
+    <a href="media_browser.html" title="媒体浏览器" tabindex="-1" rel="noopener">媒体浏览器</a>
+    <a href="high_energy_table.html" title="高能进度表" tabindex="-1" rel="noopener">高能进度表</a>
+    <a href="terminal.html" title="终端" tabindex="-1" rel="noopener">终端</a>
+    <a href="code_view.html" title="代码视图" tabindex="-1" rel="noopener">代码视图</a>
+    <a href="GetWindowClassName.html" title="窗口拾取器" tabindex="-1" rel="noopener">窗口拾取器</a>
+    <a href="insert_lyrics.html" title="插入歌词" tabindex="-1" rel="noopener">插入歌词</a>
+    <a href="cooperation.html" title="协作" tabindex="-1" rel="noopener">协作</a>
+    <a href="ctrl_z_undo_redo.html" title="撤销与重做" tabindex="-1" rel="noopener">撤销与重做</a>
+    <a href="render_cze_data.html" title="渲染为 CZE 数据文件" tabindex="-1" rel="noopener">渲染为 CZE 数据文件</a>
+    <a href="render_python_code.html" title="渲染为 Python 代码" tabindex="-1" rel="noopener">渲染为 Python 代码</a>
+    <a href="export_audio.html" title="渲染为音频文件" tabindex="-1" rel="noopener">渲染为音频文件</a>
+    <a href="render_video.html" title="渲染视频文件" tabindex="-1" rel="noopener">渲染视频文件</a>
+    <a href="compile_exe.html" title="编译为 exe" tabindex="-1" rel="noopener">编译为 exe</a>
+    <a href="assembly_package.html" title="组装打包模式" tabindex="-1" rel="noopener">组装打包模式</a>
+    <a href="interpreter_config.html" title="解释器自定义配置" tabindex="-1" rel="noopener">解释器自定义配置</a>
+    <a href="test_run.html" title="测试运行" tabindex="-1" rel="noopener">测试运行</a>
+    <a href="run_log.html" title="运行日志" tabindex="-1" rel="noopener">运行日志</a>
+    <a href="python_libs.html" title="Python 运行库" tabindex="-1" rel="noopener">Python 运行库</a>
+    <a href="settings.html" title="首选项（设置）" tabindex="-1" rel="noopener">首选项（设置）</a>
+    <a href="settings_skin.html" title="皮肤设置" tabindex="-1" rel="noopener">皮肤设置</a>
+    <a href="file_association.html" title="文件关联（打开方式）" tabindex="-1" rel="noopener">文件关联（打开方式）</a>
+    <a href="language_pack.html" title="语言包" tabindex="-1" rel="noopener">语言包</a>
+    <a href="plugin_user.html" title="插件使用指南" tabindex="-1" rel="noopener">插件使用指南</a>
+    <a href="plugin_dev.html" title="插件开发指南" tabindex="-1" rel="noopener">插件开发指南</a>
+    <a href="carousel.html" title="轮播图" tabindex="-1" rel="noopener">轮播图</a>
+</nav>
+<!-- ========== [SEO-内链结束] ========== -->
+
+</body>
+</html>

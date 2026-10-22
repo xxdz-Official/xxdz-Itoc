@@ -11,17 +11,27 @@ const TOC_DATA = [
     { title: '界面概览', file: 'interface.html' },
     { title: '快速上手：您的第一个项目', file: 'quickstart.html' },
     { title: '时间轴与音符编辑', file: 'timeline.html' },
-
+    { title: '作品元数据', file: 'metadata.html' },
     // ==================== 弹窗编排 ====================
     { group: '弹窗编排' },
     { title: 'CZEmaker 弹窗编排 · 基础篇', file: 'czemaker.html' },
     { title: 'CZEmaker 弹窗编排 · 进阶篇', file: 'czemaker_advanced.html' },
+    { title: '窗口样式钮', file: 'window_style.html' },
+    { title: '镂空窗口', file: 'hollow_window.html' },
+    { title: '亚克力与云母', file: 'acrylic_mica.html' },
+    { title: '普通弹窗（信息/警告/错误/询问）', file: 'window_type_regular.html' },
+    { title: '图片框', file: 'window_type_image.html' },
+    { title: '视频框', file: 'window_type_video.html' },
+    { title: '气泡 / 通知', file: 'window_type_notice.html' },
+    { title: '执行代码', file: 'window_type_code.html' },
+    { title: '模类框', file: 'window_type_uiclass.html' },
 
     // ==================== 事件块与音符 ====================
     { group: '事件块与音符' },
     { title: '音符块自身属性', file: 'midi_color.html' },
     { title: '绘制音符块', file: 'paint.html' },
     { title: '调整图层', file: 'adjust_layer.html' },
+    { title: '启用/禁用事件块或全局命令', file: 'disabled_blocks.html' },
     { title: '新建节奏事件点', file: 'beat_event_point.html' },
     { title: '新建并发事件点', file: 'concurrent_event_point.html' },
 

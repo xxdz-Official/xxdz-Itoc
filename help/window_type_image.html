@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 图片框帮助文档 - 小小电子xxdz开发的 xxdz Itoc 工具，讲解图片框的图片加载、GIF 动画、镂空（透明通道/色度抠图）、缩放百分比、自定义尺寸与 ImagePopup 交互">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,图片框,ImagePopup,GIF动画,镂空,透明通道,色度抠图,图片预览,Windows Crazy Error">
+<meta property="og:title" content="图片框 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 图片框帮助文档 - 小小电子xxdz开发的 xxdz Itoc 工具">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>图片框 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="layout-placeholder"></div>
+
+<!-- ========== 正文内容 ========== -->
+<div id="doc-content" style="display:none;">
+<h1>🖼️ 图片框</h1>
+
+<p>图片框就是「弹窗里显示一张图」的窗口类型。听起来简单，但它其实是 Itoc 里花头最多的窗口之一——支持静态图、GIF 动图、镂空、缩放、自定义尺寸，还能跟过渡动画配合玩出花来。</p>
+
+<p>这篇把图片框从「选图」到「显示」的整个流程讲清楚。镂空的细节在 <a href="hollow_window.html">镂空窗口</a> 里单独讲，这篇只提它和图片框的关系。</p>
+
+<h2>先认识 ImagePopup</h2>
+
+<p>图片框在代码里对应 <code>ImagePopup</code> 类，它继承自 <code>QWidget</code>。你可以把它理解成「一个装满 QLabel 的 QWidget，QLabel 里放着图片或 GIF」。</p>
+
+<p>它和普通弹窗最大的区别是：</p>
+<ul>
+    <li>没有「窗口内容」文本框——内容就是图片本身。</li>
+    <li>有「图片路径」配置，用来指定显示哪张图。</li>
+    <li>有「镂空」「缩放百分比」这些图片专属选项。</li>
+    <li>如果勾了镂空，会强制走无边框模式，并支持左键拖动 + 右键关闭。</li>
+</ul>
+
+<h2>选图片</h2>
+
+<p>在 CZEmaker 面板里，图片框的左侧区域有一个文件选择框，点「浏览...」会打开文件对话框。</p>
+
+<p>支持的格式：<strong>PNG / JPG / JPEG / GIF / BMP / ICO</strong>。</p>
+
+<p>选完之后，程序会自动把图片复制到工程的 <code>img/</code> 目录（如果目录不存在会自动创建）。这个复制是在后台线程里做的，复制的时候窗口会稍微卡一下（大图会久一点），但不会真的卡死。</p>
+
+<p><strong>重名处理：</strong> 如果 <code>img/</code> 里已经有同名文件：</p>
+<ul>
+    <li>文件大小相同 → 认为就是同一张图，直接复用。</li>
+    <li>文件大小不同 → 自动加数字后缀，变成 <code>xxx_1.png</code>、<code>xxx_2.png</code> 这样，不会覆盖你的旧图。</li>
+</ul>
+
+<p>保存到配置文件的字段是 <code>image_path</code>，值是相对路径，比如 <code>img/avatar.png</code>。</p>
+
+<div class="tip">
+    <strong>💡 为什么用相对路径？</strong> 因为工程文件夹是可能被整体移动或分享的。绝对路径（比如 <code>D:\project\img\xxx.png</code>）换个电脑就失效了。相对路径 <code>img/xxx.png</code> 是相对于工程文件所在目录的，跟工程走，搬家也不怕。
+</div>
+
+<h2>GIF 动画</h2>
+
+<p>如果选的图是 <code>.gif</code>，程序会自动把它当动画处理，而不是只显示第一帧。</p>
+
+<p><strong>处理流程：</strong></p>
+<ol>
+    <li>用 PIL（<code>Image</code>）打开 GIF。</li>
+    <li>逐帧 <code>seek</code> + <code>copy</code>，把所有帧存到 <code>_gif_frames</code> 列表里，每帧的延迟存到 <code>_gif_durations</code>。</li>
+    <li>如果镂空启用了，每帧显示时会应用镂空处理（alpha 直接保留透明通道，chroma 逐像素替换）。</li>
+    <li>用 <code>after()</code> 按每帧的延迟时间递归调度下一帧，循环播放。</li>
+</ol>
+
+<p>面板上的「图片预览」画布会实时显示 GIF 动画，所见即所得。</p>
+
+<div class="tip">
+    <strong>💡 GIF 镂空的性能：</strong> alpha 模式几乎不耗性能（直接用透明通道），chroma 模式每帧都要逐像素遍历，帧数多、分辨率大的 GIF 会明显变慢。如果你的 GIF 本身就有透明通道，优先用 alpha。
+</div>
+
+<h2>缩放百分比</h2>
+
+<p>图片框的左侧区域有一个「缩放百分比」输入框 + 滑块，范围 10% ~ 200%。</p>
+
+<p>但这里有个容易搞混的点：<strong>缩放百分比不是直接控制弹窗大小的</strong>，它是通过通知主面板的 W/H 输入框来间接控制的。</p>
+
+<p>具体流程是：</p>
+<ol>
+    <li>你拖动滑块，程序算出新的百分比。</li>
+    <li>用「原始图片宽度 × 百分比」算出新的目标 W/H。</li>
+    <li>调用 <code>czemakers._update_image_size_from_percent(new_w, new_h, percent)</code>。</li>
+    <li>主面板把 W/H 写进自定义尺寸输入框。</li>
+    <li>弹窗创建时按这个 W/H 设置窗口大小。</li>
+</ol>
+
+<p>所以你会看到：滑块动 → 主面板 W/H 跟着变 → 弹窗大小也跟着变。三者是联动的。</p>
+
+<div class="warning">
+    <strong>⚠️ 如果滑块是灰的：</strong> 说明「自定义尺寸」没勾。滑块状态的启用/禁用由主面板的 <code>_toggle_custom_size_controls</code> 控制。想用缩放滑块，先勾「自定义尺寸」。
+</div>
+
+<h2>镂空（简版）</h2>
+
+<p>镂空是图片框的招牌功能，完整讲解在 <a href="hollow_window.html">镂空窗口</a>。这里只说要点：</p>
+
+<ul>
+    <li>勾选「镂空图片窗口」后，下面会出现「透明通道」和「色度抠图」两个单选框。</li>
+    <li>透明通道（alpha）：用 PNG 自带的透明通道，干净无损。</li>
+    <li>色度抠图（chroma）：指定一个颜色变透明，适合纯色背景图，但容差为 0，有绿边。</li>
+    <li>选 PNG 图片时，如果镂空已勾，程序会自动切到 alpha 模式。</li>
+    <li>选非 PNG 图片时，如果镂空已勾，程序会自动切到 chroma 模式。</li>
+    <li>镂空图片框强制无边框，支持左键拖动 + 右键关闭。</li>
+</ul>
+
+<h2>自定义尺寸</h2>
+
+<p>图片框支持自定义尺寸。勾了「自定义尺寸」后，W/H 输入框启用，可以手动填宽度和高度（像素）。</p>
+
+<p>旁边有个尺寸拾取按钮（⊕），点击后在屏幕上拖一个框，程序<strong>只记录宽高、不记录位置</strong>。框太小（小于 10×10）会被忽略。按 ESC 取消。</p>
+
+<p><strong>和图片比例的关系：</strong> 如果你手动改了 W/H，程序会检查当前 W/H 的比例是否匹配原始图片比例：</p>
+<ul>
+    <li>比例匹配 → 启用缩放滑块，并把百分比同步到「当前宽 ÷ 原始宽 × 100」。</li>
+    <li>比例不匹配 → 禁用缩放滑块，并在尺寸显示里标「(自定义比例)」，提醒你这张图会被拉伸或压扁。</li>
+</ul>
+
+<p>保存字段是 <code>custom_size_enabled</code> / <code>custom_width</code> / <code>custom_height</code>。</p>
+
+<h2>哪些配置不生效</h2>
+
+<p>图片框有一些普通弹窗的配置是不生效的，这里列一下免得你找不到：</p>
+
+<ul>
+    <li><strong>窗口内容</strong>：禁用，灰色。图片框没有「文字内容」这个概念。</li>
+    <li><strong>效果音</strong>：生效，可以配。虽然图片框本身没声音，但弹窗出现时可以播一个效果音。</li>
+    <li><strong>图标下拉框</strong>：禁用。图片框不显示标题栏图标（尤其镂空模式下根本没标题栏）。</li>
+    <li><strong>按钮区</strong>：禁用。图片框没有「确定 / 取消」按钮区。</li>
+    <li><strong>控制钮</strong>：生效。但如果勾了镂空，控制钮配参会被无边框模式覆盖（镂空强制无边框）。</li>
+</ul>
+
+<h2>图片框的交互</h2>
+
+<h3>非镂空图片框</h3>
+
+<p>和普通弹窗差不多：</p>
+<ul>
+    <li>拖动标题栏移动窗口。</li>
+    <li>点关闭按钮关闭。</li>
+    <li>如果勾了「可调窗口」，可以拖边缘改大小。</li>
+    <li>如果配了「寿命」，到时间自动关。</li>
+</ul>
+
+<h3>镂空图片框</h3>
+
+<p>因为强制无边框，没有标题栏，所以程序补了两套交互：</p>
+<ul>
+    <li><strong>左键任意位置拖动</strong>：点图片任意位置（包括透明区域）按住左键拖，窗口跟着走。</li>
+    <li><strong>右键任意位置关闭</strong>：点右键调 <code>close_window()</code>，播出场动画（如果有）后关闭。</li>
+</ul>
+
+<p>这两套交互是镂空图片框专属的，非镂空图片框没有。</p>
+
+<h2>透明度、置顶、任务栏</h2>
+
+<p>图片框遵循样式钮的配置：</p>
+<ul>
+    <li><strong>透明度</strong>：<code>window_opacity</code> 生效。100 = 完全不透明，50 = 半透明。注意：镂空图片框的透明度是作用在整张图上的，透明区域仍然是透明的，不透明区域会跟着变淡。</li>
+    <li><strong>窗口置顶</strong>：<code>topmost</code> 生效。默认置顶。</li>
+    <li><strong>在任务栏显示</strong>：<code>show_in_taskbar</code> 生效。但工具窗样式会强制隐藏任务栏。</li>
+    <li><strong>可调窗口</strong>：<code>resizable</code> 生效。但镂空图片框一般不推荐勾，因为无边框 + 可调大小的体验很怪。</li>
+</ul>
+
+<h2>配置文件字段一览</h2>
+
+<table>
+    <thead>
+        <tr><th>字段名</th><th>类型</th><th>含义</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>window_type</code></td><td>string</td><td>固定 <code>image</code></td></tr>
+        <tr><td><code>image_path</code></td><td>string</td><td>图片相对路径</td></tr>
+        <tr><td><code>hollow_enabled</code></td><td>bool</td><td>是否启用镂空</td></tr>
+        <tr><td><code>hollow_mode</code></td><td>string</td><td><code>alpha</code> / <code>chroma</code></td></tr>
+        <tr><td><code>hollow_color</code></td><td>string</td><td>透明色（仅 chroma）</td></tr>
+        <tr><td><code>scale_percent</code></td><td>int</td><td>缩放百分比 10-200</td></tr>
+        <tr><td><code>custom_size_enabled</code> / <code>custom_width</code> / <code>custom_height</code></td><td>bool / int / int</td><td>自定义尺寸</td></tr>
+        <tr><td><code>window_title</code> / <code>window_group</code> / <code>window_class</code></td><td>string</td><td>标题 / 编组 / 类名</td></tr>
+        <tr><td><code>window_life</code></td><td>dict</td><td>窗口寿命</td></tr>
+        <tr><td><code>window_position</code></td><td>dict</td><td>窗口位置</td></tr>
+        <tr><td><code>show_in_taskbar</code> / <code>resizable</code></td><td>bool</td><td>任务栏 / 可调窗口</td></tr>
+        <tr><td><code>window_control_detail</code></td><td>dict</td><td>控制钮详情（含 topmost / window_style 等）</td></tr>
+    </tbody>
+</table>
+
+<h2>常见问题</h2>
+
+<h3>Q：图片路径是相对路径，但换了个工程打不开？</h3>
+<p>A：相对路径 <code>img/xxx.png</code> 是相对于<strong>当前打开的工程文件所在目录</strong>解析的。换工程后，如果新工程的 <code>img/</code> 目录里没有这张图，就会加载失败。解决方案：把图片一起拷到新工程的 <code>img/</code> 目录。</p>
+
+<h3>Q：GIF 不动，只显示第一帧？</h3>
+<p>A：可能原因：① GIF 本身只有一帧（伪动图）；② GIF 帧加载失败（文件损坏）；③ 镂空 chroma 模式逐帧处理太慢，卡在第一帧。先看控制台日志，如果打印了「检测到 N 帧动画」，说明程序识别到了，只是没播起来。</p>
+
+<h3>Q：图片框和图片本身的比例对不上？</h3>
+<p>A：如果你勾了自定义尺寸，填的 W/H 比例和原图比例不一致，图片会被拉伸。程序会在尺寸显示里标「(自定义比例)」提醒你。想保持比例，就按原图比例填 W/H，或者用缩放百分比。</p>
+
+<h3>Q：镂空图片框右键没反应？</h3>
+<p>A：右键关闭绑定在 <code>ImagePopup.mousePressEvent</code> 里。如果透明区域收不到右键，检查窗口是否设置了 <code>WA_TransparentForMouseEvents</code>。正常情况下程序已经显式关闭了这个属性，整张图（包括透明部分）都能接收右键。</p>
+
+<h2>小结</h2>
+
+<p>图片框的四件事：</p>
+<ol>
+    <li><strong>选图</strong>：PNG / JPG / GIF / BMP / ICO，自动复制到 <code>img/</code>。</li>
+    <li><strong>缩放</strong>：通过缩放百分比间接控制，滑块状态由自定义尺寸复选框控制。</li>
+    <li><strong>镂空</strong>：alpha 干净，chroma 通用但有绿边，选 PNG 自动 alpha。</li>
+    <li><strong>交互</strong>：非镂空拖标题栏，镂空拖任意位置 + 右键关闭。</li>
+</ol>
+
+<p>图片框的坑基本都在「路径」和「比例」上，把这两件事搞定了，剩下的就是选图、调大小、加动画了喵 ( ⓛ ω ⓛ *)</p>
+</div>
+<!-- ========== 正文内容结束 ========== -->
+
+<script src="toc.js"></script>
+<script src="layout.js"></script>
+<script>
+    renderLayout({ currentFile: 'window_type_image.html' });
+</script>
+
+
+<!-- ========== [SEO-内链开始] ========== -->
+<nav class="seo-hidden-links" aria-hidden="true" style="position:absolute;left:-99999px;top:-99999px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;">
+    <a href="start.html" title="初识 Itoc" tabindex="-1" rel="noopener">初识 Itoc</a>
+    <a href="install.html" title="安装与启动" tabindex="-1" rel="noopener">安装与启动</a>
+    <a href="interface.html" title="界面概览" tabindex="-1" rel="noopener">界面概览</a>
+    <a href="quickstart.html" title="快速上手：您的第一个项目" tabindex="-1" rel="noopener">快速上手：您的第一个项目</a>
+    <a href="timeline.html" title="时间轴与音符编辑" tabindex="-1" rel="noopener">时间轴与音符编辑</a>
+    <a href="metadata.html" title="作品元数据" tabindex="-1" rel="noopener">作品元数据</a>
+    <a href="czemaker.html" title="CZEmaker 弹窗编排 · 基础篇" tabindex="-1" rel="noopener">CZEmaker 弹窗编排 · 基础篇</a>
+    <a href="czemaker_advanced.html" title="CZEmaker 弹窗编排 · 进阶篇" tabindex="-1" rel="noopener">CZEmaker 弹窗编排 · 进阶篇</a>
+    <a href="window_style.html" title="窗口样式钮" tabindex="-1" rel="noopener">窗口样式钮</a>
+    <a href="hollow_window.html" title="镂空窗口" tabindex="-1" rel="noopener">镂空窗口</a>
+    <a href="acrylic_mica.html" title="亚克力与云母" tabindex="-1" rel="noopener">亚克力与云母</a>
+    <a href="window_type_regular.html" title="普通弹窗（信息/警告/错误/询问）" tabindex="-1" rel="noopener">普通弹窗（信息/警告/错误/询问）</a>
+    <a href="window_type_video.html" title="视频框" tabindex="-1" rel="noopener">视频框</a>
+    <a href="window_type_notice.html" title="气泡 / 通知" tabindex="-1" rel="noopener">气泡 / 通知</a>
+    <a href="window_type_code.html" title="执行代码" tabindex="-1" rel="noopener">执行代码</a>
+    <a href="window_type_uiclass.html" title="模类框" tabindex="-1" rel="noopener">模类框</a>
+    <a href="midi_color.html" title="音符块自身属性" tabindex="-1" rel="noopener">音符块自身属性</a>
+    <a href="paint.html" title="绘制音符块" tabindex="-1" rel="noopener">绘制音符块</a>
+    <a href="adjust_layer.html" title="调整图层" tabindex="-1" rel="noopener">调整图层</a>
+    <a href="disabled_blocks.html" title="启用/禁用事件块或全局命令" tabindex="-1" rel="noopener">启用/禁用事件块或全局命令</a>
+    <a href="beat_event_point.html" title="新建节奏事件点" tabindex="-1" rel="noopener">新建节奏事件点</a>
+    <a href="concurrent_event_point.html" title="新建并发事件点" tabindex="-1" rel="noopener">新建并发事件点</a>
+    <a href="transition.html" title="过渡动画" tabindex="-1" rel="noopener">过渡动画</a>
+    <a href="assign_window_sound.html" title="根据窗口类型赋予自定义音效" tabindex="-1" rel="noopener">根据窗口类型赋予自定义音效</a>
+    <a href="yinpin_yinpu.html" title="音频音谱" tabindex="-1" rel="noopener">音频音谱</a>
+    <a href="global_1.html" title="全局命令 · 基础篇" tabindex="-1" rel="noopener">全局命令 · 基础篇</a>
+    <a href="global_2.html" title="全局命令 · 进阶篇" tabindex="-1" rel="noopener">全局命令 · 进阶篇</a>
+    <a href="cmd_window_animation.html" title="全局命令 · 窗口位移动画" tabindex="-1" rel="noopener">全局命令 · 窗口位移动画</a>
+    <a href="cmd_mouse_move.html" title="全局命令 · 鼠标移动" tabindex="-1" rel="noopener">全局命令 · 鼠标移动</a>
+    <a href="cmd_mirror_clone.html" title="全局命令 · 镜像克隆编组" tabindex="-1" rel="noopener">全局命令 · 镜像克隆编组</a>
+    <a href="cmd_wallpaper.html" title="全局命令 · 设置桌面背景" tabindex="-1" rel="noopener">全局命令 · 设置桌面背景</a>
+    <a href="array.html" title="阵列设计器 · 总览" tabindex="-1" rel="noopener">阵列设计器 · 总览</a>
+    <a href="array_linear.html" title="直线阵列" tabindex="-1" rel="noopener">直线阵列</a>
+    <a href="array_bezier.html" title="贝塞尔曲线阵列" tabindex="-1" rel="noopener">贝塞尔曲线阵列</a>
+    <a href="array_polygon.html" title="多边形阵列" tabindex="-1" rel="noopener">多边形阵列</a>
+    <a href="array_circle.html" title="环形阵列" tabindex="-1" rel="noopener">环形阵列</a>
+    <a href="array_polar.html" title="极坐标阵列" tabindex="-1" rel="noopener">极坐标阵列</a>
+    <a href="array_svg.html" title="SVG阵列" tabindex="-1" rel="noopener">SVG阵列</a>
+    <a href="cze_window_class.html" title="窗口类名" tabindex="-1" rel="noopener">窗口类名</a>
+    <a href="cze_window_group.html" title="窗口编组" tabindex="-1" rel="noopener">窗口编组</a>
+    <a href="uiclass_1.html" title="初识模类" tabindex="-1" rel="noopener">初识模类</a>
+    <a href="uiclass_2.html" title="模类设计器详解" tabindex="-1" rel="noopener">模类设计器详解</a>
+    <a href="uiclass_3.html" title="模类进阶与生态" tabindex="-1" rel="noopener">模类进阶与生态</a>
+    <a href="sidebar.html" title="侧边栏" tabindex="-1" rel="noopener">侧边栏</a>
+    <a href="sidebar_display.html" title="显示器" tabindex="-1" rel="noopener">显示器</a>
+    <a href="sidebar_reference_media.html" title="参考媒体" tabindex="-1" rel="noopener">参考媒体</a>
+    <a href="str.html" title="字幕" tabindex="-1" rel="noopener">字幕</a>
+    <a href="marker_and_sticky_note.html" title="标记与轨道便利贴" tabindex="-1" rel="noopener">标记与轨道便利贴</a>
+    <a href="media_browser.html" title="媒体浏览器" tabindex="-1" rel="noopener">媒体浏览器</a>
+    <a href="high_energy_table.html" title="高能进度表" tabindex="-1" rel="noopener">高能进度表</a>
+    <a href="terminal.html" title="终端" tabindex="-1" rel="noopener">终端</a>
+    <a href="code_view.html" title="代码视图" tabindex="-1" rel="noopener">代码视图</a>
+    <a href="GetWindowClassName.html" title="窗口拾取器" tabindex="-1" rel="noopener">窗口拾取器</a>
+    <a href="insert_lyrics.html" title="插入歌词" tabindex="-1" rel="noopener">插入歌词</a>
+    <a href="cooperation.html" title="协作" tabindex="-1" rel="noopener">协作</a>
+    <a href="ctrl_z_undo_redo.html" title="撤销与重做" tabindex="-1" rel="noopener">撤销与重做</a>
+    <a href="render_cze_data.html" title="渲染为 CZE 数据文件" tabindex="-1" rel="noopener">渲染为 CZE 数据文件</a>
+    <a href="render_python_code.html" title="渲染为 Python 代码" tabindex="-1" rel="noopener">渲染为 Python 代码</a>
+    <a href="export_audio.html" title="渲染为音频文件" tabindex="-1" rel="noopener">渲染为音频文件</a>
+    <a href="render_video.html" title="渲染视频文件" tabindex="-1" rel="noopener">渲染视频文件</a>
+    <a href="compile_exe.html" title="编译为 exe" tabindex="-1" rel="noopener">编译为 exe</a>
+    <a href="assembly_package.html" title="组装打包模式" tabindex="-1" rel="noopener">组装打包模式</a>
+    <a href="interpreter_config.html" title="解释器自定义配置" tabindex="-1" rel="noopener">解释器自定义配置</a>
+    <a href="test_run.html" title="测试运行" tabindex="-1" rel="noopener">测试运行</a>
+    <a href="run_log.html" title="运行日志" tabindex="-1" rel="noopener">运行日志</a>
+    <a href="python_libs.html" title="Python 运行库" tabindex="-1" rel="noopener">Python 运行库</a>
+    <a href="settings.html" title="首选项（设置）" tabindex="-1" rel="noopener">首选项（设置）</a>
+    <a href="settings_skin.html" title="皮肤设置" tabindex="-1" rel="noopener">皮肤设置</a>
+    <a href="file_association.html" title="文件关联（打开方式）" tabindex="-1" rel="noopener">文件关联（打开方式）</a>
+    <a href="language_pack.html" title="语言包" tabindex="-1" rel="noopener">语言包</a>
+    <a href="plugin_user.html" title="插件使用指南" tabindex="-1" rel="noopener">插件使用指南</a>
+    <a href="plugin_dev.html" title="插件开发指南" tabindex="-1" rel="noopener">插件开发指南</a>
+    <a href="carousel.html" title="轮播图" tabindex="-1" rel="noopener">轮播图</a>
+</nav>
+<!-- ========== [SEO-内链结束] ========== -->
+
+</body>
+</html>

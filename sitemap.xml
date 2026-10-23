@@ -1,128 +1,162 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <!-- ===== 根目录页面 ===== -->
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
+
+    <!-- ==================== 主站首页与核心页面 ==================== -->
     <url>
         <loc>https://xxdz-official.github.io/xxdz-Itoc/index.html</loc>
-        <lastmod>2026-09-08</lastmod>
+        <lastmod>2026-10-23</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/OwO.html</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
-    </url>
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/FriendURL.html</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
     </url>
     <url>
         <loc>https://xxdz-official.github.io/xxdz-Itoc/Mode.html</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
+        <lastmod>2026-10-23</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/v1.html</loc>
-        <lastmod>2026-09-08</lastmod>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/FriendURL.html</loc>
+        <lastmod>2026-10-23</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc>https://xxdz-official.github.io/xxdz-Itoc/yinke_about.html</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.5</priority>
-    </url>
-
-    <!-- ===== help/ 目录页面 ===== -->
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/help.html</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/start.html</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/install.html</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/interface.html</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/quickstart.html</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/timeline.html</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/czemaker.html</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/czemaker_advanced.html</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/usage.html</loc>
-        <lastmod>2026-09-08</lastmod>
+        <lastmod>2026-10-23</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/v1.html</loc>
+        <lastmod>2026-10-23</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/xxdz-Itoc/v1.html</loc>
+        <lastmod>2026-10-23</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
 
-    <!-- ===== 图片资源（有助于搜索引擎图片搜索） ===== -->
+    <!-- ==================== 帮助文档首页 ==================== -->
     <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/icon.png</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.3</priority>
+        <loc>https://xxdz-official.github.io/xxdz-Itoc/help/help.html</loc>
+        <lastmod>2026-10-23</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
     </url>
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/icon.ico</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.3</priority>
-    </url>
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/itoc启动图.png</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.3</priority>
-    </url>
-    <url>
-        <loc>https://xxdz-official.github.io/xxdz-Itoc/cze1.gif</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.3</priority>
-    </url>
+
+    <!-- ==================== 入门篇 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/start.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/install.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/interface.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/quickstart.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/how_to_get_midi.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/timeline.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/metadata.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- ==================== 弹窗编排 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/czemaker.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/czemaker_advanced.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/window_style.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/hollow_window.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/acrylic_mica.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/window_type_regular.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/window_type_image.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/window_type_video.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/window_type_notice.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/window_type_code.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/window_type_uiclass.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- ==================== 事件块与音符 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/midi_color.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/paint.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/adjust_layer.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/disabled_blocks.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/beat_event_point.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/concurrent_event_point.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- ==================== 动画与音效 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/transition.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/assign_window_sound.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/yinpin_yinpu.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/audio_to_midi.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/project_to_midi.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- ==================== 全局命令 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/global_1.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/global_2.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/cmd_window_animation.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/cmd_mouse_move.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/cmd_mirror_clone.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/cmd_wallpaper.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- ==================== 阵列系统 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/array.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/array_linear.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/array_bezier.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/array_polygon.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/array_circle.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/array_polar.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/array_svg.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- ==================== 窗口类名与编组 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/cze_window_class.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/cze_window_group.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- ==================== 模类系统 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/uiclass_1.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/uiclass_2.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/uiclass_3.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+    <!-- ==================== 侧边栏与辅助工具 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/sidebar.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/sidebar_display.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/sidebar_reference_media.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/str.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/marker_and_sticky_note.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/media_browser.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/high_energy_table.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/terminal.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/code_view.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/GetWindowClassName.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- ==================== 歌词、协作与历史 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/insert_lyrics.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/cooperation.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/ctrl_z_undo_redo.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/cooperation_ai.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/dianzi_ai_assistant.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/advanced_ai_model.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- ==================== 渲染与输出 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/render_cze_data.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/render_python_code.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/render_cpp_code.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/export_audio.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/render_video.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- ==================== 编译与运行 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/compile_exe.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/assembly_package.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/interpreter_config.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/test_run.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/run_log.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/python_libs.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/cpp_libs.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- ==================== 设置与个性化 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/settings.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/settings_skin.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/file_association.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- ==================== 多语言与插件 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/language_pack.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/plugin_user.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/plugin_dev.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- ==================== 其他 ==================== -->
+    <url><loc>https://xxdz-official.github.io/xxdz-Itoc/help/carousel.html</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
 </urlset>

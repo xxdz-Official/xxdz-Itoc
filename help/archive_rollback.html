@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 工程的归档与回滚 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解归档当前工程、从归档库回滚、归档库目录结构、未保存修改三选一、回滚时的音频句柄释放">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,归档,回滚,工程归档,归档库,版本回滚,工程备份">
+<meta property="og:title" content="工程的归档与回滚 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 工程的归档与回滚 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>工程的归档与回滚 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"><div class="header-row">
+            <a class="logo-area" href="help.html" title="返回帮助文档首页">
+                <img src="../icon.png" alt="Itoc logo" class="logo-img">
+                <h1>Itoc 帮助文档 - 工程的归档与回滚</h1>
+            </a>
+            <div class="top-bar">
+                <a href="https://xxdz-official.github.io/xxdz-Itoc/" target="_blank" rel="noopener"><span>项目主页</span></a>
+                <a href="https://message.bilibili.com/#/whisper/mid3461569935575626" target="_blank"><span>联系作者</span></a>
+                <a href="https://miku66ccff.freeflarum.com/t/itoc" target="_blank"><span>交流论坛</span></a>
+                <a href="https://github.com/xxdz-Official/xxdz-Itoc" target="_blank"><span>GitHub主页</span></a>
+                <a href="../Mode.html"><span>插件市场</span></a>
+                <a href="help.html"><span>帮助文档</span></a>
+            </div>
+        </div></div>
+<div id="layout-placeholder">
+    <div class="main-container">
+        <nav class="sidebar" id="sidebar">
+            <h3 class="sidebar-title">📖 目录</h3>
+            <div class="toc-search-box">
+                <div class="toc-search-field">
+                    <span class="toc-search-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </span>
+                    <input type="text" id="tocSearchInput" class="toc-search-input" placeholder="搜索目录喵..." autocomplete="off">
+                    <button type="button" id="tocSearchClear" class="toc-search-clear" title="清空" aria-label="清空搜索">
+                        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="tocEmptyTip" class="toc-empty-tip" style="display:none;">没有找到匹配的条目</div>
+            <ul id="tocList" class="toc-list-ready">
+                <li class="toc-group"><span>入门篇</span></li>
+                <li class="toc-item" data-file="start.html"><a href="start.html" rel="noopener"><span>初识 Itoc</span></a></li>
+                <li class="toc-item" data-file="install.html"><a href="install.html" rel="noopener"><span>安装指南</span></a></li>
+                <li class="toc-item" data-file="interface.html"><a href="interface.html" rel="noopener"><span>界面概览</span></a></li>
+                <li class="toc-item" data-file="quickstart.html"><a href="quickstart.html" rel="noopener"><span>快速上手：您的第一个项目</span></a></li>
+                <li class="toc-item" data-file="how_to_get_midi.html"><a href="how_to_get_midi.html" rel="noopener"><span>如何获取 MIDI 文件</span></a></li>
+                <li class="toc-item" data-file="timeline.html"><a href="timeline.html" rel="noopener"><span>时间轴与事件块编辑</span></a></li>
+                <li class="toc-item" data-file="metadata.html"><a href="metadata.html" rel="noopener"><span>作品元数据</span></a></li>
+                <li class="toc-group"><span>弹窗编排</span></li>
+                <li class="toc-item" data-file="czemaker.html"><a href="czemaker.html" rel="noopener"><span>CZEmaker 弹窗编排 · 基础篇</span></a></li>
+                <li class="toc-item" data-file="czemaker_advanced.html"><a href="czemaker_advanced.html" rel="noopener"><span>CZEmaker 弹窗编排 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="window_style.html"><a href="window_style.html" rel="noopener"><span>窗口样式钮</span></a></li>
+                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口（图片镂空 + 窗口背景镂空）</span></a></li>
+                <li class="toc-item" data-file="acrylic_mica.html"><a href="acrylic_mica.html" rel="noopener"><span>亚克力与云母</span></a></li>
+                <li class="toc-item" data-file="window_type_regular.html"><a href="window_type_regular.html" rel="noopener"><span>普通弹窗（信息/警告/错误/询问）</span></a></li>
+                <li class="toc-item" data-file="window_type_image.html"><a href="window_type_image.html" rel="noopener"><span>图片框</span></a></li>
+                <li class="toc-item" data-file="window_type_video.html"><a href="window_type_video.html" rel="noopener"><span>视频框</span></a></li>
+                <li class="toc-item" data-file="window_type_notice.html"><a href="window_type_notice.html" rel="noopener"><span>气泡/通知</span></a></li>
+                <li class="toc-item" data-file="window_type_code.html"><a href="window_type_code.html" rel="noopener"><span>执行代码</span></a></li>
+                <li class="toc-item" data-file="window_type_uiclass.html"><a href="window_type_uiclass.html" rel="noopener"><span>模类框（CZEmaker 视角）</span></a></li>
+                <li class="toc-group"><span>事件块与音符</span></li>
+                <li class="toc-item" data-file="midi_color.html"><a href="midi_color.html" rel="noopener"><span>音符块自身属性</span></a></li>
+                <li class="toc-item" data-file="paint.html"><a href="paint.html" rel="noopener"><span>绘制音符块</span></a></li>
+                <li class="toc-item" data-file="adjust_layer.html"><a href="adjust_layer.html" rel="noopener"><span>调整图层</span></a></li>
+                <li class="toc-item" data-file="disabled_blocks.html"><a href="disabled_blocks.html" rel="noopener"><span>启用/禁用事件块或全局命令</span></a></li>
+                <li class="toc-item" data-file="beat_event_point.html"><a href="beat_event_point.html" rel="noopener"><span>新建节奏事件点</span></a></li>
+                <li class="toc-item" data-file="concurrent_event_point.html"><a href="concurrent_event_point.html" rel="noopener"><span>新建并发事件点</span></a></li>
+                <li class="toc-group"><span>动画与音效</span></li>
+                <li class="toc-item" data-file="transition.html"><a href="transition.html" rel="noopener"><span>过渡动画</span></a></li>
+                <li class="toc-item" data-file="assign_window_sound.html"><a href="assign_window_sound.html" rel="noopener"><span>根据窗口类型赋予自定义音效</span></a></li>
+                <li class="toc-item" data-file="yinpin_yinpu.html"><a href="yinpin_yinpu.html" rel="noopener"><span>音频音谱</span></a></li>
+                <li class="toc-item" data-file="audio_to_midi.html"><a href="audio_to_midi.html" rel="noopener"><span>音频转 MIDI (扒谱)</span></a></li>
+                <li class="toc-item" data-file="project_to_midi.html"><a href="project_to_midi.html" rel="noopener"><span>将工程导出为 MIDI</span></a></li>
+                <li class="toc-group"><span>全局命令</span></li>
+                <li class="toc-item" data-file="global_1.html"><a href="global_1.html" rel="noopener"><span>全局命令 · 基础篇</span></a></li>
+                <li class="toc-item" data-file="global_2.html"><a href="global_2.html" rel="noopener"><span>全局命令 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="cmd_window_animation.html"><a href="cmd_window_animation.html" rel="noopener"><span>全局命令 · 窗口位移动画</span></a></li>
+                <li class="toc-item" data-file="cmd_mouse_move.html"><a href="cmd_mouse_move.html" rel="noopener"><span>全局命令 · 鼠标移动</span></a></li>
+                <li class="toc-item" data-file="cmd_mirror_clone.html"><a href="cmd_mirror_clone.html" rel="noopener"><span>全局命令 · 镜像克隆编组</span></a></li>
+                <li class="toc-item" data-file="cmd_wallpaper.html"><a href="cmd_wallpaper.html" rel="noopener"><span>全局命令 · 设置桌面背景</span></a></li>
+                <li class="toc-group"><span>阵列系统</span></li>
+                <li class="toc-item" data-file="array.html"><a href="array.html" rel="noopener"><span>阵列设计器 · 总览</span></a></li>
+                <li class="toc-item" data-file="array_linear.html"><a href="array_linear.html" rel="noopener"><span>直线阵列</span></a></li>
+                <li class="toc-item" data-file="array_bezier.html"><a href="array_bezier.html" rel="noopener"><span>贝塞尔曲线阵列</span></a></li>
+                <li class="toc-item" data-file="array_polygon.html"><a href="array_polygon.html" rel="noopener"><span>多边形阵列</span></a></li>
+                <li class="toc-item" data-file="array_circle.html"><a href="array_circle.html" rel="noopener"><span>环形阵列</span></a></li>
+                <li class="toc-item" data-file="array_polar.html"><a href="array_polar.html" rel="noopener"><span>极坐标阵列</span></a></li>
+                <li class="toc-item" data-file="array_svg.html"><a href="array_svg.html" rel="noopener"><span>SVG阵列</span></a></li>
+                <li class="toc-group"><span>窗口类名与编组</span></li>
+                <li class="toc-item" data-file="cze_window_class.html"><a href="cze_window_class.html" rel="noopener"><span>窗口类名</span></a></li>
+                <li class="toc-item" data-file="cze_window_group.html"><a href="cze_window_group.html" rel="noopener"><span>窗口编组</span></a></li>
+                <li class="toc-group"><span>模类系统 (UI Class)</span></li>
+                <li class="toc-item" data-file="uiclass_1.html"><a href="uiclass_1.html" rel="noopener"><span>初识模类</span></a></li>
+                <li class="toc-item" data-file="uiclass_2.html"><a href="uiclass_2.html" rel="noopener"><span>模类设计器详解</span></a></li>
+                <li class="toc-item" data-file="uiclass_3.html"><a href="uiclass_3.html" rel="noopener"><span>模类进阶与生态</span></a></li>
+                <li class="toc-group"><span>侧边栏与辅助工具</span></li>
+                <li class="toc-item" data-file="sidebar.html"><a href="sidebar.html" rel="noopener"><span>侧边栏</span></a></li>
+                <li class="toc-item" data-file="sidebar_display.html"><a href="sidebar_display.html" rel="noopener"><span>显示器</span></a></li>
+                <li class="toc-item" data-file="sidebar_reference_media.html"><a href="sidebar_reference_media.html" rel="noopener"><span>参考媒体</span></a></li>
+                <li class="toc-item" data-file="str.html"><a href="str.html" rel="noopener"><span>字幕</span></a></li>
+                <li class="toc-item" data-file="marker_and_sticky_note.html"><a href="marker_and_sticky_note.html" rel="noopener"><span>标记与轨道便利贴</span></a></li>
+                <li class="toc-item" data-file="media_browser.html"><a href="media_browser.html" rel="noopener"><span>媒体浏览器</span></a></li>
+                <li class="toc-item" data-file="high_energy_table.html"><a href="high_energy_table.html" rel="noopener"><span>高能进度表</span></a></li>
+                <li class="toc-item" data-file="terminal.html"><a href="terminal.html" rel="noopener"><span>终端</span></a></li>
+                <li class="toc-item" data-file="code_view.html"><a href="code_view.html" rel="noopener"><span>代码视图</span></a></li>
+                <li class="toc-item" data-file="GetWindowClassName.html"><a href="GetWindowClassName.html" rel="noopener"><span>窗口拾取器</span></a></li>
+                <li class="toc-group"><span>歌词、协作与历史</span></li>
+                <li class="toc-item" data-file="insert_lyrics.html"><a href="insert_lyrics.html" rel="noopener"><span>插入歌词</span></a></li>
+                <li class="toc-item" data-file="cooperation.html"><a href="cooperation.html" rel="noopener"><span>协作</span></a></li>
+                <li class="toc-item" data-file="ctrl_z_undo_redo.html"><a href="ctrl_z_undo_redo.html" rel="noopener"><span>撤销与重做</span></a></li>
+                <li class="toc-item active" data-file="archive_rollback.html"><a href="archive_rollback.html" rel="noopener"><span>工程的归档与回滚</span></a></li>
+                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作（小電AI）</span></a></li>
+                <li class="toc-item" data-file="dianzi_ai_assistant.html"><a href="dianzi_ai_assistant.html" rel="noopener"><span>電籽 AI 助手</span></a></li>
+                <li class="toc-item" data-file="advanced_ai_model.html"><a href="advanced_ai_model.html" rel="noopener"><span>如何调用高级 AI 模型</span></a></li>
+                <li class="toc-group"><span>渲染与输出</span></li>
+                <li class="toc-item" data-file="render_cze_data.html"><a href="render_cze_data.html" rel="noopener"><span>渲染为CZE数据文件</span></a></li>
+                <li class="toc-item" data-file="render_python_code.html"><a href="render_python_code.html" rel="noopener"><span>渲染为Python代码</span></a></li>
+                <li class="toc-item" data-file="render_cpp_code.html"><a href="render_cpp_code.html" rel="noopener"><span>渲染为 C++ 代码</span></a></li>
+                <li class="toc-item" data-file="export_audio.html"><a href="export_audio.html" rel="noopener"><span>渲染为音频文件</span></a></li>
+                <li class="toc-item" data-file="render_video.html"><a href="render_video.html" rel="noopener"><span>渲染视频文件</span></a></li>
+                <li class="toc-group"><span>编译与运行</span></li>
+                <li class="toc-item" data-file="compile_exe.html"><a href="compile_exe.html" rel="noopener"><span>编译为exe</span></a></li>
+                <li class="toc-item" data-file="assembly_package.html"><a href="assembly_package.html" rel="noopener"><span>组装打包模式</span></a></li>
+                <li class="toc-item" data-file="interpreter_config.html"><a href="interpreter_config.html" rel="noopener"><span>解释器自定义配置</span></a></li>
+                <li class="toc-item" data-file="test_run.html"><a href="test_run.html" rel="noopener"><span>测试运行</span></a></li>
+                <li class="toc-item" data-file="run_log.html"><a href="run_log.html" rel="noopener"><span>运行日志</span></a></li>
+                <li class="toc-item" data-file="python_libs.html"><a href="python_libs.html" rel="noopener"><span>Python运行库</span></a></li>
+                <li class="toc-item" data-file="cpp_libs.html"><a href="cpp_libs.html" rel="noopener"><span>C++ 运行库</span></a></li>
+                <li class="toc-group"><span>设置与个性化</span></li>
+                <li class="toc-item" data-file="settings.html"><a href="settings.html" rel="noopener"><span>首选项（设置）</span></a></li>
+                <li class="toc-item" data-file="settings_skin.html"><a href="settings_skin.html" rel="noopener"><span>皮肤设置</span></a></li>
+                <li class="toc-item" data-file="file_association.html"><a href="file_association.html" rel="noopener"><span>文件关联（打开方式）</span></a></li>
+                <li class="toc-group"><span>多语言与插件</span></li>
+                <li class="toc-item" data-file="language_pack.html"><a href="language_pack.html" rel="noopener"><span>语言包</span></a></li>
+                <li class="toc-item" data-file="plugin_user.html"><a href="plugin_user.html" rel="noopener"><span>插件使用指南</span></a></li>
+                <li class="toc-item" data-file="plugin_dev.html"><a href="plugin_dev.html" rel="noopener"><span>插件开发指南</span></a></li>
+                <li class="toc-group"><span>其他</span></li>
+                <li class="toc-item" data-file="carousel.html"><a href="carousel.html" rel="noopener"><span>轮播图</span></a></li>
+            </ul>
+        </nav>
+        <main class="content-area" id="contentArea">
+<h1>📦 工程的归档与回滚</h1>
+
+<p>做工程做到一半，最怕的是什么？不是写不出旋律，也不是弹窗画崩了——而是<strong>辛辛苦苦干了好几个小时，一不小心把工程文件搞坏了、或者做了一堆试验性的改动全白干</strong>。Ctrl+Z 只能后悔几十步，自动保存也只是几分钟前的一个临时版本，万一你把整个工程文件夹都弄乱了，那些工具都救不了你。</p>
+
+<p>所以 Itoc 给了一个更"粗粒度"的后备方案：<strong>归档（Archive）</strong>和<strong>回滚（Rollback）</strong>。</p>
+
+<div class="note">
+    <strong>📌 本篇的范围：</strong><br>
+    讲的是工程文件夹层面的归档与回滚：归档会把<strong>整个工程文件夹</strong>复制一份到"归档库"里保存起来，回滚则用某一份归档覆盖掉当前工程。<br>
+    如果你要找的是"撤销某一步操作"，请看《撤销与重做》；要找的是"隔几分钟自动保存一份临时文件"，请看《首选项 → 自动保存》相关章节。
+</div>
+
+<h2>一、归档和回滚到底是个啥？</h2>
+
+<p>用一句话概括：</p>
+
+<div class="tip">
+    <strong>💡 归档 = 给整个工程文件夹拍一张快照，存进"归档库"里</strong><br>
+    <strong>回滚 = 挑一张以前的快照，把当前工程整个覆盖成那时候的样子</strong><br>
+    它不是"撤销某一步"，而是"回到整个工程文件夹的某个历史状态"。
+</div>
+
+<p>和普通的保存、撤销这些功能最大的区别在于：</p>
+
+<ul>
+    <li><strong>它复制的是整个文件夹</strong>，不是单个 <code>.czemidi</code> 文件。工程里所有的东西——工程文件本身、<code>audio/</code> 里的音频、<code>img/</code> 里的图片、<code>media/</code> 里的参考媒体、<code>srt/</code> 里的字幕、<code>UI_Class_Files/</code> 里的模类——全都会被一起打包复制。</li>
+    <li><strong>归档是"只增不改"的</strong>。你归档多少次，归档库就多出多少份，老的那份不会因为新归档出现就被覆盖掉。</li>
+    <li><strong>回滚是"破坏性"的</strong>。它会把当前工程整个清空，然后再把归档版复制回来。回滚之前，最好先归档一次现场。</li>
+</ul>
+
+<p>所以你可以把归档理解为"手动版本控制"，回滚理解为"切到某个历史版本"。虽然没有 git 那么花哨，但对付日常的工程保护绰绰有余。</p>
+
+<h2>二、从哪儿打开？</h2>
+
+<p>归档和回滚的入口都在<strong>「文件(F)」菜单</strong>里：</p>
+
+<table>
+    <thead>
+        <tr><th>菜单项</th><th>位置</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>归档当前工程</strong></td>
+            <td>文件(F) → 归档当前工程</td>
+            <td>把当前整个工程文件夹复制一份到归档库</td>
+        </tr>
+        <tr>
+            <td><strong>从归档库回滚工程</strong></td>
+            <td>文件(F) → 从归档库回滚工程（二级菜单）</td>
+            <td>从归档库里选一个版本，覆盖当前工程</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>其中，「归档当前工程」是一个普通的菜单项，点了就直接执行；「从归档库回滚工程」是一个<strong>二级菜单</strong>，鼠标悬停上去会展开一个归档版本列表，你需要先从列表里挑一个。</p>
+
+<div class="tip">
+    <strong>💡 这两个菜单都需要有打开的工程才能用：</strong><br>
+    没有打开工程的时候，「归档当前工程」和「从归档库回滚工程」都会提示"请先打开或新建一个工程文件后再归档/回滚"。<br>
+    原因很简单：归档的前提是知道要归档谁，回滚的前提是知道要覆盖谁。
+</div>
+
+<h2>三、归档当前工程</h2>
+
+<p>先讲归档，因为它是回滚的前提（没有归档你回滚个啥）。</p>
+
+<h3>3.1 归档时如果工程有未保存的修改怎么办？</h3>
+
+<p>这是最容易踩坑的地方，所以放到最前面说。</p>
+
+<p>你的工程在编辑器里改了一堆东西，但没按 <kbd>Ctrl</kbd>+<kbd>S</kbd>，此时你点「归档当前工程」，Itoc 会弹一个<strong>三选一</strong>的询问框：</p>
+
+<table>
+    <thead>
+        <tr><th>选项</th><th>行为</th><th>什么时候选它</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>是</strong></td>
+            <td>先自动保存工程，再归档【保存后】的完整工程</td>
+            <td>你想把现在屏幕上看到的所有改动都存进归档里</td>
+        </tr>
+        <tr>
+            <td><strong>否</strong></td>
+            <td>不保存，直接归档【磁盘上现有】的工程（即未保存前的版本）</td>
+            <td>你改了但不想保留这些改动，只想存现在磁盘上那份</td>
+        </tr>
+        <tr>
+            <td><strong>取消</strong></td>
+            <td>啥也不干，取消本次归档</td>
+            <td>你反悔了</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>三个选项对应的是完全不同的结果，选之前想清楚。</p>
+
+<div class="warning">
+    <strong>⚠️ 选「否」时最容易踩的坑：</strong><br>
+    你以为"不保存"= "把现在改的东西也存进归档"？错！<br>
+    选「否」归档的是<strong>磁盘上最后一次保存的版本</strong>，你刚才改的那些东西<strong>全都没进归档</strong>。<br>
+    如果你想让当前改动进归档，请选「是」。
+</div>
+
+<p>另外，这里用的是 Itoc 主程序里的"保存工程"逻辑，它会走异步保存（子进程写盘）。选「是」之后，Itoc 会等保存子进程把文件写完（`_wait_for_pending_save`），再开始归档。所以你不会遇到"归档了一半，工程文件还是空的"这种坑。</p>
+
+<h3>3.2 归档完放在哪儿？</h3>
+
+<p>归档库的位置非常固定，由工程文件的<strong>完整路径</strong>决定：</p>
+
+<ol>
+    <li>假设你的工程文件是 <code>D:\MyProjects\MySong\MySong.czemidi</code>。</li>
+    <li>工程文件所在的文件夹是 <code>D:\MyProjects\MySong\</code>。</li>
+    <li>工程文件的父文件夹是 <code>D:\MyProjects\</code>。</li>
+    <li><strong>归档库</strong>就建在父文件夹下，名字叫 <code>MySong_归档库</code>，完整路径是 <code>D:\MyProjects\MySong_归档库\</code>。</li>
+</ol>
+
+<p>也就是说，归档库和工程文件夹是<strong>平级兄弟关系</strong>，不是嵌套关系。这样即使你备份、移动、删除工程文件夹，归档库都不受影响。</p>
+
+<div class="note">
+    <strong>📌 归档库的名字取决于 .czemidi 文件名，不是工程文件夹名：</strong><br>
+    比如你的工程文件叫 <code>project.czemidi</code>，放在 <code>D:\MyProjects\MySong\</code> 里，那归档库会叫 <code>project_归档库</code>，而不是 <code>MySong_归档库</code>。<br>
+    因为源码里 <code>project_name = os.path.splitext(os.path.basename(project_path))[0]</code>，取的是工程文件的文件名（去掉扩展名），不是工程所在的文件夹名。<br>
+    大部分情况下两者同名所以看不出区别，但如果你的工程文件跟文件夹不同名，就会不一样。
+</div>
+
+<h3>3.3 每次归档会生成什么？</h3>
+
+<p>每次归档会在归档库里创建一个新的文件夹，名字是：</p>
+
+<pre><code>{工程文件名}_{时间戳}</code></pre>
+
+<p>其中时间戳的格式是 <code>YYYYMMDD_HHMMSS</code>，比如：</p>
+
+<pre><code>MySong_归档库/
+├── MySong_20240115_103045/    ← 1月15日 10:30:45 归档的
+├── MySong_20240115_114520/    ← 1月15日 11:45:20 归档的
+├── MySong_20240116_090112/    ← 1月16日 09:01:12 归档的
+└── MySong_20240116_090112_1/  ← 同一秒内又归档了一次（加了个 _1）
+</code></pre>
+
+<p>如果同一秒内连续归档了两次，文件名会冲突，Itoc 会自动加 <code>_1</code>、<code>_2</code> 这样的后缀。<strong>所以你尽可以连点归档按钮，不会出问题</strong>（虽然也没啥意义）。</p>
+
+<h3>3.4 归档文件夹里具体有什么？</h3>
+
+<p>归档用的是 <code>shutil.copytree</code>，也就是<strong>把整个工程文件夹原封不动复制一份</strong>。所以归档文件夹里的内容和你的工程文件夹里的内容完全一样，所有东西都在：</p>
+
+<pre><code>MySong_20240115_103045/
+├── MySong.czemidi          ← 工程文件本身
+├── audio/                  ← 音频素材
+│   └── bgm.mp3
+├── img/                    ← 图片素材
+│   ├── icon.ico
+│   └── background.png
+├── media/                  ← 参考媒体
+│   └── reference_video.mp4
+├── srt/                    ← 字幕
+│   └── lyrics.srt
+├── UI_Class_Files/         ← 模类文件
+│   └── MyCustomClass.UIclass
+└── OfflineMedia/           ← 脱机媒体（如果有）
+</code></pre>
+
+<p>基本上"工程文件夹里有什么，归档里就有什么"。这也意味着——<strong>归档会占用双倍磁盘空间</strong>。如果你的工程有几百 MB 的视频素材，那归档一次就多几百 MB。用之前心里有数。</p>
+
+<h3>3.5 归档完之后会怎样？</h3>
+
+<p>归档成功后：</p>
+
+<ol>
+    <li>Itoc 会在界面上弹一个轮播图通知，告诉你"工程已归档: MySong_20240115_103045"。</li>
+    <li>如果轮播图不可用，会弹一个普通的 messagebox 显示归档成功的信息（包含归档库路径和具体的子文件夹名）。</li>
+    <li>程序会<strong>自动打开归档库所在的文件夹</strong>（用系统文件管理器），方便你马上看到归档成果。</li>
+</ol>
+
+<p>这一步是为了让你有"确实做完了"的实感。毕竟归档是一个危险操作（回滚的时候要以它为准），看到文件真的躺在那儿，你才放心。</p>
+
+<div class="tip">
+    <strong>💡 归档前的心理准备：</strong><br>
+    归档本身<strong>完全不会</strong>动你当前的工程文件夹。它只是复制一份出去。所以你完全不用担心归档会把现有东西搞坏。<br>
+    反过来说，<strong>如果归档失败（比如磁盘满了）</strong>，当前工程也不会受影响，你只是少了一份新归档而已。
+</div>
+
+<h2>四、从归档库回滚工程</h2>
+
+<p>现在是重头戏了。回滚是个<strong>破坏性操作</strong>，用之前一定要看清楚。</p>
+
+<h3>4.1 二级菜单长什么样？</h3>
+
+<p>鼠标悬停在「文件(F)」→「从归档库回滚工程」上，会展开一个二级菜单。这个菜单是<strong>每次弹出前动态生成的</strong>，内容实时反映归档库里现在有多少个版本。</p>
+
+<p>菜单结构大概是这样：</p>
+
+<pre><code>┌──────────────────────────────────────────────┐
+│  ─ 选择要回滚的归档版本 ─                     │
+│  1. MySong_20240116_090112                    │
+│  2. MySong_20240115_114520                    │
+│  3. MySong_20240115_103045                    │
+│  ──────────────────────────                  │
+│  打开归档库文件夹                             │
+└──────────────────────────────────────────────┘
+</code></pre>
+
+<p>说明几点：</p>
+
+<ul>
+    <li><strong>按时间从新到旧排列</strong>。最上面的是最新归档，最下面的是最老归档。这和 git log 的习惯一样，越新的越容易点。</li>
+    <li><strong>只显示文件夹，不显示里面的文件</strong>。菜单里列的都是 <code>MySong_时间戳</code> 这种名字，一眼就能看出是什么时候归档的。</li>
+    <li><strong>最底下的「打开归档库文件夹」</strong>，点了直接弹出文件管理器打开归档库。如果你只是想看看归档库里有啥，不要回滚，用这个。</li>
+    <li><strong>归档库为空时</strong>，菜单里会显示一行灰掉的「（暂无归档）」，点不了。</li>
+    <li><strong>没有打开工程时</strong>，整个「从归档库回滚工程」压根弹不出来（前置检查直接拦下）。</li>
+</ul>
+
+<h3>4.2 选了一个归档后，会看到什么？</h3>
+
+<p>点下去之后，会弹一个<strong>二次确认对话框</strong>。别嫌它烦，这真的是保护你的最后一道关卡。对话框内容大概是这样：</p>
+
+<pre><code>确认回滚
+
+即将用归档版本覆盖当前工程:
+
+  归档: MySong_20240115_103045
+  当前工程: MySong.czemidi
+
+⚠ 当前工程的所有文件将被归档版本覆盖！
+建议先「归档当前工程」保留现场，再执行回滚。
+
+确定要继续吗？
+</code></pre>
+
+<p>看清楚这三段：</p>
+
+<ol>
+    <li><strong>归档</strong>：告诉你待会儿会拿哪一份归档来覆盖。确认是不是你想回滚到的那个时间点。</li>
+    <li><strong>当前工程</strong>：显示你当前正在用的工程文件名。确认你回滚的不是别的工程。</li>
+    <li><strong>⚠ 警告语</strong>：再次提醒你"当前工程的所有文件都会被覆盖"。</li>
+</ol>
+
+<div class="warning">
+    <strong>⚠️ 强烈建议在回滚之前先归档一次！</strong><br>
+    万一你回滚完发现"卧槽还不如原来呢"，你手里就<strong>没有后悔药</strong>了——因为回滚是覆盖式的，旧内容已经被删了。<br>
+    正确姿势：<strong>先点「归档当前工程」，再点「从归档库回滚工程」</strong>。这样即使回滚错了，你还能再回滚回来。<br>
+    归档是"非破坏性"的，所以多归档一次没有任何成本（除了磁盘空间）。
+</div>
+
+<h3>4.3 回滚流程详解（看代码级细节）</h3>
+
+<p>点了"确定"之后，Itoc 做了一长串事情。这里按执行顺序一步步讲，方便你理解"为什么回滚有时候看着慢"。</p>
+
+<h4>4.3.1 第一步：停止播放并释放音频句柄</h4>
+
+<p>这一步非常重要，也是最容易出问题的地方。</p>
+
+<p>先说问题：Itoc 播放音频用的是 <code>pygame.mixer.music</code>，它会在播放过程中<strong>持续持有音频文件的句柄</strong>（尤其是 mp3）。你如果正在播放 <code>audio/bgm.mp3</code>，Windows 是不允许删除这个文件的。同理，整个 <code>audio/</code> 文件夹也删不掉。</p>
+
+<p>而回滚需要先"清空当前工程文件夹"，如果音频文件删不掉，整个回滚就失败了。</p>
+
+<p>所以回滚的第一步就是：</p>
+
+<ol>
+    <li>如果正在播放，调用 <code>stop_play()</code> 停掉。</li>
+    <li>显式调用 <code>pygame.mixer.music.stop()</code>。</li>
+    <li>显式调用 <code>pygame.mixer.music.unload()</code>，把音乐从内存里卸载。</li>
+    <li>释放 <code>app.media_sound</code> 对象的引用。</li>
+</ol>
+
+<p>这样音频句柄就彻底释放了，后面删文件夹才不会报错。</p>
+
+<div class="tip">
+    <strong>💡 为什么有时候回滚会卡个一两秒？</strong><br>
+    就是这个环节。pygame 释放句柄不是瞬间的，有时候 Windows 需要几十到几百毫秒才真正把文件锁释放掉。代码里甚至专门 <code>sleep(0.8)</code> 了一下，就是给系统一点时间。
+</div>
+
+<h4>4.3.2 第二步：关闭当前工程</h4>
+
+<p>调用 <code>app.close_cze_project(ask_save=False)</code>。</p>
+
+<p>注意 <code>ask_save=False</code>——不会问你"要不要保存"，因为回滚本来就要把当前工程丢掉，问了也白问（而且已经在上一环节询问过要不要先归档了）。</p>
+
+<p>这一步会清空内存里的所有工程数据：音符、全局命令、标记、便利贴、音频路径、以及 UI 上的所有面板。</p>
+
+<h4>4.3.3 第三步：清空当前工程文件夹</h4>
+
+<p>这一步就是真的动磁盘了：遍历工程文件夹里的所有文件和子文件夹，逐个删除。</p>
+
+<p>代码里有<strong>重试机制</strong>：最多尝试 3 次，每次失败后等 0.5 秒再试。这是为了对付 Windows 的"文件占用残留"问题——有时候文件句柄释放了，但系统还没完全放手，直接删会报错，等个半秒再删就好了。</p>
+
+<div class="note">
+    <strong>📌 如果 3 次都删不掉怎么办？</strong><br>
+    代码不会弹窗报错。它会带着残留文件继续往下走。因为下一步是 <code>shutil.copytree(..., dirs_exist_ok=True)</code>，也就是"目标已存在也不报错，直接合并覆盖"。<br>
+    残留的旧文件如果跟归档里的新文件同名，会被覆盖掉；如果不同名，会留在原地。所以理论上回滚后工程文件夹里可能混着几个删不掉的旧文件——通常不影响使用，但你看到的时候别慌。
+</div>
+
+<h4>4.3.4 第四步：把归档内容复制回工程文件夹</h4>
+
+<p>用 <code>shutil.copytree(archive_path, project_dir, dirs_exist_ok=True)</code> 把归档文件夹里的<strong>所有内容</strong>复制到工程文件夹里。</p>
+
+<p><code>dirs_exist_ok=True</code> 这个参数很关键——它让 copytree 在目标文件夹已存在时<strong>不报错</strong>，而是合并进去。这样即使上一步有残留文件，复制也不会中断。</p>
+
+<p>复制过程中，如果某个文件因为种种原因复制失败（比如又遇到文件占用），代码会 print 一行错误继续往下走，不会中断整个流程。</p>
+
+<h4>4.3.5 第五步：重新打开工程</h4>
+
+<p>复制完之后，调用 <code>app.open_cze_project_from_path(reopen_path)</code> 把工程重新加载回来。</p>
+
+<p>这里有个小细节：代码不是直接拿原工程路径去打开的。它会先检查原路径还在不在：</p>
+
+<ul>
+    <li>在的话，直接打开。</li>
+    <li>不在的话（比如归档里 .czemidi 文件名变了），去工程文件夹里找一个 <code>.czemidi</code> 文件，用它打开。</li>
+    <li>连 .czemidi 文件都找不到，弹一个警告："文件已回滚，但未找到 .czemidi 工程文件，请手动打开。"</li>
+</ul>
+
+<p>正常情况下最后一步用不上，但谁让你手欠删过工程文件呢。</p>
+
+<h4>4.3.6 完成：弹通知</h4>
+
+<p>回滚成功后，跟归档一样会弹一个轮播图通知："工程已回滚: MySong_20240115_103045"。</p>
+
+<p>到这，整个回滚就结束了。你会发现：</p>
+
+<ul>
+    <li>工程文件、音频、图片、模类、字幕……<strong>全都回到了那个时间点的样子</strong>。</li>
+    <li>你刚才改的东西<strong>全没了</strong>（除非你回滚前归档过）。</li>
+    <li>界面会自动重新加载工程，可能还会顺带重建侧边栏、刷新当前选中状态。</li>
+</ul>
+
+<h3>4.4 一个"坑爹"的边界情况：工程在归档库里</h3>
+
+<p>代码里有一层保护：如果<strong>当前工程就在归档库内部</strong>（比如你手贱打开了 <code>MySong_归档库/MySong_20240115_103045/MySong.czemidi</code>），那回滚会直接拒绝。</p>
+
+<p>弹窗内容大概是：</p>
+
+<pre><code>回滚失败
+当前工程位于归档库内部，无法回滚。
+</code></pre>
+
+<p>为什么？因为回滚的逻辑是"清空当前工程文件夹 + 复制归档内容回来"。如果当前工程就在归档库里，清空"当前工程文件夹"就等于把归档本身删掉了——这波操作下来数据全灭。</p>
+
+<p>所以代码里加了个判断：如果 <code>project_file_dir</code> 在 <code>archive_dir</code> 里面，或者就在它下边，直接拒绝。</p>
+
+<div class="tip">
+    <strong>💡 什么时候会踩到这个坑？</strong><br>
+    最常见的情况是：你手动去归档库文件夹里双击打开了一个 .czemidi 文件，然后顺手在这个"归档版工程"上继续编辑、想回滚。<br>
+    解决办法：<strong>不要直接在归档库文件夹里编辑工程</strong>。归档就是"快照"，你应该把它当只读的看。要恢复某个版本，用「从归档库回滚工程」这个正规入口。
+</div>
+
+<h2>五、归档库长啥样？（可视化）</h2>
+
+<p>假设你的工程在 <code>D:\MyProjects\MySong\</code> 里，叫 <code>MySong.czemidi</code>。归档了几次之后，文件夹结构是这样：</p>
+
+<pre><code>D:\MyProjects\
+├── MySong\                          ← 当前工程文件夹
+│   ├── MySong.czemidi
+│   ├── audio\
+│   ├── img\
+│   └── ...
+│
+└── MySong_归档库\                    ← 归档库（跟工程文件夹平级）
+    ├── MySong_20240115_103045\      ← 第 1 次归档
+    │   ├── MySong.czemidi
+    │   ├── audio\
+    │   ├── img\
+    │   └── ...
+    ├── MySong_20240115_114520\      ← 第 2 次归档
+    │   └── ...（同样结构）
+    └── MySong_20240116_090112\      ← 第 3 次归档
+        └── ...（同样结构）
+</code></pre>
+
+<p>你看，归档库就是个"文件夹套文件夹"，每一个子文件夹都是一份完整的工程快照。</p>
+
+<p>归档库里的文件夹<strong>不是 Itoc 内部格式</strong>，就是普通的 Windows 文件夹。你可以用文件管理器直接进去看，可以直接拷贝走，可以打包 zip，也可以手动删掉不想留的归档（通过「从归档库回滚工程」菜单看不到被删的，因为菜单是实时扫描文件夹的）。</p>
+
+<div class="note">
+    <strong>📌 归档库可以手动清理：</strong><br>
+    归档库不会自动清理。你归档了多少次，它就留着多少份。如果你工程有 200MB，归档 10 次就是 2GB。<br>
+    手动删掉不需要的归档文件夹是安全的——只要你不删"当前正在回滚的那一刻还在用的"那一个。删完之后菜单下次打开就会少掉对应条目。
+</div>
+
+<h2>六、归档 vs 撤销 vs 自动保存 vs 手动保存</h2>
+
+<p>这四件事经常被搞混，用一张表对比清楚：</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>能力</th>
+            <th>撤销 / 重做<br>（Ctrl+Z / Ctrl+Shift+Z）</th>
+            <th>自动保存</th>
+            <th>手动保存<br>（Ctrl+S）</th>
+            <th>归档 / 回滚</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>粒度</strong></td>
+            <td>单个操作</td>
+            <td>整个工程</td>
+            <td>整个工程</td>
+            <td>整个工程文件夹</td>
+        </tr>
+        <tr>
+            <td><strong>覆盖范围</strong></td>
+            <td>仅 <code>.czemidi</code> 内存数据</td>
+            <td>仅 <code>.czemidi</code> 文件</td>
+            <td>仅 <code>.czemidi</code> 文件</td>
+            <td>所有素材文件（音频/图片/模类/字幕……）</td>
+        </tr>
+        <tr>
+            <td><strong>历史保留</strong></td>
+            <td>最近 N 步（默认 30）</td>
+            <td>最近 N 个临时文件</td>
+            <td>不保留（只有一个当前版本）</td>
+            <td>全部保留（需手动清理）</td>
+        </tr>
+        <tr>
+            <td><strong>触发方式</strong></td>
+            <td>自动记录</td>
+            <td>定时触发</td>
+            <td>手动</td>
+            <td>手动</td>
+        </tr>
+        <tr>
+            <td><strong>会丢失素材吗</strong></td>
+            <td>不会</td>
+            <td>不会</td>
+            <td>不会</td>
+            <td><strong>会覆盖素材</strong></td>
+        </tr>
+        <tr>
+            <td><strong>适用场景</strong></td>
+            <td>改错了想撤回</td>
+            <td>程序崩溃兜底</td>
+            <td>阶段性成果</td>
+            <td>重大试验前的备份</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>简单说：</p>
+
+<ul>
+    <li><strong>Ctrl+Z</strong> = 一步悔棋。</li>
+    <li><strong>自动保存</strong> = 程序崩了别让你白干。</li>
+    <li><strong>Ctrl+S</strong> = 阶段性落实。</li>
+    <li><strong>归档</strong> = 给整个工程文件夹拍一张"纪念照"。想回到某个阶段，就用 <strong>回滚</strong> 挑那张照片回来。</li>
+</ul>
+
+<h2>七、常见问题</h2>
+
+<h3>Q1：归档之后，我发现归档的是个错误的版本，能删掉吗？</h3>
+
+<p>能。直接去归档库文件夹里删掉对应的子文件夹就行。删完之后在 Itoc 里重新打开「文件(F) → 从归档库回滚工程」菜单，那个条目就没了。</p>
+
+<p>Itoc 里没有"删除归档"的 UI 按钮，因为归档库就是普通文件夹，用文件管理器删更顺手。</p>
+
+<h3>Q2：归档会占用多少磁盘空间？</h3>
+
+<p>跟你工程文件夹本身一样大。归档多少次就占多少倍。</p>
+
+<p>比如你的工程文件夹里有 <code>bgm.mp3</code> 10MB、<code>reference_video.mp4</code> 50MB、一堆图片 20MB，那工程文件夹本身大概 80MB 左右。归档一次就多 80MB。归档 10 次就 800MB。</p>
+
+<p>所以如果工程很大，记得定期手动清理归档库。</p>
+
+<h3>Q3：为什么不自动清理老的归档？</h3>
+
+<p>因为归档是<strong>保底</strong>用的。有些人专门留着一个"我上个月写的完美版本"做参照，自动清理可能会把那个版本误删掉。所以留给用户自己控制。</p>
+
+<h3>Q4：回滚的时候，当前工程的音乐一直在放，怎么办？</h3>
+
+<p>回滚的第一步就是"停止播放"（<code>stop_play()</code>）然后释放 pygame 的音频句柄，所以你会听到音乐突然停掉，这是正常的。</p>
+
+<p>如果音乐没停就报错，说明 <code>stop_play()</code> 本身出问题了（极少数情况），这时候回滚可能会失败。解决办法：手动点一下主界面的停止按钮，或者结束当前播放，再重新尝试回滚。</p>
+
+<h3>Q5：回滚失败了怎么办？当前工程是不是废了？</h3>
+
+<p>不一定。回滚流程的执行顺序是：<strong>先停播放 → 再关工程 → 再删文件 → 再复制归档</strong>。</p>
+
+<p>如果失败发生在"复制归档"阶段之前（停播放、关工程、删文件），那当前工程确实可能被删了一部分。但！只要归档文件本身是完好的，你直接手动去归档库文件夹里，把那个子文件夹整个复制粘贴回工程位置就行——这跟回滚做的是同一件事，只是手动。</p>
+
+<p>如果失败发生在"复制归档"阶段，那工程文件夹里可能是新旧混杂的状态。这时候建议：</p>
+
+<ol>
+    <li>先把当前工程文件夹整个挪走（<code>MySong_坏掉的</code>）保底。</li>
+    <li>从归档库文件夹里，手动把归档子文件夹的内容复制到新工程位置。</li>
+    <li>手动打开 .czemidi 文件。</li>
+</ol>
+
+<h3>Q6：归档当前工程和「另存为工程副本」有什么区别？</h3>
+
+<p>区别挺大：</p>
+
+<ul>
+    <li><strong>归档当前工程</strong>：复制到<strong>固定的归档库位置</strong>（工程文件夹的父目录下），命名带时间戳，<strong>不会</strong>打开复制出来的工程，只负责备份。</li>
+    <li><strong>另存为工程副本</strong>：保存到你<strong>指定的任意位置</strong>，作为一份可携带的副本。<strong>会</strong>把路径处理成相对路径，方便发给别人或者换电脑打开。</li>
+</ul>
+
+<p>前者是"给自己留备份"，后者是"给别人传副本"。目的完全不同。</p>
+
+<h3>Q7：归档成功后自动弹出的那个"文件管理器窗口"，我能关掉吗？</h3>
+
+<p>能，那只是个普通的系统文件管理器窗口，关掉完全不影响 Itoc。</p>
+
+<p>如果你觉得每次归档都弹窗口很烦——对不起，这个行为是硬编码的，关不掉。不过你可以归档完之后直接 <kbd>Alt</kbd>+<kbd>F4</kbd> 关掉它。</p>
+
+<h3>Q8：我不小心把归档库文件夹删了怎么办？</h3>
+
+<p>那就没归档了呗。不过当前工程本身不受影响，因为归档库和工程文件夹是平级的，删归档库不会动工程。</p>
+
+<p>你可以重新建一个"工程名_归档库"文件夹，但里面的历史归档已经没了，只能从现在开始重新归档。</p>
+
+<h3>Q9：归档时提示"当前工程位于归档库内部，无法回滚"，但我明明是从自己的工程文件夹打开的？</h3>
+
+<p>这说明"当前工程文件夹"和"归档库"的路径有<strong>前缀关系</strong>，代码判定你已经在归档库内部了。</p>
+
+<p>最常见的情况是：你的工程文件夹本身名字就叫 <code>xxx_归档库</code>，或者你手动把工程挪进了归档库文件夹。检查一下 <code>current_project_path</code> 的完整路径，看看是不是这种情况。</p>
+
+<p>解决办法：把工程文件夹挪到归档库外面，或者重新新建一个工程。</p>
+
+<h3>Q10：回滚的时候，如果某个归档文件夹损坏了，会怎么样？</h3>
+
+<p>代码读的是归档文件夹的<strong>路径</strong>和里面的<strong>普通文件</strong>，只要文件夹还在、里面有文件，就能复制。它不会去"验证"归档里的 .czemidi 是不是合法 JSON。</p>
+
+<p>所以如果归档里的 .czemidi 损坏了，回滚过程中不会有任何提示，但最后打开工程那一步会报错（"加载工程文件失败"或类似的）。这时候你只能从归档库的其他版本里找一个完好的，或者手动修。</p>
+
+<h2>八、小结</h2>
+
+<p>「归档与回滚」是 Itoc 里粒度最粗、但保护力度最强的版本管理工具。</p>
+
+<ul>
+    <li><strong>归档</strong>：把<strong>整个工程文件夹</strong>复制到 <code>工程名_归档库/</code> 下，生成一份带时间戳的快照。</li>
+    <li><strong>回滚</strong>：从归档库里挑一份，<strong>覆盖</strong>当前工程文件夹（破坏性操作）。</li>
+    <li>入口在「文件(F)」菜单里，归档是普通菜单项，回滚是二级菜单。</li>
+    <li><strong>归档前如果有未保存修改</strong>，会弹三选一（是 / 否 / 取消）。选"是"才是"保存后归档"。</li>
+    <li><strong>归档库与工程文件夹平级</strong>，不嵌套。归档库名由 .czemidi 文件名决定，不由工程文件夹名决定。</li>
+    <li><strong>回滚前强烈建议先归档一次</strong>，保留现场，否则回滚错了无法挽回。</li>
+    <li>回滚会自动停播放、释放 pygame 音频句柄、关工程、清空文件夹、复制归档回来、重新打开工程。</li>
+    <li>回滚成功后会有轮播图通知，工程状态会完全回到归档时的样子。</li>
+    <li><strong>归档库不会自动清理</strong>，占用的磁盘空间等于工程文件夹大小 × 归档次数。</li>
+    <li>归档库就是普通文件夹，可以手动删、手动挪、手动管理。</li>
+</ul>
+
+<p>记住：归档和回滚是"整个文件夹级别"的后悔药，比撤销狠得多，也比撤销慢得多。用它之前，先归档一次保底，然后再放心地折腾吧喵~</p>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+        </main>
+    </div>
+</div>
+
+
+<script src="layout.js"></script>
+
+<script>
+    renderLayout({
+        currentFile: 'archive_rollback.html'
+    });
+</script>
+</body>
+</html>

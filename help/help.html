@@ -17,28 +17,36 @@
     <link rel="shortcut icon" href="../icon.ico" type="image/x-icon">
     <style>
         * { box-sizing: border-box; font-family: "Consolas", "Microsoft YaHei", "Segoe UI", sans-serif; }
-        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+
+        /* 页面本身不滚动，hero 和目录条各自固定 */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background: #f4f0fa;
+        }
 
         /* ============================================================
-           欢迎页
+           HERO：固定铺满视口，原有视觉和动画全部保留
            ============================================================ */
-        #welcome {
+        .hero {
             position: fixed;
             inset: 0;
             display: flex;
             flex-direction: column;
             background: linear-gradient(135deg, #f4f0fa 0%, #e8dfff 40%, #d8c8f8 100%);
-            z-index: 100;
             overflow: hidden;
+            z-index: 1;
             transition: opacity 0.7s ease, transform 0.7s ease;
         }
-        #welcome.fade-out {
+        .hero.fade-out {
             opacity: 0;
             transform: scale(1.05);
             pointer-events: none;
         }
 
-        /* ========== 背景装饰光斑 ========== */
+        /* 背景光斑 */
         .bg-blob {
             position: absolute;
             border-radius: 50%;
@@ -68,9 +76,7 @@
             50% { transform: translate(-50px, 30px) scale(1.08); }
         }
 
-        /* ============================================================
-           两侧非对称刀锋多边形（带屏幕外安全边距）
-           ============================================================ */
+        /* 刀锋 */
         .blade {
             position: absolute;
             top: 0;
@@ -79,8 +85,6 @@
             pointer-events: none;
             will-change: transform;
         }
-
-        /* 左侧刀锋：大、深、慢，从屏幕左边外很远的地方斜插进来 */
         .blade-left {
             left: -10vw;
             width: calc(50vw + 10vw);
@@ -95,8 +99,6 @@
             70%  { transform: translateX(3%) skewX(-2deg); }
             100% { transform: translateX(0) skewX(0); }
         }
-
-        /* 右侧刀锋：小、浅、快，从屏幕右边外很远的地方斜插进来 */
         .blade-right {
             right: -8vw;
             width: calc(34vw + 8vw);
@@ -112,8 +114,6 @@
             70%  { transform: translateX(-3%) skewX(2deg); }
             100% { transform: translateX(0) skewX(0); }
         }
-
-        /* 左侧刀锋的斜纹装饰 */
         .blade-left::after {
             content: '';
             position: absolute;
@@ -128,9 +128,7 @@
             pointer-events: none;
         }
 
-        /* ============================================================
-           顶栏（保留）
-           ============================================================ */
+        /* 顶栏 */
         .welcome-topbar {
             position: relative;
             z-index: 10;
@@ -144,6 +142,7 @@
             border-bottom: 1px solid rgba(216, 207, 239, 0.5);
             flex-wrap: wrap;
             gap: 12px;
+            flex-shrink: 0;
         }
         .welcome-topbar .logo-area {
             display: flex;
@@ -191,9 +190,7 @@
         .welcome-topbar .top-bar a:hover::before { transform: translateY(0%); }
         .welcome-topbar .top-bar a:hover { color: #fff; border-color: #AB92F5; }
 
-        /* ============================================================
-           欢迎卡片（居中）—— 倒角风格
-           ============================================================ */
+        /* 中央卡片 */
         .welcome-center {
             position: relative;
             z-index: 5;
@@ -202,8 +199,8 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            min-height: 0;
         }
-
         .welcome-card {
             position: relative;
             background: rgba(255, 255, 255, 0.78);
@@ -229,8 +226,6 @@
         @keyframes cardIn {
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* 卡片外层的装饰边框（内部斜切光边） */
         .welcome-card::before {
             content: '';
             position: absolute;
@@ -245,7 +240,6 @@
             z-index: -1;
         }
 
-        /* 标题逐字浮现 */
         .welcome-title {
             font-size: 64px;
             font-weight: 800;
@@ -253,7 +247,6 @@
             margin: 0 0 12px 0;
             color: #ae95f7;
             font-style: italic;
-            /* 斜体时字间距稍微收一点，避免倾斜后显松散 */
             padding-right: 6px;
         }
         .welcome-title span {
@@ -271,7 +264,6 @@
         .welcome-title span:nth-child(3) { animation-delay: 1.1s; }
         .welcome-title span:nth-child(4) { animation-delay: 1.2s; }
 
-        /* 副标题 */
         .welcome-sub {
             font-size: 16px;
             color: #888;
@@ -283,8 +275,12 @@
         @keyframes subIn {
             to { opacity: 1; }
         }
+        @keyframes btnSlideIn {
+            0%   { opacity: 0; transform: translateY(28px) scale(0.9); }
+            70%  { opacity: 1; transform: translateY(-3px) scale(1.03); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
 
-        /* 装饰分割线 */
         .welcome-divider {
             width: 60px;
             height: 2px;
@@ -294,7 +290,6 @@
             animation: subIn 0.8s ease 1.6s forwards;
         }
 
-        /* 开始阅读按钮 —— 倒角 */
         .start-btn {
             display: inline-flex;
             align-items: center;
@@ -314,9 +309,9 @@
             cursor: pointer;
             letter-spacing: 2px;
             box-shadow: 0 8px 24px rgba(171, 146, 245, 0.5);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             opacity: 0;
-            animation: subIn 0.8s ease 1.8s forwards;
+            animation: btnSlideIn 0.7s cubic-bezier(0.22, 1.2, 0.36, 1) 0.15s forwards;
             position: relative;
             overflow: hidden;
             z-index: 1;
@@ -334,7 +329,6 @@
         .start-btn:hover .arrow {
             transform: translateX(6px);
         }
-        /* 按钮光晕脉冲（放在按钮背后，用外层包裹器） */
         .start-btn-wrap {
             position: relative;
             display: inline-block;
@@ -362,7 +356,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 页脚小字 */
         .welcome-footer {
             margin-top: 32px;
             font-size: 12px;
@@ -371,7 +364,6 @@
             opacity: 0;
             animation: subIn 0.8s ease 2.0s forwards;
         }
-        /* 页脚里的作者链接 */
         .welcome-footer .author-link {
             color: #8b6ee8;
             text-decoration: none;
@@ -386,6 +378,112 @@
         }
 
         /* ============================================================
+           底部目录条
+           - 没有实心背景，只有磨砂模糊 + 极淡紫光晕
+           - 四边用 mask 渐隐，边缘虚化，没有硬边框
+           - 内部独立滚动
+           - 文字白色，通过轻微阴影保证在浅色背景上可读
+           ============================================================ */
+        .toc-bar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 26vh;
+            min-height: 130px;
+            max-height: 240px;
+            z-index: 50;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 24px 28px 28px 28px;
+            /* 没有实心背景，只有磨砂和一点点紫光 */
+            background:
+                radial-gradient(ellipse at 50% 100%, rgba(171, 146, 245, 0.10) 0%, rgba(171, 146, 245, 0) 65%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            /* 边缘渐隐：上、下、左、右全虚化 */
+            -webkit-mask-image:
+                linear-gradient(to bottom,
+                    transparent 0%,
+                    rgba(0,0,0,0.35) 12%,
+                    rgba(0,0,0,0.9) 26%,
+                    rgba(0,0,0,0.9) 82%,
+                    rgba(0,0,0,0.35) 94%,
+                    transparent 100%),
+                linear-gradient(to right,
+                    transparent 0%,
+                    rgba(0,0,0,0.6) 3%,
+                    rgba(0,0,0,1) 8%,
+                    rgba(0,0,0,1) 92%,
+                    rgba(0,0,0,0.6) 97%,
+                    transparent 100%);
+            -webkit-mask-composite: source-in;
+            mask-image:
+                linear-gradient(to bottom,
+                    transparent 0%,
+                    rgba(0,0,0,0.35) 12%,
+                    rgba(0,0,0,0.9) 26%,
+                    rgba(0,0,0,0.9) 82%,
+                    rgba(0,0,0,0.35) 94%,
+                    transparent 100%),
+                linear-gradient(to right,
+                    transparent 0%,
+                    rgba(0,0,0,0.6) 3%,
+                    rgba(0,0,0,1) 8%,
+                    rgba(0,0,0,1) 92%,
+                    rgba(0,0,0,0.6) 97%,
+                    transparent 100%);
+            mask-composite: intersect;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            scrollbar-width: none;
+        }
+        .toc-bar::-webkit-scrollbar { display: none; }
+
+        .toc-bar.fade-out {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+
+        /* 内部 grid：多行多列平铺，无分组、无标题 */
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0 4px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .toc-grid li {
+            margin: 0;
+            padding: 0;
+            min-width: 0;
+        }
+        .toc-grid a {
+            display: block;
+            padding: 6px 10px;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.55;
+            text-decoration: none;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-radius: 3px;
+            text-shadow: 0 1px 2px rgba(90, 70, 130, 0.35);
+            transition: color 0.2s ease, background 0.2s ease, text-shadow 0.2s ease;
+        }
+        .toc-grid a:hover {
+            color: #ffffff;
+            background: rgba(171, 146, 245, 0.22);
+            text-shadow: 0 1px 3px rgba(90, 70, 130, 0.5);
+        }
+
+        /* ============================================================
            响应式
            ============================================================ */
         @media (max-width: 768px) {
@@ -396,27 +494,55 @@
             .welcome-topbar { padding: 10px 16px; }
             .welcome-topbar .logo-area h1 { font-size: 18px; }
             .welcome-topbar .top-bar a { font-size: 11px; padding: 4px 8px; }
+
+            .toc-bar {
+                height: 24vh;
+                min-height: 110px;
+                max-height: 200px;
+                padding: 20px 16px 22px 16px;
+            }
+            .toc-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            .toc-grid a {
+                font-size: 12px;
+                padding: 5px 8px;
+            }
         }
         @media (max-width: 480px) {
             .welcome-title { font-size: 36px; }
             .start-btn { padding: 14px 32px; font-size: 15px; }
             .blade-left { left: -22vw; width: calc(82vw + 22vw); }
             .blade-right { right: -18vw; width: calc(56vw + 18vw); opacity: 0.7; }
+
+            .toc-bar {
+                height: 22vh;
+                min-height: 100px;
+                padding: 16px 12px 18px 12px;
+            }
+            .toc-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-height: 680px) {
+            .toc-bar {
+                height: 22vh;
+                min-height: 96px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div id="welcome">
-        <!-- 背景光斑 -->
+    <!-- ============================================================
+         HERO：固定铺满视口
+         ============================================================ -->
+    <div class="hero" id="hero">
         <div class="bg-blob b1"></div>
         <div class="bg-blob b2"></div>
-
-        <!-- 两侧非对称刀锋多边形 -->
         <div class="blade blade-left"></div>
         <div class="blade blade-right"></div>
 
-        <!-- 顶栏 -->
         <div class="welcome-topbar">
             <div class="logo-area">
                 <img src="../icon.png" alt="Itoc logo" class="logo-img">
@@ -432,7 +558,6 @@
             </div>
         </div>
 
-        <!-- 居中的欢迎卡片 -->
         <div class="welcome-center">
             <div class="welcome-card">
                 <h1 class="welcome-title">
@@ -451,16 +576,106 @@
         </div>
     </div>
 
+    <!-- ============================================================
+         底部目录条：没有实心背景，只有磨砂模糊 + 极淡紫光晕
+         四边用 mask 渐隐，边缘虚化
+         多行多列平铺，无分组、无标题
+         所有 <a href> 硬编码，爬虫可抓
+         ============================================================ -->
+    <nav class="toc-bar" id="tocBar" aria-label="全部文档目录">
+        <ul class="toc-grid">
+            <li><a href="start.html" title="初识 Itoc">初识 Itoc</a></li>
+            <li><a href="install.html" title="安装与启动">安装与启动</a></li>
+            <li><a href="interface.html" title="界面概览">界面概览</a></li>
+            <li><a href="quickstart.html" title="快速上手：您的第一个项目">快速上手：您的第一个项目</a></li>
+            <li><a href="how_to_get_midi.html" title="如何获取 MIDI 文件">如何获取 MIDI 文件</a></li>
+            <li><a href="timeline.html" title="时间轴与音符编辑">时间轴与音符编辑</a></li>
+            <li><a href="metadata.html" title="作品元数据">作品元数据</a></li>
+            <li><a href="czemaker.html" title="CZEmaker 弹窗编排 · 基础篇">CZEmaker 弹窗编排 · 基础篇</a></li>
+            <li><a href="czemaker_advanced.html" title="CZEmaker 弹窗编排 · 进阶篇">CZEmaker 弹窗编排 · 进阶篇</a></li>
+            <li><a href="window_style.html" title="窗口样式钮">窗口样式钮</a></li>
+            <li><a href="hollow_window.html" title="镂空窗口">镂空窗口</a></li>
+            <li><a href="acrylic_mica.html" title="亚克力与云母">亚克力与云母</a></li>
+            <li><a href="window_type_regular.html" title="普通弹窗（信息/警告/错误/询问）">普通弹窗（信息/警告/错误/询问）</a></li>
+            <li><a href="window_type_image.html" title="图片框">图片框</a></li>
+            <li><a href="window_type_video.html" title="视频框">视频框</a></li>
+            <li><a href="window_type_notice.html" title="气泡 / 通知">气泡 / 通知</a></li>
+            <li><a href="window_type_code.html" title="执行代码">执行代码</a></li>
+            <li><a href="window_type_uiclass.html" title="模类框">模类框</a></li>
+            <li><a href="midi_color.html" title="音符块自身属性">音符块自身属性</a></li>
+            <li><a href="paint.html" title="绘制音符块">绘制音符块</a></li>
+            <li><a href="adjust_layer.html" title="调整图层">调整图层</a></li>
+            <li><a href="disabled_blocks.html" title="启用/禁用事件块或全局命令">启用/禁用事件块或全局命令</a></li>
+            <li><a href="beat_event_point.html" title="新建节奏事件点">新建节奏事件点</a></li>
+            <li><a href="concurrent_event_point.html" title="新建并发事件点">新建并发事件点</a></li>
+            <li><a href="transition.html" title="过渡动画">过渡动画</a></li>
+            <li><a href="assign_window_sound.html" title="根据窗口类型赋予自定义音效">根据窗口类型赋予自定义音效</a></li>
+            <li><a href="yinpin_yinpu.html" title="音频音谱">音频音谱</a></li>
+            <li><a href="audio_to_midi.html" title="音频转 MIDI (扒谱)">音频转 MIDI (扒谱)</a></li>
+            <li><a href="project_to_midi.html" title="将工程导出为 MIDI">将工程导出为 MIDI</a></li>
+            <li><a href="global_1.html" title="全局命令 · 基础篇">全局命令 · 基础篇</a></li>
+            <li><a href="global_2.html" title="全局命令 · 进阶篇">全局命令 · 进阶篇</a></li>
+            <li><a href="cmd_window_animation.html" title="全局命令 · 窗口位移动画">全局命令 · 窗口位移动画</a></li>
+            <li><a href="cmd_mouse_move.html" title="全局命令 · 鼠标移动">全局命令 · 鼠标移动</a></li>
+            <li><a href="cmd_mirror_clone.html" title="全局命令 · 镜像克隆编组">全局命令 · 镜像克隆编组</a></li>
+            <li><a href="cmd_wallpaper.html" title="全局命令 · 设置桌面背景">全局命令 · 设置桌面背景</a></li>
+            <li><a href="array.html" title="阵列设计器 · 总览">阵列设计器 · 总览</a></li>
+            <li><a href="array_linear.html" title="直线阵列">直线阵列</a></li>
+            <li><a href="array_bezier.html" title="贝塞尔曲线阵列">贝塞尔曲线阵列</a></li>
+            <li><a href="array_polygon.html" title="多边形阵列">多边形阵列</a></li>
+            <li><a href="array_circle.html" title="环形阵列">环形阵列</a></li>
+            <li><a href="array_polar.html" title="极坐标阵列">极坐标阵列</a></li>
+            <li><a href="array_svg.html" title="SVG阵列">SVG阵列</a></li>
+            <li><a href="cze_window_class.html" title="窗口类名">窗口类名</a></li>
+            <li><a href="cze_window_group.html" title="窗口编组">窗口编组</a></li>
+            <li><a href="uiclass_1.html" title="初识模类">初识模类</a></li>
+            <li><a href="uiclass_2.html" title="模类设计器详解">模类设计器详解</a></li>
+            <li><a href="uiclass_3.html" title="模类进阶与生态">模类进阶与生态</a></li>
+            <li><a href="sidebar.html" title="侧边栏">侧边栏</a></li>
+            <li><a href="sidebar_display.html" title="显示器">显示器</a></li>
+            <li><a href="sidebar_reference_media.html" title="参考媒体">参考媒体</a></li>
+            <li><a href="str.html" title="字幕">字幕</a></li>
+            <li><a href="marker_and_sticky_note.html" title="标记与轨道便利贴">标记与轨道便利贴</a></li>
+            <li><a href="media_browser.html" title="媒体浏览器">媒体浏览器</a></li>
+            <li><a href="high_energy_table.html" title="高能进度表">高能进度表</a></li>
+            <li><a href="terminal.html" title="终端">终端</a></li>
+            <li><a href="code_view.html" title="代码视图">代码视图</a></li>
+            <li><a href="GetWindowClassName.html" title="窗口拾取器">窗口拾取器</a></li>
+            <li><a href="insert_lyrics.html" title="插入歌词">插入歌词</a></li>
+            <li><a href="cooperation.html" title="协作">协作</a></li>
+            <li><a href="ctrl_z_undo_redo.html" title="撤销与重做">撤销与重做</a></li>
+            <li><a href="cooperation_ai.html" title="AI 协作（小電AI）">AI 协作（小電AI）</a></li>
+            <li><a href="dianzi_ai_assistant.html" title="電籽 AI 助手">電籽 AI 助手</a></li>
+            <li><a href="advanced_ai_model.html" title="如何调用高级 AI 模型">如何调用高级 AI 模型</a></li>
+            <li><a href="render_cze_data.html" title="渲染为 CZE 数据文件">渲染为 CZE 数据文件</a></li>
+            <li><a href="render_python_code.html" title="渲染为 Python 代码">渲染为 Python 代码</a></li>
+            <li><a href="render_cpp_code.html" title="渲染为 C++ 代码">渲染为 C++ 代码</a></li>
+            <li><a href="export_audio.html" title="渲染为音频文件">渲染为音频文件</a></li>
+            <li><a href="render_video.html" title="渲染视频文件">渲染视频文件</a></li>
+            <li><a href="compile_exe.html" title="编译为 exe">编译为 exe</a></li>
+            <li><a href="assembly_package.html" title="组装打包模式">组装打包模式</a></li>
+            <li><a href="interpreter_config.html" title="解释器自定义配置">解释器自定义配置</a></li>
+            <li><a href="test_run.html" title="测试运行">测试运行</a></li>
+            <li><a href="run_log.html" title="运行日志">运行日志</a></li>
+            <li><a href="python_libs.html" title="Python 运行库">Python 运行库</a></li>
+            <li><a href="cpp_libs.html" title="C++ 运行库">C++ 运行库</a></li>
+            <li><a href="settings.html" title="首选项（设置）">首选项（设置）</a></li>
+            <li><a href="settings_skin.html" title="皮肤设置">皮肤设置</a></li>
+            <li><a href="file_association.html" title="文件关联（打开方式）">文件关联（打开方式）</a></li>
+            <li><a href="language_pack.html" title="语言包">语言包</a></li>
+            <li><a href="plugin_user.html" title="插件使用指南">插件使用指南</a></li>
+            <li><a href="plugin_dev.html" title="插件开发指南">插件开发指南</a></li>
+            <li><a href="carousel.html" title="轮播图">轮播图</a></li>
+        </ul>
+    </nav>
+
     <script>
         (function() {
-            const welcome = document.getElementById('welcome');
+            const hero = document.getElementById('hero');
+            const tocBar = document.getElementById('tocBar');
             const startBtn = document.getElementById('startBtn');
 
-            // ============================================================
-            // 点击"开始阅读"：刀锋向内咬合 + 欢迎页淡出 → 跳转到 start.html
-            // ============================================================
             startBtn.addEventListener('click', function() {
-                // 让两侧刀锋"咬合"进来（压迫感收尾）
                 const left = document.querySelector('.blade-left');
                 const right = document.querySelector('.blade-right');
                 if (left) {
@@ -471,18 +686,14 @@
                     right.style.transition = 'transform 0.6s cubic-bezier(0.6, 0, 0.8, 1)';
                     right.style.transform = 'translateX(-140%)';
                 }
+                if (hero) hero.classList.add('fade-out');
+                if (tocBar) tocBar.classList.add('fade-out');
 
-                // 欢迎页淡出
-                welcome.classList.add('fade-out');
-
-                // 等待动画完成，跳转到目录的第一项（start.html）
                 setTimeout(function() {
                     window.location.href = 'start.html';
                 }, 650);
             });
 
-            // 如果 URL 里带 hash（比如 help.html#czemaker），
-            // 直接跳到对应的章节，跳过欢迎页
             if (window.location.hash) {
                 const hash = window.location.hash.replace('#', '');
                 if (hash) {

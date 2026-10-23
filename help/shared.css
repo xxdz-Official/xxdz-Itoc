@@ -1072,3 +1072,36 @@ html, body {
     }
     .sidebar ul#tocList { gap: 4px; padding: 5px 6px 8px 6px; }
 }
+
+/* === TOC_HITBOX_STYLE v2 === */
+/* 目录整行可点：<a>::before 铺满 <li>，<a> 保持内联，
+   文字位置、padding、hover、active 全部沿用原有样式。
+   z-index 分层：li::before(0) < a::before(1) < span(2) */
+.sidebar li.toc-item {
+    position: relative;
+}
+.sidebar li.toc-item > a {
+    color: inherit;
+    text-decoration: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    display: inline;
+}
+.sidebar li.toc-item > a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    cursor: pointer;
+}
+.sidebar li.toc-item::before {
+    z-index: 0;
+}
+.sidebar li.toc-item > a > span {
+    position: relative;
+    z-index: 2;
+}
+/* === TOC_HITBOX_STYLE END === */

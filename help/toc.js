@@ -17,6 +17,7 @@ const TOC_DATA = [
     { group: '弹窗编排' },
     { title: 'CZEmaker 弹窗编排 · 基础篇', file: 'czemaker.html' },
     { title: 'CZEmaker 弹窗编排 · 进阶篇', file: 'czemaker_advanced.html' },
+    { title: '按音高应用配参', file: 'pitch_assign.html' },
     { title: '窗口样式钮', file: 'window_style.html' },
     { title: '镂空窗口', file: 'hollow_window.html' },
     { title: '亚克力与云母', file: 'acrylic_mica.html' },
@@ -92,7 +93,7 @@ const TOC_DATA = [
     { title: '协作', file: 'cooperation.html' },
     { title: '撤销与重做', file: 'ctrl_z_undo_redo.html' },
     { title: '工程的归档与回滚', file: 'archive_rollback.html' },
-    { title: 'AI 协作（小電AI）', file: 'cooperation_ai.html' },
+    { title: 'AI 协作', file: 'cooperation_ai.html' },
     { title: '電籽 AI 助手', file: 'dianzi_ai_assistant.html' },
     { title: '如何调用高级 AI 模型', file: 'advanced_ai_model.html' },
 

@@ -62,8 +62,9 @@
                 <li class="toc-group"><span>弹窗编排</span></li>
                 <li class="toc-item" data-file="czemaker.html"><a href="czemaker.html" rel="noopener"><span>CZEmaker 弹窗编排 · 基础篇</span></a></li>
                 <li class="toc-item" data-file="czemaker_advanced.html"><a href="czemaker_advanced.html" rel="noopener"><span>CZEmaker 弹窗编排 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="pitch_assign.html"><a href="pitch_assign.html" rel="noopener"><span>按音高应用配参</span></a></li>
                 <li class="toc-item" data-file="window_style.html"><a href="window_style.html" rel="noopener"><span>窗口样式钮</span></a></li>
-                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口（图片镂空 + 窗口背景镂空）</span></a></li>
+                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口</span></a></li>
                 <li class="toc-item" data-file="acrylic_mica.html"><a href="acrylic_mica.html" rel="noopener"><span>亚克力与云母</span></a></li>
                 <li class="toc-item" data-file="window_type_regular.html"><a href="window_type_regular.html" rel="noopener"><span>普通弹窗（信息/警告/错误/询问）</span></a></li>
                 <li class="toc-item" data-file="window_type_image.html"><a href="window_type_image.html" rel="noopener"><span>图片框</span></a></li>
@@ -122,7 +123,7 @@
                 <li class="toc-item" data-file="cooperation.html"><a href="cooperation.html" rel="noopener"><span>协作</span></a></li>
                 <li class="toc-item" data-file="ctrl_z_undo_redo.html"><a href="ctrl_z_undo_redo.html" rel="noopener"><span>撤销与重做</span></a></li>
                 <li class="toc-item" data-file="archive_rollback.html"><a href="archive_rollback.html" rel="noopener"><span>工程的归档与回滚</span></a></li>
-                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作（小電AI）</span></a></li>
+                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作</span></a></li>
                 <li class="toc-item" data-file="dianzi_ai_assistant.html"><a href="dianzi_ai_assistant.html" rel="noopener"><span>電籽 AI 助手</span></a></li>
                 <li class="toc-item" data-file="advanced_ai_model.html"><a href="advanced_ai_model.html" rel="noopener"><span>如何调用高级 AI 模型</span></a></li>
                 <li class="toc-group"><span>渲染与输出</span></li>
@@ -167,6 +168,11 @@
     "width": 800,
     "height": 600,
     "bg_color": "#F0F0F0",
+    "window_style": "normal_fixed",
+    "window_background": true,
+    "window_material": false,
+    "window_topmost": true,
+    "window_opacity": 100,
     "minimize_btn": true,
     "maximize_btn": true,
     "close_btn": true,
@@ -197,6 +203,11 @@
         <tr><td><code>width</code></td><td>整数</td><td>否</td><td>800</td><td>窗口内容区宽度（像素）</td></tr>
         <tr><td><code>height</code></td><td>整数</td><td>否</td><td>600</td><td>窗口内容区高度（像素）</td></tr>
         <tr><td><code>bg_color</code></td><td>字符串</td><td>否</td><td><code>#FFFFFF</code></td><td>窗口背景颜色（Hex RGB）</td></tr>
+        <tr><td><code>window_style</code></td><td>字符串</td><td>否</td><td><code>normal_fixed</code></td><td>窗口边框样式：<code>normal_fixed</code>（普通边框）/ <code>tool_fixed</code>（Windows 工具窗）/ <code>borderless</code>（无边框）。详见 <a href="window_style.html">《窗口样式钮》</a></td></tr>
+        <tr><td><code>window_background</code></td><td>布尔值</td><td>否</td><td><code>true</code></td><td>是否绘制窗口背景。为 <code>false</code> 时走色键透明（无边框时走真透明），详见 1.3 透明策略</td></tr>
+        <tr><td><code>window_material</code></td><td>布尔值</td><td>否</td><td><code>false</code></td><td>是否启用亚克力/云母磨砂玻璃。启用时会强制 <code>window_background=true</code>。详见 <a href="acrylic_mica.html">《亚克力与云母》</a></td></tr>
+        <tr><td><code>window_topmost</code></td><td>布尔值</td><td>否</td><td><code>true</code></td><td>是否窗口置顶（注意字段名是 <code>window_topmost</code>，不是 <code>topmost</code>）</td></tr>
+        <tr><td><code>window_opacity</code></td><td>整数</td><td>否</td><td><code>100</code></td><td>窗口整体不透明度，0~100 的整数。越界会自动裁剪</td></tr>
         <tr><td><code>minimize_btn</code></td><td>布尔值</td><td>否</td><td><code>true</code></td><td>是否显示最小化按钮</td></tr>
         <tr><td><code>maximize_btn</code></td><td>布尔值</td><td>否</td><td><code>true</code></td><td>是否显示最大化按钮</td></tr>
         <tr><td><code>close_btn</code></td><td>布尔值</td><td>否</td><td><code>true</code></td><td>是否显示关闭按钮（控制钮）</td></tr>
@@ -219,6 +230,101 @@
 <div class="warning">
     <strong>⚠️ 顶层不要包含 <code>id</code> 和 <code>_saved</code>：</strong><br>
     这两个字段是运行时内部使用的标记，<code>id</code> 用于模类管理器里的临时标识，<code>_saved</code> 用于判断模类是否已保存。保存到文件时模类设计器会自动移除它们。
+</div>
+
+<h3>1.2 默认值与归一化规则</h3>
+
+<p>有些字段组合是"互相矛盾"的（比如无边框窗口 + 最小化按钮）。模类设计器在<strong>应用属性面板改动</strong>、<strong>预览</strong>、<strong>运行时</strong>三处都会先跑一遍归一化函数 <code>_normalize_window_style_conflicts</code>，把这些矛盾组合纠正成合法状态：</p>
+
+<table>
+    <thead>
+        <tr><th>触发条件</th><th>自动纠正</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>window_style</code> 不是三种合法值之一</td><td>回退为 <code>normal_fixed</code></td></tr>
+        <tr><td><code>window_style = borderless</code></td><td><code>minimize_btn / maximize_btn / close_btn / help_btn</code> 全部强制 <code>false</code></td></tr>
+        <tr><td><code>window_style = tool_fixed</code></td><td><code>maximize_btn / minimize_btn / help_btn</code> 强制 <code>false</code></td></tr>
+        <tr><td><code>close_btn = false</code></td><td><code>minimize_btn / maximize_btn</code> 强制 <code>false</code></td></tr>
+        <tr><td><code>window_material = true</code></td><td><code>window_background</code> 强制 <code>true</code></td></tr>
+        <tr><td><code>bg_color</code> 为空或非法</td><td>兜底为 <code>#FFFFFF</code></td></tr>
+        <tr><td><code>window_opacity</code> 越界或非整数</td><td>裁剪到 0~100</td></tr>
+    </tbody>
+</table>
+
+<p>所以在设计态看到"改了又自动变回去"，不是 bug，是归一化在保护你。想表达某个组合，先改 <code>window_style</code> 再改按钮。</p>
+
+<div class="tip">
+    <strong>💡 属性面板里还有一层"双向联动"：</strong><br>
+    在属性面板里点 ▼ 切换「亚克力/云母」时，勾上会自动勾上「窗口背景」；反过来，把「窗口背景」关掉会自动关掉「亚克力/云母」。这是交互层的 <code>_set_bool_value</code> 逻辑，比 1.2 里的归一化更严格——它是双向的，目的就是防止你手动造出矛盾组合。
+</div>
+
+<h3>1.3 透明策略：四种组合，四种行为</h3>
+
+<p>顶层字段里 <code>window_background</code>、<code>window_material</code>、<code>window_style</code> 三个一组合，就决定了预览和运行时窗口的"透明方式"。一共四个分支（与 <code>UI_Class.py</code> 的 <code>run_UI_Class</code>、<code>runCZE.py</code> 的 <code>create_class_popup</code> 完全一致）：</p>
+
+<table>
+    <thead>
+        <tr><th>#</th><th>条件</th><th>行为</th><th>效果</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>①</td>
+            <td><code>window_background=true</code><br><code>window_material=true</code></td>
+            <td><code>WA_TranslucentBackground</code> + <code>enable_acrylic(hwnd)</code></td>
+            <td>亚克力/云母磨砂玻璃，能透出后面的桌面（需 Win10 1803+ / Win11）</td>
+        </tr>
+        <tr>
+            <td>②</td>
+            <td><code>window_background=false</code><br><code>window_style=borderless</code></td>
+            <td><code>WA_TranslucentBackground</code> 真透明</td>
+            <td>窗口区域完全透明，只有控件可见，没有背景也没有模糊</td>
+        </tr>
+        <tr>
+            <td>③</td>
+            <td><code>window_background=false</code><br><code>window_style=normal_fixed / tool_fixed</code></td>
+            <td>色键透明（<code>paintEvent</code> 填 <code>(1,2,3)</code> + <code>SetLayeredWindowAttributes</code>）</td>
+            <td>带系统标题栏的窗口也能"镂空"内容区，标题栏仍保留</td>
+        </tr>
+        <tr>
+            <td>④</td>
+            <td><code>window_background=true</code><br><code>window_material=false</code></td>
+            <td>按 <code>bg_color</code> 涂色</td>
+            <td>普通窗口，最稳定、最不挑系统</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 设计态的"灰色"不是最终效果：</strong><br>
+    选了无背景（分支 ②、③）时，模类设计器的 MDI 子窗口会用浅灰 <code>QColor(232,232,232)</code> 示意"这里是透明的"。这不是要写进 JSON 的背景色，运行时才真正透明。别把灰色误当成"导出后就是这样"。
+</div>
+
+<h3>1.4 窗口属性面板：这些字段怎么在界面里改？</h3>
+
+<p>不选任何控件、直接点设计区空白处（或者点 MDI 子窗口的标题栏），左侧<strong>属性列表</strong>会从"控件属性"切换成"窗口属性"，上面 1.1 里的所有顶层字段（除了 <code>components</code> 和两个图标字段里的 <code>icon_filename</code>）都能在这里改：</p>
+
+<table>
+    <thead>
+        <tr><th>属性行</th><th>对应字段</th><th>编辑方式</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>窗口宽度 / 窗口高度</td><td><code>width</code> / <code>height</code></td><td>点 ▼ 弹整数输入框</td></tr>
+        <tr><td>窗口标题</td><td><code>name</code></td><td>双击直接编辑</td></tr>
+        <tr><td>窗口图标</td><td><code>icon_data_base64</code> / <code>icon_filename</code></td><td>点 ⇗ 选 <code>.ico</code>，自动转 Base64 嵌入</td></tr>
+        <tr><td>背景颜色</td><td><code>bg_color</code></td><td>点 ▼ 选预设色 / 自定义颜色</td></tr>
+        <tr><td>窗口样式</td><td><code>window_style</code></td><td>点 ▼ 三选一：普通边框窗口 / Windows 工具窗 / 无边框窗口</td></tr>
+        <tr><td>窗口背景</td><td><code>window_background</code></td><td>真 / 假 切换</td></tr>
+        <tr><td>亚克力/云母</td><td><code>window_material</code></td><td>真 / 假 切换（勾上会自动把背景也设为真）</td></tr>
+        <tr><td>透明度</td><td><code>window_opacity</code></td><td>点 ▼ 弹整数输入框（0~100，非法值立刻弹回原值）</td></tr>
+        <tr><td>窗口置顶</td><td><code>window_topmost</code></td><td>真 / 假 切换</td></tr>
+        <tr><td>最小化按钮 / 最大化按钮 / 控制钮 / 帮助按钮</td><td><code>minimize_btn</code> / <code>maximize_btn</code> / <code>close_btn</code> / <code>help_btn</code></td><td>真 / 假 切换（受 1.2 归一化限制）</td></tr>
+        <tr><td>ESC键可关闭 / 关闭按钮可关闭 / 任务栏显示 / 可调窗口</td><td><code>esc_close</code> / <code>close_btn_close</code> / <code>taskbar_show</code> / <code>resizable</code></td><td>真 / 假 切换</td></tr>
+    </tbody>
+</table>
+
+<div class="tip">
+    <strong>💡 置灰的行 = 被归一化强制关闭：</strong><br>
+    切到 <code>borderless</code> 或 <code>tool_fixed</code> 后，界面会把被强制关闭的按钮行文字<strong>变灰</strong>（<code>_apply_window_button_row_states</code>）。变灰只是视觉提示，不改数据；切回 <code>normal_fixed</code> 会恢复正常颜色，你之前勾的东西还在。
 </div>
 
 <h2>二、通用控件字段</h2>
@@ -865,7 +971,9 @@
 
 <h3>11.1 查看与编辑</h3>
 
-<p>JSON 视图是<strong>可编辑的</strong>。你可以直接在里面修改 JSON，然后按 <kbd>Insert</kbd> 键或点「应用」按钮，修改会立刻反映到设计区。这对于批量修改、精确调整非常方便。</p>
+<p>JSON 视图是<strong>可编辑的</strong>。你可以直接在里面修改 JSON，然后按 <kbd>Insert</kbd> 键或点「应用 (Insert + Space)」按钮，修改会立刻反映到设计区。这对于批量修改、精确调整非常方便。</p>
+
+<p><strong>按 id 去重：</strong>点「应用」时，程序会按 <code>id</code> 去重（保留最后一个）。所以从别处复制粘贴过来、不小心带出重复 id 也没关系，最后面的那条会胜出。没有 <code>id</code> 的控件会被自动分配一个新 id。</p>
 
 <h3>11.2 语法高亮</h3>
 
@@ -899,19 +1007,33 @@
 
 <h2>十二、运行预览</h2>
 
-<p>点工具栏<strong>「▶ 运行」</strong>按钮，会弹出一个真正的窗口来展示模类效果。预览窗口会：</p>
+<p>点工具栏<strong>「▶ 运行」</strong>按钮（或菜单 <strong>「文件」→「运行」</strong>），会弹出一个真正的窗口来展示模类效果。这个窗口由 <code>run_UI_Class</code> 创建，构造逻辑与运行时 <code>runCZE.py</code> 的 <code>create_class_popup</code> 几乎一致。</p>
+
+<p>预览窗口会做这些事：</p>
 
 <ul>
-    <li>根据顶层字段设置窗口标题、尺寸、背景色、控制钮、透明度、任务栏显示等</li>
-    <li>根据 <code>components</code> 数组创建所有控件</li>
-    <li>处理编组框、选项卡的嵌套关系</li>
-    <li>启动进度条动画</li>
-    <li>启动链接进度标签的定时更新</li>
-    <li>处理 ESC 键关闭、关闭按钮关闭</li>
-    <li>应用模类图标（如果设置了的话）</li>
+    <li><strong>读顶层字段</strong>：窗口标题、尺寸、背景色、窗口样式、窗口背景、亚克力、窗口置顶、透明度、控制钮、任务栏显示等</li>
+    <li><strong>套用透明策略</strong>：按 1.3 那张表四选一（亚克力 / borderless 真透明 / 色键 / bg_color）</li>
+    <li><strong>按 <code>components</code> 建控件</strong>：先建容器（编组框、选项卡），再建非容器，最后处理链接</li>
+    <li><strong>处理编组框、选项卡的嵌套关系</strong></li>
+    <li><strong>启动进度条动画</strong>（每个进度条独立定时器，按 <code>duration</code> 从 <code>initial_value</code> 跑到 <code>end_value</code>）</li>
+    <li><strong>启动链接进度标签的定时更新</strong>（每 100ms 刷一次百分比）</li>
+    <li><strong>处理 ESC 键关闭、关闭按钮关闭</strong></li>
+    <li><strong>应用窗口图标</strong>：优先从 <code>icon_data_base64</code> 加载，没有就用默认 <code>img/icon.ico</code></li>
+    <li><strong>应用窗口背景与亚克力</strong>：等窗口 <code>show()</code> 之后再延迟约 80ms 调用（因为要等 <code>winId()</code> 有效）</li>
 </ul>
 
-<p>预览窗口的效果和运行时创建出来的窗口几乎完全一致，所以你可以放心地用预览来调试外观。</p>
+<p><strong>按钮用的是 Windows 原生样式</strong>：预览里的 <code>QPushButton</code> 不覆盖边框、不改 QSS，只有文字颜色跟随 <code>font.color</code>。这样看起来和真实弹窗一致，也方便对比。想换样式就用矩形 + 标签自己拼，或者贴图片。</p>
+
+<p>预览窗口的效果和运行时创建出来的窗口几乎完全一致，所以你可以放心地用预览来调试外观。唯一的区别是数据来源：预览直接读当前正在编辑的模类数据，运行时从工程内置模类里按名称查找。</p>
+
+<div class="tip">
+    <strong>💡 预览失败时怎么办？</strong><br>
+    如果弹出"预览模类失败"，先在控制台看异常栈，再检查：<br>
+    · 是否已经保存过这个模类（预览不需要保存，但极端情况下旧数据可能污染）<br>
+    · <code>components</code> 里是否有非法 id（重复 id 会被去重）<br>
+    · 图片是否用了 <code>image_data_base64</code>（不要用外部路径）
+</div>
 
 <h2>十三、常见问题</h2>
 
@@ -946,19 +1068,34 @@
 
 <p>支持。图片控件的 <code>image_data_base64</code> 里可以存 GIF 数据，运行时会自动播放 GIF 动画。不过要注意 GIF 的 Base64 数据通常比较大。</p>
 
+<h3>Q7：预览里的按钮怎么长得跟系统按钮一样？我想自定义样式怎么办？</h3>
+
+<p>这是设计如此。模类不重视窗口内的交互，按钮只负责"还原视觉"，所以预览和运行时都使用 Windows 原生 <code>QPushButton</code>，不覆盖边框、不改 QSS。如果想做特别花哨的按钮，用矩形（<code>rectangle</code>）+ 标签（<code>label</code>）自己拼一个出来，或者直接用图片框贴一张按钮图。</p>
+
+<h3>Q8：模类里勾了亚克力，预览里没效果？</h3>
+
+<p>按顺序检查：① <code>window_background</code> 是否也为真（模类设计器会自动帮你勾上，但手动改 JSON 可能破坏联动）；② 系统版本是否支持（Windows 7 及以下不支持，Win10 早期版本只有模糊不支持云母）；③ 壁纸是不是纯白（白色亚克力看不出效果）。详见 <a href="acrylic_mica.html">《亚克力与云母》</a>。</p>
+
+<h3>Q9：把"窗口背景"关掉之后，设计区怎么变灰了？是不是导出的就是灰色？</h3>
+
+<p>不是。灰色只是设计态的"透明示意"（<code>QColor(232,232,232)</code>），用来提示"这里运行时是透明的"，不会写进 JSON。真正运行时按 1.3 的透明策略走：无背景 + borderless → 真透明；无背景 + 有边框 → 色键透明。</p>
+
 <h2>十四、小结</h2>
 
 <p>这一篇我们把模类设计器的核心功能全部讲了一遍：</p>
 
 <ul>
-    <li>顶层结构：窗口名称、尺寸、背景色、控制钮、任务栏、可调整大小等</li>
+    <li>顶层结构：窗口名称、尺寸、背景色、<strong>窗口样式 / 窗口背景 / 亚克力 / 窗口置顶 / 透明度</strong>、控制钮、任务栏、可调整大小等</li>
     <li>通用字段：id、type、name、x、y、width、height、text、default_focus</li>
     <li>10 种控件：label、entry、image、button、radio、checkbox、progress、groupbox、tabwidget、rectangle</li>
     <li>每种控件的专用字段：font、linked_progress_id、hover_text、pressed_text、use_placeholder、image_data_base64、display_mode、show_border、transparent、initial_value、end_value、duration、tab_titles、fill_color、border_color、border_width、hover_color、pressed_color</li>
+    <li><strong>归一化规则</strong>：矛盾组合（无边框+按钮、关背景+亚克力）会被自动纠正</li>
+    <li><strong>透明策略四种分支</strong>：亚克力 / borderless 真透明 / 色键 / bg_color</li>
+    <li><strong>窗口属性面板</strong>：不选控件时点空白处即可编辑所有顶层字段</li>
     <li>链接系统：linked_tab_id、linked_tab_page、linked_tab_info、linked_groupbox_id、linked_groupbox_info</li>
     <li>字体系统、图片 Base64 嵌入、图层顺序、多选偏移编辑、撤销重做、点阵、自动对齐</li>
-    <li>JSON 源数据视图：查看、编辑、格式化、语法高亮、应用</li>
-    <li>运行预览</li>
+    <li>JSON 源数据视图：查看、编辑、格式化、语法高亮、应用（按 id 去重）</li>
+    <li>运行预览：原生按钮、四种透明策略、窗口显示后再应用亚克力</li>
 </ul>
 
 <p>下一篇 <a href="uiclass_3.html">《模类进阶与生态》</a>，我们会讲模类的深层存储机制（工程内置 vs Itoc 全局的哈希去重、同名冲突处理）、模类管理器的进阶操作、模类在解释器里是怎么跑起来的、模类与全局命令的联动、以及各种注意事项和性能建议。我们下篇见！ (๑•̀ㅂ•́)و✧</p>

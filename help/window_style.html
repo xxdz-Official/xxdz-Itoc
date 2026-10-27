@@ -63,8 +63,9 @@
                 <li class="toc-group"><span>弹窗编排</span></li>
                 <li class="toc-item" data-file="czemaker.html"><a href="czemaker.html" rel="noopener"><span>CZEmaker 弹窗编排 · 基础篇</span></a></li>
                 <li class="toc-item" data-file="czemaker_advanced.html"><a href="czemaker_advanced.html" rel="noopener"><span>CZEmaker 弹窗编排 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="pitch_assign.html"><a href="pitch_assign.html" rel="noopener"><span>按音高应用配参</span></a></li>
                 <li class="toc-item active" data-file="window_style.html"><a href="window_style.html" rel="noopener"><span>窗口样式钮</span></a></li>
-                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口（图片镂空 + 窗口背景镂空）</span></a></li>
+                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口</span></a></li>
                 <li class="toc-item" data-file="acrylic_mica.html"><a href="acrylic_mica.html" rel="noopener"><span>亚克力与云母</span></a></li>
                 <li class="toc-item" data-file="window_type_regular.html"><a href="window_type_regular.html" rel="noopener"><span>普通弹窗（信息/警告/错误/询问）</span></a></li>
                 <li class="toc-item" data-file="window_type_image.html"><a href="window_type_image.html" rel="noopener"><span>图片框</span></a></li>
@@ -123,7 +124,7 @@
                 <li class="toc-item" data-file="cooperation.html"><a href="cooperation.html" rel="noopener"><span>协作</span></a></li>
                 <li class="toc-item" data-file="ctrl_z_undo_redo.html"><a href="ctrl_z_undo_redo.html" rel="noopener"><span>撤销与重做</span></a></li>
                 <li class="toc-item" data-file="archive_rollback.html"><a href="archive_rollback.html" rel="noopener"><span>工程的归档与回滚</span></a></li>
-                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作（小電AI）</span></a></li>
+                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作</span></a></li>
                 <li class="toc-item" data-file="dianzi_ai_assistant.html"><a href="dianzi_ai_assistant.html" rel="noopener"><span>電籽 AI 助手</span></a></li>
                 <li class="toc-item" data-file="advanced_ai_model.html"><a href="advanced_ai_model.html" rel="noopener"><span>如何调用高级 AI 模型</span></a></li>
                 <li class="toc-group"><span>渲染与输出</span></li>
@@ -247,6 +248,15 @@
     <strong>💡 无边框不等于不可操作：</strong> 镂空图片框自己实现了鼠标拖动和右键关闭，所以你不用担心用户关不掉。但普通弹窗如果选了无边框，确实会没有关闭按钮，需要你另外配置一个「确定」按钮或者其他关闭手段。
 </div>
 
+<div class="note">
+    <strong>📌 模类设计器里的设计态表现：</strong><br>
+    模类设计器的 MDI 子窗口（就是你正在编辑的那个窗口）也会按 <code>window_style</code> 模拟标题栏按钮：<br>
+    · 切到 <code>borderless</code> → 三个按钮全部隐藏；<br>
+    · 切到 <code>tool_fixed</code> → 只保留关闭按钮，最大化/最小化隐藏；<br>
+    · 切回 <code>normal_fixed</code> → 按 <code>minimize_btn / maximize_btn / close_btn / help_btn</code> 四个字段显示。<br>
+    这个逻辑在 <code>MainFormSubWindow._apply_window_flags</code> 里，所以你切样式的时候"按钮突然没了"是设计如此，不是 bug——预览和运行时也一致。
+</div>
+
 <h2>窗口背景</h2>
 
 <p>「窗口背景」复选框控制窗口要不要绘制白色背景。默认勾选。</p>
@@ -286,6 +296,14 @@
 
 <p>这套联动是实时生效的：你在对话框里切换窗口样式，下面的按钮复选框会立刻变灰或变亮，不需要点确定。</p>
 
+<div class="warning">
+    <strong>⚠️ 模类框例外：这里的复选框对模类框不起作用。</strong><br>
+    运行时创建模类框时，读的是<strong>模类文件顶层</strong>的 <code>minimize_btn</code> / <code>maximize_btn</code> / <code>close_btn</code> / <code>help_btn</code> 四个字段（详见 <a href="uiclass_2.html">《模类设计器详解》</a> 的 1.1 顶层字段表）。也就是说：<br>
+    · 想改模类框的标题栏按钮 → 去<strong>模类设计器的窗口属性面板</strong>里改；<br>
+    · 在 CZEmakers 样式钮这边给模类框勾按钮 → <strong>不生效</strong>。<br>
+    这是 <code>create_class_popup</code> 里"一律以模类数据为准，不再从配参读"那句话的实际含义。
+</div>
+
 <h2>各窗口类型的实际表现</h2>
 
 <h3>常规弹窗（信息框/警告框/错误框/询问框）</h3>
@@ -314,11 +332,33 @@
 
 <h3>模类框</h3>
 
-<p>模类框也遵循样式钮配置，但窗口的实际样式还受模类数据自己的 <code>minimize_btn</code> / <code>maximize_btn</code> / <code>close_btn</code> / <code>resizable</code> / <code>taskbar_show</code> 等字段影响。当样式钮选了「工具窗」时，模类框会用 <code>Qt.Tool + Qt.WindowCloseButtonHint</code>，忽略最大化和最小化配置。</p>
+<p><strong>模类框是个例外：它的窗口外观完全以模类数据为准，不读样式钮里那几项。</strong></p>
+
+<p>运行时 <code>create_class_popup</code> 从模类文件顶层读这些字段来决定窗口外观：</p>
+<ul>
+    <li><code>window_style</code>：普通边框 / 工具窗 / 无边框（三选一）</li>
+    <li><code>window_background</code>：是否绘制窗口背景</li>
+    <li><code>window_material</code>：是否启用亚克力/云母</li>
+    <li><code>window_topmost</code>：是否置顶（<strong>注意字段名是 <code>window_topmost</code></strong>，不是 <code>topmost</code>）</li>
+    <li><code>window_opacity</code>：0~100 的整数</li>
+    <li><code>minimize_btn</code> / <code>maximize_btn</code> / <code>close_btn</code> / <code>help_btn</code>：标题栏按钮</li>
+    <li><code>resizable</code>：是否可调窗口</li>
+    <li><code>taskbar_show</code>：是否在任务栏显示</li>
+</ul>
+
+<p>所以给模类框调外观，去<strong>模类设计器的窗口属性面板</strong>里改，别在 CZEmakers 样式钮里改。CZEmakers 侧对模类框只负责三件事：<code>selected_class_name</code>（选哪个模类）、<code>window_position</code>（弹在哪）、<code>window_life</code>（弹多久），外加 <code>transition</code>（入场/出场动画）。</p>
+
+<div class="tip">
+    <strong>💡 想看每个字段的默认值和联动规则？</strong><br>
+    看 <a href="uiclass_2.html">《模类设计器详解》</a> 的 <strong>1.1 顶层字段详解</strong>（字段表）和 <strong>1.2 默认值与归一化规则</strong>（矛盾组合怎么被自动纠正）。
+</div>
 
 <h2>配置文件字段</h2>
 
-<p>样式钮的配置保存在音符的 <code>cze_makers</code> 里，字段结构如下：</p>
+<p>样式钮相关的字段分<strong>两组</strong>，存在不同地方，改之前先搞清楚你在改哪一份，不然改完没生效。</p>
+
+<h3>3.1 CZEmakers 侧（常规弹窗 / 图片框）</h3>
+<p>保存在音符的 <code>cze_makers</code> 里，字段结构如下：</p>
 
 <ul>
     <li><code>window_control</code>：<code>"custom"</code>（自定义）或 <code>"default"</code>（自动）。</li>
@@ -336,6 +376,24 @@
 </ul>
 
 <p>旧工程没有 <code>topmost</code> / <code>window_style</code> / <code>window_background</code> / <code>window_material</code> 字段时，程序会分别回退到 <code>true</code> / <code>"normal_fixed"</code> / <code>true</code> / <code>false</code>，保证兼容。</p>
+
+<h3>3.2 模类侧（模类框）</h3>
+<p>保存在 <code>.UIclass</code> 文件<strong>顶层</strong>（不在 <code>components</code> 里），和 CZEmakers 侧字段<strong>同名但独立</strong>。模类框运行时只读这里的，不读 CZEmakers 侧那几项：</p>
+
+<ul>
+    <li><code>window_style</code>：<code>"normal_fixed"</code> / <code>"tool_fixed"</code> / <code>"borderless"</code></li>
+    <li><code>window_background</code>：布尔</li>
+    <li><code>window_material</code>：布尔</li>
+    <li><code>window_topmost</code>：布尔（<strong>注意字段名是 <code>window_topmost</code></strong>，CZEmakers 侧叫 <code>topmost</code>，少了 <code>window_</code> 前缀）</li>
+    <li><code>window_opacity</code>：0~100 整数</li>
+    <li><code>minimize_btn</code> / <code>maximize_btn</code> / <code>close_btn</code> / <code>help_btn</code></li>
+    <li><code>resizable</code> / <code>taskbar_show</code> / <code>esc_close</code> / <code>close_btn_close</code></li>
+</ul>
+
+<div class="tip">
+    <strong>💡 想看模类侧字段的完整默认值和归一化规则？</strong><br>
+    看 <a href="uiclass_2.html">《模类设计器详解》</a> 的 <strong>1.1 顶层字段详解</strong> 和 <strong>1.2 默认值与归一化规则</strong>。
+</div>
 
 <h2>翻译与语言包</h2>
 

@@ -63,8 +63,9 @@
                 <li class="toc-group"><span>弹窗编排</span></li>
                 <li class="toc-item" data-file="czemaker.html"><a href="czemaker.html" rel="noopener"><span>CZEmaker 弹窗编排 · 基础篇</span></a></li>
                 <li class="toc-item" data-file="czemaker_advanced.html"><a href="czemaker_advanced.html" rel="noopener"><span>CZEmaker 弹窗编排 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="pitch_assign.html"><a href="pitch_assign.html" rel="noopener"><span>按音高应用配参</span></a></li>
                 <li class="toc-item" data-file="window_style.html"><a href="window_style.html" rel="noopener"><span>窗口样式钮</span></a></li>
-                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口（图片镂空 + 窗口背景镂空）</span></a></li>
+                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口</span></a></li>
                 <li class="toc-item" data-file="acrylic_mica.html"><a href="acrylic_mica.html" rel="noopener"><span>亚克力与云母</span></a></li>
                 <li class="toc-item" data-file="window_type_regular.html"><a href="window_type_regular.html" rel="noopener"><span>普通弹窗（信息/警告/错误/询问）</span></a></li>
                 <li class="toc-item" data-file="window_type_image.html"><a href="window_type_image.html" rel="noopener"><span>图片框</span></a></li>
@@ -123,7 +124,7 @@
                 <li class="toc-item" data-file="cooperation.html"><a href="cooperation.html" rel="noopener"><span>协作</span></a></li>
                 <li class="toc-item" data-file="ctrl_z_undo_redo.html"><a href="ctrl_z_undo_redo.html" rel="noopener"><span>撤销与重做</span></a></li>
                 <li class="toc-item" data-file="archive_rollback.html"><a href="archive_rollback.html" rel="noopener"><span>工程的归档与回滚</span></a></li>
-                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作（小電AI）</span></a></li>
+                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作</span></a></li>
                 <li class="toc-item" data-file="dianzi_ai_assistant.html"><a href="dianzi_ai_assistant.html" rel="noopener"><span>電籽 AI 助手</span></a></li>
                 <li class="toc-item" data-file="advanced_ai_model.html"><a href="advanced_ai_model.html" rel="noopener"><span>如何调用高级 AI 模型</span></a></li>
                 <li class="toc-group"><span>渲染与输出</span></li>
@@ -481,6 +482,17 @@ else:
     </tbody>
 </table>
 
+<div class="note">
+    <strong>📌 样式钮只决定「边框和按钮」：</strong><br>
+    模类框的完整外观是 <strong>4 个字段联合决定</strong>的，样式钮只负责其中 <code>window_style</code> 这一项：<br>
+    · <code>window_style</code>：边框和按钮 ← 样式钮管这个<br>
+    · <code>window_background</code>：有没有背景色（关掉 → 走透明/色键透明） ← <strong>以模类数据为准</strong><br>
+    · <code>window_material</code>：亚克力/云母 ← <strong>以模类数据为准</strong><br>
+    · <code>window_topmost</code>：是否置顶 ← <strong>以模类数据为准</strong><br>
+    · <code>window_opacity</code>：整体透明度 ← <strong>以模类数据为准</strong><br><br>
+    也就是说：在 CZEmakers 这边给模类框「勾亚克力 / 取消勾置顶 / 改透明度」都是<strong>不生效</strong>的，必须去模类设计器的窗口属性面板里改。详见 <a href="uiclass_2.html">模类设计器详解</a> 的 1.1 / 1.2 / 1.3。
+</div>
+
 <h3>6.2 帮助按钮的优先级</h3>
 
 <p>模类数据里有一个 <code>help_btn</code> 字段。如果它为 <code>true</code>，程序会启用帮助按钮（<code>Qt.WindowContextHelpButtonHint</code>）。</p>
@@ -770,10 +782,42 @@ closeEvent 被触发
             <td>窗口内容</td>
             <td>模类框不保存（内容就是控件列表）</td>
         </tr>
+        <tr>
+            <td><code>window_style</code></td>
+            <td>string</td>
+            <td>窗口样式</td>
+            <td><strong>以模类数据为准</strong>，CZEmakers 侧不参与决策</td>
+        </tr>
+        <tr>
+            <td><code>window_background</code></td>
+            <td>bool</td>
+            <td>是否绘制窗口背景</td>
+            <td><strong>以模类数据为准</strong>，关掉走透明/色键透明</td>
+        </tr>
+        <tr>
+            <td><code>window_material</code></td>
+            <td>bool</td>
+            <td>是否启用亚克力/云母</td>
+            <td><strong>以模类数据为准</strong>，CZEmakers 侧勾了也不生效</td>
+        </tr>
+        <tr>
+            <td><code>window_topmost</code></td>
+            <td>bool</td>
+            <td>是否置顶</td>
+            <td><strong>以模类数据为准</strong>（注意字段名带 <code>window_</code> 前缀）</td>
+        </tr>
+        <tr>
+            <td><code>window_opacity</code></td>
+            <td>string</td>
+            <td>透明度 0-100</td>
+            <td><strong>以模类数据为准</strong>，作用在整个窗口上</td>
+        </tr>
     </tbody>
 </table>
 
-<p>注意最后四行——这四组字段在模类框下<strong>不生效也不保存</strong>。如果你在配置文件里手写了这些字段，运行时会忽略它们。</p>
+<p>表格里用「<strong>以模类数据为准</strong>」标记的这几行，意思是：<strong>外观相关的字段（样式 / 背景 / 亚克力 / 置顶 / 透明度）读的是模类文件 <code>.UIclass</code> 的顶层字段，不是音符的 <code>cze_makers</code></strong>。CZEmakers 面板里对应的控件在模类框下也会被禁用（和图标 / 控制钮 / 按钮区一样）。</p>
+
+<p>用「不生效也不保存」标记的最后几行（<code>window_content</code> / <code>custom_size_*</code>），是彻底不用管——就算你手写了也不会被用到。模类数据里从来没有这些字段。</p>
 
 <h2>十一、模类框和其他窗口类型的对比</h2>
 
@@ -790,16 +834,16 @@ closeEvent 被触发
         </tr>
     </thead>
     <tbody>
-        <tr><td>显示文字</td><td>✅</td><td>❌</td><td>❌</td><td>✅（标签控件）</td></tr>
-        <tr><td>显示图片</td><td>❌</td><td>✅</td><td>❌</td><td>✅（图片控件）</td></tr>
+        <tr><td>显示文字</td><td>✅</td><td>❌</td><td>❌</td><td>✅</td></tr>
+        <tr><td>显示图片</td><td>❌</td><td>✅</td><td>❌</td><td>✅</td></tr>
         <tr><td>播放视频</td><td>❌</td><td>❌</td><td>✅</td><td>❌</td></tr>
         <tr><td>自定义控件布局</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
-        <tr><td>按钮区</td><td>✅</td><td>❌</td><td>❌</td><td>✅（按钮控件）</td></tr>
-        <tr><td>进度条</td><td>❌</td><td>❌</td><td>✅（播放进度）</td><td>✅（进度控件）</td></tr>
+        <tr><td>按钮区</td><td>✅</td><td>❌</td><td>❌</td><td>✅</td></tr>
+        <tr><td>进度条</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td></tr>
         <tr><td>选项卡</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
-        <tr><td>镂空</td><td>❌</td><td>✅</td><td>❌</td><td>❌</td></tr>
-        <tr><td>亚克力</td><td>✅</td><td>✅（非镂空）</td><td>❌</td><td>✅</td></tr>
-        <tr><td>代码逻辑</td><td>❌</td><td>❌</td><td>❌</td><td>❌（但可被全局命令操控）</td></tr>
+        <tr><td>镂空</td><td>❌</td><td>✅</td><td>❌</td><td>✅</td></tr>
+        <tr><td>亚克力</td><td>✅</td><td>✅</td><td>❌</td><td>✅</td></tr>
+        <tr><td>代码逻辑</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
         <tr><td>学习成本</td><td>低</td><td>低</td><td>中</td><td>高</td></tr>
         <tr><td>灵活度</td><td>低</td><td>中</td><td>中</td><td>极高</td></tr>
     </tbody>
@@ -890,7 +934,12 @@ closeEvent 被触发
 <p>A：能，但要看模类数据的背景色设置。如果模类数据里 <code>bg_color</code> 是不透明的颜色，亚克力会在背景之上叠加，效果可能不太理想。如果 <code>bg_color</code> 是透明的，亚克力就能正常显示。详见 <a href="acrylic_mica.html">亚克力与云母</a>。</p>
 
 <h3>Q12：模类框能镂空吗？</h3>
-<p>A：不能。模类框不支持镂空（镂空是图片框专属功能）。详见 <a href="hollow_window.html">镂空窗口</a>。</p>
+<p>A：<strong>支持「窗口背景镂空」，不支持「图片镂空」。</strong>这两种镂空在 Itoc 里是两回事：</p>
+<ul>
+    <li><strong>窗口背景镂空</strong>（模类框 ✅ 支持）：把 <code>window_background</code> 设成假、<code>window_style</code> 设成 <code>borderless</code>，窗口背景就是真透明（<code>WA_TranslucentBackground</code>）；如果 <code>window_style</code> 不是 borderless，会走色键透明（<code>paintEvent</code> 填 <code>(1,2,3)</code> + <code>SetLayeredWindowAttributes</code>）。两种方式都只让「窗口背景」透明，窗口里的控件本身不透明。</li>
+    <li><strong>图片镂空</strong>（模类框 ❌ 不支持）：那是图片框专属的「图片色度抠图 / 透明通道」功能，模类框里的图片控件是 QLabel，不支持色度抠图。</li>
+</ul>
+<p>所以如果你想让模类框「窗口本身透明，只显示控件」，用第一种就行。详见 <a href="hollow_window.html">镂空窗口</a> 的「窗口背景镂空」小节。</p>
 
 <h3>Q13：模类框支持工具窗样式吗？</h3>
 <p>A：支持，但会限制按钮显示（只保留关闭按钮）。详见第六节「模类框 + 样式钮：谁说了算」。</p>
@@ -911,6 +960,8 @@ closeEvent 被触发
     <li><strong>关闭流程</strong>：六步走（防重入 → 释放阵列槽位 → 处理 hard_flash → 播出场动画 → 清理注册 → 真正 close）。</li>
     <li><strong>阵列 / 编组 / 镜像克隆</strong>：模类框都支持，因为它是真实窗口。</li>
     <li><strong>不生效字段</strong>：<code>window_content</code>、<code>custom_size_enabled</code>、<code>window_icon</code>、<code>window_control</code>、<code>window_button</code> 在模类框下不生效。</li>
+    <li><strong>外观以模类数据为准</strong>：<code>window_style</code> / <code>window_background</code> / <code>window_material</code> / <code>window_topmost</code> / <code>window_opacity</code> 这五个字段，CZEmakers 侧不参与决策，改要去模类设计器的窗口属性面板改。</li>
+    <li><strong>支持窗口背景镂空</strong>：把 <code>window_background</code> 关掉即可（borderless 走真透明，其他样式走色键透明）。但<strong>不支持图片镂空</strong>（那是图片框专属的色度抠图 / 透明通道功能）。</li>
 </ul>
 
 <p>模类框是 Itoc 里最自由、也最复杂的窗口类型。它的复杂性不在于「用法难」，而在于「它和模类设计器、模类管理器、CZEmaker 面板、全局命令系统都有交叉」。搞清楚了这些交叉关系，你就能把模类框玩得飞起喵 ( ⓛ ω ⓛ *)</p>

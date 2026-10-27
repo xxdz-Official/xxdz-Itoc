@@ -62,8 +62,9 @@
                 <li class="toc-group"><span>弹窗编排</span></li>
                 <li class="toc-item" data-file="czemaker.html"><a href="czemaker.html" rel="noopener"><span>CZEmaker 弹窗编排 · 基础篇</span></a></li>
                 <li class="toc-item" data-file="czemaker_advanced.html"><a href="czemaker_advanced.html" rel="noopener"><span>CZEmaker 弹窗编排 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="pitch_assign.html"><a href="pitch_assign.html" rel="noopener"><span>按音高应用配参</span></a></li>
                 <li class="toc-item" data-file="window_style.html"><a href="window_style.html" rel="noopener"><span>窗口样式钮</span></a></li>
-                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口（图片镂空 + 窗口背景镂空）</span></a></li>
+                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口</span></a></li>
                 <li class="toc-item" data-file="acrylic_mica.html"><a href="acrylic_mica.html" rel="noopener"><span>亚克力与云母</span></a></li>
                 <li class="toc-item" data-file="window_type_regular.html"><a href="window_type_regular.html" rel="noopener"><span>普通弹窗（信息/警告/错误/询问）</span></a></li>
                 <li class="toc-item" data-file="window_type_image.html"><a href="window_type_image.html" rel="noopener"><span>图片框</span></a></li>
@@ -122,7 +123,7 @@
                 <li class="toc-item" data-file="cooperation.html"><a href="cooperation.html" rel="noopener"><span>协作</span></a></li>
                 <li class="toc-item" data-file="ctrl_z_undo_redo.html"><a href="ctrl_z_undo_redo.html" rel="noopener"><span>撤销与重做</span></a></li>
                 <li class="toc-item" data-file="archive_rollback.html"><a href="archive_rollback.html" rel="noopener"><span>工程的归档与回滚</span></a></li>
-                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作（小電AI）</span></a></li>
+                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作</span></a></li>
                 <li class="toc-item" data-file="dianzi_ai_assistant.html"><a href="dianzi_ai_assistant.html" rel="noopener"><span>電籽 AI 助手</span></a></li>
                 <li class="toc-item" data-file="advanced_ai_model.html"><a href="advanced_ai_model.html" rel="noopener"><span>如何调用高级 AI 模型</span></a></li>
                 <li class="toc-group"><span>渲染与输出</span></li>
@@ -232,6 +233,11 @@
     "width": 800,
     "height": 600,
     "bg_color": "#F0F0F0",
+    "window_style": "normal_fixed",
+    "window_background": true,
+    "window_material": false,
+    "window_topmost": true,
+    "window_opacity": 100,
     "minimize_btn": true,
     "maximize_btn": true,
     "close_btn": true,
@@ -265,6 +271,10 @@
 <div class="note">
     <strong>📌 记住这个心法：</strong><br>
     模类文件里没有"逻辑"，只有"外观"。你看到的每一个字段，都是描述"这个窗口长什么样"的。什么时候弹、弹在哪、弹多久，全部由音符的 CZEmaker 配置和 Itoc 全局命令决定。
+</div>
+
+<div class="tip">
+    <strong>💡 新建模类时默认就带上面那 5 个窗口外观字段</strong>（<code>window_style</code> / <code>window_background</code> / <code>window_material</code> / <code>window_topmost</code> / <code>window_opacity</code>），所以新模类一保存就有。旧模类没有这些字段也没关系，打开时会自动按默认值补齐——具体默认值和联动规则见 <a href="uiclass_2.html">《模类设计器详解》</a> 的 <strong>1.1 顶层字段详解</strong> 和 <strong>1.2 默认值与归一化规则</strong>。
 </div>
 
 <h2>三、模类设计器长什么样？</h2>
@@ -399,6 +409,12 @@
     如果你是刚开始玩、只想在这个工程里用一下，选<strong>「保存到 czemidi 工程内置」</strong>就对了。它会直接把模类数据存进工程文件里，之后无论工程文件被拷到哪里，模类都跟着走。<br><br>
     如果你觉得这个模类挺通用、以后别的工程也想用，选<strong>「以上两者都保存」</strong>——同时存一份到工程里用，再存一份到全局文件夹备用。<br><br>
     <strong>新手不推荐</strong>单独用「保存为全局模类」，因为 Itoc 解释器（runCZE）只读取工程内置模类，纯全局模类运行时用不了（这个坑我们在进阶篇会详细解释）。
+</div>
+
+<div class="note">
+    <strong>📌 保存对话框里可以改文件名：</strong><br>
+    保存对话框最上面有一个「文件名」输入框，默认填的是模类名。你可以改成别的名字再保存，比如模类叫「登录对话框」但文件想叫 <code>LoginDialog.UIclass</code>，直接改就行。程序会自动补 <code>.UIclass</code> 后缀（如果你手打的时候已经带了，不会重复加）。<br><br>
+    保存到全局模类时如果重名，程序会自动加 <code>_1</code>、<code>_2</code> 这样的后缀，不会覆盖已有的文件。
 </div>
 
 <h3>5.2 保存后发生了什么？</h3>
@@ -673,13 +689,50 @@
     <li>模类是 Itoc 的<strong>自定义窗口前端</strong>，文件扩展名 <code>.UIclass</code></li>
     <li>它没有代码逻辑，只负责"长什么样"，什么时候弹由 Itoc 控制</li>
     <li>模类文件本质是 JSON，顶层描述窗口，<code>components</code> 数组描述控件</li>
+    <li>新建模类默认带 5 个<strong>窗口外观字段</strong>：<code>window_style</code> / <code>window_background</code> / <code>window_material</code> / <code>window_topmost</code> / <code>window_opacity</code></li>
     <li>模类设计器是一个可视化编辑器，有菜单栏、工具栏、控件列表、设计区、属性面板、JSON 视图</li>
     <li>可以用拖拽或点击的方式添加控件，在属性面板里编辑属性</li>
     <li><strong>模类有四种保存方式</strong>：保存到文件、保存到工程内置、两者都保存、保存为全局模类</li>
+    <li>保存对话框里<strong>可以改文件名</strong>；保存到全局时重名会自动加 <code>_1</code> / <code>_2</code> 后缀</li>
     <li>新手推荐<strong>「保存到工程内置」</strong>，因为 Itoc 解释器只读工程内置模类</li>
     <li><strong>模类管理器</strong>是管理模类的工具，有两个选项卡（工程内置 / Itoc全局），可以刷新、新建、导入、导出、删除、编辑、重命名、搜索、克隆</li>
     <li>在 CZEmaker 里把窗口类型选成"模类框"，再选具体模类，就能在工程里用了</li>
+    <li><strong>崩溃了不会丢东西</strong>：每次修改都会自动保存草稿，下次启动会弹恢复提示；恢复后是只读状态，需要「另存为」</li>
+    <li><strong>关闭前会做兜底快照比对</strong>：就算修改标记没点亮，只要内容变了也会提示保存</li>
 </ul>
+
+<h2>十、崩溃了怎么办：自动保存与恢复</h2>
+
+<p>模类设计器有一个"崩溃恢复"机制，防止你搭了半小时的窗口因为一次闪退白干。规则如下：</p>
+
+<ul>
+    <li><strong>每次修改都会自动保存草稿</strong>：只要动了任何控件（拖动、改属性、加删控件），设计器都会往临时文件夹写一份自动保存文件。这个动作不需要你手动点保存。</li>
+    <li><strong>正常保存后草稿会保留</strong>：即使你手动保存过了，草稿文件也还在，只是内容与已保存的版本一致。</li>
+    <li><strong>正常关闭编辑器时草稿会删除</strong>：这是为了避免下次启动时误弹"恢复"提示。所以只有**崩溃/强杀进程**后，草稿才会留着。</li>
+    <li><strong>下次启动会弹恢复提示</strong>：检测到草稿存在时，新建模类会先弹一个对话框，问你要不要恢复。选「恢复」会加载草稿内容，选「不恢复」会删掉草稿、正常新建。</li>
+</ul>
+
+<div class="warning">
+    <strong>⚠️ 恢复后的模类是只读状态：</strong><br>
+    从草稿恢复出来的模类，窗口标题栏会显示「(自动恢复 - 只读)」，不能直接点保存覆盖。你需要在「文件」→「另存为」里另存成一个新文件，才能继续正常保存和编辑。这是故意设计的——防止你的草稿覆盖掉已保存的正式版本。
+</div>
+
+<div class="tip">
+    <strong>💡 怎么判断"我上次是不是崩溃了"？</strong><br>
+    看新建模类时有没有弹「恢复自动保存的模类？」那个对话框。有弹，说明上次非正常退出；没弹，说明上次正常关闭，草稿已删。这个对话框只在检测到草稿时出现，所以平时正常用是看不到它的。
+</div>
+
+<h2>十一、关闭前的兜底快照比对</h2>
+
+<p>就算你自己忘了保存、程序也忘记标记"已修改"，也不会丢东西。关闭模类窗口时，程序会做一次<strong>内容快照比对</strong>：把当前内容和上次保存时的内容逐字段对比，只要有差异就会弹「还没保存呢就点关闭？」的提示。</p>
+
+<p>所以有两种情况它会提示你保存：</p>
+<ul>
+    <li><strong>正常情况</strong>：你确实改了东西，修改标记被点亮了，关闭时提示保存。</li>
+    <li><strong>兜底情况</strong>：修改标记因为某些原因没被点亮（比如你改了什么没触发事件的属性），关闭时快照比对发现内容不一样，也会提示保存。</li>
+</ul>
+
+<p>换句话说：<strong>只要内容变了，关闭时一定提示你</strong>。你不用担心"改了但没提示、直接关了丢东西"。</p>
 
 <p>下一篇 <a href="uiclass_2.html">《模类设计器详解》</a>，我们会把 10 种控件、属性面板的每一项、JSON 语法规范、链接系统、图片嵌入、字体系统全部讲透。准备好了吗？Let's go！ (๑•̀ㅂ•́)و✧</p>
         </main>

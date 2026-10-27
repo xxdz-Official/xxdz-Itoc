@@ -62,8 +62,9 @@
                 <li class="toc-group"><span>弹窗编排</span></li>
                 <li class="toc-item" data-file="czemaker.html"><a href="czemaker.html" rel="noopener"><span>CZEmaker 弹窗编排 · 基础篇</span></a></li>
                 <li class="toc-item" data-file="czemaker_advanced.html"><a href="czemaker_advanced.html" rel="noopener"><span>CZEmaker 弹窗编排 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="pitch_assign.html"><a href="pitch_assign.html" rel="noopener"><span>按音高应用配参</span></a></li>
                 <li class="toc-item" data-file="window_style.html"><a href="window_style.html" rel="noopener"><span>窗口样式钮</span></a></li>
-                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口（图片镂空 + 窗口背景镂空）</span></a></li>
+                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口</span></a></li>
                 <li class="toc-item" data-file="acrylic_mica.html"><a href="acrylic_mica.html" rel="noopener"><span>亚克力与云母</span></a></li>
                 <li class="toc-item" data-file="window_type_regular.html"><a href="window_type_regular.html" rel="noopener"><span>普通弹窗（信息/警告/错误/询问）</span></a></li>
                 <li class="toc-item" data-file="window_type_image.html"><a href="window_type_image.html" rel="noopener"><span>图片框</span></a></li>
@@ -122,7 +123,7 @@
                 <li class="toc-item" data-file="cooperation.html"><a href="cooperation.html" rel="noopener"><span>协作</span></a></li>
                 <li class="toc-item" data-file="ctrl_z_undo_redo.html"><a href="ctrl_z_undo_redo.html" rel="noopener"><span>撤销与重做</span></a></li>
                 <li class="toc-item" data-file="archive_rollback.html"><a href="archive_rollback.html" rel="noopener"><span>工程的归档与回滚</span></a></li>
-                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作（小電AI）</span></a></li>
+                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作</span></a></li>
                 <li class="toc-item" data-file="dianzi_ai_assistant.html"><a href="dianzi_ai_assistant.html" rel="noopener"><span>電籽 AI 助手</span></a></li>
                 <li class="toc-item" data-file="advanced_ai_model.html"><a href="advanced_ai_model.html" rel="noopener"><span>如何调用高级 AI 模型</span></a></li>
                 <li class="toc-group"><span>渲染与输出</span></li>
@@ -424,7 +425,7 @@
 
 <ol>
     <li><strong>查找模类数据</strong>：从工程内置模类里查找选中的模类（不读全局文件夹）</li>
-    <li><strong>读取窗口属性</strong>：读取模类里的 <code>name</code>、<code>width</code>、<code>height</code>、<code>bg_color</code>、<code>minimize_btn</code>、<code>maximize_btn</code>、<code>close_btn</code>、<code>help_btn</code>、<code>taskbar_show</code>、<code>esc_close</code>、<code>close_btn_close</code>、<code>resizable</code></li>
+    <li><strong>读取窗口外观</strong>：<strong>全部来自模类数据，不读 CZEmakers 样式钮</strong>。字段包括 <code>name</code>、<code>width</code>、<code>height</code>、<code>bg_color</code>、<code>window_style</code>、<code>window_background</code>、<code>window_material</code>、<code>window_topmost</code>、<code>window_opacity</code>、<code>minimize_btn</code>、<code>maximize_btn</code>、<code>close_btn</code>、<code>help_btn</code>、<code>taskbar_show</code>、<code>esc_close</code>、<code>close_btn_close</code>、<code>resizable</code>、<code>icon_data_base64</code></li>
     <li><strong>计算窗口位置</strong>：根据 CZEmaker 里的 <code>window_position</code> 配置计算位置，支持屏幕坐标、屏幕对齐、窗口链接、屏幕随机四种模式</li>
     <li><strong>处理阵列接管</strong>：如果编组被阵列接管，会用绿点位置覆盖计算出的位置</li>
     <li><strong>应用控制钮</strong>：根据控制钮配置显示/隐藏窗口标题栏上的关闭、最大化、最小化、帮助按钮</li>
@@ -440,6 +441,17 @@
     <li><strong>显示窗口</strong>：带过渡动画显示</li>
     <li><strong>设置寿命</strong>：如果设置了窗口寿命，定时关闭</li>
 </ol>
+
+<div class="note">
+    <strong>📌 字段来源速查：哪些字段归模类，哪些归 cze？</strong><br>
+    创建模类框时，不同字段的读取来源是分开的，不要混着找：<br>
+    · <strong>窗口外观</strong>（样式、背景、亚克力、置顶、透明度、按钮、图标、任务栏、ESC、可调）→ 全部来自 <code>.UIclass</code> 顶层字段<br>
+    · <strong>弹在哪</strong>（<code>window_position</code>）→ 来自音符的 <code>cze_makers</code><br>
+    · <strong>弹多久</strong>（<code>window_life</code>）→ 来自音符的 <code>cze_makers</code><br>
+    · <strong>入场/出场动画</strong>（<code>transition</code>）→ 来自音符本身的独立字段（不在 cze_makers 里）<br>
+    · <strong>选哪个模类</strong>（<code>selected_class_name</code>）→ 来自音符的 <code>cze_makers</code><br>
+    换句话说：<strong>外观归模类，位置/寿命/过渡/选哪个归 CZEmaker</strong>。模类文件里的 <code>window_position</code> / <code>window_group</code> 等字段会被读取一次作为初值，但运行时会以 cze 配参里的为准。
+</div>
 
 <h3>4.3 预览和运行时的关系</h3>
 
@@ -514,6 +526,8 @@
 <h3>6.2 窗口背景色</h3>
 
 <p>模类的背景色由 <code>bg_color</code> 字段控制，默认 <code>#FFFFFF</code>（白色）。在模类设计器里，选中窗口背景，属性面板里会显示「背景颜色」一项，点击 ▼ 按钮可以选预设颜色，也可以选「自定义颜色...」打开颜色选择器。</p>
+
+<p><strong>设计态灰色示意：</strong>当 <code>window_background</code> 被关掉时，模类设计器的 MDI 子窗口会用浅灰 <code>QColor(232,232,232)</code> 提示"这里是透明的"。这个灰色<strong>不会写进 JSON</strong>，只是设计态的视觉提示。运行时按透明策略走（四种分支详见 <a href="acrylic_mica.html">《亚克力与云母》</a> 的"透明策略"一节），不要把它误当成"导出后就是这样"。</p>
 
 <h3>6.3 窗口透明度</h3>
 
@@ -623,6 +637,16 @@
     <li>帮助按钮会占用最大化按钮的位置，所以启用帮助时自动禁用最大化</li>
 </ul>
 
+<h3>7.6 编辑器侧的运行时无关限制</h3>
+
+<p>下面这些不是运行时限制，而是模类设计器本身的行为，但会影响你的工作流程，也一并说清楚：</p>
+
+<ul>
+    <li><strong>撤销栈上限 200 步</strong>：撤销/重做用的是"JSON 全文本快照"，最多保留 200 步。超过会丢掉最老的快照。所以别指望撤回很远的历史。</li>
+    <li><strong>自动保存会在正常退出时删除</strong>：模类设计器每次编辑都会写 <code>temp/taep_save_UIclass/auto_save_recovery.UIclass</code>，但正常保存关闭后会删除它。只有崩溃/强杀进程时才会留着，下次启动才提示恢复。</li>
+    <li><strong>编辑模式下关闭会静默保存到临时文件</strong>：从主程序打开模类时是"编辑模式"，关闭时不会弹"是否保存"对话框，而是直接写到临时文件，供主程序回读。想手动另存，用「文件」→「另存为」。</li>
+</ul>
+
 <h2>八、模类的最佳实践</h2>
 
 <h3>8.1 命名规范</h3>
@@ -687,6 +711,7 @@
     ↓
 ⑤ 测试运行 → 调整 → 保存工程 → 编译 exe
     · F5 测试运行，看效果，不满意就回模类设计器改
+    · 模类设计器每次编辑都会自动保存草稿；如果崩溃了，下次启动会弹"恢复自动保存的模类？"（恢复后是只读状态，需要"另存为"）
     ↓
 ⑥ 完成！(大概吧，除非你只为了测试模类)</div>
 
@@ -700,11 +725,13 @@
     <li>模类管理器的进阶用法：哈希去重、同名冲突处理对话框、克隆、重命名机制、搜索过滤</li>
     <li>模类与 CZEmaker 的深入配合：模类框 UI 变化、window_type 兼容性、配参复用</li>
     <li>模类在解释器中的运行机制：创建流程、两遍创建控件的原因</li>
+    <li><strong>窗口外观字段全在模类里</strong>：<code>window_style</code> / <code>window_background</code> / <code>window_material</code> / <code>window_topmost</code> / <code>window_opacity</code> 等，运行时只读模类数据，不读 CZEmakers 样式钮</li>
+    <li><strong>字段来源划分</strong>：外观归模类，位置/寿命/过渡/选哪个归 CZEmaker</li>
     <li>模类与全局命令的联动：位移动画、关闭、焦点、阵列、镜像克隆、脱壳模式</li>
     <li>模类的图标、背景、透明度、过渡动画</li>
-    <li>注意事项与已知限制：链接系统可靠性、运行时只读工程内置、性能建议</li>
+    <li>注意事项与已知限制：链接系统可靠性、运行时只读工程内置、性能建议、<strong>编辑器侧限制（撤销栈 200 步 / 自动保存退出即删 / 编辑模式静默保存）</strong></li>
     <li>最佳实践：命名、布局、图片、进度条、复用</li>
-    <li>完整工作流：从搭模类到测试运行的六步流程</li>
+    <li>完整工作流：从搭模类到测试运行的六步流程（含自动保存/崩溃恢复提示）</li>
 </ul>
 
 <p>到这里，模类的三篇帮助文档就全部讲完了。从"是什么"到"怎么用"再到"怎么玩出花"，希望这三篇能帮你把模类玩得明明白白。如果还有不明白的地方，可以打开模类设计器里的「了解模类语法」文档，那里有最权威的字段说明。</p>

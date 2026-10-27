@@ -63,8 +63,9 @@
                 <li class="toc-group"><span>弹窗编排</span></li>
                 <li class="toc-item" data-file="czemaker.html"><a href="czemaker.html" rel="noopener"><span>CZEmaker 弹窗编排 · 基础篇</span></a></li>
                 <li class="toc-item" data-file="czemaker_advanced.html"><a href="czemaker_advanced.html" rel="noopener"><span>CZEmaker 弹窗编排 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="pitch_assign.html"><a href="pitch_assign.html" rel="noopener"><span>按音高应用配参</span></a></li>
                 <li class="toc-item" data-file="window_style.html"><a href="window_style.html" rel="noopener"><span>窗口样式钮</span></a></li>
-                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口（图片镂空 + 窗口背景镂空）</span></a></li>
+                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口</span></a></li>
                 <li class="toc-item active" data-file="acrylic_mica.html"><a href="acrylic_mica.html" rel="noopener"><span>亚克力与云母</span></a></li>
                 <li class="toc-item" data-file="window_type_regular.html"><a href="window_type_regular.html" rel="noopener"><span>普通弹窗（信息/警告/错误/询问）</span></a></li>
                 <li class="toc-item" data-file="window_type_image.html"><a href="window_type_image.html" rel="noopener"><span>图片框</span></a></li>
@@ -123,7 +124,7 @@
                 <li class="toc-item" data-file="cooperation.html"><a href="cooperation.html" rel="noopener"><span>协作</span></a></li>
                 <li class="toc-item" data-file="ctrl_z_undo_redo.html"><a href="ctrl_z_undo_redo.html" rel="noopener"><span>撤销与重做</span></a></li>
                 <li class="toc-item" data-file="archive_rollback.html"><a href="archive_rollback.html" rel="noopener"><span>工程的归档与回滚</span></a></li>
-                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作（小電AI）</span></a></li>
+                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作</span></a></li>
                 <li class="toc-item" data-file="dianzi_ai_assistant.html"><a href="dianzi_ai_assistant.html" rel="noopener"><span>電籽 AI 助手</span></a></li>
                 <li class="toc-item" data-file="advanced_ai_model.html"><a href="advanced_ai_model.html" rel="noopener"><span>如何调用高级 AI 模型</span></a></li>
                 <li class="toc-group"><span>渲染与输出</span></li>
@@ -161,7 +162,9 @@
 
 <h2>入口</h2>
 
-<p>亚克力/云母的开关在「样式钮」的设置对话框里。打开方式：</p>
+<p>亚克力/云母现在有<strong>两处入口</strong>，分别对应两类窗口。别看开关都叫"亚克力"，它们写进去的<strong>字段其实不一样</strong>，混用会踩坑。</p>
+
+<h3>入口一：CZEmakers 样式钮（给常规弹窗 / 图片框用）</h3>
 <ol>
     <li>在 CZEmaker 面板顶部右侧找到「样式钮」下拉框。</li>
     <li>选择「设置」，打开「窗口控制按钮与窗口样式设置」对话框。</li>
@@ -170,13 +173,27 @@
 
 <p>勾选之后点确定，配置就保存了。下次弹窗出现时会应用这个效果。</p>
 
+<h3>入口二：模类设计器 → 窗口属性面板（只给模类框用）</h3>
+<ol>
+    <li>在模类设计器里，<strong>不选中任何控件</strong>，直接点设计区空白处（或点 MDI 子窗口的标题栏），左侧属性列表会切换到「窗口属性」。</li>
+    <li>找到「亚克力/云母」这一行，点右侧 ▼ 切成「真」。</li>
+    <li>程序会自动把「窗口背景」也切成「真」（双向联动，见下一节）。</li>
+</ol>
+
 <div class="tip">
-    <strong>💡 复选框的悬浮提示：</strong> 鼠标悬停在「亚克力或云母」复选框上，会显示一段提示：「勾选此框后，窗口将呈现半透明磨砂玻璃效果（亚克力/云母），需要运行时的系统支持。如果取消勾选『窗口背景』，此功能将失效喵」。
+    <strong>💡 两条入口写的是不同字段，别搞混：</strong><br>
+    · 入口一写的是音符的 <code>cze_makers.window_control_detail.window_material</code>；<br>
+    · 入口二写的是模类文件 <code>.UIclass</code> 顶层的 <code>window_material</code>。<br>
+    模类框在运行时以<strong>模类数据为准</strong>，CZEmakers 样式钮里那两项在模类框下不参与决策（详见「应用范围」一节）。
+</div>
+
+<div class="tip">
+    <strong>💡 复选框的悬浮提示：</strong> 鼠标悬停在「亚克力或云母」复选框上（CZEmakers 那边），会显示一段提示：「勾选此框后，窗口将呈现半透明磨砂玻璃效果（亚克力/云母），需要运行时的系统支持。如果取消勾选『窗口背景』，此功能将失效喵」。
 </div>
 
 <h2>和「窗口背景」的联动</h2>
 
-<p>亚克力必须配合「窗口背景」使用。两条联动规则：</p>
+<p>亚克力必须配合「窗口背景」使用。CZEmakers 那边有两条联动规则：</p>
 
 <ul>
     <li><strong>勾选亚克力 → 自动勾选窗口背景。</strong> 因为亚克力需要窗口有实际的背景层来承载模糊效果，没背景就没处模糊。</li>
@@ -185,8 +202,14 @@
 
 <p>这套联动是双向的、实时生效的。你在对话框里勾一个，另一个会自动跟着变，不需要手动同步。</p>
 
+<p><strong>模类设计器那边也是同样的双向联动</strong>（<code>_set_bool_value</code> + <code>_normalize_window_style_conflicts</code>）：</p>
+<ul>
+    <li>把 <code>window_material</code> 改成真 → <code>window_background</code> 自动变真</li>
+    <li>把 <code>window_background</code> 改成假 → <code>window_material</code> 自动变假</li>
+</ul>
+
 <div class="warning">
-    <strong>⚠️ 注意：</strong> 如果你在配置文件里手动把 <code>window_material=true</code> 和 <code>window_background=false</code> 同时写进去，程序在创建窗口时会以「窗口背景」为准——不勾背景就不启用亚克力。所以别在配置里制造矛盾。
+    <strong>⚠️ 注意：</strong> 如果你在配置文件里手动把 <code>window_material=true</code> 和 <code>window_background=false</code> 同时写进去，程序在创建窗口时会以「窗口背景」为准——不勾背景就不启用亚克力。所以别在配置里制造矛盾。模类设计器打开时会先跑一遍归一化，把这种矛盾组合直接纠正成"背景真、亚克力假"。
 </div>
 
 <h2>Win32 实现原理</h2>
@@ -198,6 +221,8 @@
     <li>构造一个 <code>WINDOWCOMPOSITIONATTRIBDATA</code> 结构体，<code>Attribute</code> 设为 <code>WCA_ACCENT_POLICY</code>（值为 19），<code>Data</code> 指向上面那个 ACCENTPOLICY。</li>
     <li>调用 <code>user32.SetWindowCompositionAttribute(hwnd, &data)</code>。</li>
 </ol>
+
+<p><strong>代码里有两份 <code>enable_acrylic</code> 副本：</strong>一份在 <code>runCZE.py</code>（运行时给弹窗用），一份在 <code>UI_Class.py</code>（模类设计器预览用）。两份逻辑完全一致，都是 <code>ACCENT_ENABLE_ACRYLICBLURBEHIND = 4</code> + <code>WCA_ACCENT_POLICY = 19</code>，Win11 都额外修标题栏颜色。所以你不用担心"预览看到的效果和运行时不一样"。</p>
 
 <p>如果系统是 Windows 11，函数还会额外调两次 <code>DwmSetWindowAttribute</code>：</p>
 <ul>
@@ -237,7 +262,7 @@
 <ul>
     <li><strong>常规弹窗（信息框/警告框/错误框/询问框）</strong>：支持。窗口设置 <code>WA_TranslucentBackground</code>，内容区透明，然后调 <code>enable_acrylic</code>。</li>
     <li><strong>图片框</strong>：支持（非镂空模式）。镂空图片框不支持，因为镂空窗口本身就是全透明的，亚克力无处附着。</li>
-    <li><strong>模类框</strong>：支持。模类框创建时如果 <code>window_material=true</code>，会在窗口 show 之后调 <code>enable_acrylic</code>。</li>
+    <li><strong>模类框</strong>：支持，但<strong>外观字段全部以模类数据为准</strong>。运行时 <code>create_class_popup</code> 读的是模类文件里的 <code>window_material</code> / <code>window_background</code> / <code>window_style</code>，而不是 CZEmakers 样式钮里那几项。所以模类框想开亚克力，必须在<strong>模类设计器的窗口属性面板</strong>里勾，不是在 CZEmakers 那边勾。</li>
     <li><strong>视频框</strong>：<strong>不支持</strong>。视频框是 mpv 进程的窗口，不受 Qt 控制，无法应用 Qt 的透明背景 + Win32 亚克力组合。</li>
     <li><strong>气泡/通知</strong>：不支持。气泡是系统通知，不是 Itoc 创建的窗口。</li>
 </ul>
@@ -252,6 +277,8 @@
 </ul>
 
 <p>两者可以叠加使用。比如「透明度 80% + 亚克力」= 整体 80% 不透明，背景有模糊效果。但叠加太多可能会导致视觉混乱，建议二选一，或者透明度不要调太低。</p>
+
+<p><strong>模类设计器那边：</strong> <code>window_opacity</code> 是 <strong>0~100 的整数</strong>（不是字符串百分比）。属性面板里点 ▼ 会弹整数输入框，越界会自动裁剪到 0~100；导出到 JSON 后，运行时和预览都按 <code>opacity / 100</code> 换算成 0.0~1.0。</p>
 
 <h2>与镂空的关系</h2>
 
@@ -273,9 +300,14 @@
     <li>所以不勾「窗口背景」时，亚克力被自动取消。</li>
 </ul>
 
+<p><strong>模类设计器里也一样：</strong>当 <code>window_background=false</code> 且 <code>window_style</code> 不是 <code>borderless</code> 时，模类窗口会自动走色键透明路径（<code>paintEvent</code> 填 <code>(1,2,3)</code> + <code>apply_colorkey_transparent</code>），而不是亚克力。想用亚克力，先把 <code>window_background</code> 勾回来。</p>
+
 <h2>配置文件字段</h2>
 
-<p>亚克力配置保存在音符的 <code>cze_makers.window_control_detail</code> 里：</p>
+<p>亚克力相关字段分<strong>两组</strong>，分别存在不同地方。改之前先搞清楚你在改哪一份，不然改完没生效。</p>
+
+<h3>7.1 CZEmakers 侧（常规弹窗 / 图片框）</h3>
+<p>保存在音符的 <code>cze_makers.window_control_detail</code> 里：</p>
 
 <ul>
     <li><code>window_material</code>：布尔，是否启用亚克力/云母。默认 <code>false</code>。</li>
@@ -296,6 +328,36 @@
   }
 }</code></pre>
 
+<h3>7.2 模类侧（模类框）</h3>
+<p>保存在 <code>.UIclass</code> 文件<strong>顶层</strong>（不是 <code>components</code> 里），与窗口背景、样式一起决定模类框的外观：</p>
+
+<ul>
+    <li><code>window_material</code>：布尔，是否启用亚克力/云母。默认 <code>false</code>。</li>
+    <li><code>window_background</code>：布尔，是否绘制窗口背景。默认 <code>true</code>。</li>
+    <li><code>window_style</code>：窗口样式，影响透明策略分支（详见 <a href="window_style.html">《窗口样式钮》</a>）。</li>
+    <li><code>window_topmost</code>：窗口置顶（注意不是 <code>topmost</code>）。</li>
+    <li><code>window_opacity</code>：0~100 整数，控制整体不透明度。</li>
+</ul>
+
+<p>示例（模类文件片段）：</p>
+<pre><code>{
+  "name": "我的亚克力窗口",
+  "width": 800,
+  "height": 400,
+  "bg_color": "#FFFFFF",
+  "window_style": "normal_fixed",
+  "window_background": true,
+  "window_material": true,
+  "window_topmost": true,
+  "window_opacity": 100,
+  "components": [ ... ]
+}</code></pre>
+
+<div class="tip">
+    <strong>💡 模类框在运行时会忽略 CZEmakers 样式钮里的同名项：</strong><br>
+    即使你在 CZEmakers 里给模类框勾了亚克力，运行时也会以模类数据里的 <code>window_material</code> 为准。这是 <code>create_class_popup</code> 里那句 <code># 首个版本：一律以模类数据为准，不再从配参读</code> 的实际含义。
+</div>
+
 <p>旧工程没有 <code>window_material</code> 字段时，默认为 <code>false</code>，不会自动开启亚克力。这是为了保持兼容，避免旧工程突然变样。</p>
 
 <h2>性能与视觉建议</h2>
@@ -308,6 +370,7 @@
     <li>不适合内容密集的弹窗（文字多的信息框），因为背景模糊会分散注意力。</li>
     <li>深色壁纸 + 浅色亚克力效果最好；纯白壁纸 + 白色亚克力几乎看不出效果。</li>
     <li>Windows 11 的云母比 Windows 10 的亚克力更「收敛」，只有标题栏和背景轻微着色，不会过度模糊。</li>
+    <li><strong>模类设计器里"灰色"是设计态示意：</strong>当你把 <code>window_background</code> 关掉时，MDI 子窗口会用浅灰 <code>QColor(232,232,232)</code> 提示"这里透明"，这个灰色<strong>不会写进 JSON</strong>，运行时按上面的透明策略走。别把灰色误当成"导出后就是这样"。</li>
 </ul>
 
 <div class="tip">

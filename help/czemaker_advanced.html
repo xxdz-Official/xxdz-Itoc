@@ -63,8 +63,9 @@
                 <li class="toc-group"><span>弹窗编排</span></li>
                 <li class="toc-item" data-file="czemaker.html"><a href="czemaker.html" rel="noopener"><span>CZEmaker 弹窗编排 · 基础篇</span></a></li>
                 <li class="toc-item active" data-file="czemaker_advanced.html"><a href="czemaker_advanced.html" rel="noopener"><span>CZEmaker 弹窗编排 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="pitch_assign.html"><a href="pitch_assign.html" rel="noopener"><span>按音高应用配参</span></a></li>
                 <li class="toc-item" data-file="window_style.html"><a href="window_style.html" rel="noopener"><span>窗口样式钮</span></a></li>
-                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口（图片镂空 + 窗口背景镂空）</span></a></li>
+                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口</span></a></li>
                 <li class="toc-item" data-file="acrylic_mica.html"><a href="acrylic_mica.html" rel="noopener"><span>亚克力与云母</span></a></li>
                 <li class="toc-item" data-file="window_type_regular.html"><a href="window_type_regular.html" rel="noopener"><span>普通弹窗（信息/警告/错误/询问）</span></a></li>
                 <li class="toc-item" data-file="window_type_image.html"><a href="window_type_image.html" rel="noopener"><span>图片框</span></a></li>
@@ -123,7 +124,7 @@
                 <li class="toc-item" data-file="cooperation.html"><a href="cooperation.html" rel="noopener"><span>协作</span></a></li>
                 <li class="toc-item" data-file="ctrl_z_undo_redo.html"><a href="ctrl_z_undo_redo.html" rel="noopener"><span>撤销与重做</span></a></li>
                 <li class="toc-item" data-file="archive_rollback.html"><a href="archive_rollback.html" rel="noopener"><span>工程的归档与回滚</span></a></li>
-                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作（小電AI）</span></a></li>
+                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作</span></a></li>
                 <li class="toc-item" data-file="dianzi_ai_assistant.html"><a href="dianzi_ai_assistant.html" rel="noopener"><span>電籽 AI 助手</span></a></li>
                 <li class="toc-item" data-file="advanced_ai_model.html"><a href="advanced_ai_model.html" rel="noopener"><span>如何调用高级 AI 模型</span></a></li>
                 <li class="toc-group"><span>渲染与输出</span></li>
@@ -203,9 +204,32 @@
 
 <p><strong>mpv 内嵌播放器：</strong> 视频框使用 <strong>mpv 内嵌播放器</strong>。点击播放/暂停按钮会启动 mpv 进程，然后把 mpv 窗口「吸」到视频预览容器里。</p>
 
+<p><strong>关键启动参数：</strong> 为了让后续的「透明度」「置顶」「无边框」能生效，程序启动 mpv 时会额外带这些参数：</p>
+<ul>
+    <li><code>--gpu-api=opengl --gpu-context=win</code>：<strong>必须</strong>。mpv 默认用 D3D11 Flip 模型渲染，会绕过 Win32 分层合成，导致外部 <code>SetLayeredWindowAttributes</code> 设的透明度被忽略。改用 OpenGL(WGL) 后端后，mpv 窗口是标准 GDI 窗口，透明度和置顶都能生效。</li>
+    <li><code>--no-border</code>：无边框模式下由 mpv 自己在创建窗口时走无边框路径。光靠事后用 <code>SetWindowLongW</code> 裁 <code>WS_CAPTION</code>，在 OpenGL 后端 + DWM 组合下不够，DWM 仍会画一层细边框。</li>
+    <li><code>--ontop</code> / <code>--no-ontop</code>：置顶/取消置顶。注意<strong>不要写成 <code>--ontop=yes</code></strong>，某些 mpv 版本会忽略这种写法。</li>
+    <li><code>--no-keepaspect-window</code>：严格按 <code>--geometry</code> 的宽高设置窗口，避免 mpv 按视频宽高比自动调整。</li>
+</ul>
+
+<div class="warning">
+    <strong>⚠️ 不要加 <code>--window-transparency</code>：</strong> 这个参数在新版 mpv 里已经被移除，加了会秒退。<code>--d3d11-flip=no</code> 同样已被移除。Itoc 现在靠 <code>--gpu-api=opengl</code> 替代它们。
+</div>
+
 <p><strong>mpv 查找：</strong> 程序会在 <code>runCZE/</code> 目录下查找 mpv 可执行文件，优先 <code>mpv.com</code>，其次 <code>mpv.exe</code>；会遍历一级子目录，优先带 <code>v3</code> / <code>x86_64</code> 的版本。找不到时会提示你去 shinchiro 的 SourceForge 下载 mpv，解压后把整个文件夹放到 <code>runCZE\</code> 目录下。</p>
 
 <p><strong>音量与静音（<code>video_volume</code> / <code>video_muted</code>）：</strong> 音量条和音量图标按钮常驻显示。图标会随音量变化（🔇/🔈/🔉/🔊）。音量/静音状态会保存到工程，下次打开时恢复。</p>
+
+<p><strong>透明度的"持久维护"：</strong> 有些 mpv 版本在视频真正开始播放后会<strong>重建窗口</strong>，导致之前设的 <code>WS_EX_LAYERED</code> 丢失。所以视频框的透明度不是"设一次就完事"，而是：</p>
+<ul>
+    <li>窗口刚拿到句柄时，立即应用一次样式（包括透明度、置顶、边框、按钮）；</li>
+    <li>再在 300ms / 800ms / 1500ms / 2500ms 各补应用一次，覆盖 mpv 重建窗口的时间点；</li>
+    <li>如果透明度 < 100%，还会启动一个<strong>每 500ms 执行一次的维护定时器</strong>，检查 <code>WS_EX_LAYERED</code> 是否还在，不在就重新加 + 重设 alpha，直到窗口关闭。</li>
+</ul>
+<div class="tip">
+    <strong>💡 为什么必须用 64 位版本的 Get/SetWindowLongPtrW？</strong><br>
+    在 64 位 Windows 上，<code>GetWindowLongW / SetWindowLongW</code> 对 <code>WS_EX_LAYERED</code> 可能静默失败，表现为"透明度完全没效果"。程序在 64 位下会显式用 <code>GetWindowLongPtrW / SetWindowLongPtrW</code>，并在 <code>SetLayeredWindowAttributes</code> 的 alpha 参数上强制用 <code>ctypes.c_ubyte</code> 类型——这两步缺一不可。
+</div>
 
 <p><strong>进度条：</strong> 支持拖动 seek。暂停时不推进，拖动时不覆盖，松开时跳转到目标位置并同步本地计时器。</p>
 
@@ -224,6 +248,10 @@
 <p><strong>视频信息显示：</strong> 左侧有一个只读文本框，显示文件大小、分辨率、帧率、时长（格式化为 MM:SS）。</p>
 
 <p><strong>视频尺寸控制：</strong> 与图片框一样，视频也支持「自定义尺寸」复选框。视频加载时会通知主面板更新 W/H，并检查比例同步滑块。</p>
+
+<p><strong>加载后从 W/H 反算百分比：</strong> 加载已有配置时，程序不是简单地把保存的 <code>video_scale_percent</code> 填回滑块，而是拿当前的 W/H 和原始视频宽高比做一次反算：<code>percent = current_width / original_width × 100</code>，再同步回滑块。所以即使你手改过 JSON 里的 W/H、没改 <code>video_scale_percent</code>，加载后面板也会显示真实的百分比。</p>
+
+<p><strong>窗口句柄查找：</strong> mpv 启动后并不马上有窗口句柄，程序会枚举所有顶层窗口，用三种策略依次匹配：① PID 精确匹配（最可靠）；② 标题精确匹配；③ 进程名兜底（mpv 可能 fork 出子进程）。每个策略最多等 6 秒（300 次 × 20ms）。匹配到之后才开始应用样式。</p>
 
 <div class="tip">
     <strong>💡 音频说明：</strong> mpv 支持音频，音量条和静音按钮就是为音频设计的。如果听不到声音，检查 mpv 是否正常启动、音量是否为 0、是否处于静音状态。
@@ -256,7 +284,15 @@
 <h3>执行代码</h3>
 <p>这个比较特殊——它实际上 <strong>不是一种窗口类型</strong>，而是一个 <strong>全局命令</strong>。在 CZEmaker 面板里把它当成窗口类型来配置，但解释器在检测到「执行代码」时，会将代码内容在后台执行，而不会弹窗。</p>
 
-<p>执行代码时提供了 <code>QApplication</code>、<code>QWidget</code>、<code>player</code>、<code>self</code> 等上下文变量。</p>
+<p>执行代码时，环境里预先注入了大量 PyQt5 类和常用模块，可以直接用，不用 <code>import</code>：</p>
+<ul>
+    <li><strong>Qt 控件</strong>：<code>QApplication</code>、<code>QWidget</code>、<code>QLabel</code>、<code>QPushButton</code>、<code>QVBoxLayout</code>、<code>QHBoxLayout</code>、<code>QFrame</code>、<code>QMainWindow</code>、<code>QMessageBox</code>、<code>QSystemTrayIcon</code>、<code>QMenu</code>、<code>QAction</code>、<code>QStyle</code>、<code>QSizePolicy</code></li>
+    <li><strong>Qt 核心 / 动画</strong>：<code>Qt</code>、<code>QTimer</code>、<code>QThread</code>、<code>QPoint</code>、<code>QPropertyAnimation</code>、<code>QEasingCurve</code>、<code>QParallelAnimationGroup</code>、<code>QAbstractAnimation</code>、<code>QMetaObject</code>、<code>Q_ARG</code></li>
+    <li><strong>Qt 绘图</strong>：<code>QColor</code>、<code>QFont</code>、<code>QPainter</code>、<code>QPixmap</code>、<code>QImage</code>、<code>QIcon</code>、<code>QPainterPath</code>、<code>QRegion</code>、<code>QMovie</code>、<code>QSvgRenderer</code></li>
+    <li><strong>Itoc 上下文</strong>：<code>app</code>（QApplication 实例）、<code>player</code>（CzePlayer 实例）、<code>self</code>（全局命令执行器实例）</li>
+    <li><strong>常用模块</strong>：<code>sys</code>、<code>os</code>、<code>time</code>、<code>math</code>、<code>random</code>、<code>json</code>、<code>re</code>、<code>print</code>（内置函数直接可用）</li>
+</ul>
+<p>所以你可以直接在代码框里写 <code>QTimer.singleShot(1000, lambda: QMessageBox.information(None, "标题", "内容"))</code>，不需要先 <code>import</code> 任何东西。</p>
 
 <p><strong>暗色代码编辑器：</strong> 点击「打开文本编辑窗口」按钮会打开一个暗色配色的代码编辑器（800×900，模态），支持：</p>
 <ul>
@@ -303,12 +339,21 @@
 
 <p>在解释器中，模类框会解析模类数据中的控件列表，动态创建标签、按钮、输入框、单选框、复选框、进度条、分组框、选项卡等控件。模类数据从工程文件的模类字段加载。</p>
 
-<p>保存到配置文件的字段结构如下：</p>
+<div class="note">
+    <strong>📌 模类框的"两套字段"：外观归模类，配置归 CZEmaker</strong><br>
+    创建模类框时，读取来源是分开的：<br>
+    · <strong>窗口外观</strong>（<code>window_style</code> / <code>window_background</code> / <code>window_material</code> / <code>window_topmost</code> / <code>window_opacity</code> / <code>minimize_btn</code> / <code>maximize_btn</code> / <code>close_btn</code> / <code>help_btn</code> / <code>taskbar_show</code> / <code>esc_close</code> / <code>close_btn_close</code> / <code>resizable</code> / <code>icon_data_base64</code>）→ 全部来自 <code>.UIclass</code> 顶层字段，<strong>不读 CZEmakers 样式钮</strong><br>
+    · <strong>弹在哪 / 弹多久 / 选哪个</strong>（<code>window_position</code> / <code>window_life</code> / <code>selected_class_name</code>）→ 来自音符的 <code>cze_makers</code><br>
+    · <strong>入场/出场动画</strong>（<code>transition</code>）→ 来自音符本身的独立字段<br>
+    简单记：<strong>外观归模类，其他归 CZEmaker</strong>。
+</div>
+
+<p>模类框本身保存到 cze 配置里的字段：</p>
 <ul>
     <li><code>window_type</code>：<code>"UIclass"</code></li>
     <li><code>selected_class_name</code>：选中的模类名称</li>
-    <li><code>window_title</code>：窗口标题（从模类数据自动读取）</li>
-    <li><code>window_group</code> / <code>window_life</code> / <code>window_position</code>：如果模类数据里带了这些字段，也会被加载</li>
+    <li><code>window_title</code>：窗口标题（从模类数据自动读取，禁用状态）</li>
+    <li><code>window_group</code> / <code>window_life</code> / <code>window_position</code>：如果模类数据里带了这些字段，会被加载作为初值，但运行时以 cze 配参为准</li>
 </ul>
 
 <h2>顶部右侧功能区</h2>

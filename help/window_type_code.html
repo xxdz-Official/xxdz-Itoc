@@ -154,7 +154,7 @@
             </ul>
         </nav>
         <main class="content-area" id="contentArea">
-<h1>💻 执行代码</h1>
+<h1><img src="icon/代码解释器.png" class="doc-icon-lg" alt=""> 执行代码</h1>
 
 <p>「执行代码」严格来说不是一种窗口类型——它是一个<strong>全局命令</strong>。在 CZEmaker 面板里它被归在窗口类型选择器里，因为从"绑在音符上执行一段东西"的角度看，它和其他窗口类型是平级的。但它的实际行为完全不同：它不弹窗，而是在后台跑一段 Python 代码。</p>
 
@@ -330,7 +330,7 @@ except Exception as e:
 <h2>常见问题</h2>
 
 <h3>Q：测试运行时执行代码没反应？</h3>
-<p>A：正常。执行代码只在编译模式下生效。测试运行（F5）时，程序会跳过 <code>code</code> 类型。想测试，编译成 exe 再跑。</p>
+<p>A：正常。执行代码只在编译模式下生效。测试运行（F5）时，程序会跳过 <code>code</code> 类型。想测试，编译成 exe 再跑哦。</p>
 
 <h3>Q：执行代码报「NameError: name 'xxx' is not defined」？</h3>
 <p>A：你用了 <code>exec_globals</code> 里没有的对象。检查一下：是不是拼写错了？是不是忘了 <code>import</code>？是不是想访问 <code>self</code> 但写成了别的名字？</p>
@@ -339,10 +339,10 @@ except Exception as e:
 <p>A：大概率是写了死循环、长时间 sleep、或者在主线程做了大量计算。把耗时操作挪到子线程：<code>threading.Thread(target=my_func, daemon=True).start()</code>。</p>
 
 <h3>Q：执行代码能不能修改其他窗口？</h3>
-<p>A：能。通过 <code>player.current_windows</code> 拿到窗口列表，遍历修改 <code>windowOpacity</code>、<code>move</code>、<code>setGeometry</code> 等。但注意别在主线程里做太重的操作。</p>
+<p>A：能。通过 <code>player.current_windows</code> 拿到窗口列表，遍历修改 <code>windowOpacity</code>、<code>move</code>、<code>setGeometry</code> 等。但注意别在主线程里做太重的操作呀。</p>
 
 <h3>Q：执行代码能不能创建新窗口？</h3>
-<p>A：能。但要注意两点：① 新窗口要自己管理生命周期（什么时候显示、什么时候关闭）；② 新窗口不会被自动注册到 Itoc 的窗口管理系统里，除非你手动调 <code>player.command_executor.register_window_class</code> 等方法。</p>
+<p>A：能。但要注意两点：① 新窗口要自己管理生命周期（什么时候显示、什么时候关闭）；② 新窗口不会被自动注册到 Itoc 的窗口管理系统里，除非你手动调 <code>player.command_executor.register_window_class</code> 等方法。(๓´˘`๓)</p>
 
 <h2>小结</h2>
 

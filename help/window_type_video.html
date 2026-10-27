@@ -154,7 +154,7 @@
             </ul>
         </nav>
         <main class="content-area" id="contentArea">
-<h1>🎬 视频框</h1>
+<h1><img src="icon/视频.png" class="doc-icon-lg" alt=""> 视频框</h1>
 
 <p>视频框就是「弹窗里放一个视频播放器」。听起来和图片框差不多，但实现上完全是两回事——图片是 Qt 自己画的，视频是 mpv 进程渲染的，程序要做的是「把 mpv 的窗口吸到 Qt 的容器里」。这个吸来吸去的过程，就是视频框最麻烦也最有意思的地方。</p>
 
@@ -283,14 +283,14 @@
     <li>每 100ms 执行一次 <code>_poll_video_progress</code>。</li>
     <li>计算 <code>dt = now - last_tick</code>，如果没暂停就把 <code>dt</code> 累加到 <code>_video_local_time</code>。</li>
     <li>用 <code>_video_local_time / duration * 100</code> 算出百分比，设置进度条。</li>
-    <li>拖动进度条时，冻结计时（<code>_video_progress_dragging = True</code>），不推进也不覆盖。</li>
-    <li>松开进度条时，发送 <code>seek</code> 命令给 mpv，并把本地计时器对齐到目标时间。</li>
+    <li>拖动进度条时，冻结计时，不推进也不覆盖。</li>
+    <li>松开进度条时，发送 <code>seek</code> 命令给 mpv，并把本地计时器对齐到目标时间哦。</li>
 </ol>
 
-<p>时长只查一次，通过 IPC 的 <code>get_property duration</code> 获取，存在 <code>_video_mpv_duration</code> 里。</p>
+<p>时长只在开始时查一次，通过 IPC 向 mpv 询问，之后直接用缓存值。(๓´˘`๓)</p>
 
 <div class="tip">
-    <strong>💡 全局鼠标松开监听：</strong> ttk.Scale 内部可能会吃掉鼠标松开事件，导致 <code>_on_video_progress_release</code> 不触发。所以程序额外在 toplevel 上绑了 <code>&lt;ButtonRelease-1&gt;</code>，只在拖动进度条时响应。
+    <strong>💡 全局鼠标松开监听：</strong> 进度条控件内部可能会吃掉鼠标松开事件，导致“松开”这一步收不到。所以程序额外在整个窗口上监听鼠标松开，只在拖动进度条时响应。
 </div>
 
 <h2>播放 / 暂停 / 停止</h2>
@@ -299,7 +299,7 @@
 
 <ul>
     <li><strong>▶ / ⏸</strong>：播放/暂停切换。如果 mpv 没跑，点它会启动 mpv 并自动播放；如果 mpv 在跑，点它会切换暂停状态。</li>
-    <li><strong>■</strong>：停止。发送 <code>seek 0 absolute</code> + <code>set_property pause true</code>，回到开头并暂停。同时重置本地计时器。</li>
+    <li><strong>■</strong>：停止。发送 <code>seek 0 absolute</code> + <code>set_property pause true</code>，回到开头并暂停。同时重置本地计时器呀。</li>
 </ul>
 
 <p>暂停时会重置 <code>_video_local_last_tick</code>，防止暂停期间时间继续累计。这是本地计时驱动的关键细节。</p>

@@ -288,14 +288,14 @@ bpm 150</code></pre>
 
 <h2>四、输出重定向是怎么工作的？</h2>
 
-<p>终端做了一件挺"黑魔法"的事：它把 Python 的 <code>sys.stdout</code> 和 <code>sys.stderr</code> 换成了自己的代理对象。这样程序里任何 <code>print()</code> 都会经过终端，终端再把文字同时写到两个地方：</p>
+<p>终端做了一件挺"黑魔法"的事：它接管了程序的输出通道。这样程序里任何 <code>print()</code> 都会经过终端，终端再把文字同时写到两个地方：</p>
 
 <ol>
     <li><strong>真正的控制台</strong>（如果程序带控制台窗口）——所以你在 cmd 里照样能看到输出。</li>
     <li><strong>终端文本框</strong>——所以 Itoc 界面里也能看到。</li>
 </ol>
 
-<p>两边同时写，不会丢信息。程序退出时，终端会把 <code>sys.stdout</code>/<code>sys.stderr</code> 恢复成原始对象，避免影响后续代码。</p>
+<p>两边同时写，不会丢信息。程序退出时，终端会把输出通道交还给程序，避免影响后续代码。</p>
 
 <div class="warning">
     <strong>⚠️ 一个注意点：</strong><br>
@@ -337,7 +337,7 @@ bpm 150</code></pre>
         <tr><td><code>clear</code> / <code>cls</code></td><td>清空终端屏幕</td></tr>
         <tr><td><code>echo &lt;文本&gt;</code></td><td>把后面的文本原样输出到终端</td></tr>
         <tr><td><code>ls</code> / <code>dir [路径]</code></td><td>列出目录内容。目录用 <code>[DIR]</code> 标记，文件显示大小</td></tr>
-        <tr><td><code>pwd</code></td><td>显示当前工作目录（os.getcwd()，不是工程目录）</td></tr>
+        <tr><td><code>pwd</code></td><td>显示当前工作目录（程序当前的工作目录，不是工程目录）</td></tr>
         <tr><td><code>cd &lt;路径&gt;</code></td><td>切换当前工作目录</td></tr>
         <tr><td><code>import &lt;源文件&gt; [子目录]</code></td><td>把文件复制到工程目录（见下）</td></tr>
     </tbody>
@@ -710,7 +710,7 @@ bpm 150</code></pre>
 
 <h3>13.1 array 命令（阵列）</h3>
 
-<p>阵列命令是转交给 <code>Array.py</code> 里的 <code>ArrayTerminalBridge</code> 处理的。主要子命令：</p>
+<p>阵列命令有自己独立的处理逻辑。主要子命令：</p>
 
 <table>
     <thead>
@@ -879,7 +879,7 @@ stats</code></pre>
     <li><strong>多数修改类命令会自动记录撤销快照：</strong> 改错了可以按 <kbd>Ctrl</kbd>+<kbd>Z</kbd> 撤销。</li>
     <li><strong>修改后不会自动保存：</strong> 需要手动 <code>save</code> 或按 <kbd>Ctrl</kbd>+<kbd>S</kbd>。</li>
     <li><strong>未加载工程时部分命令不可用：</strong> 会提示"未加载工程"。</li>
-    <li><strong>终端输出不影响真正的控制台：</strong> 两边同时写，程序日志不会丢。</li>
+    <li><strong>终端输出不影响真正的控制台：</strong> 两边同时写，程序日志不会丢呀。</li>
     <li><strong>导出日志前建议先清空一次：</strong> 免得把旧会话的日志也导进去。</li>
 </ul>
 
@@ -887,7 +887,7 @@ stats</code></pre>
 
 <h3>Q1：为什么终端里出现一堆红色文字？</h3>
 
-<p>红色表示 <code>sys.stderr</code> 的输出，也就是报错或警告。看到红色不用慌，往上翻翻看具体是什么错误。</p>
+<p>红色表示报错或警告的输出。看到红色不用慌，往上翻翻看具体是什么错误。</p>
 
 <h3>Q2：我敲了命令但没反应？</h3>
 
@@ -907,7 +907,7 @@ stats</code></pre>
 
 <h3>Q6：终端卡住不动了怎么办？</h3>
 
-<p>一般不会。如果某个命令执行时间较长（比如批量生成 2000 个事件点），终端可能短暂没响应，等一会儿就好。实在不行可以点"清空终端"重置显示。</p>
+<p>一般不会。如果某个命令执行时间较长（比如批量生成 2000 个事件点），终端可能短暂没响应，等一会儿就好哦。实在不行可以点"清空终端"重置显示。(๓´˘`๓)</p>
 
 <h2>二十、小结</h2>
 

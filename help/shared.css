@@ -1105,3 +1105,65 @@ html, body {
     z-index: 2;
 }
 /* === TOC_HITBOX_STYLE END === */
+
+/* ============================================================
+   本地图标系统（icon/ 目录，200×200 PNG）
+   用法：<i class="itoc-icon doc-icon-sm icon-save"></i>
+   ============================================================ */
+
+/* === 图标尺寸控制类 === */
+.doc-icon-lg { width: 36px; height: 36px; vertical-align: middle; margin-right: 12px; position: relative; top: -3px; }
+.doc-icon-md { width: 24px; height: 24px; vertical-align: middle; margin: 0 6px; position: relative; top: -2px; }
+.doc-icon-sm { width: 18px; height: 18px; vertical-align: text-bottom; margin: 0 4px; }
+
+/* === 图标映射表 === */
+.itoc-icon {
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+/* 文件与工程 */
+.icon-save      { background-image: url("icon/保存工程.png"); }
+.icon-open      { background-image: url("icon/打开工程.png"); }
+.icon-new       { background-image: url("icon/新建工程.png"); }
+.icon-close     { background-image: url("icon/关闭工程.png"); }
+.icon-import    { background-image: url("icon/导入.png"); }
+.icon-export    { background-image: url("icon/导出.png"); }
+
+/* 编辑与撤销 */
+.icon-undo      { background-image: url("icon/撤销.png"); }
+.icon-redo      { background-image: url("icon/重做.png"); }
+.icon-find      { background-image: url("icon/查找.png"); }
+.icon-replace   { background-image: url("icon/替换.png"); }
+.icon-copy      { background-image: url("icon/复制.png"); }
+.icon-paste     { background-image: url("icon/粘贴.png"); }
+.icon-edit      { background-image: url("icon/编辑.png"); }
+.icon-delete    { background-image: url("icon/删除.png"); }
+.icon-disable   { background-image: url("icon/禁用.png"); }
+.icon-selectall { background-image: url("icon/全选.png"); }
+
+/* 编译与运行 */
+.icon-compile   { background-image: url("icon/编译.png"); }
+.icon-package   { background-image: url("icon/打包.png"); }
+.icon-run       { background-image: url("icon/运行.png"); }
+.icon-python    { background-image: url("icon/python.png"); }
+.icon-cpp       { background-image: url("icon/cpp代码.png"); }
+
+/* 媒体与时间轴 */
+.icon-audio     { background-image: url("icon/音频.png"); }
+.icon-video     { background-image: url("icon/视频.png"); }
+.icon-marker    { background-image: url("icon/标记.png"); }
+.icon-array     { background-image: url("icon/阵列.png"); }
+
+/* 配参与模类 */
+.icon-czemaker  { background-image: url("icon/CZEmaker.png"); }
+.icon-uiclass   { background-image: url("icon/UI_class.png"); }
+.icon-czedata   { background-image: url("icon/CZEdata.png"); }
+.icon-metadata  { background-image: url("icon/元数据.png"); }
+
+/* 设置 */
+.icon-prefs     { background-image: url("icon/首选项.png"); }
+

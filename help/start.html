@@ -64,8 +64,9 @@
                 <li class="toc-group"><span>弹窗编排</span></li>
                 <li class="toc-item" data-file="czemaker.html"><a href="czemaker.html" rel="noopener"><span>CZEmaker 弹窗编排 · 基础篇</span></a></li>
                 <li class="toc-item" data-file="czemaker_advanced.html"><a href="czemaker_advanced.html" rel="noopener"><span>CZEmaker 弹窗编排 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="pitch_assign.html"><a href="pitch_assign.html" rel="noopener"><span>按音高应用配参</span></a></li>
                 <li class="toc-item" data-file="window_style.html"><a href="window_style.html" rel="noopener"><span>窗口样式钮</span></a></li>
-                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口（图片镂空 + 窗口背景镂空）</span></a></li>
+                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口</span></a></li>
                 <li class="toc-item" data-file="acrylic_mica.html"><a href="acrylic_mica.html" rel="noopener"><span>亚克力与云母</span></a></li>
                 <li class="toc-item" data-file="window_type_regular.html"><a href="window_type_regular.html" rel="noopener"><span>普通弹窗（信息/警告/错误/询问）</span></a></li>
                 <li class="toc-item" data-file="window_type_image.html"><a href="window_type_image.html" rel="noopener"><span>图片框</span></a></li>
@@ -124,7 +125,7 @@
                 <li class="toc-item" data-file="cooperation.html"><a href="cooperation.html" rel="noopener"><span>协作</span></a></li>
                 <li class="toc-item" data-file="ctrl_z_undo_redo.html"><a href="ctrl_z_undo_redo.html" rel="noopener"><span>撤销与重做</span></a></li>
                 <li class="toc-item" data-file="archive_rollback.html"><a href="archive_rollback.html" rel="noopener"><span>工程的归档与回滚</span></a></li>
-                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作（小電AI）</span></a></li>
+                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作</span></a></li>
                 <li class="toc-item" data-file="dianzi_ai_assistant.html"><a href="dianzi_ai_assistant.html" rel="noopener"><span>電籽 AI 助手</span></a></li>
                 <li class="toc-item" data-file="advanced_ai_model.html"><a href="advanced_ai_model.html" rel="noopener"><span>如何调用高级 AI 模型</span></a></li>
                 <li class="toc-group"><span>渲染与输出</span></li>
@@ -180,17 +181,34 @@
             <td>你平时编辑的就是这个，里面存了你所有的音符、弹窗、动画、命令这些设置 想在编辑器改你这个作品，就得打开这个文件</td>
         </tr>
         <tr>
-            <td><code>.UIclass</code></td>
-            <td>模类文件</td>
-            <td>这个是你自己用模类设计器搭建的弹窗模板，是 Itoc 最自由的弹窗 如果你老是要弹出同样样子的窗口，可以把它导入 Itoc 模类文件夹，下次直接用就行</td>
-        </tr>
-        <tr>
             <td><code>.CzeData</code></td>
             <td>中间数据文件</td>
             <td>这是从工程渲染出来的中间文件，Itoc 的播放器会读它来演出 一般在开发的时候用，给播放器拿来跑一下看看效果 它不算最终产物</td>
         </tr>
+        <tr>
+            <td><code>.UIclass</code></td>
+            <td>模类文件</td>
+            <td>可复用素材。你自己用模类设计器搭建的弹窗模板，是 Itoc 最自由的弹窗 如果你老是要弹出同样样子的窗口，可以把它导入工程内置或全局模类文件夹，下次直接用就行</td>
+        </tr>
+        <tr>
+            <td><code>.CZEmaker</code></td>
+            <td>配参文件</td>
+            <td>可复用素材。存的是一个弹窗的完整配置（窗口类型、标题、位置、寿命、样式等等），可以跨工程复用、导出分享 在 CZEmakers 面板「新建配参 → 保存」时生成，或从「配参管理器」导入</td>
+        </tr>
+        <tr>
+            <td><code>.CZArray</code></td>
+            <td>阵列文件</td>
+            <td>可复用素材。存的是一个阵列的几何参数（类型、角度、间距、锚点、绑定编组等等），可以让一组弹窗按直线/贝塞尔/环形/多边形等形状排列 在阵列设计器保存到 Itoc 全局时生成，或从「阵列管理器」导入</td>
+        </tr>
     </tbody>
 </table>
+
+<div class="tip">
+    <strong>💡 这些文件分两类：工程本体 + 可复用素材</strong><br>
+    · <strong>工程本体</strong>：<code>.czemidi</code>（源工程）和 <code>.CzeData</code>（渲染出的中间数据）。这两个是整个工作流绕不开的——前者给你编辑，后者给播放器演出。<br>
+    · <strong>可复用素材</strong>：<code>.UIclass</code>（模类）、<code>.CZEmaker</code>（配参）、<code>.CZArray</code>（阵列）。这三个都是"搭一次、用多次"的模板：可以只存在工程里，也可以导出成独立文件跨工程复用。工程里一个素材都不用，完全靠内置弹窗，也完全合法。<br><br>
+    分享作品时，真正要发的是 <code>.czemidi</code> 工程（或编译好的 exe）。素材文件是否一起打包，取决于你想不想让别人复用你的模板——不想被复用就别发，工程里已经"内嵌"了能跑起来的那一份。
+</div>
 
 <h2>大概的工作流程</h2>
 <p>拿到 Itoc 之后，基本就是这几步：</p>

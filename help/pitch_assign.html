@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+<meta name="description" content="Itoc 按音高应用配参帮助文档 - 小小电子xxdz开发的 xxdz Itoc 工具，讲解如何按音高分段批量把配参应用到音符块，包含音高渐变表、配参池、属性面板、过滤条件与应用规则">
+<meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,按音高应用配参,配参批量赋值,音高渐变表,PitchAssign,CZEmaker 配参">
+<meta property="og:title" content="按音高应用配参 - xxdz Itoc 帮助文档">
+<meta property="og:description" content="Itoc 按音高应用配参帮助文档 - 小小电子xxdz开发的 xxdz Itoc 工具">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="">
+<title>按音高应用配参 - xxdz Itoc 帮助文档</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"><div class="header-row">
+            <a class="logo-area" href="help.html" title="返回帮助文档首页">
+                <img src="../icon.png" alt="Itoc logo" class="logo-img">
+                <h1>Itoc 帮助文档 - 按音高应用配参</h1>
+            </a>
+            <div class="top-bar">
+                <a href="https://xxdz-official.github.io/xxdz-Itoc/" target="_blank" rel="noopener"><span>项目主页</span></a>
+                <a href="https://message.bilibili.com/#/whisper/mid3461569935575626" target="_blank"><span>联系作者</span></a>
+                <a href="https://miku66ccff.freeflarum.com/t/itoc" target="_blank"><span>交流论坛</span></a>
+                <a href="https://github.com/xxdz-Official/xxdz-Itoc" target="_blank"><span>GitHub主页</span></a>
+                <a href="../Mode.html"><span>插件市场</span></a>
+                <a href="help.html"><span>帮助文档</span></a>
+            </div>
+        </div></div>
+<div id="layout-placeholder">
+    <div class="main-container">
+        <nav class="sidebar" id="sidebar">
+            <h3 class="sidebar-title">📖 目录</h3>
+            <div class="toc-search-box">
+                <div class="toc-search-field">
+                    <span class="toc-search-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </span>
+                    <input type="text" id="tocSearchInput" class="toc-search-input" placeholder="搜索目录喵..." autocomplete="off">
+                    <button type="button" id="tocSearchClear" class="toc-search-clear" title="清空" aria-label="清空搜索">
+                        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="tocEmptyTip" class="toc-empty-tip" style="display:none;">没有找到匹配的条目</div>
+            <ul id="tocList" class="toc-list-ready">
+                <li class="toc-group"><span>入门篇</span></li>
+                <li class="toc-item" data-file="start.html"><a href="start.html" rel="noopener"><span>初识 Itoc</span></a></li>
+                <li class="toc-item" data-file="install.html"><a href="install.html" rel="noopener"><span>安装指南</span></a></li>
+                <li class="toc-item" data-file="interface.html"><a href="interface.html" rel="noopener"><span>界面概览</span></a></li>
+                <li class="toc-item" data-file="quickstart.html"><a href="quickstart.html" rel="noopener"><span>快速上手：您的第一个项目</span></a></li>
+                <li class="toc-item" data-file="how_to_get_midi.html"><a href="how_to_get_midi.html" rel="noopener"><span>如何获取 MIDI 文件</span></a></li>
+                <li class="toc-item" data-file="timeline.html"><a href="timeline.html" rel="noopener"><span>时间轴与事件块编辑</span></a></li>
+                <li class="toc-item" data-file="metadata.html"><a href="metadata.html" rel="noopener"><span>作品元数据</span></a></li>
+                <li class="toc-group"><span>弹窗编排</span></li>
+                <li class="toc-item" data-file="czemaker.html"><a href="czemaker.html" rel="noopener"><span>CZEmaker 弹窗编排 · 基础篇</span></a></li>
+                <li class="toc-item" data-file="czemaker_advanced.html"><a href="czemaker_advanced.html" rel="noopener"><span>CZEmaker 弹窗编排 · 进阶篇</span></a></li>
+                <li class="toc-item active" data-file="pitch_assign.html"><a href="pitch_assign.html" rel="noopener"><span>按音高应用配参</span></a></li>
+                <li class="toc-item" data-file="window_style.html"><a href="window_style.html" rel="noopener"><span>窗口样式钮</span></a></li>
+                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口</span></a></li>
+                <li class="toc-item" data-file="acrylic_mica.html"><a href="acrylic_mica.html" rel="noopener"><span>亚克力与云母</span></a></li>
+                <li class="toc-item" data-file="window_type_regular.html"><a href="window_type_regular.html" rel="noopener"><span>普通弹窗（信息/警告/错误/询问）</span></a></li>
+                <li class="toc-item" data-file="window_type_image.html"><a href="window_type_image.html" rel="noopener"><span>图片框</span></a></li>
+                <li class="toc-item" data-file="window_type_video.html"><a href="window_type_video.html" rel="noopener"><span>视频框</span></a></li>
+                <li class="toc-item" data-file="window_type_notice.html"><a href="window_type_notice.html" rel="noopener"><span>气泡/通知</span></a></li>
+                <li class="toc-item" data-file="window_type_code.html"><a href="window_type_code.html" rel="noopener"><span>执行代码</span></a></li>
+                <li class="toc-item" data-file="window_type_uiclass.html"><a href="window_type_uiclass.html" rel="noopener"><span>模类框（CZEmaker 视角）</span></a></li>
+                <li class="toc-group"><span>事件块与音符</span></li>
+                <li class="toc-item" data-file="midi_color.html"><a href="midi_color.html" rel="noopener"><span>音符块自身属性</span></a></li>
+                <li class="toc-item" data-file="paint.html"><a href="paint.html" rel="noopener"><span>绘制音符块</span></a></li>
+                <li class="toc-item" data-file="adjust_layer.html"><a href="adjust_layer.html" rel="noopener"><span>调整图层</span></a></li>
+                <li class="toc-item" data-file="disabled_blocks.html"><a href="disabled_blocks.html" rel="noopener"><span>启用/禁用事件块或全局命令</span></a></li>
+                <li class="toc-item" data-file="beat_event_point.html"><a href="beat_event_point.html" rel="noopener"><span>新建节奏事件点</span></a></li>
+                <li class="toc-item" data-file="concurrent_event_point.html"><a href="concurrent_event_point.html" rel="noopener"><span>新建并发事件点</span></a></li>
+                <li class="toc-group"><span>动画与音效</span></li>
+                <li class="toc-item" data-file="transition.html"><a href="transition.html" rel="noopener"><span>过渡动画</span></a></li>
+                <li class="toc-item" data-file="assign_window_sound.html"><a href="assign_window_sound.html" rel="noopener"><span>根据窗口类型赋予自定义音效</span></a></li>
+                <li class="toc-item" data-file="yinpin_yinpu.html"><a href="yinpin_yinpu.html" rel="noopener"><span>音频音谱</span></a></li>
+                <li class="toc-item" data-file="audio_to_midi.html"><a href="audio_to_midi.html" rel="noopener"><span>音频转 MIDI (扒谱)</span></a></li>
+                <li class="toc-item" data-file="project_to_midi.html"><a href="project_to_midi.html" rel="noopener"><span>将工程导出为 MIDI</span></a></li>
+                <li class="toc-group"><span>全局命令</span></li>
+                <li class="toc-item" data-file="global_1.html"><a href="global_1.html" rel="noopener"><span>全局命令 · 基础篇</span></a></li>
+                <li class="toc-item" data-file="global_2.html"><a href="global_2.html" rel="noopener"><span>全局命令 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="cmd_window_animation.html"><a href="cmd_window_animation.html" rel="noopener"><span>全局命令 · 窗口位移动画</span></a></li>
+                <li class="toc-item" data-file="cmd_mouse_move.html"><a href="cmd_mouse_move.html" rel="noopener"><span>全局命令 · 鼠标移动</span></a></li>
+                <li class="toc-item" data-file="cmd_mirror_clone.html"><a href="cmd_mirror_clone.html" rel="noopener"><span>全局命令 · 镜像克隆编组</span></a></li>
+                <li class="toc-item" data-file="cmd_wallpaper.html"><a href="cmd_wallpaper.html" rel="noopener"><span>全局命令 · 设置桌面背景</span></a></li>
+                <li class="toc-group"><span>阵列系统</span></li>
+                <li class="toc-item" data-file="array.html"><a href="array.html" rel="noopener"><span>阵列设计器 · 总览</span></a></li>
+                <li class="toc-item" data-file="array_linear.html"><a href="array_linear.html" rel="noopener"><span>直线阵列</span></a></li>
+                <li class="toc-item" data-file="array_bezier.html"><a href="array_bezier.html" rel="noopener"><span>贝塞尔曲线阵列</span></a></li>
+                <li class="toc-item" data-file="array_polygon.html"><a href="array_polygon.html" rel="noopener"><span>多边形阵列</span></a></li>
+                <li class="toc-item" data-file="array_circle.html"><a href="array_circle.html" rel="noopener"><span>环形阵列</span></a></li>
+                <li class="toc-item" data-file="array_polar.html"><a href="array_polar.html" rel="noopener"><span>极坐标阵列</span></a></li>
+                <li class="toc-item" data-file="array_svg.html"><a href="array_svg.html" rel="noopener"><span>SVG阵列</span></a></li>
+                <li class="toc-group"><span>窗口类名与编组</span></li>
+                <li class="toc-item" data-file="cze_window_class.html"><a href="cze_window_class.html" rel="noopener"><span>窗口类名</span></a></li>
+                <li class="toc-item" data-file="cze_window_group.html"><a href="cze_window_group.html" rel="noopener"><span>窗口编组</span></a></li>
+                <li class="toc-group"><span>模类系统 (UI Class)</span></li>
+                <li class="toc-item" data-file="uiclass_1.html"><a href="uiclass_1.html" rel="noopener"><span>初识模类</span></a></li>
+                <li class="toc-item" data-file="uiclass_2.html"><a href="uiclass_2.html" rel="noopener"><span>模类设计器详解</span></a></li>
+                <li class="toc-item" data-file="uiclass_3.html"><a href="uiclass_3.html" rel="noopener"><span>模类进阶与生态</span></a></li>
+                <li class="toc-group"><span>侧边栏与辅助工具</span></li>
+                <li class="toc-item" data-file="sidebar.html"><a href="sidebar.html" rel="noopener"><span>侧边栏</span></a></li>
+                <li class="toc-item" data-file="sidebar_display.html"><a href="sidebar_display.html" rel="noopener"><span>显示器</span></a></li>
+                <li class="toc-item" data-file="sidebar_reference_media.html"><a href="sidebar_reference_media.html" rel="noopener"><span>参考媒体</span></a></li>
+                <li class="toc-item" data-file="str.html"><a href="str.html" rel="noopener"><span>字幕</span></a></li>
+                <li class="toc-item" data-file="marker_and_sticky_note.html"><a href="marker_and_sticky_note.html" rel="noopener"><span>标记与轨道便利贴</span></a></li>
+                <li class="toc-item" data-file="media_browser.html"><a href="media_browser.html" rel="noopener"><span>媒体浏览器</span></a></li>
+                <li class="toc-item" data-file="high_energy_table.html"><a href="high_energy_table.html" rel="noopener"><span>高能进度表</span></a></li>
+                <li class="toc-item" data-file="terminal.html"><a href="terminal.html" rel="noopener"><span>终端</span></a></li>
+                <li class="toc-item" data-file="code_view.html"><a href="code_view.html" rel="noopener"><span>代码视图</span></a></li>
+                <li class="toc-item" data-file="GetWindowClassName.html"><a href="GetWindowClassName.html" rel="noopener"><span>窗口拾取器</span></a></li>
+                <li class="toc-group"><span>歌词、协作与历史</span></li>
+                <li class="toc-item" data-file="insert_lyrics.html"><a href="insert_lyrics.html" rel="noopener"><span>插入歌词</span></a></li>
+                <li class="toc-item" data-file="cooperation.html"><a href="cooperation.html" rel="noopener"><span>协作</span></a></li>
+                <li class="toc-item" data-file="ctrl_z_undo_redo.html"><a href="ctrl_z_undo_redo.html" rel="noopener"><span>撤销与重做</span></a></li>
+                <li class="toc-item" data-file="archive_rollback.html"><a href="archive_rollback.html" rel="noopener"><span>工程的归档与回滚</span></a></li>
+                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作</span></a></li>
+                <li class="toc-item" data-file="dianzi_ai_assistant.html"><a href="dianzi_ai_assistant.html" rel="noopener"><span>電籽 AI 助手</span></a></li>
+                <li class="toc-item" data-file="advanced_ai_model.html"><a href="advanced_ai_model.html" rel="noopener"><span>如何调用高级 AI 模型</span></a></li>
+                <li class="toc-group"><span>渲染与输出</span></li>
+                <li class="toc-item" data-file="render_cze_data.html"><a href="render_cze_data.html" rel="noopener"><span>渲染为CZE数据文件</span></a></li>
+                <li class="toc-item" data-file="render_python_code.html"><a href="render_python_code.html" rel="noopener"><span>渲染为Python代码</span></a></li>
+                <li class="toc-item" data-file="render_cpp_code.html"><a href="render_cpp_code.html" rel="noopener"><span>渲染为 C++ 代码</span></a></li>
+                <li class="toc-item" data-file="export_audio.html"><a href="export_audio.html" rel="noopener"><span>渲染为音频文件</span></a></li>
+                <li class="toc-item" data-file="render_video.html"><a href="render_video.html" rel="noopener"><span>渲染视频文件</span></a></li>
+                <li class="toc-group"><span>编译与运行</span></li>
+                <li class="toc-item" data-file="compile_exe.html"><a href="compile_exe.html" rel="noopener"><span>编译为exe</span></a></li>
+                <li class="toc-item" data-file="assembly_package.html"><a href="assembly_package.html" rel="noopener"><span>组装打包模式</span></a></li>
+                <li class="toc-item" data-file="interpreter_config.html"><a href="interpreter_config.html" rel="noopener"><span>解释器自定义配置</span></a></li>
+                <li class="toc-item" data-file="test_run.html"><a href="test_run.html" rel="noopener"><span>测试运行</span></a></li>
+                <li class="toc-item" data-file="run_log.html"><a href="run_log.html" rel="noopener"><span>运行日志</span></a></li>
+                <li class="toc-item" data-file="python_libs.html"><a href="python_libs.html" rel="noopener"><span>Python运行库</span></a></li>
+                <li class="toc-item" data-file="cpp_libs.html"><a href="cpp_libs.html" rel="noopener"><span>C++ 运行库</span></a></li>
+                <li class="toc-group"><span>设置与个性化</span></li>
+                <li class="toc-item" data-file="settings.html"><a href="settings.html" rel="noopener"><span>首选项（设置）</span></a></li>
+                <li class="toc-item" data-file="settings_skin.html"><a href="settings_skin.html" rel="noopener"><span>皮肤设置</span></a></li>
+                <li class="toc-item" data-file="file_association.html"><a href="file_association.html" rel="noopener"><span>文件关联（打开方式）</span></a></li>
+                <li class="toc-group"><span>多语言与插件</span></li>
+                <li class="toc-item" data-file="language_pack.html"><a href="language_pack.html" rel="noopener"><span>语言包</span></a></li>
+                <li class="toc-item" data-file="plugin_user.html"><a href="plugin_user.html" rel="noopener"><span>插件使用指南</span></a></li>
+                <li class="toc-item" data-file="plugin_dev.html"><a href="plugin_dev.html" rel="noopener"><span>插件开发指南</span></a></li>
+                <li class="toc-group"><span>其他</span></li>
+                <li class="toc-item" data-file="carousel.html"><a href="carousel.html" rel="noopener"><span>轮播图</span></a></li>
+            </ul>
+        </nav>
+        <main class="content-area" id="contentArea">
+<h1>🎹 按音高应用配参</h1>
+
+<p>平时挂配参是「一个音符挂一个配参」，一个个点太慢了。如果一首曲子里不同音高段本来就该弹不同的东西——比如低音区弹错误框、中音区弹询问框、高音区弹警告框——那逐个音符去配就太麻烦了。</p>
+
+<p><strong>按音高应用配参</strong>就是解决这个场景的：你把音高区间切成几段，每段挂一个配参，点一下「应用」，工程里所有落在这段音高范围内的音符就全部换成对应的配参。</p>
+
+<p>这一篇讲清楚：从哪进、界面怎么用、拖拽怎么调、应用时哪些音符会被改、哪些不会。</p>
+
+<h2>一、入口与前提</h2>
+
+<h3>1.1 从配参管理器进入</h3>
+<p>这个功能挂在<strong>配参管理器</strong>里。打开方式：</p>
+<ol>
+    <li>主程序菜单 → 「配参(G)」→ 「管理配参」（或类似的入口，具体以当前版本菜单为准）。</li>
+    <li>在弹出的「配参管理器」里，勾选你想用的配参（可以多选，至少一个）。</li>
+    <li>点顶部第二行的「<strong>赋值到指定音高音符</strong>」按钮。</li>
+</ol>
+
+<p>进窗口时，你勾选的那些配参会自动按数量平均分配到音高范围上，形成初始的「段」。比如你勾了 3 个配参，窗口打开后会看到 3 个段，分别对应低、中、高三个音高区间，每段一个配参。</p>
+
+<div class="tip">
+    <strong>💡 勾几个配参都行：</strong><br>
+    勾 1 个配参 → 打开后整条音高范围就一个大段，全是这个配参；<br>
+    勾 2 个 → 低音段一个、高音段一个；<br>
+    勾 3 个以上 → 按音高从低到高平均分布，一个配参一段；<br>
+    想给某个段换配参、或者一个段都不用你勾的配参，进窗口后还可以手动改（见第五节）。
+</div>
+
+<h3>1.2 打开前的准备（可选）</h3>
+<p>进窗口前你还可以在主界面上做两件事，用来<strong>限定这次应用的范围</strong>：</p>
+<ul>
+    <li><strong>框选音符</strong>：在时间轴上拖出一个选框，选中一批音符。</li>
+    <li><strong>画时间选区</strong>：在时间轴上拉一段时间的选区（不是选框，是选区）。</li>
+</ul>
+
+<p>这两个都不是必做的。不做就默认对<strong>全部音符</strong>生效；做了就会在窗口顶部出现对应的复选框，可以自己勾选启用。</p>
+
+<div class="warning">
+    <strong>⚠️ 框选和选区的复选框默认是「自动勾上」的：</strong><br>
+    如果你打开窗口前已经框选了音符 / 画了时间选区，窗口打开后对应的复选框会自动勾上。意思是：<strong>窗口默认只处理你选中的那部分</strong>。如果你改主意了要处理全部，进去手动取消勾选就行。
+</div>
+
+<h2>二、界面概览</h2>
+
+<p>窗口分五块：</p>
+
+<table>
+    <thead>
+        <tr><th>区域</th><th>位置</th><th>干什么的</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>📊 顶部栏</td>
+            <td>最上面</td>
+            <td>显示当前处理目标（框选了 N 个 / 全部音符）、勾选「仅时间选区内」「仅框选音符」</td>
+        </tr>
+        <tr>
+            <td>🎹 音高渐变表</td>
+            <td>左栏</td>
+            <td>从低到高画出 0~127 所有音高，你的每一段都画在这里。可以在画布上直接拖拽建段/改段</td>
+        </tr>
+        <tr>
+            <td>📦 配参池</td>
+            <td>中栏</td>
+            <td>列出所有可用配参（分工程内置 / Itoc全局 / 已用三块），勾一个配参等于「快速给最大空档建一段」</td>
+        </tr>
+        <tr>
+            <td>📝 属性面板</td>
+            <td>右栏</td>
+            <td>每个段一张卡片，显示音高范围、音符数、配参、颜色，可以直接编辑</td>
+        </tr>
+        <tr>
+            <td>🔘 底部按钮</td>
+            <td>最下面</td>
+            <td>添加段 / 删除段 / 自动均分 / 预览效果 / 应用 / 取消</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="note">
+    <strong>📌 音高范围不一定是 0~127：</strong><br>
+    窗口打开时会扫一遍工程里所有音符的音高，取最小值和最大值作为音高表范围。如果所有音符的音高跨度小于 24 个半音（比如都挤在一个八度里），会自动向上下各扩一点，把范围撑到 24 个半音左右，方便你在表上操作。0 和 127 是音高的硬边界，不会越界。
+</div>
+
+<h2>三、音高渐变表怎么用</h2>
+
+<p>左边这块是主战场。纵轴是音高（越往上越高），横轴是段。每一段用一块带色半透明色块覆盖它对应的音高范围，色块上写着「段名 起始音高~结束音高（音符数）」。</p>
+
+<p>背景那条彩虹色只是视觉参考（低音偏紫、高音偏红），不代表任何数据。</p>
+
+<h3>3.1 建一个新段（在空白处拖拽）</h3>
+<p>在<strong>没有被已有段覆盖</strong>的空白音高区域，按住鼠标左键从一头拖到另一头，松开就是一个新段。</p>
+<ul>
+    <li>段的音高范围 = 鼠标起点到终点之间的音高。</li>
+    <li>如果拖的距离小于 1 个半音（比如手抖没拖动），会取消不建。</li>
+    <li>拖出来的范围如果和已有段重叠，会弹「范围重叠」提示，取消这次建段。</li>
+    <li>新段会自动挑一个「当前没被用过的」配参塞进去；如果没有未用过的，就留空（你之后手动选）。</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 新建段的默认配色：</strong> 程序按段在列表里的位置从调色板里挑一个颜色（红、黄、绿、蓝、紫、橙、青、粉，8 色循环）。颜色只是视觉标记，不影响任何实际数据。同一个配参被分配给多个段时，段颜色可以不同。
+</div>
+
+<h3>3.2 调整段的上下边界（拖边缘）</h3>
+<p>把鼠标放到某个段的上边缘或者下边缘，会变成上下箭头光标，按住拖动就是调整边界：</p>
+<ul>
+    <li>拖上边缘：改这个段的高音端（能拖到的最高是 127，不能低于本段低音端）。</li>
+    <li>拖下边缘：改这个段的低音端（能拖到的最低是 0，不能高于本段高音端）。</li>
+    <li>拖动时如果和相邻段撞上了，会自动停在相邻段的边界内侧，不会真的重叠。</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 边缘容差 5 像素：</strong> 只有当鼠标落在段边缘 <strong>5 像素</strong>以内时，才进入「调整边界」模式。稍微往里一点就是「整体移动」模式。所以靠近边缘时注意一下光标变成上下箭头了才是调整边界，没变就是整体移动。
+</div>
+
+<h3>3.3 整体移动段（拖中间）</h3>
+<p>鼠标放在段的内部（离边缘超过 5 像素），按住拖动会让整段<strong>上下平移</strong>（音高范围不变，只是整体升降）。</p>
+<ul>
+    <li>如果推到边界外（0 以下或 127 以上），会被夹回边界。</li>
+    <li>如果推的过程里和别的段撞上了，这一帧就不动（避免重叠）。</li>
+</ul>
+
+<h3>3.4 右键菜单（向上填充 / 向下填充 / 删除）</h3>
+<p>右键点某个段，会弹出一个小菜单：</p>
+
+<table>
+    <thead>
+        <tr><th>菜单项</th><th>效果</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>向上填充</td>
+            <td>把本段的上边界一直往上扩，直到贴到「上面最近的那个段的下边界 - 1」。如果上面没有段，就一路扩到 127。</td>
+        </tr>
+        <tr>
+            <td>向下填充</td>
+            <td>把本段的下边界一直往下扩，直到贴到「下面最近的那个段的上边界 + 1」。如果下面没有段，就一路扩到 0。</td>
+        </tr>
+        <tr>
+            <td>删除此段</td>
+            <td>删掉这一段（音高范围就空出来了，不会被其他段自动吃掉）。</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>这两个「填充」很适合做「让某一段占满整个音域」的操作，比手动拖要准得多。</p>
+
+<h3>3.5 段与段不能重叠</h3>
+<p>整个音高表上，任意两段的音高范围不能有任何重叠。这保证了应用时<strong>每个音符只会命中一个段</strong>，不会出现「同一个音符被两个配参争抢」的歧义。</p>
+
+<p>如果强行制造重叠（拖边缘、拖中间、手动输入音高范围），程序会自动帮你纠正——要么拒绝这次修改，要么把边界挪开。</p>
+
+<h2>四、配参池（中栏）</h2>
+
+<p>中栏是配参池，按来源分三块，从上到下：</p>
+
+<ol>
+    <li><strong>工程内置配参</strong>：当前工程所有音符里出现过的配参（按内容去重）。</li>
+    <li><strong>Itoc全局配参</strong>：<code>CZEmaker_Files</code> 文件夹里的全部 <code>.CZEmaker</code> 文件。</li>
+    <li><strong>已用配参</strong>：当前已经被分配到某个段的配参（去重后列表，带颜色小方块）。</li>
+</ol>
+
+<h3>4.1 勾选一个配参 → 快速建段</h3>
+<p>在「工程内置」或「Itoc全局」区里勾一个配参，程序会自动找<strong>当前最大的空白音高区间</strong>，用它的前一半建一个新段，把配参塞进去。这样你就不用自己在左边画，勾一下就有段了。</p>
+
+<p>如果音高表已经被占满，会提示「音高范围已全部占满」——先删掉一些段或者调整边界。</p>
+
+<h3>4.2 「已使用」标记</h3>
+<p>如果一个配参已经被分配到某个段，在配参池里它旁边会显示「<strong>已使用</strong>」（绿色），不再显示勾选框。意思就是：这个配参已经出现在段里了，别重复加。</p>
+
+<p>但要注意：<strong>「已使用」只是标记它在段里出现了，不代表「不能再用一次」</strong>。同一个配参可以出现在多个段里（比如低音段和高音段都用同一个警告框），只是不能再从配参池里勾它来建段——你需要去右栏的属性面板里，把某个已有段的配参改成它。</p>
+
+<h2>五、右栏属性面板</h2>
+
+<p>右栏列出所有段的卡片，一个段一张，从上到下按音高从低到高排。每张卡片包含：</p>
+
+<table>
+    <thead>
+        <tr><th>字段</th><th>能改吗</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>音高范围（两个数字）</td>
+            <td>✅ 可编辑</td>
+            <td>直接输入数字，回车或失焦生效。如果输入反了（低 &gt; 高），会自动交换；如果和别的段重叠，会保留原值不动。</td>
+        </tr>
+        <tr>
+            <td>音符数</td>
+            <td>❌ 只读</td>
+            <td>当前有多少个音符落在这一段里（受顶部过滤条件影响）。</td>
+        </tr>
+        <tr>
+            <td>配参</td>
+            <td>✅ 可改</td>
+            <td>下拉框，可以选「（无）」清空，也可以换成任何一个可用配参。换了以后段名字、来源也会跟着变。</td>
+        </tr>
+        <tr>
+            <td>颜色</td>
+            <td>❌ 只读</td>
+            <td>色块，跟左边音高表里那块半透明色一样。</td>
+        </tr>
+        <tr>
+            <td>预览</td>
+            <td>❌ 只读</td>
+            <td>当前配参的窗口类型 + 窗口标题前 20 个字，方便你快速确认。</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>点卡片空白处可以选中这一段（右边红框），选中后再按底部的「删除段」就能删掉它。</p>
+
+<h2>六、顶部过滤条件</h2>
+
+<p>顶部有两个复选框，控制「这次应用的范围」：</p>
+
+<ul>
+    <li><strong>仅时间选区内</strong>：只处理起播时间落在时间选区内的音符。</li>
+    <li><strong>仅框选音符</strong>：只处理框选中（主界面选中列表里）的音符。</li>
+</ul>
+
+<h3>6.1 两个都勾 = 交集</h3>
+<p>两个都勾的时候，音符必须<strong>同时满足</strong>「在时间选区内」和「在框选中」才会被应用。任何一个不满足都跳过。</p>
+
+<h3>6.2 两个都不勾 = 全部</h3>
+<p>两个都不勾就处理工程里所有音符——不管框选了什么，也不管时间选区画在哪。</p>
+
+<h3>6.3 勾不了的情况</h3>
+<p>如果你打开窗口前没框选音符，「仅框选音符」是<strong>禁用状态</strong>的，强制不勾。同理没画时间选区时「仅时间选区内」也禁用。这样可以防止你勾了一个不存在的范围导致一个音符都处理不到。</p>
+
+<div class="note">
+    <strong>📌 时间选区的换算：</strong><br>
+    时间选区是画在时间轴像素上的，换算成 beat 的时候会考虑 BPM 变化（<code>midi_original_bpm / target_bpm</code>）。所以即使你导入了变速 MIDI，时间选区的起点终点也是对的。
+</div>
+
+<h2>七、应用规则</h2>
+
+<p>点底部「应用」按钮（或底部右边那个），弹确认框「即将把 N 段配参应用到 M 个音符块」，确认后开始执行。</p>
+
+<h3>7.1 每个音符怎么匹配</h3>
+<p>对每一个音符，按下面的顺序判断：</p>
+<ol>
+    <li>如果勾了「仅框选音符」，且这个音符不在框选列表里 → 跳过。</li>
+    <li>如果勾了「仅时间选区内」，且这个音符的起播时间不在选区内 → 跳过。</li>
+    <li>拿这个音符的<strong>音高</strong>去段列表里找：落在哪一段的 <code>low_pitch &lt;= pitch &lt;= high_pitch</code>，就用哪一段的配参。</li>
+    <li>如果没有任何段覆盖这个音高（比如你在表中间挖了个空）→ 这个音符<strong>不动</strong>。</li>
+</ol>
+
+<h3>7.2 覆盖式写入</h3>
+<p>匹配到段之后，直接把这一段配参的完整内容<strong>覆盖写入</strong>音符的 <code>cze_makers</code> 字段。原来音符上有什么配参都会被覆盖掉，不会保留。</p>
+
+<p>音符的其他字段（轨道、起播时间、时长、音高、note_id）完全不动，只替换 <code>cze_makers</code>。</p>
+
+<h3>7.3 应用前会保存撤销快照</h3>
+<p>点「应用」并确认后，程序会先保存一次撤销快照（跟你平时 Ctrl+Z 撤销用的是同一套）。所以即使应用错了，也可以在主界面按 <kbd>Ctrl</kbd>+<kbd>Z</kbd> 撤回。</p>
+
+<h3>7.4 应用后的刷新</h3>
+<p>应用完成后：</p>
+<ul>
+    <li>工程被标记为「已修改」。</li>
+    <li>所有音符块的高亮标记会按新配置刷新。</li>
+    <li>画布会重绘一次。</li>
+    <li>如果主界面有轮播图，会在上面弹一个「已对 N 个音符块赋值配参」的通知。</li>
+</ul>
+
+<div class="warning">
+    <strong>⚠️ 应用后窗口会关闭：</strong><br>
+    「应用」执行完就会自动关掉按音高赋值窗口。这是故意的——避免你改了一半又去别的地方改，然后回来改这次已经不用再改了。想再微调就重新从配参管理器开一次。
+</div>
+
+<h2>八、自动均分 / 预览效果</h2>
+
+<h3>8.1 自动均分</h3>
+<p>底部的「自动均分」按钮会：</p>
+<ol>
+    <li>把当前所有段清空。</li>
+    <li>按「配参池里的可用配参数量」重新平均切分音高范围。</li>
+    <li>依次给每个新段分配一个配参（优先用外部传入的，没有就用配参池里的）。</li>
+</ol>
+
+<p>如果你对音高范围已经满意，只是想重新分配一下配参，用这个按钮最省事。</p>
+
+<div class="tip">
+    <strong>💡 均分是「按音符数」还是「按音高」？</strong><br>
+    如果工程里有音符：按音符数量的分位数均分，保证每一段分到的音符数大致相等；<br>
+    如果工程里一个音符都没有：纯按音高范围平均分。
+</div>
+
+<h3>8.2 预览效果</h3>
+<p>底部的「预览效果」按钮<strong>只统计、不写入</strong>。点了以后底部会出现一行提示：</p>
+
+<pre><code>预览统计：段#1[错误框]=12 | 段#2[询问框]=8 | 段#3[警告框]=3 | 合计=23 | 未匹配=1</code></pre>
+
+<ul>
+    <li><code>段#N[配参名]=N</code>：这一段命中了多少个音符。</li>
+    <li><code>合计=N</code>：总共命中多少个音符。</li>
+    <li><code>未匹配=N</code>：落在所有段之外（有音高没被任何段覆盖）的音符数。</li>
+</ul>
+
+<p>这是应用前最值得点一次的功能。如果「未匹配」不是 0，说明有音符的音高不在任何段里，它们不会被改。</p>
+
+<h2>九、常见问题</h2>
+
+<h3>Q1：应用完了，为什么有些音符没变？</h3>
+<p>按顺序检查：</p>
+<ul>
+    <li>这些音符的音高<strong>不在任何段的范围里</strong>（看「预览效果」里的「未匹配」数）。</li>
+    <li>勾了「仅框选音符」但这些音符<strong>不在框选里</strong>。</li>
+    <li>勾了「仅时间选区内」但这些音符的<strong>起播时间在选区外</strong>。</li>
+    <li>这些段是空的（没有选配参）——空段的音高范围依然会占位，但不会写入任何东西。</li>
+</ul>
+
+<h3>Q2：段重叠了怎么修？</h3>
+<p>程序其实会<strong>自动防重叠</strong>，正常情况下你造不出重叠。如果你是通过手改右栏音高范围撞上了，它会拒绝这次修改保留原值。所以如果你看到「改了没生效」，八成是撞上了。</p>
+
+<p>想强行「占满」一块区域，用右键菜单的「向上填充 / 向下填充」比手改准确。</p>
+
+<h3>Q3：一个配参能给多个段吗？</h3>
+<p>能。不同段可以指向同一个配参（比如低音段和高音段都用「错误框」）。但有一个限制：<strong>你不能从配参池里勾一个已经用过的配参来建新段</strong>——它显示为「已使用」，没有勾选框。想加新段就手动在左边空白处拖一个，然后在右栏的下拉框里选它。</p>
+
+<h3>Q4：时间选区怎么画？</h3>
+<p>这是主界面的功能，不是这个窗口里的。在时间轴上按住鼠标拖一段（不是框选，是拖动时间标尺区域，具体以当前主界面版本为准），会形成一条带虚线边框的选区。画完再进这个窗口就能看到时间选区对应的秒数显示在顶部。</p>
+
+<h3>Q5：应用后能撤销吗？</h3>
+<p>能。应用前程序保存了撤销快照，回主界面按 <kbd>Ctrl</kbd>+<kbd>Z</kbd> 就行。但注意撤销的粒度是「整个应用操作」，不是「某一段」或「某个音符」——撤销一次就回到应用之前的状态。</p>
+
+<h3>Q6：我勾了配参，进窗口后段是空的？</h3>
+<p>几种可能：</p>
+<ul>
+    <li>勾的配参<strong>内容是空的</strong>（<code>cze_makers</code> 是空字典），段建出来了但没有有效配参。右侧属性面板会显示「（无）」，自己手动换一个。</li>
+    <li>你勾的多个配参内容<strong>完全相同</strong>（按内容去重后只剩 1 个），可能只建了一个段。这属于正常去重，不是 bug。</li>
+    <li>工程里的音高跨度极小，音符总数少于段数，均分时会有些段的音符数是 0——这是正常的，段依然在那里。</li>
+</ul>
+
+<h3>Q7：想只给「低音区的音符」批量换配参，但不动高音区，怎么做？</h3>
+<p>最省事的做法：进这个窗口，<strong>把段删到只剩一个低音段</strong>（右键删除其他段），然后把这个段的下边界拖到你想覆盖的最低音高，上边界拖到低音区的最高音高。应用时，只有落在这个范围内的音符会被改，其他音符（音高高于这个范围）不会被处理。</p>
+
+<p>这正是「按音高」相比「框选」的优势：不用手动一个个挑，直接按音高范围切。</p>
+
+<h2>十、小结</h2>
+
+<p>按音高应用配参这个功能，核心就三件事：</p>
+
+<ol>
+    <li><strong>切段</strong>：在音高渐变表上拖出几块音高区间，每段挂一个配参。段之间不能重叠，这是硬规则。</li>
+    <li><strong>配参</strong>：进窗口前在配参管理器里勾好配参，窗口会自动均分；或者进窗口后手动给每个段挑配参。</li>
+    <li><strong>应用</strong>：按段覆盖式写入，先筛范围再匹配音高，不改则不动。应用前建议点一次「预览效果」，确认「未匹配」是 0 再动手。</li>
+</ol>
+
+<p>这个功能最舒服的场景是：一首曲子里不同音区的「效果」不一样（低音弹错误、高音弹警告），或者你想整首曲子的同一音区统一换成某个配参——用「按音高」比「一个个点」快一个数量级。</p>
+        </main>
+    </div>
+</div>
+
+
+<script src="layout.js"></script>
+
+<script>
+    renderLayout({
+        currentFile: 'pitch_assign.html'
+    });
+</script>
+</body>
+</html>

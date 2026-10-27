@@ -6,12 +6,12 @@
     <!-- ========== SEO 优化 ========== -->
 <meta name="description" content="Itoc 镂空窗口帮助文档 - 小小电子xxdz开发的 xxdz Itoc 工具，讲解 Itoc 里的两种镂空：图片镂空（透明通道/色度抠图）和窗口背景镂空（色键透明），以及它们的区别、适用场景与配置文件字段">
 <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,镂空窗口,图片镂空,窗口背景镂空,透明通道,色度抠图,色键透明,SetLayeredWindowAttributes,hollow_enabled,window_background,Windows Crazy Error">
-<meta property="og:title" content="镂空窗口（图片镂空 + 窗口背景镂空） - xxdz Itoc 帮助文档">
+<meta property="og:title" content="镂空窗口 - xxdz Itoc 帮助文档">
 <meta property="og:description" content="Itoc 镂空窗口帮助文档 - 讲解两种镂空：图片镂空和窗口背景镂空">
 <meta property="og:type" content="article">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="">
-<title>镂空窗口（图片镂空 + 窗口背景镂空） - xxdz Itoc 帮助文档</title>
+<title>镂空窗口 - xxdz Itoc 帮助文档</title>
 <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -63,8 +63,9 @@
                 <li class="toc-group"><span>弹窗编排</span></li>
                 <li class="toc-item" data-file="czemaker.html"><a href="czemaker.html" rel="noopener"><span>CZEmaker 弹窗编排 · 基础篇</span></a></li>
                 <li class="toc-item" data-file="czemaker_advanced.html"><a href="czemaker_advanced.html" rel="noopener"><span>CZEmaker 弹窗编排 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="pitch_assign.html"><a href="pitch_assign.html" rel="noopener"><span>按音高应用配参</span></a></li>
                 <li class="toc-item" data-file="window_style.html"><a href="window_style.html" rel="noopener"><span>窗口样式钮</span></a></li>
-                <li class="toc-item active" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口（图片镂空 + 窗口背景镂空）</span></a></li>
+                <li class="toc-item active" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口</span></a></li>
                 <li class="toc-item" data-file="acrylic_mica.html"><a href="acrylic_mica.html" rel="noopener"><span>亚克力与云母</span></a></li>
                 <li class="toc-item" data-file="window_type_regular.html"><a href="window_type_regular.html" rel="noopener"><span>普通弹窗（信息/警告/错误/询问）</span></a></li>
                 <li class="toc-item" data-file="window_type_image.html"><a href="window_type_image.html" rel="noopener"><span>图片框</span></a></li>
@@ -123,7 +124,7 @@
                 <li class="toc-item" data-file="cooperation.html"><a href="cooperation.html" rel="noopener"><span>协作</span></a></li>
                 <li class="toc-item" data-file="ctrl_z_undo_redo.html"><a href="ctrl_z_undo_redo.html" rel="noopener"><span>撤销与重做</span></a></li>
                 <li class="toc-item" data-file="archive_rollback.html"><a href="archive_rollback.html" rel="noopener"><span>工程的归档与回滚</span></a></li>
-                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作（小電AI）</span></a></li>
+                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作</span></a></li>
                 <li class="toc-item" data-file="dianzi_ai_assistant.html"><a href="dianzi_ai_assistant.html" rel="noopener"><span>電籽 AI 助手</span></a></li>
                 <li class="toc-item" data-file="advanced_ai_model.html"><a href="advanced_ai_model.html" rel="noopener"><span>如何调用高级 AI 模型</span></a></li>
                 <li class="toc-group"><span>渲染与输出</span></li>
@@ -393,6 +394,14 @@
     <strong>💡 和「亚克力或云母」的联动：</strong> 取消「窗口背景」时，「亚克力或云母」复选框会自动取消勾选。因为亚克力需要窗口有实际背景层，色键透明没有背景层，亚克力会失效。详见 <a href="acrylic_mica.html">亚克力与云母</a> 文档。
 </div>
 
+<div class="note">
+    <strong>📌 先澄清一点：「窗口背景镂空」有两种实现路径，不是一种。</strong><br>
+    取消「窗口背景」后，具体用哪套透明机制，取决于窗口样式：<br>
+    · <code>window_style = borderless</code> → 走<strong>真透明</strong>（Qt 的 <code>WA_TranslucentBackground</code>），窗口连边框带标题栏全透明，只剩控件。<br>
+    · <code>window_style = normal_fixed / tool_fixed</code> → 走<strong>色键透明</strong>（Win32 的 <code>SetLayeredWindowAttributes</code>），标题栏保留，内容区背景透明。<br><br>
+    所以「3.2 效果是什么」和「3.3 实现原理」这两小节，讲的是**带边框窗口的色键透明路径**。无边框窗口的真透明路径在 3.8 里单独讲。
+</div>
+
 <h3>3.2 效果是什么</h3>
 
 <p>取消「窗口背景」后，窗口的视觉会变成这样：</p>
@@ -566,6 +575,61 @@ ctypes.windll.user32.SetLayeredWindowAttributes(hwnd, color_ref, 0, LWA_COLORKEY
 
 <p>旧工程没有 <code>window_background</code> 字段时，默认为 <code>true</code>，不会自动启用色键透明。</p>
 
+<h3>3.8 borderless 的真透明路径</h3>
+
+<p>如果窗口样式是 <code>borderless</code>，取消「窗口背景」之后走的是<strong>Qt 的真透明</strong>（<code>WA_TranslucentBackground</code>），不是色键透明。区别在于：</p>
+
+<table>
+    <thead>
+        <tr><th>项目</th><th>色键透明（normal_fixed / tool_fixed）</th><th>真透明（borderless）</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>透明机制</td>
+            <td>Win32 <code>SetLayeredWindowAttributes(LWA_COLORKEY)</code></td>
+            <td>Qt <code>WA_TranslucentBackground</code></td>
+        </tr>
+        <tr>
+            <td>色键色</td>
+            <td>固定 <code>RGB(1, 2, 3)</code></td>
+            <td>无（不需要色键）</td>
+        </tr>
+        <tr>
+            <td>标题栏</td>
+            <td>保留（系统画的，不受影响）</td>
+            <td>无（borderless 没有标题栏）</td>
+        </tr>
+        <tr>
+            <td>边框</td>
+            <td>标题栏有边框，内容区没有</td>
+            <td>无边框</td>
+        </tr>
+        <tr>
+            <td>平台限制</td>
+            <td>仅 Windows</td>
+            <td>Qt 跨平台</td>
+        </tr>
+        <tr>
+            <td>典型场景</td>
+            <td>「窗口背景透明，但标题栏和按钮还在」</td>
+            <td>「窗口彻底消失，只剩控件」</td>
+        </tr>
+    </tbody>
+</table>
+
+<p><strong>支持的窗口类型：</strong></p>
+<ul>
+    <li><strong>模类框</strong>：支持。模类框在 <code>borderless</code> 且 <code>window_background=false</code> 时，会走 <code>WA_TranslucentBackground</code> 真透明。</li>
+    <li><strong>图片框（非镂空）</strong>：支持。图片框在 <code>borderless</code> 且 <code>window_background=false</code> 时，也会走真透明。</li>
+    <li><strong>普通弹窗</strong>：<strong>不支持</strong>。普通弹窗即使选了 borderless + 无背景，也不会走真透明——它依赖色键透明，但普通弹窗的 <code>RegularPopup</code> 里没有实现 <code>borderless</code> + <code>window_background=false</code> → 真透明的分支，会继续走色键透明。</li>
+</ul>
+
+<div class="tip">
+    <strong>💡 简记口诀：</strong><br>
+    · 想「只剩内容，窗口整体消失」 → <code>borderless</code> + 取消背景（模类框 / 图片框）；<br>
+    · 想「窗口还在，背景透明」 → 普通边框 / 工具窗 + 取消背景（所有类型）。
+</div>
+
 <h2>四、两种镂空的对比</h2>
 
 <h3>4.1 视觉对比</h3>
@@ -674,6 +738,14 @@ ctypes.windll.user32.SetLayeredWindowAttributes(hwnd, color_ref, 0, LWA_COLORKEY
 
 <p>为什么要这样设计？因为图片镂空走的是 Qt 的 <code>WA_TranslucentBackground</code>（逐像素透明），色键透明走的是 Win32 的 <code>LWA_COLORKEY</code>（整块颜色透明）。两套机制叠加会冲突——Qt 的透明背景上再叠一个 Win32 色键，可能导致视觉异常（比如透明区域闪白、控件被误抠掉）。所以程序干脆让它二选一。</p>
 
+<div class="note">
+    <strong>📌 三种「透明」机制的关系：</strong><br>
+    · <strong>图片镂空</strong>：<code>WA_TranslucentBackground</code> + 图片 alpha / 色度抠图（图片框专属，逐像素透明）<br>
+    · <strong>色键透明（窗口背景镂空）</strong>：<code>SetLayeredWindowAttributes(LWA_COLORKEY)</code>（有边框时用，整块色键色透明）<br>
+    · <strong>真透明（窗口背景镂空）</strong>：<code>WA_TranslucentBackground</code>（borderless 时用，窗口整体透明）<br><br>
+    后两者都属于「窗口背景镂空」，具体用哪个只看 <code>window_style</code>；图片镂空和它们互斥。
+</div>
+
 <h2>五、常见问题</h2>
 
 <h3>Q1：镂空勾了但没效果？</h3>
@@ -723,16 +795,19 @@ ctypes.windll.user32.SetLayeredWindowAttributes(hwnd, color_ref, 0, LWA_COLORKEY
 
 <ol>
     <li><strong>图片镂空（hollow）</strong>：图片框专属。让图片背景透明，强制无边框，只留下图片主体。入口是「镂空图片窗口」复选框。支持 alpha（透明通道）和 chroma（色度抠图）两种模式。</li>
-    <li><strong>窗口背景镂空（色键透明）</strong>：所有窗口类型都能用。让窗口背景透明，但保留标题栏、图标、文本、按钮区。入口是样式钮里取消「窗口背景」复选框。用 Win32 <code>SetLayeredWindowAttributes</code> 实现。</li>
+    <li><strong>窗口背景镂空</strong>：所有窗口类型都能用。让窗口背景透明。入口是样式钮里取消「窗口背景」复选框。具体实现分两条路径：<br>
+        · <code>window_style = borderless</code> → 走 Qt 真透明（<code>WA_TranslucentBackground</code>），窗口连边框带标题栏全透明，只剩控件；<br>
+        · <code>window_style = normal_fixed / tool_fixed</code> → 走 Win32 色键透明（<code>SetLayeredWindowAttributes</code>），标题栏保留，内容区背景透明。
+    </li>
 </ol>
 
 <p>记住几个关键点：</p>
 <ul>
     <li>图片镂空是「图片透明」，窗口背景镂空是「窗口背景透明」。</li>
-    <li>图片镂空强制无边框，窗口背景镂空保留标题栏。</li>
-    <li>两者互斥：图片框勾了镂空，色键透明会被跳过。</li>
-    <li>两者都和亚克力互斥：镂空和色键透明都要求背景透明，亚克力需要背景层。</li>
-    <li>窗口背景镂空只在 Windows 平台生效。</li>
+    <li>图片镂空强制无边框；窗口背景镂空在 <code>borderless</code> 下也是无边框，在 <code>normal_fixed</code> / <code>tool_fixed</code> 下保留标题栏。</li>
+    <li>三者互斥：图片框勾了镂空，色键透明会被跳过；borderless 窗口走真透明，不会再叠色键。</li>
+    <li>三者都和亚克力互斥：镂空 / 色键透明 / 真透明都要求背景透明，亚克力需要背景层。</li>
+    <li>色键透明只在 Windows 平台生效；真透明是 Qt 跨平台的。</li>
 </ul>
 
 <p>搞清楚了这两种镂空的区别，你就能根据场景选对工具了喵 ( ⓛ ω ⓛ *)</p>

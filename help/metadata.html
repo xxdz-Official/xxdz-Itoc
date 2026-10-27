@@ -154,11 +154,11 @@
             </ul>
         </nav>
         <main class="content-area" id="contentArea">
-<h1>📇 作品元数据</h1>
+<h1><img src="icon/元数据.png" class="doc-icon-lg" alt=""> 作品元数据</h1>
 
 <p>你辛辛苦苦做了一个弹窗作品，发出去之后，观众看到的是弹窗——但弹窗背后是谁做的、叫什么名字、能不能二创、能不能商用，观众不知道。</p>
 
-<p>「作品元数据」就是干这个的。它是一张<strong>作品身份证</strong>：把作品名称、作者、头像、个人主页、版权协议、二创/商用授权、附加链接、作品简介全写进去，然后跟着工程一起走。观众在解释器里点「关于该作品」，就能看到这些信息。</p>
+<p><i class="itoc-icon doc-icon-md icon-metadata"></i>「作品元数据」就是干这个的。它是一张<strong>作品身份证</strong>：把作品名称、作者、头像、个人主页、版权协议、二创/商用授权、附加链接、作品简介全写进去，然后跟着工程一起走。观众在解释器里点「关于该作品」，就能看到这些信息。</p>
 
 <p>这篇把元数据窗口里每个字段、保存机制、运行时展示逻辑全讲清楚。</p>
 
@@ -337,7 +337,7 @@
     </tbody>
 </table>
 
-<p>下拉框是<strong>可编辑的</strong>（<code>state="normal"</code>），也就是说你可以不选预设，直接输入自定义的版权声明，比如「版权所有 © 2026 小小电子xxdz，未经许可禁止转载」。</p>
+<p>下拉框是<strong>可编辑的</strong>，也就是说你可以不选预设，直接输入自定义的版权声明，比如「版权所有 © 2026 小小电子xxdz，未经许可禁止转载」。</p>
 
 <h3>4.2 制作时间</h3>
 
@@ -418,7 +418,7 @@
 
 <p>点「导出 JSON...」，选保存位置，程序会把当前窗口里的所有字段（包括还没点「确定」的修改）写成一个 JSON 文件。</p>
 
-<p>导出的 JSON 是标准格式，<code>ensure_ascii=False</code>，中文直接显示，<code>indent=2</code>，缩进好看。</p>
+<p>导出的 JSON 是标准格式，中文直接显示，缩进两格。</p>
 
 <pre><code>{
   "work_name": "我的桌面即时表演程序作品",
@@ -442,7 +442,7 @@
 <p>点「导入 JSON...」，选一个 JSON 文件，程序会：</p>
 <ol>
     <li>读文件。</li>
-    <li>用 <code>normalize_metadata</code> 洗一遍——缺的字段补默认值、多的字段丢掉、类型不对的强制转成合法值。</li>
+    <li>先把数据规范一遍——缺的字段补默认值、多的字段丢掉、类型不对的强制转成合法值。</li>
     <li>把洗好的数据填进窗口。</li>
 </ol>
 
@@ -473,9 +473,9 @@
 <ol>
     <li>从窗口里收集所有字段，拼成一个字典。</li>
     <li>检查「个人主页」和「附加链接」的 URL，不是 <code>http(s)://</code> 开头的弹询问框。</li>
-    <li>用 <code>normalize_metadata</code> 洗一遍，保证字段完整、类型正确。</li>
-    <li><strong>先保存撤销快照</strong>（<code>save_undo_snapshot_before_modify("编辑作品元数据")</code>）。</li>
-    <li>把新元数据写进 <code>app.project_metadata</code>。</li>
+    <li>同样先规范一遍，保证字段完整、类型正确。</li>
+    <li><strong>先保存撤销快照</strong>（这次修改可以用 <kbd>Ctrl</kbd>+<kbd>Z</kbd> 撤销）。</li>
+    <li>把新元数据写进工程的元数据字段。</li>
     <li>标记工程已修改（标题栏的「已编辑*」亮起来）。</li>
     <li>在轮播图上弹一个「作品元数据已保存」的通知（2 秒）。</li>
     <li>控制台打印一行日志：<code>[MetaData] 元数据已写回工程：work_name=... author=...</code></li>
@@ -534,7 +534,7 @@
     <li><strong>标题栏右上角</strong>：有一个 <strong>?</strong> 按钮，点它或者按 <kbd>Shift</kbd>+<kbd>F1</kbd>，会显示「本软件使用 xxdz_Itoc 开发~」的提示。</li>
 </ul>
 
-<p>窗口是<strong>置顶</strong>的（<code>WindowStaysOnTopHint</code>），不会被其他窗口挡住。</p>
+<p>窗口是<strong>置顶</strong>的，不会被其他窗口挡住。</p>
 
 <div class="tip">
     <strong>💡 关于该作品窗口的字体：</strong><br>
@@ -545,7 +545,7 @@
 
 <p><strong>本地头像：</strong></p>
 <ul>
-    <li>用 <code>player.find_image_file(avatar_value)</code> 查找。</li>
+    <li>按固定的顺序去找这张图。</li>
     <li>查找顺序：直接路径 → <code>&lt;exe目录&gt;/img/文件名</code> → <code>&lt;cwd&gt;/img/文件名</code> → <code>&lt;exe目录&gt;/文件名</code> → <code>&lt;cwd&gt;/文件名</code> → 文件名本身。</li>
     <li>找不到就显示「文件丢失」。</li>
 </ul>
@@ -553,7 +553,7 @@
 <p><strong>网络头像：</strong></p>
 <ul>
     <li>异步下载，不阻塞 UI。</li>
-    <li>有缓存（<code>_AVATAR_CACHE</code>），同一个 URL 只下载一次。</li>
+    <li>有缓存，同一个 URL 只下载一次。</li>
     <li>如果 URL 以 <code>.avif</code> 结尾，会自动把后缀改成 <code>.jpg</code> 再请求（因为 Qt 默认不带 AVIF 解码器）。</li>
     <li>如果 URL 是 <code>http://</code>，会自动升级成 <code>https://</code>。</li>
     <li>带 <code>User-Agent</code> 和 <code>Referer: https://www.bilibili.com/</code>，方便拉 B 站头像。</li>
@@ -588,7 +588,7 @@
 <h2>十一、常见问题</h2>
 
 <h3>Q1：元数据窗口打不开，提示「请先打开或新建工程」？</h3>
-<p>A：正常。元数据存在工程文件里，没工程就没地方存。先 <kbd>Ctrl</kbd>+<kbd>N</kbd> 新建一个，或者打开一个已有的 <code>.czemidi</code>。</p>
+<p>A：正常。元数据存在工程文件里，没工程就没地方存。先 <kbd>Ctrl</kbd>+<kbd>N</kbd> 新建一个，或者打开一个已有的 <code>.czemidi</code> 啦。</p>
 
 <h3>Q2：本地头像选完了，预览框显示「文件丢失」？</h3>
 <p>A：可能原因：① 图片被手动删了；② 工程被移动后，<code>media/avatar/</code> 目录没跟着走；③ 路径解析出错。检查工程目录下有没有 <code>media/avatar/</code> 文件夹，里面有没有那张图。</p>
@@ -606,7 +606,7 @@
 <p>A：可以。名称空着，URL 填了，「关于该作品」窗口里就直接显示 URL 本身当链接文字。如果名称和 URL 都空着，这一行保存时会被丢弃。</p>
 
 <h3>Q7：二创和商用选「待定」是什么意思？</h3>
-<p>A：「待定」就是「还没想好」。观众看到的是「待定」，知道你还没决定。适合还在犹豫、或者想之后再改的情况。</p>
+<p>A：「待定」就是「还没想好」。观众看到的是「待定」，知道你还没决定。适合还在犹豫、或者想之后再改的情况哦。</p>
 
 <h3>Q8：元数据会跟着工程一起被撤销吗？</h3>
 <p>A：会。保存元数据时会先存撤销快照，按 <kbd>Ctrl</kbd>+<kbd>Z</kbd> 可以撤回到修改前的状态。</p>
@@ -621,7 +621,7 @@
 <p>A：点它（或者按 <kbd>Shift</kbd>+<kbd>F1</kbd>）会弹一个「这是什么」提示，内容是「本软件使用 xxdz_Itoc 开发~」。这是给观众看的开发工具署名。</p>
 
 <h3>Q12：为什么启动日志里打印了作品信息，但观众看不到？</h3>
-<p>A：启动日志打在控制台上。普通用户双击 exe 时没有控制台，所以看不到。观众能看到的只有托盘菜单里的「关于该作品」窗口。</p>
+<p>A：启动日志打在控制台上。普通用户双击 exe 时没有控制台，所以看不到。观众能看到的只有托盘菜单里的「关于该作品」窗口。(๓´˘`๓)</p>
 
 <h3>Q13：作品简介写太长会怎样？</h3>
 <p>A：不会怎样。保存时原样存，运行时「关于该作品」窗口里会显示成一个高度 60~120 像素的滚动区域，内容多了滚动查看。</p>

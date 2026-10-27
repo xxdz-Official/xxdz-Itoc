@@ -185,7 +185,7 @@
     <strong>💡 一句话理解：</strong><br>
     语言包就是一份"中文原文 → 译文"的对照表。<br>
     程序在显示任何文字之前，都会先查一下这个表，查到了就用译文，查不到就保持原样。<br>
-    所以语言包不需要覆盖所有文字，只翻译你想翻译的就行。
+    所以语言包不需要覆盖所有文字，只翻译你想翻译的就行啦。
 </div>
 
 <h3>1.1 为什么用 .mui 而不是 .json？</h3>
@@ -268,7 +268,7 @@
 <div class="warning">
     <strong>⚠️ 必须重启才完全生效：</strong><br>
     语言包是在程序启动时加载的。运行期间改了内存里的映射表，很多已经创建好的控件不会自动重新翻译。<br>
-    所以切换语言之后，界面上可能会"翻译了一部分、还留着一部分"——这是正常的，重启之后就全好了。
+    所以切换语言之后，界面上可能会"翻译了一部分、还留着一部分"——这是正常的，重启之后就全好了呀。
 </div>
 
 <h3>4.1 Itoc 自带的语言包</h3>
@@ -316,8 +316,8 @@
 <ol>
     <li><strong>读取配置</strong>：从 <code>shezhi.txt</code> 里读出 <code>current_language</code> 字段</li>
     <li><strong>加载语言包</strong>：如果字段不是 <code>default</code>，就去 <code>Language/</code> 找对应的文件并读成字典</li>
-    <li><strong>翻译菜单</strong>：递归遍历所有菜单和子菜单，把 label 查表替换</li>
-    <li><strong>翻译界面控件</strong>：递归遍历所有控件，翻译 Label / Button / LabelFrame / Combobox 里的文字</li>
+    <li><strong>翻译菜单</strong>：递归遍历所有菜单和子菜单，把菜单文字查表替换</li>
+    <li><strong>翻译界面控件</strong>：递归遍历所有控件，翻译按钮、标签、分组框、下拉框里的文字</li>
     <li><strong>翻译模板</strong>：对于像"时间：0.000s / 0.000s"这种带数字的文本，用模板匹配的方式翻译</li>
     <li><strong>通知子模块</strong>：通知侧边栏、代码视图、过渡管理器等模块，让它们也重新应用语言</li>
 </ol>
@@ -390,8 +390,8 @@
 <p>主界面翻译完之后，程序还会通知几个独立模块，让它们自己翻译：</p>
 
 <ul>
-    <li><strong>侧边栏</strong>：调用它的 <code>apply_language</code> 方法，翻译侧边栏里的选项卡标题和按钮</li>
-    <li><strong>代码视图</strong>：调用它的 <code>on_language_changed</code> 方法</li>
+    <li><strong>侧边栏</strong>：让它重新翻译侧边栏里的选项卡标题和按钮</li>
+    <li><strong>代码视图</strong>：让它重新翻译自己的界面文字</li>
     <li><strong>阵列模块</strong>：刷新它的语言包缓存</li>
     <li><strong>过渡管理器</strong>：刷新过渡菜单的翻译</li>
 </ul>
@@ -433,12 +433,12 @@
 <p>程序翻译的时候，会拿界面上的文字去查表。这些文字包括：</p>
 
 <ul>
-    <li><strong>菜单 label</strong>：比如 "文件(F)"、"撤销"、"首选项"</li>
-    <li><strong>按钮 text</strong>：比如 "确定"、"取消"、"浏览..."</li>
-    <li><strong>标签 text</strong>：比如 "当前语言:"、"波形采样点数:"</li>
-    <li><strong>LabelFrame 标题</strong>：比如 "窗口设置"、"音频设置"</li>
-    <li><strong>Combobox 选项</strong>：比如主题下拉框里的 "vista"、"clam"（一般不翻译）</li>
-    <li><strong>Notebook 选项卡标题</strong>：比如 "CZEmakers"、"音频音谱"</li>
+    <li><strong>菜单文字</strong>：比如 "文件(F)"、"撤销"、"首选项"</li>
+    <li><strong>按钮文字</strong>：比如 "确定"、"取消"、"浏览..."</li>
+    <li><strong>标签文字</strong>：比如 "当前语言:"、"波形采样点数:"</li>
+    <li><strong>分组框标题</strong>：比如 "窗口设置"、"音频设置"</li>
+    <li><strong>下拉框选项</strong>：比如主题下拉框里的 "vista"、"clam"（一般不翻译）</li>
+    <li><strong>选项卡标题</strong>：比如 "CZEmakers"、"音频音谱"</li>
 </ul>
 
 <p>只要 key 和这些文字一字不差，就会被替换。</p>
@@ -651,7 +651,7 @@
 
 <h3>Q5：切回默认语言，为什么还要重启？</h3>
 
-<p>因为程序启动时是把 <code>lang_map</code> 加载成字典的。切回默认意味着要把这个字典清空，但已经翻译过的控件不会自动变回中文，所以还是得重启。</p>
+<p>因为程序启动时会把语言包加载成一张对照表。切回默认意味着要把这张表清空，但已经翻译过的控件不会自动变回中文，所以还是得重启。</p>
 
 <h3>Q6：语言包支持图片吗？</h3>
 
@@ -659,7 +659,7 @@
 
 <h3>Q7：语言包能翻译快捷键吗？</h3>
 
-<p>菜单项的快捷键标记（比如 "Ctrl+S"）在 menu 项里是单独的 <code>accelerator</code> 属性，不走翻译逻辑。</p>
+<p>菜单项的快捷键标记（比如 "Ctrl+S"）是单独记的，不走翻译逻辑。</p>
 
 <p>但菜单项的文字里如果带了快捷键提示（比如 "撤销"），可以翻译文字，快捷键本身不变。所以英文用户看到的是 "Undo    Ctrl+Z" 这种形式。</p>
 
@@ -716,7 +716,7 @@
     <li><strong>存到 shezhi.txt</strong> 的 <code>current_language</code> 字段</li>
 </ul>
 
-<p>做语言包不复杂，就是"抄原文 + 写译文"的体力活。做一份出来，你的外国朋友就能用上母语版 Itoc 了。（Itoc国际化喵？！（太中二了。。））</p>
+<p>做语言包不复杂，就是"抄原文 + 写译文"的体力活。做一份出来，你的外国朋友就能用上母语版 Itoc 了。(ᐡ⦁⩊⦁⸝⸝ᐡ )₊୭（Itoc国际化喵？！（太中二了。。））</p>
 
 <p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
         </main>

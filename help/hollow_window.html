@@ -756,7 +756,7 @@ ctypes.windll.user32.SetLayeredWindowAttributes(hwnd, color_ref, 0, LWA_COLORKEY
 </ul>
 
 <h3>Q2：色度抠图留了一圈绿边？</h3>
-<p>A：容差为 0 导致的。绿幕图如果有噪点、渐变、抗锯齿，边缘像素的 RGB 和纯绿不相等，抠不掉。解决方案：用 alpha 模式（如果图片有透明通道），或者用专业工具预处理图片。</p>
+<p>A：容差为 0 导致的。绿幕图如果有噪点、渐变、抗锯齿，边缘像素的 RGB 和纯绿不相等，抠不掉。解决方案：用 alpha 模式（如果图片有透明通道），或者用专业工具预处理图片哦。</p>
 
 <h3>Q3：取消了「窗口背景」，但窗口变成深蓝色了？</h3>
 <p>A：说明色键透明没生效。可能原因：① 非 Windows 平台；② <code>SetLayeredWindowAttributes</code> 调用失败（比如窗口句柄还没创建好）；③ 图片框勾了镂空（色键透明被跳过）。检查控制台有没有 <code>[色键透明] 应用失败</code> 的日志。</p>
@@ -771,10 +771,10 @@ ctypes.windll.user32.SetLayeredWindowAttributes(hwnd, color_ref, 0, LWA_COLORKEY
 <p>A：能。镂空图片框仍然遵循样式钮里的「窗口置顶」配置。勾了置顶，图片会浮在其他窗口上面；不勾，就是普通层级。</p>
 
 <h3>Q7：GIF 镂空后动画变卡了？</h3>
-<p>A：色度抠图模式下每帧都要逐像素遍历，帧数多、分辨率大的 GIF 会慢。如果 GIF 本身带透明通道，切到 alpha 模式。另外可以缩小 GIF 尺寸（自定义尺寸填小一点），减少像素量。</p>
+<p>A：色度抠图模式下每帧都要逐像素遍历，帧数多、分辨率大的 GIF 会慢。如果 GIF 本身带透明通道，切到 alpha 模式。另外可以缩小 GIF 尺寸（自定义尺寸填小一点），减少像素量呀。</p>
 
 <h3>Q8：镂空窗口的透明区域能点到吗？</h3>
-<p>A：图片镂空的透明区域能点到。程序显式设置了 <code>WA_TransparentForMouseEvents=False</code> 和 <code>setMouseTracking(True)</code>，并在 <code>paintEvent</code> 里绘制了透明背景层，确保整张图片区域（包括透明部分）都能接收鼠标事件。</p>
+<p>A：图片镂空的透明区域能点到。程序显式设置了 <code>WA_TransparentForMouseEvents=False</code> 和 <code>setMouseTracking(True)</code>，并在 <code>paintEvent</code> 里绘制了透明背景层，确保整张图片区域（包括透明部分）都能接收鼠标事件。(๓´˘`๓)</p>
 <p>窗口背景镂空的透明区域也能点到——因为色键透明只是「视觉透明」，窗口本身还是一个完整的矩形，鼠标事件照常接收。</p>
 
 <h3>Q9：窗口背景镂空后，标题栏能拖动吗？</h3>

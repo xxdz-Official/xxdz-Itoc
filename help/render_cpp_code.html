@@ -154,7 +154,7 @@
             </ul>
         </nav>
         <main class="content-area" id="contentArea">
-<h1>🧱 渲染为 C++ 代码</h1>
+<h1><img src="icon/cpp代码.png" class="doc-icon-lg" alt=""> 渲染为 C++ 代码</h1>
 
 <p>「渲染为 C++ 代码」是 Itoc 提供给开发者的一个<strong>数据导出功能</strong>：把工程里的音符、全局命令、BPM 等信息，转换成一份 C++ 源码文件（<code>.cpp</code>）。这份源码里嵌入了一个巨大的 JSON 字符串，C++ 程序运行时用 <code>QJsonDocument::fromJson</code> 解析它，就能拿到工程数据。</p>
 
@@ -424,7 +424,7 @@ g++ 我的工程_render.cpp -o MyPlayer.exe \
 <h2>八、常见问题</h2>
 
 <h3>Q1：生成的 .cpp 能直接双击运行吗？</h3>
-<p>A：不能。它只是源码，需要编译成 exe 才能运行。而且 2.0 版本 Itoc 不会帮你编译。</p>
+<p>A：不能。它只是源码，需要编译成 exe 才能运行。而且 2.0 版本 Itoc 不会帮你编译哦。</p>
 
 <h3>Q2：为什么菜单里没有“编译 C++ 为 exe”？</h3>
 <p>A：2.0 版本暂不支持。目前只有「渲染为 C++ 代码」，编译需要你手动完成。</p>
@@ -452,10 +452,10 @@ g++ 我的工程_render.cpp -o MyPlayer.exe \
 </ul>
 
 <h3>Q9：我可以自己改模板吗？</h3>
-<p>A：可以。模板就是普通的 <code>.cpp</code> 文件，你可以按自己的播放器结构改。只要保留占位符（<code>// =CzeData=</code> / <code>=CzeData=</code> / <code>CZEDATA_CONTENT = </code>）之一，生成时数据就会被替换进去。</p>
+<p>A：可以。模板就是普通的 <code>.cpp</code> 文件，你可以按自己的播放器结构改。只要保留占位符（<code>// =CzeData=</code> / <code>=CzeData=</code> / <code>CZEDATA_CONTENT = </code>）之一，生成时数据就会被替换进去。(ᐡ⦁⩊⦁⸝⸝ᐡ )₊୭</p>
 
 <h3>Q10：为什么生成的 JSON 用 <code>R"ITOC_JSON(...)ITOC_JSON"</code> 包着？</h3>
-<p>A：因为 JSON 里有大量双引号、反斜杠和换行。如果直接写成普通 C++ 字符串，需要疯狂转义。用 C++11 原始字符串字面量可以原样保留内容，运行时再交给 <code>QJsonDocument::fromJson</code> 解析，最省事也最不容易出错。</p>
+<p>A：因为 JSON 里有大量双引号、反斜杠和换行。如果直接写成普通 C++ 字符串，需要疯狂转义。用 C++11 原始字符串字面量可以原样保留内容，运行时再交给 <code>QJsonDocument::fromJson</code> 解析，最省事也最不容易出错呀。</p>
 
 <h2>九、小结</h2>
 

@@ -154,13 +154,13 @@
             </ul>
         </nav>
         <main class="content-area" id="contentArea">
-<h1>🤖 AI 协作（小電AI）</h1>
+<h1><img src="icon/人工智能.png" class="doc-icon-lg" alt=""> AI 协作（小電AI）</h1>
 
 <p>「AI 协作」是 Itoc 中一个“让 AI 帮你改工程”的功能。你用自然语言描述想改什么，AI 读完当前工程的完整 JSON 和 Itoc 语法文档后，会给出若干组<strong>精确查找/替换方案</strong>（<code>【Search】</code> / <code>【Replace】</code>），程序按方案对 <code>.czemidi</code> 文件做<strong>字符串级替换</strong>，替换完校验 JSON，合法就写回并重新加载。</p>
 
 <div class="tip">
     <strong>💡 一句话理解：</strong><br>
-    它不是“AI 直接操作工程对象”，而是“AI 给你一段 Search 和一段 Replace，程序帮你做 <code>replace(search, replace, 1)</code>”。<br>
+    它不是“AI 直接操作工程对象”，而是“AI 给你一段 Search 和一段 Replace，程序照着在工程文件里做精确替换”。<br>
     所以它比“AI 重写整个 JSON”更可控，但也更依赖 AI 给出的 Search 是否和工程文件里的内容<strong>一字不差</strong>。
 </div>
 
@@ -196,7 +196,7 @@
 
 <p>入口在<strong>「协作(B)」菜单</strong>里，菜单项通常叫「使用小電AI协作当前工程」或类似名称。</p>
 
-<p>打开后会弹出一个独立的 AI 协作对话框。它是<strong>单例</strong>的：如果已经打开，再点菜单不会新建第二个，而是把已有窗口提到最前面（<code>deiconify + lift + focus_force</code>）。</p>
+<p>打开后会弹出一个独立的 AI 协作对话框。它是<strong>单例</strong>的：如果已经打开，再点菜单不会新建第二个，而是把已有窗口提到最前面。</p>
 
 <h3>前置条件</h3>
 
@@ -220,12 +220,12 @@
         <tr><th>区域</th><th>内容</th></tr>
     </thead>
     <tbody>
-        <tr><td>标题栏右侧</td><td>📌 置顶按钮（点击切换窗口 <code>-topmost</code> 状态）</td></tr>
+        <tr><td>标题栏右侧</td><td>📌 置顶按钮（点击切换窗口置顶状态）</td></tr>
         <tr><td>知识库模式</td><td>三个单选框：无知识库 / Itoc知识库（简单） / Itoc知识库（专家）</td></tr>
         <tr><td>AI 模型</td><td>模型下拉框，列出 <code>orcarouterAI.json</code> 里的模型</td></tr>
-        <tr><td>输入区</td><td>多行输入框（ScrolledText，高度 5 行），输入修改指令</td></tr>
+        <tr><td>输入区</td><td>多行输入框（高度 5 行），输入修改指令</td></tr>
         <tr><td>按钮与进度</td><td>「发送」按钮、进度标签、进度条（请求时显示）</td></tr>
-        <tr><td>AI 返回区</td><td>只读文本框（<code>Consolas</code> 字体），用打字机效果显示 AI 返回的 Search/Replace 方案</td></tr>
+        <tr><td>AI 返回区</td><td>只读文本框（等宽字体），用打字机效果显示 AI 返回的 Search/Replace 方案</td></tr>
         <tr><td>操作按钮</td><td>「应用修改」、「》」（跳过打字机）</td></tr>
         <tr><td>状态栏</td><td>显示当前状态（就绪 / 正在请求 AI / AI 响应完成 / 错误等）</td></tr>
     </tbody>
@@ -246,7 +246,7 @@
     </tbody>
 </table>
 
-<p>两份 <code>.md</code> 都放在程序根目录（<code>os.path.dirname(__file__)</code>）。如果文件不存在，程序会显示“（{filename} 文件未找到，请确保该文件存在于程序根目录）”，AI 拿到的就是这段占位文字，效果会变差。</p>
+<p>两份 <code>.md</code> 都放在程序根目录。如果文件不存在，程序会显示“（{filename} 文件未找到，请确保该文件存在于程序根目录）”，AI 拿到的就是这段占位文字，效果会变差。</p>
 
 <div class="tip">
     <strong>💡 怎么选？</strong><br>
@@ -264,7 +264,7 @@
     <li><strong>自动路由 (OrcaRouter)</strong>：<code>orcarouter/auto</code></li>
 </ul>
 
-<p>切换模型会立刻调用 <code>save_ai_config()</code> 写回 <code>orcarouterAI.json</code> 的 <code>current_model</code> 字段，下次打开时沿用。模型配置和「電籽 AI 助手」共用同一份文件。</p>
+<p>切换模型会立刻写回 <code>orcarouterAI.json</code> 的 <code>current_model</code> 字段，下次打开时沿用。模型配置和「電籽 AI 助手」共用同一份文件。</p>
 
 <p>想添加/编辑/删除模型、修改 API Key/Base URL，请参考 <a href="advanced_ai_model.html">《如何调用高级 AI 模型》</a>。</p>
 
@@ -279,37 +279,25 @@
 <p>点「发送」后：</p>
 
 <ol>
-    <li><code>_is_processing</code> 置 True，「发送」和「应用修改」按钮被禁用。</li>
-    <li>状态栏显示“正在请求 AI...”，<code>progress_label</code> 显示“AI 思考中...”，进度条 <code>indeterminate</code> 模式开始滚动。</li>
+    <li>「发送」和「应用修改」按钮被禁用，防止重复提交。</li>
+    <li>状态栏显示“正在请求 AI...”，进度条开始滚动。</li>
     <li>清空上一次的响应区。</li>
-    <li>启动后台线程 <code>_ai_request(user_input)</code>。</li>
+    <li>在后台发送请求，界面不会卡住。</li>
 </ol>
 
 <h3>6.2 请求是怎么构造的</h3>
 
-<p>后台线程里调用 <code>_build_user_message()</code>，把三部分拼成一条用户消息：</p>
+<p>请求会把三部分拼成一条用户消息：</p>
 
 <ol>
-    <li><strong>当前工程完整 JSON</strong>（从磁盘读取的 <code>.czemidi</code> 全文，用 <code>```json</code> 包住）</li>
-    <li><strong>语法说明文档</strong>（根据知识库模式选择，用 <code>```markdown</code> 包住）</li>
+    <li><strong>当前工程完整 JSON</strong>（从磁盘读取的 <code>.czemidi</code> 全文）</li>
+    <li><strong>语法说明文档</strong>（根据知识库模式选择）</li>
     <li><strong>你的指令</strong>（放在“用户指令：”下面）</li>
 </ol>
 
-<p>然后调用 OpenAI 兼容接口：</p>
+<p>然后按 OpenAI 兼容接口的格式发出去。</p>
 
-<pre><code>from openai import OpenAI
-client = OpenAI(api_key=..., base_url=...)
-response = client.chat.completions.create(
-    model=...,
-    messages=[
-        {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user",   "content": user_message}
-    ],
-    stream=False,
-    timeout=90
-)</code></pre>
-
-<p><code>SYSTEM_PROMPT</code> 硬编码在 <code>Cooperation_AI.py</code> 里，明确要求 AI 按这个格式输出：</p>
+<p>系统提示词里明确要求 AI 按这个格式输出：</p>
 
 <pre><code>【Search】
 精确的原始字符串（必须与工程文件中的内容完全一致，包括空格和换行）
@@ -320,12 +308,12 @@ response = client.chat.completions.create(
 
 <h3>6.3 AI 返回与打字机</h3>
 
-<p>AI 返回后，主线程会调用 <code>_on_ai_response(reply)</code>：</p>
+<p>AI 返回后，程序会：</p>
 
 <ul>
     <li>停止进度条并隐藏。</li>
     <li>恢复「发送」按钮，状态栏显示“AI 响应完成”。</li>
-    <li>把回复内容放进 <code>_typewriter_queue</code>，启动打字机：每 15ms 打一个字。</li>
+    <li>把回复内容放进打字机队列，启动打字机：每 15ms 打一个字。</li>
     <li>如果回复里同时包含 <code>【Search】</code> 和 <code>【Replace】</code>，「应用修改」按钮亮起。</li>
     <li>如果只有 <code>【Error】</code>，状态栏显示错误原因，按钮不亮。</li>
     <li>如果既没有 Search/Replace 也没有 Error，状态栏显示“未检测到有效的 Search/Replace 对”。</li>
@@ -349,14 +337,14 @@ response = client.chat.completions.create(
 
 <h3>7.1 解析规则</h3>
 
-<p><code>_parse_modifications()</code> 做了两层解析：</p>
+<p>程序会做两层解析：</p>
 
 <ol>
-    <li><strong>正则匹配（优先）</strong>：<code>【Search】\s*(.*?)\s*【Replace】\s*(.*?)(?=【Search】|$)</code>，<code>re.DOTALL</code> 模式，支持多组、支持跨行。</li>
-    <li><strong>按行解析（兜底）</strong>：如果正则没匹配到，就逐行扫描 <code>【Search】</code> 和 <code>【Replace】</code> 标记。</li>
+    <li><strong>整段匹配（优先）</strong>：按 <code>【Search】</code> / <code>【Replace】</code> 标记整段抓取，支持多组、支持跨行。</li>
+    <li><strong>按行解析（兜底）</strong>：如果上面的方式没匹配到，就逐行扫描 <code>【Search】</code> 和 <code>【Replace】</code> 标记。</li>
 </ol>
 
-<p>两条路都会调用 <code>_clean_search_content()</code> 清理内容：</p>
+<p>解析出来的 Search 还会再清理一下内容：</p>
 
 <ul>
     <li>去掉首尾空白。</li>
@@ -369,24 +357,24 @@ response = client.chat.completions.create(
 
 <div class="warning">
     <strong>⚠️ Search 是精确字符串匹配：</strong><br>
-    程序只做 <code>content.replace(search, replace, 1)</code>，<strong>不做模糊匹配、不做 JSON 结构比对</strong>。<br>
+    程序只做精确字符串替换，<strong>不做模糊匹配、不做 JSON 结构比对</strong>。<br>
     如果 AI 给的 Search 和工程文件里的内容差一个空格、差一个换行、差一个引号，就匹配不到，这一条修改会被跳过，并在控制台打印“⚠️ 未找到搜索串，跳过此条修改”。<br>
     所以 AI 返回后，最好自己先看一眼 Search 是不是和工程里的写法一致。
 </div>
 
 <h2>八、应用修改的机制与安全措施</h2>
 
-<p>点「应用修改」后，<code>_apply_modifications()</code> 按这个顺序干活：</p>
+<p>点「应用修改」后，程序按这个顺序干活：</p>
 
 <ol>
     <li><strong>解析</strong>：从响应文本里解析出所有 Search/Replace 对。没有有效对就提示“未找到有效的 Search/Replace 对”。</li>
     <li><strong>备份</strong>：把当前 <code>.czemidi</code> 复制成 <code>.czemidi.bak</code>。备份失败就中止并提示“无法创建备份文件”。</li>
     <li><strong>读取</strong>：读取工程文件全文。</li>
-    <li><strong>逐个替换</strong>：按顺序执行 <code>content.replace(search, replace, 1)</code>。匹配不到就跳过，并在控制台打印警告和前 100 字符的搜索串预览。</li>
-    <li><strong>JSON 校验</strong>：用 <code>json.loads(content)</code> 验证替换后的内容。不合法就恢复备份，弹错误框“替换后 JSON 无效，已恢复备份。”，中止。</li>
+    <li><strong>逐个替换</strong>：按顺序逐条替换，每条只替换第一次出现的位置。匹配不到就跳过，并在控制台打印警告和搜索串预览。</li>
+    <li><strong>JSON 校验</strong>：校验替换后的内容是不是合法的 JSON。不合法就恢复备份，弹错误框“替换后 JSON 无效，已恢复备份。”，中止。</li>
     <li><strong>写回</strong>：合法就写回工程文件。</li>
     <li><strong>删除备份</strong>：成功后删除 <code>.bak</code>。</li>
-    <li><strong>重新加载工程</strong>：调用主程序的 <code>open_cze_project_from_path()</code> 重新加载（期间 <code>loading_project=True</code>），让修改生效。</li>
+    <li><strong>重新加载工程</strong>：重新加载工程，让修改生效。</li>
     <li><strong>关闭对话框</strong>。</li>
 </ol>
 
@@ -399,7 +387,7 @@ response = client.chat.completions.create(
 
 <div class="note">
     <strong>📌 替换是“只替换第一处”：</strong><br>
-    <code>replace(search, replace, 1)</code> 里的 <code>1</code> 表示只替换第一次出现的位置。如果同一个 Search 在工程里出现多次，AI 需要为每一处分别给出 Search/Replace，或者给出足够长的上下文让 Search 唯一。
+    程序对每个 Search 只替换第一次出现的位置。如果同一个 Search 在工程里出现多次，AI 需要为每一处分别给出 Search/Replace，或者给出足够长的上下文让 Search 唯一。
 </div>
 
 <h2>九、常见问题</h2>
@@ -426,13 +414,13 @@ response = client.chat.completions.create(
 <p>A：免费模型无需登录、无限使用，但智商较低、单次 token 少，复杂工程容易给错方案。付费模型由第三方 OrcaRouter 提供，能力更强，但需要你自己注册/充值，和 Itoc 作者无关。详见 <a href="advanced_ai_model.html">《如何调用高级 AI 模型》</a>。</p>
 
 <h3>Q8：可以把 AI 协作当成“结构化 JSON 编辑器”吗？</h3>
-<p>A：不建议。它本质是<strong>精确字符串替换</strong>，不是结构化编辑。复杂修改（比如增删数组元素、调整嵌套结构）很容易因为 Search 不唯一或 Replace 破坏 JSON 而失败。复杂改动建议手动改，或者用代码视图。</p>
+<p>A：不建议。它本质是<strong>精确字符串替换</strong>，不是结构化编辑。复杂修改（比如增删数组元素、调整嵌套结构）很容易因为 Search 不唯一或 Replace 破坏 JSON 而失败。复杂改动建议手动改，或者用代码视图啦。</p>
 
 <h3>Q9：备份文件 <code>.bak</code> 还在，能手动恢复吗？</h3>
 <p>A：能。把 <code>工程名.czemidi.bak</code> 改回 <code>工程名.czemidi</code> 即可。正常情况下程序成功后会自动删除备份，只有失败或异常时才可能残留。</p>
 
 <h3>Q10：重新加载工程后，我的撤销历史还在吗？</h3>
-<p>A：AI 协作是直接改磁盘文件再重新加载，不走主程序的撤销栈。所以这次修改<strong>不能用 Ctrl+Z 撤销</strong>。改之前想清楚，或者先手动备份工程。</p>
+<p>A：AI 协作是直接改磁盘文件再重新加载，不走主程序的撤销栈。所以这次修改<strong>不能用 Ctrl+Z 撤销</strong>。改之前想清楚，或者先手动备份工程哦。 (ᐡ⦁⩊⦁⸝⸝ᐡ )₊୭</p>
 
 <h2>十、小结</h2>
 

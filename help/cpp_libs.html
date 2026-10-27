@@ -154,7 +154,7 @@
             </ul>
         </nav>
         <main class="content-area" id="contentArea">
-<h1>🧰 C++ 运行库</h1>
+<h1><img src="icon/运行库.png" class="doc-icon-lg" alt=""> C++ 运行库</h1>
 
 <p>「C++ 运行库」是配合 <a href="render_cpp_code.html">《渲染为 C++ 代码》</a> 使用的一套<strong>依赖管理工具</strong>。它管的是你电脑上 <strong>MSYS2 UCRT64</strong> 环境里的 C++ 包（比如 Qt5、OpenCV、SDL2、Boost），帮你检查缺了什么、已经装了什么、去哪里装。</p>
 
@@ -175,7 +175,7 @@
 
 <h2>一、这个功能是干嘛的？</h2>
 
-<p>它做三件事：</p>
+<p>简单来说，它做三件事：</p>
 
 <ul>
     <li><strong>检查</strong>：解析 <code>runCZEcpp.cpp</code> 里的 <code>#include</code>，映射成 MSYS2 包名，再和 <code>pacman -Q</code> 对比，告诉你缺了哪些包。</li>
@@ -227,7 +227,7 @@
 
 <h2>四、三个功能入口</h2>
 
-<p>三个功能对应 <code>to_exe.py</code> 的 <code>--lib-tool</code> 模式，分别传入不同的参数：</p>
+<p>三个功能对应不同的启动参数：</p>
 
 <table>
     <thead>
@@ -256,7 +256,7 @@
 
 <h3>5.1 头文件到 MSYS2 包的映射</h3>
 
-<p>程序内置了一张映射表（来自 <code>to_exe.py</code> 的 <code>CPP_HEADER_TO_PACKAGE</code>）：</p>
+<p>程序内置了一张映射表：</p>
 
 <table>
     <thead>
@@ -380,7 +380,7 @@ OK喵！已进入 C++ 运行库管理环境 (UCRT64)
 <h2>九、常见问题</h2>
 
 <h3>Q1：提示“未找到 MSYS2 环境”怎么办？</h3>
-<p>A：先确认你装了 MSYS2，并且路径下有 <code>usr\bin\pacman.exe</code>。如果装在非默认路径，程序会让你手动选目录。选对之后路径会写进 <code>shezhi.txt</code> 的 <code>cpp_env_path</code>。</p>
+<p>A：先确认你装了 MSYS2，并且路径下有 <code>usr\bin\pacman.exe</code>。如果装在非默认路径，程序会让你手动选目录。选对之后路径会写进 <code>shezhi.txt</code> 的 <code>cpp_env_path</code> 啦。</p>
 
 <h3>Q2：检查说缺 Qt5，但我明明装了？</h3>
 <p>A：可能的原因：</p>
@@ -394,13 +394,13 @@ OK喵！已进入 C++ 运行库管理环境 (UCRT64)
 <p>A：可以换 MSYS2 镜像源。编辑 <code>/etc/pacman.d/mirrorlist</code>，把国内镜像（比如清华、中科大）放到前面。</p>
 
 <h3>Q4：为什么只映射了 Qt5 / OpenCV / SDL2 / Boost？</h3>
-<p>A：映射表是根据 <code>runCZEcpp.cpp</code> 模板的常见依赖整理的。如果模板里用了别的库，会显示在“未映射的头文件”里，需要你自己判断该装哪个包。</p>
+<p>A：映射表是根据 <code>runCZEcpp.cpp</code> 模板的常见依赖整理的。如果模板里用了别的库，会显示在“未映射的头文件”里，需要你自己判断该装哪个包哦。</p>
 
 <h3>Q5：这个工具能帮我编译 C++ 吗？</h3>
 <p>A：不能。2.0 版本只做到依赖检查/安装，编译需要你在 MSYS2 终端里手动完成。</p>
 
 <h3>Q6：编译出来的 exe 缺 DLL？</h3>
-<p>A：Qt 程序运行时需要 Qt5 的 DLL。用 <code>windeployqt</code> 把依赖拷到 exe 同目录，或者手动复制 <code>Qt5Core.dll</code>、<code>Qt5Gui.dll</code>、<code>Qt5Widgets.dll</code> 等。</p>
+<p>A：Qt 程序运行时需要 Qt5 的 DLL。用 <code>windeployqt</code> 把依赖拷到 exe 同目录，或者手动复制 <code>Qt5Core.dll</code>、<code>Qt5Gui.dll</code>、<code>Qt5Widgets.dll</code> 等。(๓´˘`๓)</p>
 
 <h3>Q7：C++ 运行库和 Python 运行库有什么区别？</h3>
 <p>A：</p>

@@ -154,7 +154,7 @@
             </ul>
         </nav>
         <main class="content-area" id="contentArea">
-<h1>💎 如何调用高级 AI 模型</h1>
+<h1><img src="icon/人工智能.png" class="doc-icon-lg" alt=""> 如何调用高级 AI 模型</h1>
 
 <p>Itoc 的 AI 功能（「AI 协作」和「電籽 AI 助手」）默认使用 OrcaRouter 提供的<strong>免费模型</strong>。免费模型无需登录、无限使用，但有两个明显的短板：</p>
 
@@ -194,7 +194,7 @@
 
 <h2>二、前置：打开「AI 模型配置」窗口</h2>
 
-<p>不管走哪条路线，最终都要在<strong>「AI 模型配置」</strong>窗口里改配置。这个窗口由主程序调用 <code>open_ai_model_config_dialog(app)</code> 打开，通常挂在 AI 相关菜单或设置里（具体入口以你的版本为准）。</p>
+<p>不管走哪条路线，最终都要在<strong>「AI 模型配置」</strong>窗口里改配置。这个窗口通常挂在 AI 相关菜单或设置里，具体入口以你的版本为准。</p>
 
 <p>窗口从上到下分成几块：</p>
 
@@ -205,8 +205,8 @@
     <tbody>
         <tr><td>顶部提示</td><td>橙色说明文字：“Itoc默认使用免费AI模型，优点：无需登录、无限使用，缺点：辣鸡智商、单次token少，无法协作复杂工程。。。（付费模型由第三方 OrcaRouter 提供，与Itoc作者我无关，绝不强制消费）”</td></tr>
         <tr><td>API 设置</td><td>API Key 输入框、Base URL 输入框</td></tr>
-        <tr><td>模型列表</td><td>Listbox，显示 <code>名称 [id]</code>；右侧有「添加」「编辑」「删除」按钮</td></tr>
-        <tr><td>当前模型</td><td>Combobox，选择当前使用的模型</td></tr>
+        <tr><td>模型列表</td><td>列表，显示 <code>名称 [id]</code>；右侧有「添加」「编辑」「删除」按钮</td></tr>
+        <tr><td>当前模型</td><td>下拉框，选择当前使用的模型</td></tr>
         <tr><td>底部按钮</td><td>💎 购买付费模型额度、?、保存、取消</td></tr>
     </tbody>
 </table>
@@ -278,16 +278,7 @@
 
 <h2>五、路线 C：任意 OpenAI 兼容 API（最灵活）</h2>
 
-<p>Itoc 的 AI 请求走的是标准 OpenAI SDK：</p>
-
-<pre><code>from openai import OpenAI
-client = OpenAI(api_key=..., base_url=...)
-response = client.chat.completions.create(
-    model=...,
-    messages=[...],
-    stream=False,
-    timeout=90
-)</code></pre>
+<p>Itoc 的 AI 请求走的是标准 OpenAI 接口：填好 <code>api_key</code> 和 <code>base_url</code> 之后，向 <code>/v1/chat/completions</code> 发一个包含 <code>model</code> 和 <code>messages</code> 的请求，等它一次性返回完整结果（不流式），超时 90 秒。</p>
 
 <p>这意味着：<strong>只要一个服务兼容 OpenAI 的 <code>/v1/chat/completions</code> 接口，理论上都能接进来</strong>。比如：</p>
 
@@ -404,13 +395,13 @@ response = client.chat.completions.create(
 <p>A：它会用系统默认浏览器打开 OrcaRouter 的推广链接。如果没反应，检查系统默认浏览器是否正常，或者手动复制链接到浏览器打开。</p>
 
 <h3>Q2：添加模型后，下拉框里没出现？</h3>
-<p>A：确认你点了「保存」。保存后会写回 <code>orcarouterAI.json</code>。如果还是没出现，重启一下对应的 AI 窗口（关掉再打开）。</p>
+<p>A：确认你点了「保存」。保存后会写回 <code>orcarouterAI.json</code>。如果还是没出现，重启一下对应的 AI 窗口（关掉再打开）呀。</p>
 
 <h3>Q3：报“model not found”或类似错误？</h3>
 <p>A：模型 ID 填错了。去提供商的官方文档里确认准确的模型 ID，注意大小写和斜杠。</p>
 
 <h3>Q4：报“401 Unauthorized”？</h3>
-<p>A：API Key 不对或已失效。检查 Key 是否复制完整，是否有多余空格，是否过期。</p>
+<p>A：API Key 不对或已失效。检查 Key 是否复制完整，是否有多余空格，是否过期啦。</p>
 
 <h3>Q5：报“404 Not Found”？</h3>
 <p>A：Base URL 不对。检查是否漏了 <code>/v1</code>，或者路径多写了 <code>/chat/completions</code>（Itoc 会自己拼）。</p>
@@ -428,7 +419,7 @@ response = client.chat.completions.create(
 <p>A：Itoc 的 AI 请求只有一份 <code>api_key</code> 和 <code>base_url</code>，所以同一时刻只能连一个提供商。想用多家，只能改配置切换，不能同时。</p>
 
 <h3>Q10：高级模型一定比免费模型好吗？</h3>
-<p>A：不一定。高级模型通常更聪明、token 更多，但也要看具体模型和任务。简单字段修改，免费模型也够用；复杂重构，高级模型优势明显。建议先用免费模型试，不够用再升级。</p>
+<p>A：不一定。高级模型通常更聪明、token 更多，但也要看具体模型和任务。简单字段修改，免费模型也够用；复杂重构，高级模型优势明显。建议先用免费模型试，不够用再升级。(๓´˘`๓)</p>
 
 <h2>十、小结</h2>
 

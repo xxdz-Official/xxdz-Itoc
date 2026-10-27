@@ -158,7 +158,7 @@
 
 <p>亚克力（Acrylic）和云母（Mica）是 Windows 10/11 的两种「磨砂玻璃」窗口材质。开启之后，窗口背景会变成半透明的模糊效果，透出后面的桌面或窗口内容，看起来很有质感。</p>
 
-<p>Itoc 通过 Win32 API 给弹窗加上这个效果。这篇把怎么开、原理是什么、哪些系统支持、和窗口背景/镂空怎么联动，全部讲清楚。</p>
+<p>Itoc 会直接向 Windows 申请这种窗口材质。这篇把怎么开、原理是什么、哪些系统支持、和窗口背景/镂空怎么联动，全部讲清楚。</p>
 
 <h2>入口</h2>
 
@@ -202,7 +202,7 @@
 
 <p>这套联动是双向的、实时生效的。你在对话框里勾一个，另一个会自动跟着变，不需要手动同步。</p>
 
-<p><strong>模类设计器那边也是同样的双向联动</strong>（<code>_set_bool_value</code> + <code>_normalize_window_style_conflicts</code>）：</p>
+<p><strong>模类设计器那边也是同样的双向联动</strong>：</p>
 <ul>
     <li>把 <code>window_material</code> 改成真 → <code>window_background</code> 自动变真</li>
     <li>把 <code>window_background</code> 改成假 → <code>window_material</code> 自动变假</li>
@@ -249,21 +249,21 @@
         <tr><td>Windows 11（21H2）</td><td>✅ 支持</td><td>⚠️ 部分支持</td><td>云母效果不稳定，可能只显示模糊</td></tr>
         <tr><td>Windows 10（1803+）</td><td>✅ 支持</td><td>❌ 不支持</td><td>只有亚克力，没有云母</td></tr>
         <tr><td>Windows 10（早期版本）</td><td>⚠️ 部分支持</td><td>❌ 不支持</td><td>可能只显示简单的模糊，不是完整的亚克力</td></tr>
-        <tr><td>Windows 8.1 / 8 / 7</td><td>❌ 不支持</td><td>❌ 不支持</td><td>SetWindowCompositionAttribute 不存在或无效</td></tr>
+        <tr><td>Windows 8.1 / 8 / 7</td><td>❌ 不支持</td><td>❌ 不支持</td><td>系统不提供亚克力所需的接口</td></tr>
     </tbody>
 </table>
 
-<p>Itoc 不检测系统版本，直接调 API。如果 API 不存在（Windows 7 及以下），调用会失败，函数内部有 try/except 兜底，不会崩溃，只是没有效果。</p>
+<p>Itoc 不会先查系统版本再决定开不开，而是直接尝试应用效果。系统不支持时（Windows 7 及以下），这次尝试会失败，不过程序内部做了兜底，不会崩溃，只是看不到效果。</p>
 
 <h2>应用范围</h2>
 
 <p>亚克力/云母支持哪些窗口类型？</p>
 
 <ul>
-    <li><strong>常规弹窗（信息框/警告框/错误框/询问框）</strong>：支持。窗口设置 <code>WA_TranslucentBackground</code>，内容区透明，然后调 <code>enable_acrylic</code>。</li>
+    <li><strong>常规弹窗（信息框/警告框/错误框/询问框）</strong>：支持。窗口内容区本身就是透明的，亚克力就作用在这层透明背景上。</li>
     <li><strong>图片框</strong>：支持（非镂空模式）。镂空图片框不支持，因为镂空窗口本身就是全透明的，亚克力无处附着。</li>
-    <li><strong>模类框</strong>：支持，但<strong>外观字段全部以模类数据为准</strong>。运行时 <code>create_class_popup</code> 读的是模类文件里的 <code>window_material</code> / <code>window_background</code> / <code>window_style</code>，而不是 CZEmakers 样式钮里那几项。所以模类框想开亚克力，必须在<strong>模类设计器的窗口属性面板</strong>里勾，不是在 CZEmakers 那边勾。</li>
-    <li><strong>视频框</strong>：<strong>不支持</strong>。视频框是 mpv 进程的窗口，不受 Qt 控制，无法应用 Qt 的透明背景 + Win32 亚克力组合。</li>
+    <li><strong>模类框</strong>：支持，但<strong>外观字段全部以模类数据为准</strong>。运行时读的是模类文件里的 <code>window_material</code> / <code>window_background</code> / <code>window_style</code>，而不是 CZEmakers 样式钮里那几项。所以模类框想开亚克力，必须在<strong>模类设计器的窗口属性面板</strong>里勾，不是在 CZEmakers 那边勾。</li>
+    <li><strong>视频框</strong>：<strong>不支持</strong>。视频框由独立的播放进程承载，不是 Itoc 自己绘制的窗口，套不上亚克力。</li>
     <li><strong>气泡/通知</strong>：不支持。气泡是系统通知，不是 Itoc 创建的窗口。</li>
 </ul>
 
@@ -272,20 +272,20 @@
 <p>亚克力和「透明度」输入框（<code>window_opacity</code>）是两套独立的机制：</p>
 
 <ul>
-    <li><strong>透明度</strong>：用 Qt 的 <code>setWindowOpacity</code> 或 Win32 的 <code>SetLayeredWindowAttributes(LWA_ALPHA)</code> 控制整个窗口（包括内容）的不透明度。0% 完全透明，100% 完全不透明。</li>
+    <li><strong>透明度</strong>：控制整个窗口（包括内容）的不透明度。0% 完全透明，100% 完全不透明。</li>
     <li><strong>亚克力</strong>：只影响窗口背景的模糊和半透明，不影响前景控件。前景文字、按钮仍然是清晰的。</li>
 </ul>
 
 <p>两者可以叠加使用。比如「透明度 80% + 亚克力」= 整体 80% 不透明，背景有模糊效果。但叠加太多可能会导致视觉混乱，建议二选一，或者透明度不要调太低。</p>
 
-<p><strong>模类设计器那边：</strong> <code>window_opacity</code> 是 <strong>0~100 的整数</strong>（不是字符串百分比）。属性面板里点 ▼ 会弹整数输入框，越界会自动裁剪到 0~100；导出到 JSON 后，运行时和预览都按 <code>opacity / 100</code> 换算成 0.0~1.0。</p>
+<p><strong>模类设计器那边：</strong> <code>window_opacity</code> 是 <strong>0~100 的整数</strong>（不是字符串百分比）。属性面板里点 ▼ 会弹整数输入框，越界会自动裁剪到 0~100；导出到 JSON 后，运行时和预览会把 100 当作「完全不透明」来换算。</p>
 
 <h2>与镂空的关系</h2>
 
 <p>镂空图片框和亚克力<strong>互斥</strong>。原因：</p>
 <ul>
-    <li>镂空窗口用 <code>WA_TranslucentBackground</code>，背景完全透明，没有可承载模糊的图层。</li>
-    <li>亚克力需要窗口有一个半透明的背景层，通过 <code>GradientColor</code> 控制模糊的色调。</li>
+    <li>镂空窗口的背景完全透明，没有可以承载模糊的图层。</li>
+    <li>亚克力需要窗口有一个半透明的背景层，模糊的色调就叠在这一层上。</li>
     <li>两者同时开启时，程序以镂空为准，亚克力不生效（但配置里的 <code>window_material</code> 字段可能还是 true，不会自动改）。</li>
 </ul>
 
@@ -293,14 +293,14 @@
 
 <h2>与色键透明的关系</h2>
 
-<p>「窗口背景」不勾选时，程序用 <code>paintEvent</code> + <code>SetLayeredWindowAttributes(LWA_COLORKEY)</code> 做色键透明。这套机制和亚克力也是冲突的：</p>
+<p>「窗口背景」不勾选时，程序用的是「色键透明」：把某一种指定的颜色当成透明色抠掉。这套机制和亚克力也是冲突的：</p>
 <ul>
     <li>色键透明是「某个 RGB 颜色变透明」，没有背景层。</li>
     <li>亚克力需要背景层。</li>
     <li>所以不勾「窗口背景」时，亚克力被自动取消。</li>
 </ul>
 
-<p><strong>模类设计器里也一样：</strong>当 <code>window_background=false</code> 且 <code>window_style</code> 不是 <code>borderless</code> 时，模类窗口会自动走色键透明路径（<code>paintEvent</code> 填 <code>(1,2,3)</code> + <code>apply_colorkey_transparent</code>），而不是亚克力。想用亚克力，先把 <code>window_background</code> 勾回来。</p>
+<p><strong>模类设计器里也一样：</strong>当 <code>window_background=false</code> 且 <code>window_style</code> 不是 <code>borderless</code> 时，模类窗口会自动走色键透明这条路，而不是亚克力。想用亚克力，先把 <code>window_background</code> 勾回来。</p>
 
 <h2>配置文件字段</h2>
 
@@ -355,7 +355,7 @@
 
 <div class="tip">
     <strong>💡 模类框在运行时会忽略 CZEmakers 样式钮里的同名项：</strong><br>
-    即使你在 CZEmakers 里给模类框勾了亚克力，运行时也会以模类数据里的 <code>window_material</code> 为准。这是 <code>create_class_popup</code> 里那句 <code># 首个版本：一律以模类数据为准，不再从配参读</code> 的实际含义。
+    即使你在 CZEmakers 里给模类框勾了亚克力，运行时也会以模类数据里的 <code>window_material</code> 为准——模类框的外观一律以模类文件为准，不再回头去读配参。
 </div>
 
 <p>旧工程没有 <code>window_material</code> 字段时，默认为 <code>false</code>，不会自动开启亚克力。这是为了保持兼容，避免旧工程突然变样。</p>
@@ -370,11 +370,11 @@
     <li>不适合内容密集的弹窗（文字多的信息框），因为背景模糊会分散注意力。</li>
     <li>深色壁纸 + 浅色亚克力效果最好；纯白壁纸 + 白色亚克力几乎看不出效果。</li>
     <li>Windows 11 的云母比 Windows 10 的亚克力更「收敛」，只有标题栏和背景轻微着色，不会过度模糊。</li>
-    <li><strong>模类设计器里"灰色"是设计态示意：</strong>当你把 <code>window_background</code> 关掉时，MDI 子窗口会用浅灰 <code>QColor(232,232,232)</code> 提示"这里透明"，这个灰色<strong>不会写进 JSON</strong>，运行时按上面的透明策略走。别把灰色误当成"导出后就是这样"。</li>
+    <li><strong>模类设计器里"灰色"是设计态示意：</strong>当你把 <code>window_background</code> 关掉时，MDI 子窗口会用浅灰提示"这里透明"，这个灰色<strong>不会写进 JSON</strong>，运行时按上面的透明策略走。别把灰色误当成"导出后就是这样"。</li>
 </ul>
 
 <div class="tip">
-    <strong>💡 调色：</strong> <code>enable_acrylic(hwnd, color)</code> 的 <code>color</code> 参数控制亚克力的渐变色调，默认 <code>0x33FFFFFF</code>（半透明白）。目前 Itoc 没有在界面上暴露这个参数，用的都是默认值。如果你想改，需要改代码里的默认参数。
+    <strong>💡 调色：</strong> 亚克力的色调是一个程序内部的参数，默认是半透明白。目前 Itoc 没有在界面上暴露它，所有窗口用的都是这个默认值。
 </div>
 
 <h2>常见问题</h2>
@@ -383,19 +383,19 @@
 <p>A：按顺序检查：①「窗口背景」是否勾选（不勾背景亚克力会失效）；② 窗口类型是不是视频框/气泡（不支持）；③ 是不是镂空图片框（互斥）；④ 系统版本是否支持（Windows 7 及以下不支持）；⑤ 壁纸是不是纯白（白色亚克力看不出效果）。</p>
 
 <h3>Q：Windows 11 上标题栏变透明了？</h3>
-<p>A：这是 <code>enable_acrylic</code> 里的修复逻辑在起作用。函数会额外调 <code>DwmSetWindowAttribute(DWMWA_CAPTION_COLOR, 0x00FFFFFF)</code> 把标题栏强制设为白色，避免亚克力把标题栏也模糊掉。如果你的系统版本不支持这个属性，调用会被忽略，标题栏可能仍然是系统默认色。</p>
+<p>A：这是程序里的标题栏修复逻辑在起作用：它会把标题栏强制设成白色，避免亚克力把标题栏也一起模糊掉。如果你的系统版本不支持这项修正，修正会被忽略，标题栏可能仍然是系统默认色啦。</p>
 
 <h3>Q：亚克力窗口能拖动吗？</h3>
 <p>A：能。亚克力不影响拖动逻辑。普通弹窗拖动标题栏，镂空图片框拖动任意位置（但镂空和亚克力互斥，所以镂空窗口没有亚克力）。</p>
 
 <h3>Q：亚克力 + 透明度 50% 是什么效果？</h3>
-<p>A：整体 50% 不透明，背景有模糊。但因为整体半透明，模糊效果会被削弱，看起来更像「半透明的磨砂玻璃」。建议透明度不要低于 70%，否则亚克力效果不明显。</p>
+<p>A：整体 50% 不透明，背景有模糊。但因为整体半透明，模糊效果会被削弱，看起来更像「半透明的磨砂玻璃」。建议透明度不要低于 70%，否则亚克力效果不明显哦。</p>
 
 <h3>Q：视频框为什么不能用亚克力？</h3>
-<p>A：视频框是 mpv 进程的窗口，不受 Qt 的 <code>WA_TranslucentBackground</code> 控制。mpv 自己的窗口透明机制（<code>--window-transparency</code>）在某些版本上被移除或不稳定，Itoc 没有对视频框应用亚克力。</p>
+<p>A：视频框由独立的播放进程承载，窗口不是 Itoc 自己画的，所以没法叠加亚克力的透明背景。播放器自身的透明机制在不同版本上也不稳定，Itoc 干脆没有给视频框做亚克力。</p>
 
 <h3>Q：模类框的亚克力怎么生效的？</h3>
-<p>A：模类框创建时，如果 <code>window_material=true</code>，会在 <code>class_window.show()</code> 之后用 <code>QTimer.singleShot(0, lambda: enable_acrylic(int(class_window.winId())))</code> 延迟一帧调用，确保窗口句柄已经创建。</p>
+<p>A：模类框创建时，如果 <code>window_material=true</code>，程序会等窗口真正显示出来之后再套上亚克力，确保效果落在已经存在的窗口上。整个过程是自动的，不需要你额外操作。qwq</p>
 
 <h3>Q：亚克力窗口在任务栏显示正常吗？</h3>
 <p>A：取决于「在任务栏显示」复选框和「窗口样式」。亚克力本身不改变任务栏行为。工具窗样式下仍然不显示任务栏。</p>
@@ -405,7 +405,7 @@
 <p>亚克力与云母的三件事：</p>
 <ol>
     <li><strong>开关</strong>：在样式钮设置对话框里勾「亚克力或云母」，必须配合「窗口背景」。</li>
-    <li><strong>原理</strong>：Win32 <code>SetWindowCompositionAttribute</code> + <code>ACCENT_ENABLE_ACRYLICBLURBEHIND</code>，Windows 11 额外修标题栏颜色。</li>
+    <li><strong>原理</strong>：由程序直接向 Windows 申请亚克力材质，Windows 11 上额外修正标题栏颜色。</li>
     <li><strong>限制</strong>：视频框/气泡不支持，镂空互斥，Windows 7 及以下无效，深色壁纸效果最好。</li>
 </ol>
 

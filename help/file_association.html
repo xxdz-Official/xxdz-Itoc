@@ -241,7 +241,7 @@
 <p>三个启动器的行为大同小异，都是这三步：</p>
 
 <ol>
-    <li><strong>读取命令行参数</strong>：双击文件时，Windows 会把文件路径作为 <code>argv[1]</code> 传给启动器。</li>
+    <li><strong>读取命令行参数</strong>：双击文件时，Windows 会把文件路径作为参数传给启动器。</li>
     <li><strong>写一个 JSON 信号文件</strong>：把文件路径写到一个约定的 JSON 里，告诉主程序"我要打开这个文件"。因为路径里可能有中文，启动器会先把 ANSI 转成 UTF-8 再写。</li>
     <li><strong>按优先级启动主程序</strong>：优先找编译好的 <code>.exe</code>，找不到再回退到 <code>.py</code>，用 <code>pythonw.exe</code> 或 <code>python.exe</code> 拉起来。</li>
 </ol>
@@ -255,7 +255,6 @@
 <ul>
     <li>写信号文件到：<code>launcher/RunData/launch_info.json</code></li>
     <li>启动目标优先级：<code>Itoc.exe</code> → <code>main.py</code>（用 pythonw.exe / python.exe）</li>
-    <li>用 <code>CreateProcessA</code> 启动 exe，用 <code>ShellExecuteA</code> 启动 py</li>
 </ul>
 
 <h4>② <code>OpenUIclassFile.exe</code>（模类启动器）</h4>
@@ -505,7 +504,7 @@ HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.czemidi\
     <li>文件名有没有被改过</li>
 </ul>
 
-<p>如果文件确实丢了，重新下载完整版的 Itoc。</p>
+<p>如果文件确实丢了，重新下载完整版的 Itoc 哦。</p>
 
 <h3>Q2：绑定了，双击还是弹"选择打开方式"？</h3>
 
@@ -513,7 +512,7 @@ HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.czemidi\
 
 <h3>Q3：绑定了，双击结果用记事本打开？</h3>
 
-<p>说明 UserChoice 里记录的是"用记事本打开"。按 6.2 节手动改成 Itoc 启动器。</p>
+<p>说明 UserChoice 里记录的是"用记事本打开"。按 6.2 节手动改成 Itoc 启动器呀。</p>
 
 <h3>Q4：解绑之后还是双击用 Itoc 打开？</h3>
 
@@ -521,7 +520,7 @@ HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.czemidi\
 
 <h3>Q5：改了默认程序之后，Itoc 的图标没了？</h3>
 
-<p>图标是绑定时写到 <code>DefaultIcon</code> 里的。如果被别的程序覆盖了，重新点一下「绑定」，图标就回来了。</p>
+<p>图标是绑定时写到 <code>DefaultIcon</code> 里的。如果被别的程序覆盖了，重新点一下「绑定」，图标就回来了。(๓´˘`๓)</p>
 
 <h3>Q6：三种文件类型要不要都绑？</h3>
 
@@ -588,7 +587,7 @@ HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.czemidi\
 
 <h3>Q12：启动器是用什么写的？能不能自己改？</h3>
 
-<p>三个启动器都是用 <strong>C++</strong> 写的（Windows API，不依赖任何第三方库）：</p>
+<p>三个启动器都是用 <strong>C++</strong> 写的（不依赖任何第三方库）：</p>
 
 <ul>
     <li><code>main主程序启动器.cpp</code> → 编译出 <code>OpenCZEmidiFile.exe</code></li>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <!-- ========== SEO 优化 ========== -->
+    <meta name="description" content="Itoc 解释器 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能，讲解解释器的定义、双版本（Python/C++）兼容性、内部文件结构以及工作原理">
+    <meta name="keywords" content="小小电子xxdz,Itoc,xxdz Itoc,解释器,runCZE,C++解释器,Python解释器,兼容性">
+    <meta property="og:title" content="Itoc解释器 - xxdz Itoc 帮助文档">
+    <meta property="og:description" content="Itoc 解释器 帮助文档 - 小小电子xxdz开发的 xxdz Itoc 核心功能">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="">
+    <title>Itoc解释器 - xxdz Itoc 帮助文档</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div id="header-placeholder"><div class="header-row">
+            <a class="logo-area" href="help.html" title="返回帮助文档首页">
+                <img src="../icon.png" alt="Itoc logo" class="logo-img">
+                <h1>Itoc 帮助文档 - Itoc解释器</h1>
+            </a>
+            <div class="top-bar">
+                <a href="https://xxdz-official.github.io/xxdz-Itoc/" target="_blank" rel="noopener"><span>项目主页</span></a>
+                <a href="https://message.bilibili.com/#/whisper/mid3461569935575626" target="_blank"><span>联系作者</span></a>
+                <a href="https://miku66ccff.freeflarum.com/t/itoc" target="_blank"><span>交流论坛</span></a>
+                <a href="https://github.com/xxdz-Official/xxdz-Itoc" target="_blank"><span>GitHub主页</span></a>
+                <a href="../Mode.html"><span>插件市场</span></a>
+                <a href="help.html"><span>帮助文档</span></a>
+            </div>
+        </div></div>
+<div id="layout-placeholder">
+    <div class="main-container">
+        <nav class="sidebar" id="sidebar">
+            <h3 class="sidebar-title">📖 目录</h3>
+            <div class="toc-search-box">
+                <div class="toc-search-field">
+                    <span class="toc-search-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </span>
+                    <input type="text" id="tocSearchInput" class="toc-search-input" placeholder="搜索目录喵..." autocomplete="off">
+                    <button type="button" id="tocSearchClear" class="toc-search-clear" title="清空" aria-label="清空搜索">
+                        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="tocEmptyTip" class="toc-empty-tip" style="display:none;">没有找到匹配的条目</div>
+            <ul id="tocList" class="toc-list-ready">
+                <li class="toc-group"><span>入门篇</span></li>
+                <li class="toc-item" data-file="start.html"><a href="start.html" rel="noopener"><span>初识 Itoc</span></a></li>
+                <li class="toc-item" data-file="install.html"><a href="install.html" rel="noopener"><span>安装指南</span></a></li>
+                <li class="toc-item" data-file="interface.html"><a href="interface.html" rel="noopener"><span>界面概览</span></a></li>
+                <li class="toc-item" data-file="quickstart.html"><a href="quickstart.html" rel="noopener"><span>快速上手：您的第一个项目</span></a></li>
+                <li class="toc-item" data-file="how_to_get_midi.html"><a href="how_to_get_midi.html" rel="noopener"><span>如何获取 MIDI 文件</span></a></li>
+                <li class="toc-item" data-file="timeline.html"><a href="timeline.html" rel="noopener"><span>时间轴与事件块编辑</span></a></li>
+                <li class="toc-item" data-file="metadata.html"><a href="metadata.html" rel="noopener"><span>作品元数据</span></a></li>
+                <li class="toc-group"><span>弹窗编排</span></li>
+                <li class="toc-item" data-file="czemaker.html"><a href="czemaker.html" rel="noopener"><span>CZEmaker 弹窗编排 · 基础篇</span></a></li>
+                <li class="toc-item" data-file="czemaker_advanced.html"><a href="czemaker_advanced.html" rel="noopener"><span>CZEmaker 弹窗编排 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="pitch_assign.html"><a href="pitch_assign.html" rel="noopener"><span>按音高应用配参</span></a></li>
+                <li class="toc-item" data-file="window_style.html"><a href="window_style.html" rel="noopener"><span>窗口样式钮</span></a></li>
+                <li class="toc-item" data-file="hollow_window.html"><a href="hollow_window.html" rel="noopener"><span>镂空窗口</span></a></li>
+                <li class="toc-item" data-file="acrylic_mica.html"><a href="acrylic_mica.html" rel="noopener"><span>亚克力与云母</span></a></li>
+                <li class="toc-item" data-file="window_type_regular.html"><a href="window_type_regular.html" rel="noopener"><span>普通弹窗（信息/警告/错误/询问）</span></a></li>
+                <li class="toc-item" data-file="window_type_image.html"><a href="window_type_image.html" rel="noopener"><span>图片框</span></a></li>
+                <li class="toc-item" data-file="window_type_video.html"><a href="window_type_video.html" rel="noopener"><span>视频框</span></a></li>
+                <li class="toc-item" data-file="window_type_notice.html"><a href="window_type_notice.html" rel="noopener"><span>气泡/通知</span></a></li>
+                <li class="toc-item" data-file="window_type_code.html"><a href="window_type_code.html" rel="noopener"><span>执行代码</span></a></li>
+                <li class="toc-item" data-file="window_type_uiclass.html"><a href="window_type_uiclass.html" rel="noopener"><span>模类框（CZEmaker 视角）</span></a></li>
+                <li class="toc-group"><span>事件块与音符</span></li>
+                <li class="toc-item" data-file="midi_color.html"><a href="midi_color.html" rel="noopener"><span>音符块自身属性</span></a></li>
+                <li class="toc-item" data-file="paint.html"><a href="paint.html" rel="noopener"><span>绘制音符块</span></a></li>
+                <li class="toc-item" data-file="adjust_layer.html"><a href="adjust_layer.html" rel="noopener"><span>调整图层</span></a></li>
+                <li class="toc-item" data-file="disabled_blocks.html"><a href="disabled_blocks.html" rel="noopener"><span>启用/禁用事件块或全局命令</span></a></li>
+                <li class="toc-item" data-file="beat_event_point.html"><a href="beat_event_point.html" rel="noopener"><span>新建节奏事件点</span></a></li>
+                <li class="toc-item" data-file="concurrent_event_point.html"><a href="concurrent_event_point.html" rel="noopener"><span>新建并发事件点</span></a></li>
+                <li class="toc-group"><span>动画与音效</span></li>
+                <li class="toc-item" data-file="transition.html"><a href="transition.html" rel="noopener"><span>过渡动画</span></a></li>
+                <li class="toc-item" data-file="assign_window_sound.html"><a href="assign_window_sound.html" rel="noopener"><span>根据窗口类型赋予自定义音效</span></a></li>
+                <li class="toc-item" data-file="yinpin_yinpu.html"><a href="yinpin_yinpu.html" rel="noopener"><span>音频音谱</span></a></li>
+                <li class="toc-item" data-file="audio_to_midi.html"><a href="audio_to_midi.html" rel="noopener"><span>音频转 MIDI (扒谱)</span></a></li>
+                <li class="toc-item" data-file="project_to_midi.html"><a href="project_to_midi.html" rel="noopener"><span>将工程导出为 MIDI</span></a></li>
+                <li class="toc-group"><span>全局命令</span></li>
+                <li class="toc-item" data-file="global_1.html"><a href="global_1.html" rel="noopener"><span>全局命令 · 基础篇</span></a></li>
+                <li class="toc-item" data-file="global_2.html"><a href="global_2.html" rel="noopener"><span>全局命令 · 进阶篇</span></a></li>
+                <li class="toc-item" data-file="cmd_window_animation.html"><a href="cmd_window_animation.html" rel="noopener"><span>全局命令 · 窗口位移动画</span></a></li>
+                <li class="toc-item" data-file="cmd_mouse_move.html"><a href="cmd_mouse_move.html" rel="noopener"><span>全局命令 · 鼠标移动</span></a></li>
+                <li class="toc-item" data-file="cmd_mirror_clone.html"><a href="cmd_mirror_clone.html" rel="noopener"><span>全局命令 · 镜像克隆编组</span></a></li>
+                <li class="toc-item" data-file="cmd_wallpaper.html"><a href="cmd_wallpaper.html" rel="noopener"><span>全局命令 · 设置桌面背景</span></a></li>
+                <li class="toc-group"><span>阵列系统</span></li>
+                <li class="toc-item" data-file="array.html"><a href="array.html" rel="noopener"><span>阵列设计器 · 总览</span></a></li>
+                <li class="toc-item" data-file="array_linear.html"><a href="array_linear.html" rel="noopener"><span>直线阵列</span></a></li>
+                <li class="toc-item" data-file="array_bezier.html"><a href="array_bezier.html" rel="noopener"><span>贝塞尔曲线阵列</span></a></li>
+                <li class="toc-item" data-file="array_polygon.html"><a href="array_polygon.html" rel="noopener"><span>多边形阵列</span></a></li>
+                <li class="toc-item" data-file="array_circle.html"><a href="array_circle.html" rel="noopener"><span>环形阵列</span></a></li>
+                <li class="toc-item" data-file="array_polar.html"><a href="array_polar.html" rel="noopener"><span>极坐标阵列</span></a></li>
+                <li class="toc-item" data-file="array_svg.html"><a href="array_svg.html" rel="noopener"><span>SVG阵列</span></a></li>
+                <li class="toc-group"><span>窗口类名与编组</span></li>
+                <li class="toc-item" data-file="cze_window_class.html"><a href="cze_window_class.html" rel="noopener"><span>窗口类名</span></a></li>
+                <li class="toc-item" data-file="cze_window_group.html"><a href="cze_window_group.html" rel="noopener"><span>窗口编组</span></a></li>
+                <li class="toc-group"><span>模类系统 (UI Class)</span></li>
+                <li class="toc-item" data-file="uiclass_1.html"><a href="uiclass_1.html" rel="noopener"><span>初识模类</span></a></li>
+                <li class="toc-item" data-file="uiclass_2.html"><a href="uiclass_2.html" rel="noopener"><span>模类设计器详解</span></a></li>
+                <li class="toc-item" data-file="uiclass_3.html"><a href="uiclass_3.html" rel="noopener"><span>模类进阶与生态</span></a></li>
+                <li class="toc-group"><span>侧边栏与辅助工具</span></li>
+                <li class="toc-item" data-file="sidebar.html"><a href="sidebar.html" rel="noopener"><span>侧边栏</span></a></li>
+                <li class="toc-item" data-file="sidebar_display.html"><a href="sidebar_display.html" rel="noopener"><span>显示器</span></a></li>
+                <li class="toc-item" data-file="sidebar_reference_media.html"><a href="sidebar_reference_media.html" rel="noopener"><span>参考媒体</span></a></li>
+                <li class="toc-item" data-file="str.html"><a href="str.html" rel="noopener"><span>字幕</span></a></li>
+                <li class="toc-item" data-file="marker_and_sticky_note.html"><a href="marker_and_sticky_note.html" rel="noopener"><span>标记与轨道便利贴</span></a></li>
+                <li class="toc-item" data-file="media_browser.html"><a href="media_browser.html" rel="noopener"><span>媒体浏览器</span></a></li>
+                <li class="toc-item" data-file="high_energy_table.html"><a href="high_energy_table.html" rel="noopener"><span>高能进度表</span></a></li>
+                <li class="toc-item" data-file="terminal.html"><a href="terminal.html" rel="noopener"><span>终端</span></a></li>
+                <li class="toc-item" data-file="code_view.html"><a href="code_view.html" rel="noopener"><span>代码视图</span></a></li>
+                <li class="toc-item" data-file="GetWindowClassName.html"><a href="GetWindowClassName.html" rel="noopener"><span>窗口拾取器</span></a></li>
+                <li class="toc-group"><span>歌词、协作与历史</span></li>
+                <li class="toc-item" data-file="insert_lyrics.html"><a href="insert_lyrics.html" rel="noopener"><span>插入歌词</span></a></li>
+                <li class="toc-item" data-file="cooperation.html"><a href="cooperation.html" rel="noopener"><span>协作</span></a></li>
+                <li class="toc-item" data-file="ctrl_z_undo_redo.html"><a href="ctrl_z_undo_redo.html" rel="noopener"><span>撤销与重做</span></a></li>
+                <li class="toc-item" data-file="archive_rollback.html"><a href="archive_rollback.html" rel="noopener"><span>工程的归档与回滚</span></a></li>
+                <li class="toc-item" data-file="cooperation_ai.html"><a href="cooperation_ai.html" rel="noopener"><span>AI 协作</span></a></li>
+                <li class="toc-item" data-file="dianzi_ai_assistant.html"><a href="dianzi_ai_assistant.html" rel="noopener"><span>電籽 AI 助手</span></a></li>
+                <li class="toc-item" data-file="advanced_ai_model.html"><a href="advanced_ai_model.html" rel="noopener"><span>如何调用高级 AI 模型</span></a></li>
+                <li class="toc-group"><span>渲染与输出</span></li>
+                <li class="toc-item" data-file="render_cze_data.html"><a href="render_cze_data.html" rel="noopener"><span>渲染为CZE数据文件</span></a></li>
+                <li class="toc-item" data-file="render_python_code.html"><a href="render_python_code.html" rel="noopener"><span>渲染为Python代码</span></a></li>
+                <li class="toc-item" data-file="render_cpp_code.html"><a href="render_cpp_code.html" rel="noopener"><span>渲染为 C++ 代码</span></a></li>
+                <li class="toc-item" data-file="export_audio.html"><a href="export_audio.html" rel="noopener"><span>渲染为音频文件</span></a></li>
+                <li class="toc-item" data-file="render_video.html"><a href="render_video.html" rel="noopener"><span>渲染视频文件</span></a></li>
+                <li class="toc-group"><span>编译与运行</span></li>
+                <li class="toc-item" data-file="compile_exe.html"><a href="compile_exe.html" rel="noopener"><span>编译为exe</span></a></li>
+                <li class="toc-item" data-file="assembly_package.html"><a href="assembly_package.html" rel="noopener"><span>组装打包模式</span></a></li>
+                <li class="toc-item" data-file="interpreter_config.html"><a href="interpreter_config.html" rel="noopener"><span>解释器自定义配置</span></a></li>
+                <li class="toc-item active" data-file="itoc_interpreter.html"><a href="itoc_interpreter.html" rel="noopener"><span>Itoc解释器</span></a></li>
+                <li class="toc-item" data-file="test_run.html"><a href="test_run.html" rel="noopener"><span>测试运行</span></a></li>
+                <li class="toc-item" data-file="run_log.html"><a href="run_log.html" rel="noopener"><span>运行日志</span></a></li>
+                <li class="toc-item" data-file="python_libs.html"><a href="python_libs.html" rel="noopener"><span>Python运行库</span></a></li>
+                <li class="toc-item" data-file="cpp_libs.html"><a href="cpp_libs.html" rel="noopener"><span>C++ 运行库</span></a></li>
+                <li class="toc-group"><span>设置与个性化</span></li>
+                <li class="toc-item" data-file="settings.html"><a href="settings.html" rel="noopener"><span>首选项（设置）</span></a></li>
+                <li class="toc-item" data-file="settings_skin.html"><a href="settings_skin.html" rel="noopener"><span>皮肤设置</span></a></li>
+                <li class="toc-item" data-file="file_association.html"><a href="file_association.html" rel="noopener"><span>文件关联（打开方式）</span></a></li>
+                <li class="toc-group"><span>多语言与插件</span></li>
+                <li class="toc-item" data-file="language_pack.html"><a href="language_pack.html" rel="noopener"><span>语言包</span></a></li>
+                <li class="toc-item" data-file="plugin_user.html"><a href="plugin_user.html" rel="noopener"><span>插件使用指南</span></a></li>
+                <li class="toc-item" data-file="plugin_dev.html"><a href="plugin_dev.html" rel="noopener"><span>插件开发指南</span></a></li>
+                <li class="toc-group"><span>其他</span></li>
+                <li class="toc-item" data-file="carousel.html"><a href="carousel.html" rel="noopener"><span>轮播图</span></a></li>
+            </ul>
+        </nav>
+        <main class="content-area" id="contentArea">
+<h1><img src="icon/代码解释器.png" class="doc-icon-lg" alt=""> Itoc 解释器</h1>
+
+<p>前面我们讲了各种弹窗编排、全局命令、渲染视频、编译为 exe 等。但在这些背后，真正负责把你的工程数据变成屏幕上绚丽动画的核心，是<strong>Itoc 解释器</strong>。</p>
+
+<div class="note">
+    <strong>📌 本篇的范围：</strong><br>
+    讲的是 Itoc 解释器的定义、双版本兼容性、内部文件结构、工作原理以及分发时的注意事项。关于如何配置解释器，请参考《解释器自定义配置》文档。
+</div>
+
+<h2>一、什么是 Itoc 解释器？</h2>
+
+<p>Itoc 的架构是编辑器与解释器分离的。编辑器负责“写代码”（制作工程），而解释器负责“跑代码”（播放弹窗）。</p>
+
+<p>你可以把它理解为独立播放器。它本身是一个现成的可执行程序（<code>.exe</code>），启动后会自动读取同目录下的 <code>.CzeData</code> 数据文件，然后按照时间轴、解析其中的 JSON，把弹窗、图片、视频、特效一一呈现在屏幕上。</p>
+
+<div class="tip">
+    <strong>💡 开源生态：</strong><br>
+    Itoc 解释器是完全开源的！这意味着如果你懂编程，你可以自己修改它的底层逻辑，定制出独一无二的解释播放器，甚至把它移植到其他语言。
+</div>
+
+<h2>二、双版本与兼容性</h2>
+
+<p>目前Itoc原版里有两个版本的解释器，它们在兼容性和性能上有所取舍：</p>
+
+<table>
+    <thead>
+        <tr><th>版本</th><th>底层依赖</th><th>最低系统要求</th><th>特点</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><strong>Python 版</strong> (原版)</td><td>Python + PyQt5</td><td>Windows 7 / 8 / 8.1 / 10 / 11</td><td>兼容性极强，满血支持所有旧系统，使用 PyInstaller 打包。</td></tr>
+        <tr><td><strong>C++ 版</strong> (性能版)</td><td>C++ + Qt6</td><td>Windows 10 (1809+) / 11</td><td>原生执行效率极高，启动快，完美支持高并发动画与阵列，但不支持老旧系统。</td></tr>
+    </tbody>
+</table>
+
+<div class="warning">
+    <strong>⚠️ 关于 32 位与 64 位：</strong><br>
+    解释器分为 32 位和 64 位。32 位解释器可以运行在 32 位和 64 位系统上，但受限于内存；64 位解释器只能运行在 64 位系统上，能处理极其复杂的阵列特效。
+</div>
+
+<h2>三、窗口模式与控制台模式</h2>
+
+<p>为了适应不同的使用场景，每个版本还分为“窗口”和“控制台”两种形态：</p>
+
+<ul>
+    <li><strong>窗口模式（无控制台）：</strong> 运行时只会看到弹窗演出，画面纯净，适合给观众看。</li>
+    <li><strong>控制台模式（带黑框）：</strong> 会保留一个黑色的命令行窗口。如果在播放过程中报错、丢图片、缺音频，错误信息会实时打印在这个黑框里，非常适合创作者调试工程。</li>
+</ul>
+
+<h2>四、解释器文件结构</h2>
+
+<p>如果你想打包或者给解释器扩容，了解它的文件结构非常重要。一个完整的解释器文件夹通常长这样：</p>
+
+<table>
+    <thead>
+        <tr><th>文件/文件夹</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+        <tr><td><code>runCZE.exe</code></td><td>主程序（解释器本体），名字可能因版本而异。</td></tr>
+        <tr><td><code>runcze.CzeData</code></td><td>默认读取的工程数据文件，如果没有指定其他文件，它会读这个。</td></tr>
+        <tr><td><code>Audio.mp3</code></td><td>背景音乐。解释器启动后会自动加载并同步播放。</td></tr>
+        <tr><td><code>ico/</code></td><td>图标文件夹。包含 11、10、XP 等各个版本的窗口图标。</td></tr>
+        <tr><td><code>img/</code></td><td>图片素材文件夹。工程里引用的图片框、背景图都放在这里。</td></tr>
+        <tr><td><code>video/</code></td><td>视频素材文件夹。视频框引用的 mp4 文件放这里。</td></tr>
+        <tr><td><code>mpv/</code></td><td>视频播放引擎。解释器依赖它来播放视频框和视频壁纸。</td></tr>
+        <tr><td><code>temp/</code></td><td>临时文件夹。用来存放信号文件 <code>launch_info.json</code>，用于实现“双击 .CzeData 文件直接打开”的功能。</td></tr>
+    </tbody>
+</table>
+
+<h2>五、解释器是如何工作的？</h2>
+
+<p>为了让分发更灵活，解释器在启动时，会按<strong>优先级</strong>寻找需要播放的数据：</p>
+
+<ol>
+    <li><strong>第一优先级：信号文件</strong>。检查 <code>temp/launch_info.json</code>，如果找到了，就读取里面指定的目标 <code>.CzeData</code> 绝对路径。</li>
+    <li><strong>第二优先级：内置占位符</strong>。检查程序内部是否被打包了预设的数据（针对单文件 exe）。</li>
+    <li><strong>第三优先级：同目录文件</strong>。如果上面都没有，就去读取同目录下的 <code>runcze.CzeData</code>。</li>
+</ol>
+
+<p>找到数据后，解释器会启动一个极其精准的“心跳时钟”（精确到毫秒级），当时间走到对应音符时，就会立刻弹出窗口、执行动画，并且依靠看门狗进程（Watchdog）来保证意外崩溃时能够完美清理残留的 mpv 进程。</p>
+
+<h2>六、常见问题</h2>
+
+<h3>Q1：为什么有人的解释器有黑框，我的没有？</h3>
+
+<p>因为你用的是“窗口模式”解释器，他们用的是“控制台模式”解释器。如果你要发给普通用户，请用窗口模式；如果你要排查 bug，请换控制台模式，看里面报了什么错。</p>
+
+<h3>Q2：别人的弹窗有亚克力效果，我的为什么没有？</h3>
+
+<p>亚克力效果（Acrylic）需要 Windows 10 及以上的系统支持。如果你用的是老旧系统，或者系统没有开启透明效果，亚克力会自动降级为普通纯色背景。</p>
+
+<h3>Q3：杀毒软件报毒怎么办？</h3>
+
+<p>解释器因为需要注入按键（模拟按键）、移动鼠标、注册全局互斥体，某些敏感的杀毒软件可能会误报。你可以把它加入白名单，或者向社区反馈由开发者提交给微软。</p>
+
+<h3>Q4：解释器可以播放其他格式的音乐吗？</h3>
+
+<p>目前默认优先寻找 <code>Audio.mp3</code>。为了完美兼容，建议在打包时统一把背景音乐重命名为 <code>Audio.mp3</code>。解释器底层使用的是 MPV 引擎，理论上支持绝大多数常见音频格式。</p>
+
+<h3>Q5：如果我改了工程，需要重新下载解释器吗？</h3>
+
+<p>不需要。解释器只负责“播放”，不负责“保存”。你的工程逻辑全在 <code>.CzeData</code> 里。改了工程只需要重新渲染数据，解释器本身无需更新。</p>
+
+<h3>Q6：我可以自己修改解释器吗？</h3>
+
+<p>当然可以！解释器是完全开源的。你可以修改它的 UI、添加自己的全局命令、甚至修改引擎让它支持你专属的特效。这也是为什么我们把它和编辑器分离的原因呀。</p>
+
+<h2>七、小结</h2>
+
+<p>「Itoc 解释器」是让你的作品能够跑起来的核心引擎。</p>
+
+<ul>
+    <li>它是独立运行的播放器，负责读取 <code>.CzeData</code> 播放弹窗</li>
+    <li>分为 Python 版（高兼容）和 C++ 版（高性能）</li>
+    <li>有窗口模式（纯演出）和控制台模式（调错）</li>
+    <li>标准目录下包含 ico、img、video、mpv 等资源文件夹</li>
+    <li>通过信号文件、占位符、同目录文件三级优先级加载</li>
+    <li>完全开源，社区可以自行魔改和维护</li>
+</ul>
+
+<p>玩得开心！有什么问题或者想法，欢迎去 <strong>「帮助(H)」→「前往Itoc官方论坛交流区！」</strong> 找我聊天喵 ( ⓛ ω ⓛ *)</p>
+        </main>
+    </div>
+</div>
+
+<script src="layout.js"></script>
+
+<script>
+    renderLayout({
+        currentFile: 'itoc_interpreter.html'
+    });
+</script>
+</body>
+</html>

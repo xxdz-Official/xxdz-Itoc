@@ -110,6 +110,7 @@ const TOC_DATA = [
     { title: '编译为 exe', file: 'compile_exe.html' },
     { title: '组装打包模式', file: 'assembly_package.html' },
     { title: '解释器自定义配置', file: 'interpreter_config.html' },
+    { title: 'Itoc 解释器', file: 'itoc_interpreter.html' },
     { title: '测试运行', file: 'test_run.html' },
     { title: '运行日志', file: 'run_log.html' },
     { title: 'Python 运行库', file: 'python_libs.html' },

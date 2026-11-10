@@ -19,6 +19,8 @@
 
 无论您是刚接触编程的新手，还是想要快速制作有趣程序的老手，Itoc编辑器都能为您提供简单而强大的工具集，让您专注于创意本身嗷
 
+> 💡 **V2 AI功能集成**：Itoc v2 已集成 [OrcaRouter](https://www.orcarouter.ai/ref/ref_cbc36949200a20e9c814) 作为可选的 AI 大模型网关。您可以通过自然语言让 AI 助手协助生成工程、修改工程及编写模类文件。
+
 <div align="center" style="margin: 24px 0;">
   <img src="img/v2界面展示.png" alt="Itoc v2 界面展示" width="800">
 </div>
@@ -117,7 +119,7 @@ Itoc编辑器专注于提供最简单直观的crazy error程序开发体验：
   协作与历史
 </h3>
 
-- <a href="help/cooperation.html" style="text-decoration: none; color: #AB92F5; font-weight: bold; font-size: 17px;"><img src="img/Button/哈希值对比.png" width="30" style="vertical-align: middle;"> 协作</a>：置入 CZEmidi 工程、对比媒体 MD5、对比工程差异、导出时间选区片段、AI 协作
+- <a href="help/cooperation.html" style="text-decoration: none; color: #AB92F5; font-weight: bold; font-size: 17px;"><img src="img/Button/哈希值对比.png" width="30" style="vertical-align: middle;"> 协作</a>：置入 CZEmidi 工程、对比媒体 MD5、对比工程差异、导出时间选区片段、AI 协作（这是基于 OrcaRouter 驱动哒）
 - <a href="help/ctrl_z_undo_redo.html" style="text-decoration: none; color: #AB92F5; font-weight: bold; font-size: 17px;"><img src="img/Button/撤销.png" width="30" style="vertical-align: middle;"> 撤销与重做</a>：基于磁盘快照栈，支持 30 步回滚，可跨程序重启保留历史
 
 <h3 style="font-size: 26px; font-weight: bold; display: flex; align-items: center; gap: 16px; margin-top: 24px; margin-bottom: 12px;">
@@ -153,7 +155,6 @@ Itoc编辑器专注于提供最简单直观的crazy error程序开发体验：
 </h2>
 
 现在就打开Itoc编辑器，开始制作属于您的第一个crazy error程序吧！
-好的，把“作者”和“工作室”并排居中显示。以下是修改后的片段：
 
 从简单的节奏匹配开始，逐渐尝试更复杂的效果组合，您会发现创造有趣的Windows交互体验原来如此简单喵~
 

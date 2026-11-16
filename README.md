@@ -142,7 +142,7 @@ Itoc编辑器专注于提供最简单直观的crazy error程序开发体验：
 
 - <a href="help/plugin_user.html" style="text-decoration: none; color: #AB92F5; font-weight: bold; font-size: 17px;"><img src="img/Button/阵列.png" width="30" style="vertical-align: middle;"> 插件系统</a>：支持插件管理器，可导入/启用/禁用/卸载插件，插件可挂菜单、工具栏、快捷键、右键菜单、侧边栏
 - <a href="help/plugin_dev.html" style="text-decoration: none; color: #AB92F5; font-weight: bold; font-size: 17px;"><img src="img/Button/python代码.png" width="30" style="vertical-align: middle;"> 插件开发</a>：提供完整的 ModAPI，用 Python 即可开发自己的插件
-- <a href="help/language_pack.html" style="text-decoration: none; color: #AB92F5; font-weight: bold; font-size: 17px;"><img src="img/Button/txt.png" width="30" style="vertical-align: middle;"> 语言包</a>：支持多语言切换，可导入/导出自定义语言包，已内置英文、日语、繁体中文、文言文
+- <a href="help/language_pack.html" style="text-decoration: none; color: #AB92F5; font-weight: bold; font-size: 17px;"><img src="img/Button/txt.png" width="30" style="vertical-align: middle;"> 语言包</a>：支持多语言切换，可导入/导出自定义语言包，已内置英文、日语、繁体中文、文言文、满语等
 - <a href="help/settings.html" style="text-decoration: none; color: #AB92F5; font-weight: bold; font-size: 17px;"><img src="img/Button/首选项.png" width="30" style="vertical-align: middle;"> 首选项</a>：12 个分类的设置面板，可调窗口、音频、波形、皮肤、缩放、音量、面板、解释器、自动保存、回滚、文件关联、语言
 - <a href="help/settings_skin.html" style="text-decoration: none; color: #AB92F5; font-weight: bold; font-size: 17px;"><img src="img/Button/编辑.png" width="30" style="vertical-align: middle;"> 皮肤设置</a>：自定义画布背景图片、透明度、时间轴背景色、ttk 主题、Windows 原生标题栏
 - <a href="help/file_association.html" style="text-decoration: none; color: #AB92F5; font-weight: bold; font-size: 17px;"><img src="img/Button/在新窗口中打开.png" width="30" style="vertical-align: middle;"> 文件关联</a>：绑定 .czemidi / .UIclass / .CzeData 的打开方式

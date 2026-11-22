@@ -216,17 +216,15 @@
 <div class="warning">
     <strong>⚠️ 不要加 <code>--window-transparency</code>：</strong> 这个参数在新版 mpv 里已经被移除，加了会秒退。<code>--d3d11-flip=no</code> 同样已被移除。Itoc 现在靠 <code>--gpu-api=opengl</code> 替代它们。
 </div>
-
-<p><strong>mpv 查找：</strong> 程序会在 <code>runCZE/</code> 目录下查找 mpv 可执行文件，优先 <code>mpv.com</code>，其次 <code>mpv.exe</code>；会遍历一级子目录，优先带 <code>v3</code> / <code>x86_64</code> 的版本。找不到时会提示你去 shinchiro 的 SourceForge 下载 mpv，解压后把整个文件夹放到 <code>runCZE\</code> 目录下。</p>
-
+<p><strong>mpv 查找：</strong> 程序<strong>自带32位、64位两个版本的mpv播放器</strong>，程序会在 <code>runCZE/</code> 目录下查找 mpv 可执行文件，优先 <code>mpv.com</code>，其次 <code>mpv.exe</code>；会遍历一级子目录，优先带 <code>v3</code> / <code>x86_64</code> 的版本。正常打包发布版本内置mpv；若开发调试环境缺失mpv，程序会弹一个错误框，请核对工程内runCZE目录是否完整。</p>
 <p><strong>音量与静音（<code>video_volume</code> / <code>video_muted</code>）：</strong> 音量条和音量图标按钮常驻显示。图标会随音量变化（🔇/🔈/🔉/🔊）。音量/静音状态会保存到工程，下次打开时恢复。</p>
-
 <p><strong>透明度的"持久维护"：</strong> 有些 mpv 版本在视频真正开始播放后会<strong>重建窗口</strong>，导致之前设的 <code>WS_EX_LAYERED</code> 丢失。所以视频框的透明度不是"设一次就完事"，而是：</p>
 <ul>
     <li>窗口刚拿到句柄时，立即应用一次样式（包括透明度、置顶、边框、按钮）；</li>
     <li>再在 300ms / 800ms / 1500ms / 2500ms 各补应用一次，覆盖 mpv 重建窗口的时间点；</li>
     <li>如果透明度 < 100%，还会启动一个<strong>每 500ms 执行一次的维护定时器</strong>，检查 <code>WS_EX_LAYERED</code> 是否还在，不在就重新加 + 重设 alpha，直到窗口关闭。</li>
 </ul>
+
 <div class="tip">
     <strong>💡 为什么必须用 64 位版本的 Get/SetWindowLongPtrW？</strong><br>
     在 64 位 Windows 上，<code>GetWindowLongW / SetWindowLongW</code> 对 <code>WS_EX_LAYERED</code> 可能静默失败，表现为"透明度完全没效果"。程序在 64 位下会显式用 <code>GetWindowLongPtrW / SetWindowLongPtrW</code>，并在 <code>SetLayeredWindowAttributes</code> 的 alpha 参数上强制用 <code>ctypes.c_ubyte</code> 类型——这两步缺一不可。

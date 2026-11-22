@@ -182,23 +182,19 @@
 </div>
 
 <h2>mpv 从哪来</h2>
-
-<p>程序不会自带 mpv，需要你自己下载。查找顺序是这样的：</p>
-
+<p>程序<strong>自带32位、64位两个版本的mpv播放器</strong>，无需用户额外下载。查找顺序是这样的：</p>
 <ol>
     <li>先看 <code>runCZE/mpv/</code> 目录。</li>
     <li>再看 <code>runCZE/</code> 目录本身。</li>
     <li>再遍历 <code>runCZE/</code> 的一级子目录，找 <code>mpv.exe</code> / <code>mpv.com</code>。</li>
 </ol>
-
 <p>找到多个 mpv 时，优先级是：</p>
 <ul>
     <li><code>mpv.com</code> 优先于 <code>mpv.exe</code>（com 版本能正确回传退出码）。</li>
     <li>路径里带 <code>v3</code> 的优先（v3 是 mpv 的较新架构）。</li>
     <li>路径里带 <code>x86_64</code> 的优先（64 位版本性能更好）。</li>
 </ul>
-
-<p>如果找不到 mpv，程序会弹一个错误框，提示你去 shinchiro 的 SourceForge 下载，解压后把整个文件夹放到 <code>runCZE\</code> 目录下。</p>
+<p>正常打包发布版本内置mpv；若开发调试环境缺失mpv，程序会弹一个错误框，请核对工程内runCZE目录是否完整。</p>
 
 <div class="warning">
     <strong>⚠️ 别用太老的 mpv：</strong> 有些参数（比如 <code>--window-transparency</code>）在新版 mpv 里被移除了，用了会直接退出。Itoc 目前用的是比较保守的参数集，兼容性还行，但建议用 2024 年之后的 mpv 版本。
@@ -408,16 +404,15 @@
 <p>A：可以。不勾「在任务栏显示」，程序会给 mpv 窗口加 <code>WS_EX_TOOLWINDOW</code> 并移除 <code>WS_EX_APPWINDOW</code>。但注意 mpv 有时候会重建窗口，样式可能被重置，程序会在窗口句柄拿到后多次重试应用样式。</p>
 
 <h2>小结</h2>
-
 <p>视频框的四件事：</p>
 <ol>
-    <li><strong>mpv 要自己下</strong>：放到 <code>runCZE/mpv/</code>，优先 <code>mpv.com</code> + <code>v3</code> + <code>x86_64</code>。</li>
+    <li><strong>mpv程序内置</strong>：自带32位、64位mpv版本，存放在 <code>runCZE/mpv/</code>，优先 <code>mpv.com</code> + <code>v3</code> + <code>x86_64</code>。</li>
     <li><strong>吸入原理</strong>：<code>SetParent</code> + <code>MoveWindow</code>，把 mpv 窗口塞进 Qt 容器。</li>
     <li><strong>三件套</strong>：音量（IPC 实时下发）、进度（本地计时驱动）、全屏（ESC 钩子 + 重排）。</li>
     <li><strong>透明拦截层</strong>：mpv 会吃掉鼠标事件，需要叠一个透明 Tk Frame 接右键。</li>
 </ol>
+<p>视频框貌似是 Itoc 里技术含量最高、坑最多的窗口。。。不管，还是玩得开心喵 ( ⓛ ω ⓛ *)</p>
 
-<p>视频框是 Itoc 里技术含量最高、坑最多的窗口。但只要 mpv 放对位置、路径解析对，剩下的它自己会搞定。玩得开心喵 ( ⓛ ω ⓛ *)</p>
         </main>
     </div>
 </div>

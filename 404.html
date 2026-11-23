@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <title>404 - 页面不存在 qwq | Itoc</title>
+    <meta name="description" content="您请求的资源不存在啦 qwq">
+    <link rel="icon" href="icon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="icon.ico" type="image/x-icon">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Consolas", "Microsoft YaHei", sans-serif; }
+
+        html, body { height: 100%; }
+
+        body {
+            background: linear-gradient(135deg, #f4f0fa 0%, #e8dfff 42%, #d8c8f8 100%);
+            color: #333;
+            line-height: 1.7;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            body { overflow-y: auto; }
+        }
+
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .b1 {
+            width: 420px; height: 420px;
+            background: #ab92f5;
+            top: -120px; left: -120px;
+            animation: float1 9s ease-in-out infinite;
+        }
+        .b2 {
+            width: 520px; height: 520px;
+            background: #c8b8f8;
+            bottom: -180px; right: -180px;
+            animation: float2 11s ease-in-out infinite;
+        }
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(40px, -30px) scale(1.1); }
+        }
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, 30px) scale(1.08); }
+        }
+
+        .blade {
+            position: absolute;
+            top: 0; bottom: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .blade-left {
+            left: -10vw;
+            width: calc(50vw + 10vw);
+            background: linear-gradient(135deg, #6b4a9a 0%, #8b6ee8 40%, #ab92f5 100%);
+            clip-path: polygon(0 0, 78% 0, 46% 100%, 0 100%);
+            transform: translateX(-120%) skewX(-2deg);
+            animation: bladeInLeft 1.15s cubic-bezier(0.22, 1.2, 0.36, 1) 0.15s forwards;
+            box-shadow: 20px 0 60px rgba(107, 74, 154, 0.35);
+            opacity: 0.16;
+        }
+        @keyframes bladeInLeft {
+            0%   { transform: translateX(-120%) skewX(-2deg); }
+            70%  { transform: translateX(3%) skewX(-2deg); }
+            100% { transform: translateX(0) skewX(0); }
+        }
+        .blade-right {
+            right: -8vw;
+            width: calc(34vw + 8vw);
+            background: linear-gradient(225deg, #ab92f5 0%, #d8c8f8 100%);
+            clip-path: polygon(24% 0, 100% 0, 100% 100%, 0 100%);
+            transform: translateX(120%) skewX(2deg);
+            animation: bladeInRight 1s cubic-bezier(0.22, 1.2, 0.36, 1) 0.05s forwards;
+            opacity: 0.12;
+        }
+        @keyframes bladeInRight {
+            0%   { transform: translateX(120%) skewX(2deg); }
+            70%  { transform: translateX(-3%) skewX(2deg); }
+            100% { transform: translateX(0) skewX(0); }
+        }
+
+        .topbar {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(216, 207, 239, 0.5);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-img {
+            width: 40px; height: 40px;
+            object-fit: contain;
+            border: 1px solid #ddd;
+        }
+        .logo-area h1 { font-size: 19px; color: #333; letter-spacing: 1px; }
+        .top-nav { display: flex; gap: 8px; flex-wrap: wrap; }
+        .top-nav a {
+            color: #555;
+            text-decoration: none;
+            font-size: 13px;
+            padding: 6px 12px;
+            border: 1px solid rgba(221, 221, 221, 0.7);
+            background: rgba(255, 255, 255, 0.5);
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.15s ease, border-color 0.15s ease;
+        }
+        .top-nav a span { position: relative; z-index: 1; }
+        .top-nav a::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #AB92F5;
+            transform: translateY(100%);
+            transition: transform 0.25s ease;
+        }
+        .top-nav a:hover::before { transform: translateY(0%); }
+        .top-nav a:hover { color: #fff; border-color: #AB92F5; }
+
+        .stage {
+            position: relative;
+            z-index: 5;
+            height: calc(100% - 69px);
+            display: flex;
+            align-items: center;
+            padding: 0 6vw;
+            perspective: 1300px;
+        }
+
+        .ghost-404 {
+            position: fixed;
+            right: 7vw;
+            top: 50vh;
+            transform: translateY(-50%);
+            transform-style: preserve-3d;
+            z-index: 0;
+            pointer-events: none;
+            user-select: none;
+            will-change: transform;
+        }
+        .ghost-404 span {
+            display: inline-block;
+            font-size: clamp(180px, 26vw, 340px);
+            font-weight: 800;
+            font-style: italic;
+            letter-spacing: -0.04em;
+            color: #ff2d2d;
+            text-shadow:
+                1px 1px 0 #d91e1e,
+                2px 2px 0 #d91e1e,
+                3px 3px 0 #c21717,
+                4px 4px 0 #c21717,
+                5px 5px 14px rgba(194, 23, 23, 0.35);
+            animation: ghostDrift 7s ease-in-out infinite;
+        }
+        .ghost-404::before {
+            content: '404';
+            position: absolute;
+            left: 0; top: 0;
+            font-size: clamp(180px, 26vw, 340px);
+            font-weight: 800;
+            font-style: italic;
+            letter-spacing: -0.04em;
+            color: rgba(178, 18, 30, 0.25);
+            transform: translateZ(-90px) translate(16px, 20px);
+            z-index: -1;
+        }
+        @keyframes ghostDrift {
+            0%, 100% { transform: translateY(0) rotateZ(0deg); }
+            50% { transform: translateY(-14px) rotateZ(-1.5deg); }
+        }
+
+        .panel {
+            position: relative;
+            z-index: 2;
+            max-width: 560px;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            clip-path: polygon(
+                18px 0, calc(100% - 18px) 0, 100% 18px,
+                100% calc(100% - 18px), calc(100% - 18px) 100%,
+                18px 100%, 0 calc(100% - 18px), 0 18px
+            );
+            box-shadow: 0 20px 60px rgba(107, 74, 154, 0.18);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: panelIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.45s forwards;
+        }
+        @keyframes panelIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .panel-inner {
+            padding: 44px 46px 38px 46px;
+            will-change: transform;
+        }
+
+        .eyebrow {
+            font-size: 13px;
+            letter-spacing: 3px;
+            color: #8b6ee8;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeUp 0.7s ease 0.7s forwards;
+        }
+        .eyebrow::before {
+            content: '';
+            width: 28px;
+            height: 2px;
+            background: #AB92F5;
+        }
+
+        .copy p {
+            font-size: 15.5px;
+            color: #444;
+            line-height: 1.9;
+            margin-bottom: 14px;
+            opacity: 0;
+            animation: fadeUp 0.7s ease 1s forwards;
+        }
+        .copy p:last-of-type { animation-delay: 1.15s; margin-bottom: 0; }
+
+        .glitch-word {
+            display: inline-block;
+            position: relative;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.15s ease;
+            cursor: default;
+        }
+        .glitch-word:hover {
+            transform: translate(-2px, -2px) scale(1.02);
+            color: #AB92F5;
+        }
+        .glitch-word:hover::before {
+            content: attr(data-text);
+            position: absolute;
+            left: 0; top: 0;
+            color: #ff6b6b;
+            transform: translate(3px, -1px);
+            opacity: 0.55;
+            pointer-events: none;
+            clip-path: inset(0 0 60% 0);
+        }
+        .glitch-word:hover::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0; top: 0;
+            color: #4ecdc4;
+            transform: translate(-3px, 1px);
+            opacity: 0.55;
+            pointer-events: none;
+            clip-path: inset(60% 0 0 0);
+        }
+
+        .actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            opacity: 0;
+            animation: fadeUp 0.7s ease 1.3s forwards;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: 1px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+            clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
+        }
+        .btn-primary {
+            color: #fff;
+            background: linear-gradient(135deg, #ab92f5 0%, #8b6ee8 100%);
+            box-shadow: 0 8px 24px rgba(171, 146, 245, 0.45);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 14px 36px rgba(171, 146, 245, 0.6);
+        }
+        .btn-primary .arrow { transition: transform 0.3s ease; }
+        .btn-primary:hover .arrow { transform: translateX(5px); }
+        .btn-ghost {
+            color: #2b2b2b;
+            background: #fff;
+            border: 2px solid #AB92F5;
+        }
+        .btn-ghost:hover {
+            background: #AB92F5;
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        .foot {
+            position: absolute;
+            left: 6vw;
+            bottom: 22px;
+            z-index: 5;
+            font-size: 12px;
+            color: #888;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 1.6s forwards;
+        }
+        .foot a { color: #8b6ee8; text-decoration: none; border-bottom: 1px dashed rgba(139, 110, 232, 0.5); }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .stage { height: auto; min-height: calc(100dvh - 69px); padding: 40px 20px 90px; align-items: flex-start; }
+            .panel { max-width: 100%; }
+            .panel-inner { padding: 32px 26px 28px; }
+            .ghost-404 { right: -10vw; opacity: 0.55; }
+            .topbar { padding: 12px 16px; }
+            .logo-area h1 { font-size: 16px; }
+            .foot { left: 20px; bottom: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-blob b1"></div>
+    <div class="bg-blob b2"></div>
+    <div class="blade blade-left"></div>
+    <div class="blade blade-right"></div>
+
+    <header class="topbar">
+        <div class="logo-area">
+            <img src="icon.png" alt="Itoc logo" class="logo-img">
+            <h1>Itoc 编辑器</h1>
+        </div>
+        <nav class="top-nav">
+            <a href="https://message.bilibili.com/#/whisper/mid3461569935575626" target="_blank" rel="noopener"><span>联系作者</span></a>
+            <a href="https://miku66ccff.freeflarum.com/t/itoc" target="_blank" rel="noopener"><span>交流论坛</span></a>
+            <a href="https://github.com/xxdz-Official/xxdz-Itoc" target="_blank" rel="noopener"><span>GitHub主页</span></a>
+            <a href="Mode.html"><span>插件市场</span></a>
+            <a href="FriendURL.html"><span>友情链接</span></a>
+            <a href="help/help.html"><span>帮助文档</span></a>
+            <a href="index.html"><span>返回主页</span></a>
+        </nav>
+    </header>
+
+    <main class="stage">
+        <div class="ghost-404" id="ghost"><span>404</span></div>
+
+        <section class="panel" id="panel">
+            <div class="panel-inner" id="panelInner">
+                <div class="eyebrow">ERROR 404 · NOT FOUND</div>
+                <div class="copy">
+                    <p>您请求的资源不存在了，可能是因为下载线路与我有某些合作关系导致的变动，可以看看<span class="glitch-word" data-text="夸克下载线路">夸克下载线路</span>是否可以用呢？</p>
+                    <p>毕竟为爱发电的个人开发者属实不易，<span class="glitch-word" data-text="夸克">夸克</span>与我有一些小合作，勉强可以攒点零花钱吧。。。</p>
+                </div>
+                <div class="actions">
+                    <a href="index.html" class="btn btn-ghost">回到首页</a>
+                    <button type="button" class="btn btn-primary" id="closeBtn"><span>返回并关闭</span><span class="arrow">×</span></button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="foot">© 2026 小小电子xxdz · <a href="index.html">Itoc</a></footer>
+
+    <script>
+        (function () {
+            var ghost = document.getElementById('ghost');
+            var panel = document.getElementById('panelInner');
+            var mouseX = 0.5, mouseY = 0.5;
+            var rotX = 0, rotY = 0, gz = 0, px = 0, py = 0;
+
+            document.addEventListener('mousemove', function (e) {
+                mouseX = e.clientX / window.innerWidth;
+                mouseY = e.clientY / window.innerHeight;
+            });
+
+            function tick() {
+                var tRotY = (mouseX - 0.5) * 18;
+                var tRotX = (mouseY - 0.5) * -12;
+                var tPx = (mouseX - 0.5) * 12;
+                var tPy = (mouseY - 0.5) * 9;
+                rotY += (tRotY - rotY) * 0.08;
+                rotX += (tRotX - rotX) * 0.08;
+                px += (tPx - px) * 0.12;
+                py += (tPy - py) * 0.12;
+                if (ghost) {
+                    ghost.style.transform = 'translateY(-50%) rotateX(' + rotX.toFixed(2) + 'deg) rotateY(' + rotY.toFixed(2) + 'deg) translateZ(40px)';
+                }
+                if (panel) panel.style.transform = 'translate(' + px.toFixed(2) + 'px, ' + py.toFixed(2) + 'px)';
+                requestAnimationFrame(tick);
+            }
+            tick();
+
+            var closeBtn = document.getElementById('closeBtn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function () {
+                    window.close();
+                    setTimeout(function () {
+                        if (!window.closed) {
+                            if (history.length > 1) history.back();
+                            else window.location.href = 'index.html';
+                        }
+                    }, 300);
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

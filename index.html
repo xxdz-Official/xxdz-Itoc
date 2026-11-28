@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <title>Itoc 项目主页</title>
     <meta name="description" content="世界上首个用音乐去'编程'的可视化开发工具！">
-    <meta name="keywords" content="Itoc, xxdz_Itoc, 音乐编程, 可视化开发工具, 小小电子xxdz, 電籽, xxdz工作室, 音可">
+    <meta name="keywords" content="Itoc, xxdz_Itoc, Itoc v1,Itoc v2,音乐编程, 可视化开发工具, 小小电子xxdz, 電籽, xxdz工作室, 音可">
     <link rel="icon" href="icon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="xxdz-Itoc/web.css">
@@ -1112,16 +1112,62 @@
     </div>
 
     <div class="version-list">
+        <style>
+            .version-item {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 0;
+                border-bottom: 1px dashed #bbb;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .version-item:last-child {
+                border-bottom: none;
+            }
+            .version-name-wrap {
+                display: flex;
+                align-items: baseline;
+                gap:16px;
+                flex-wrap:wrap;
+            }
+            .version-name-text {
+                font-size: 22px;
+                font-weight: 500;
+                color: #222;
+            }
+            .version-date-text {
+                font-size:14px;
+                color:#777;
+                font-weight:normal;
+                white-space: nowrap;
+            }
+        </style>
         <h3 style="margin-bottom: 20px; font-size: 24px; border-left: 6px solid #AB92F5; padding-left: 15px;">历史版本下载列表</h3>
         <div class="version-item">
-            <span class="version-name">Itoc v2 Pro 专业版</span>
+            <div class="version-name-wrap">
+                <span class="version-name-text">Itoc v2 Lite 简装版</span>
+                <span class="version-date-text">2026年11月28日</span>
+            </div>
+            <a href="v2 Lite.html" class="version-download">前往下载 &gt;</a>
+        </div>
+        <div class="version-item">
+            <div class="version-name-wrap">
+                <span class="version-name-text">Itoc v2 Pro 专业版</span>
+                <span class="version-date-text">2026年11月23日</span>
+            </div>
             <a href="v2 Pro.html" class="version-download">前往下载 &gt;</a>
         </div>
         <div class="version-item">
-            <span class="version-name">Itoc v1 简体中文版</span>
+            <div class="version-name-wrap">
+                <span class="version-name-text">Itoc v1 简体中文版</span>
+                <span class="version-date-text">2026年3月4日</span>
+            </div>
             <a href="v1.html" class="version-download">前往下载 &gt;</a>
         </div>
     </div>
+
+
 
     <div class="footer">
         <span class="glitch-subtle" data-text="© 2026">© 2026</span>
